@@ -7,7 +7,7 @@ export default function MainLayout({
     // dito ilalagay ung topnav or footer.
     <>
       <TopNav />
-      {children}
+      <main>{children}</main>
       {/* footer */}
     </>
   );
