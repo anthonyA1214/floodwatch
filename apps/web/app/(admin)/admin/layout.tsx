@@ -1,12 +1,13 @@
+import { SideNav } from '@/components/admin/side-nav';
+import { SidebarProvider } from '@/components/ui/sidebar';
+
 export default function AdminLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    // dito ilalagay ung sidenav
-    <>
-      {/* sidenav */}
-      {children}
-      {/* footer */}
-    </>
+    <SidebarProvider>
+      <SideNav />
+      <main className="flex py-4 pe-4 w-full">{children}</main>
+    </SidebarProvider>
   );
 }
