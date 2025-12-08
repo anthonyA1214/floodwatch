@@ -14,13 +14,18 @@ import { IconLogout } from '@tabler/icons-react';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { NavItems } from './nav-items';
 
-export function SideNav() {
+export default function SideNav() {
   return (
     <div className="p-4">
       <Sidebar collapsible="none" className="flex rounded-2xl">
         <SidebarHeader className="w-full py-6 flex items-center">
           <Link href="/" className="flex items-center gap-x-2">
-            <Image src="/logo.svg" alt="Notedly Logo" width={32} height={32} />
+            <Image
+              src="/logo.svg"
+              alt="FloodWatch Logo"
+              width={32}
+              height={32}
+            />
             <h1 className="text-[#0066CC] font-bold text-xl">FloodWatch</h1>
           </Link>
         </SidebarHeader>
