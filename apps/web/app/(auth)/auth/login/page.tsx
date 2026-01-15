@@ -52,7 +52,7 @@ export default function Login() {
                     className="rounded-full px-4"
                   />
                   <div className="text-right text-sm text-gray-500 hover:underline cursor-pointer">
-                    <a href="/auth/sign-up"> Forgot Password? </a> 
+                    <a href="/auth/sign-up"> Forgot Password? </a>
                   </div>
                 </div>
               </form>
@@ -64,6 +64,14 @@ export default function Login() {
               </Button>
             </CardFooter>
           </Card>
+
+          {/* SIGN UP LINK */}
+          <div className="mt-6 flex justify-center gap-2 text-sm text-gray-500">
+            <span>Don't have an Account yet?</span>
+            <a href="/auth/sign-up" className="text-blue-600 hover:underline">
+              Register Here
+            </a>
+          </div>
 
           {/* FOOTER */}
           <div className="mt-10 text-center text-sm text-gray-400">
@@ -89,7 +97,7 @@ export default function Login() {
           <p className="mb-8 max-w-md text-center text-sm text-gray-200">
             Our website helps communities stay safe during floods with an
             interactive map showing real-time updates of affected areas. Users
-            can also post reports and share updates, making it easier for everyone to stay 
+            can also post reports and share updates, making it easier for everyone to stay
             informed and connected
           </p>
 

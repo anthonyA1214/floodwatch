@@ -72,13 +72,7 @@ export default function SignUpCard() {
                         </div>
                     </form>
 
-                    {/* BACK TO LOGIN */}
-                    <div className="mt-6 flex justify-end gap-2 text-sm text-gray-500">
-                        <span>Already have an account?</span>
-                        <a href="/auth/login" className="text-blue-600 hover:underline">
-                            Login Here
-                        </a>
-                    </div>
+
                 </CardContent>
 
                 <CardFooter className="px-0 pt-6">
@@ -86,6 +80,14 @@ export default function SignUpCard() {
                         Register
                     </Button>
                 </CardFooter>
+
+                {/* BACK TO LOGIN */}
+                <div className="mt-6 flex justify-center gap-2 text-sm text-gray-500">
+                    <span>Already have an account?</span>
+                    <a href="/auth/login" className="text-blue-600 hover:underline">
+                        Login Here
+                    </a>
+                </div>
 
 
             </Card>
