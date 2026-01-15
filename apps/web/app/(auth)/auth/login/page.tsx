@@ -19,7 +19,7 @@ export default function Login() {
 
         {/* FloodWatch (TOP) */}
         <h1 className="absolute top-6 left-8 text-lg font-semibold text-blue-600">
-          FloodWatch
+          <a href="/"> FloodWatch </a>
         </h1>
 
         {/* LOGIN FORM */}
@@ -37,9 +37,9 @@ export default function Login() {
             <CardContent className="px-0">
               <form className="space-y-6">
                 <div className="space-y-2">
-                  <Label>User name</Label>
+                  <Label>Email</Label>
                   <Input
-                    placeholder="Enter your User name"
+                    placeholder="Enter your Email"
                     className="rounded-full px-4"
                   />
                 </div>

@@ -13,7 +13,7 @@ export default function SignUp() {
 
         {/* FloodWatch (TOP) */}
         <h1 className="absolute top-6 left-8 text-lg font-semibold text-blue-600">
-          FloodWatch
+          <a href="/"> FloodWatch </a>
         </h1>
 
         {/* SIGN UP FORM */}
