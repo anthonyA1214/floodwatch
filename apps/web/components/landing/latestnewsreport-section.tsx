@@ -1,3 +1,5 @@
+import LatestNewsCard from "./latest-news-card";
+
 export default function LatestNewsReport() {
   return (
     <section className="mt-16 font-['Roboto']">
@@ -14,7 +16,12 @@ export default function LatestNewsReport() {
           Be updated on latest news for the whole week
         </p>
 
+        <div>
+            <LatestNewsCard/>
+        </div>
+        
       </div>
+
     </section>
   );
 }
