@@ -1,4 +1,5 @@
 import HeroSection from '@/components/landing/hero-section';
+import LatestNewsReport from '@/components/landing/latest-news-report-section';
 import SafetyGuidesSection from '@/components/landing/safety-guides-section';
 
 export default function Page() {
@@ -7,6 +8,7 @@ export default function Page() {
       <HeroSection />
       {/* Features section */}
       <SafetyGuidesSection />
+      <LatestNewsReport />
     </div>
   );
 }
