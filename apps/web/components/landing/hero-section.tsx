@@ -33,8 +33,8 @@ export default function HeroSection() {
         {/* IMAGE */}
         <div className="w-full flex justify-center order-1 md:order-2">
           <Image
-            src="/hero-image.svg"
-            alt="boat"
+            src="/images/hero-image.svg"
+            alt="hero image"
             width={1440}
             height={1024}
             className="w-full max-w-sm md:max-w-lg lg:max-w-none h-auto object-cover rounded-2xl"
