@@ -1,10 +1,12 @@
+import { seedProfileInfo } from './profile-info.seed';
 import { seedUsers } from './users.seed';
 import { db } from './utils/db';
 
 async function main() {
   console.log('🚀 Starting database seeding...');
 
-  await seedUsers(10);
+  await seedUsers(5);
+  await seedProfileInfo();
 
   console.log('🎉 Database seeding completed');
 }

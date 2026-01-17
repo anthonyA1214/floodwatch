@@ -10,10 +10,10 @@ export class AuthService {
     const user = await this.usersService.findOne(email);
     if (!user) throw new UnauthorizedException();
 
-    const passwordMatch = await bcrypt.compare(password, user.password);
+    const passwordMatch = await bcrypt.compare(password, user.hashedPassword);
     if (!passwordMatch) throw new UnauthorizedException();
 
-    const { password: _password, ...result } = user;
+    const { hashedPassword: _hashedPassword, ...result } = user;
 
     return result;
   }

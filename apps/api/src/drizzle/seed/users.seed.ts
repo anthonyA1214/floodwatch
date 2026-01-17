@@ -11,7 +11,7 @@ export async function seedUsers(length: number) {
 
     const data = Array.from({ length: length }).map(() => ({
       email: faker.internet.email().toLowerCase(),
-      password: hash,
+      hashedPassword: hash,
     }));
 
     await db.insert(schema.users).values(data);
