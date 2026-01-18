@@ -1,7 +1,7 @@
 export default function AboutUs() {
   return (
-    <section className="pb-20">
-      <div className="max-w-356 mx-auto">
+    <section className="py-15" id="about-us">
+      <div className="max-w-356 mx-auto bg-white rounded-2xl p-10">
         {/* Title */}
         <h2 className="text-3xl font-semibold text-center mb-16">
           About <span className="text-[#2F327D]">FloodWatch</span>
@@ -11,16 +11,16 @@ export default function AboutUs() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
           {/* Our Story */}
           <div className="bg-gray-50 rounded-2xl p-10 shadow-sm">
-            <h3 className="text-xl font-semibold text-[#2F327D] mb-6">
+            <h3 className="text-2xl font-semibold text-[#2F327D] mb-6">
               Our Story
             </h3>
-            <p className="text-gray-600 text-sm leading-relaxed mb-4">
+            <p className="text-gray-600 text-lg leading-relaxed mb-4">
               Our story began in the Philippines, where floods often disrupt
               lives and communities. Seeing the need for better awareness, our
               team created a simple tool to keep people informed and safe during
               these times.
             </p>
-            <p className="text-gray-600 text-sm leading-relaxed">
+            <p className="text-gray-600 text-lg leading-relaxed">
               What started as a small project grew into a platform that promotes
               safety, unity, and preparedness among Filipinos. Today, we
               continue to help communities face floods with confidence and hope.
@@ -30,10 +30,10 @@ export default function AboutUs() {
           {/* Mission & Vision */}
           <div className="bg-gray-50 rounded-2xl p-10 shadow-sm space-y-10">
             <div>
-              <h3 className="text-xl font-semibold text-[#2F327D] mb-4">
+              <h3 className="text-2xl font-semibold text-[#2F327D] mb-4">
                 Our Mission
               </h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
+              <p className="text-gray-600 text-lg leading-relaxed">
                 Our mission is to provide reliable and up-to-date information
                 that helps individuals and communities make smart decisions
                 during floods. We aim to promote disaster awareness, encourage
@@ -42,10 +42,10 @@ export default function AboutUs() {
             </div>
 
             <div>
-              <h3 className="text-xl font-semibold text-[#2F327D] mb-4">
+              <h3 className="text-2xl font-semibold text-[#2F327D] mb-4">
                 Our Vision
               </h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
+              <p className="text-gray-600 text-lg leading-relaxed">
                 We envision a safer and well-informed community where people are
                 always prepared to face flooding and other natural disasters. We
                 seek a society that values awareness, cooperation, and timely

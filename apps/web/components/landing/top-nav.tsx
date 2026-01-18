@@ -52,7 +52,7 @@ export default function TopNav() {
                   Login
                 </button>
               </Link>
-              <Link href="/auth/signup">
+              <Link href="/auth/sign-up">
                 <button
                   className="flex items-center justify-center gap-2 bg-[#81B2E2] hover:bg-[#6CA2DA] active:bg-[#578FCF] 
               text-white px-6 py-1 rounded-2xl text-sm md:text-lg

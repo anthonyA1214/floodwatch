@@ -1,22 +1,61 @@
-export default function LatestNewsCard() {
+export default function LatestNewsCard({
+  variant = "compact",
+  title,
+  description,
+}) {
+  // FEATURED (LEFT BIG CARD)
+  if (variant === "featured") {
+    return (
+      <div className="rounded-2xl bg-white shadow-md">
+        {/* Image */}
+        <div className="h-[320px] rounded-t-2xl bg-gray-300 flex items-center justify-center text-white font-semibold">
+          Image
+        </div>
+
+        {/* Content */}
+        <div className="p-6">
+          <span className="inline-block rounded-full bg-[#49BBBD] px-4 py-1 text-xs font-semibold text-white">
+            NEWS
+          </span>
+
+          <h3 className="mt-4 text-xl font-semibold text-[#2E2F35]">
+            {title}
+          </h3>
+
+          <p className="mt-2 text-[#696984]">
+            {description}
+            <span className="ml-1 cursor-pointer font-medium text-[#2F327D]">
+              Read more...
+            </span>
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // COMPACT (RIGHT SIDE CARDS)
   return (
-    <div className="mt-16 h-[250px] flex rounded-xl shadow-md bg-white p-4 gap-4">
+    <div className="flex h-[220px] w-full gap-5 rounded-2xl bg-white p-5 shadow-md">
       {/* Image */}
-      <div className="w-[45%] bg-[#8B8B8B] rounded-lg flex items-center justify-center text-white text-sm font-semibold">
+      <div className="relative w-[40%] overflow-hidden rounded-xl bg-gray-300 flex items-center justify-center text-sm font-semibold text-white">
         Image
       </div>
 
       {/* Content */}
-      <div className="w-[55%]">
-        <span className="inline-block px-3 py-1 text-xs font-semibold text-white bg-[#4AC6C6] rounded-full">
-          NEWS
-        </span>
+      <div className="flex w-[60%] flex-col justify-between">
+        <div>
+          <span className="inline-block rounded-full bg-[#49BBBD] px-4 py-1 text-xs font-semibold text-white">
+            News
+          </span>
 
-        <h4 className="mt-2 text-sm font-semibold text-[#2E2F35] line-clamp-2">
-          titles
-        </h4>
+          <h4 className="mt-3 line-clamp-2 text-lg font-semibold text-[#2E2F35]">
+            {title}
+          </h4>
 
-        <p className="mt-1 text-xs text-[#696984] line-clamp-2">descriptions</p>
+          <p className="mt-2 line-clamp-3 text-sm text-[#696984]">
+            {description}
+          </p>
+        </div>
       </div>
     </div>
   );
