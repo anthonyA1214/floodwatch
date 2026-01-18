@@ -51,7 +51,7 @@ export default function Login() {
                     className="rounded-full px-4"
                   />
                   <div className="text-right text-sm text-gray-500 hover:underline cursor-pointer">
-                    <a href="/auth/sign-up"> Forgot Password? </a>
+                    <a href="/auth/forgot-password"> Forgot Password? </a>
                   </div>
                 </div>
               </form>
