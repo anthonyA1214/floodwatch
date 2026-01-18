@@ -51,6 +51,16 @@ export default function SignUpCard() {
                             />
                         </div>
 
+                        {/* EMAIL */}
+                        <div className="space-y-2">
+                            <Label>Home Address</Label>
+                            <Input
+                                type="address"
+                                placeholder="Enter your Home Address"
+                                className="rounded-full px-4 shadow-sm"
+                            />
+                        </div>
+
                         {/* PASSWORD */}
                         <div className="space-y-2">
                             <Label>Password</Label>
