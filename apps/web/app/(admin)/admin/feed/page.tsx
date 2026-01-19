@@ -1,6 +1,10 @@
 import { Input } from "@/components/ui/input";
 import { Search, Flag } from "lucide-react";
 import PostCard from "@/components/admin/community-feed/post-card";
+import PreviewLocation from "@/components/admin/community-feed/preview-location-card";
+import CommunityPostCard from "@/components/admin/community-feed/community-post-card";
+import AffectedLocationTab from "@/components/admin/community-feed/affected-location-tab";
+import AddressLocationBanner from "@/components/admin/community-feed/address-location-banner";
 
 export default function CommunityFeed() {
   return (
@@ -34,28 +38,20 @@ export default function CommunityFeed() {
         <div className="col-span-8 space-y-6">
 
           {/* Location Banner */}
-          <div className="bg-blue-600 text-white p-4 rounded-xl">
-            Hello World – Location Banner
+          <div>
+            <AddressLocationBanner/>
           </div>
 
           {/* Create Post Box */}
           <div>
-            <p className="text-gray-600">
-              <PostCard/>
-            </p>
+            
+              <PostCard />
+            
           </div>
 
           {/* Feed Posts */}
           <div className="space-y-4">
-            <div className="border rounded-xl p-4">
-              Hello World – Post 1
-            </div>
-            <div className="border rounded-xl p-4">
-              Hello World – Post 2
-            </div>
-            <div className="border rounded-xl p-4">
-              Hello World – Post 3
-            </div>
+            <CommunityPostCard />
           </div>
 
           {/* (Optional) Your real component */}
@@ -68,25 +64,16 @@ export default function CommunityFeed() {
 
           {/* Affected Location */}
           <div className="border rounded-xl p-4">
-            <h3 className="font-semibold mb-2">
-              Hello World – Affected Location
-            </h3>
-            <p>Hello World – Address 1</p>
-            <p>Hello World – Address 2</p>
-            <p>Hello World – Address 3</p>
+            <h1 className="text-lg pb-4"> Affected Locations </h1>
+            <AffectedLocationTab />
+
           </div>
 
           {/* Preview Location */}
           <div className="border rounded-xl p-4">
-            <div className="h-40 bg-gray-200 rounded-lg flex items-center justify-center mb-3">
-              Hello World – Image Preview
-            </div>
-            <p className="font-semibold">
-              Hello World – Brgy 174
-            </p>
-            <p className="text-sm text-gray-500">
-              Hello World – Severity: Critical
-            </p>
+            <h1 className="text-lg pb-4"> Preview Location </h1>
+
+            <PreviewLocation />
           </div>
 
         </div>
