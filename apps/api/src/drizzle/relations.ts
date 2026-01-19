@@ -1,6 +1,6 @@
 import { relations } from 'drizzle-orm';
 import { users } from './schemas/users.schema';
-import { profileInfo } from './schemas/profiles.schema';
+import { profileInfo } from './schemas/profile-info.schema';
 
 export const userRelation = relations(users, ({ one }) => ({
   profile: one(profileInfo, {

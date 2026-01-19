@@ -1,2 +1,2 @@
 export * from './users.schema';
-export * from './profiles.schema';
+export * from './profile-info.schema';
