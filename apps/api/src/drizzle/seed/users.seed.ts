@@ -10,8 +10,8 @@ export async function seedUsers(length: number) {
     const hash = await bcrypt.hash('password123', 10);
 
     const data = Array.from({ length: length }).map(() => ({
-      username: faker.internet.username(),
-      password: hash,
+      email: faker.internet.email().toLowerCase(),
+      hashedPassword: hash,
     }));
 
     await db.insert(schema.users).values(data);
