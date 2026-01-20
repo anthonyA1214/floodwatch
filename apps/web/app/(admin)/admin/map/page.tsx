@@ -5,16 +5,10 @@ import { Button } from "@/components/ui/button";
 import Paginator from "@/components/admin/interactive-map-components/paginator-component";
 import CreateFloodAlertModal from "@/components/admin/interactive-map-components/create-flood-alert-modal";
 import CreateSafeZoneModal from "@/components/admin/interactive-map-components/create-safe-zone-modal";
+import FloodedArea from "@/components/admin/interactive-map-components/flooded-area-card";
 
 
 export default function InteractiveMap() {
-  // const [activeTab, setActiveTab] = useState<'affected' | 'safe'>('affected');
-  // const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // const filteredData = INITIAL_DATA.filter(item => item.type === activeTab);
-
-  // const ActiveModal = activeTab === 'affected' ? CreateFloodAlert : CreateSafeZone;
-
   return (
     <div className="flex-1 rounded-3xl p-8 bg-white shadow-sm border border-gray-100 min-h-screen">
       <h2 className="text-3xl font-bold text-gray-900 mb-6 tracking-tight">Interactive Map</h2>
@@ -52,7 +46,7 @@ export default function InteractiveMap() {
 
               {/* Affected locations list will go here */}
               <div className="flex-1 rounded-xl border border-gray-200 bg-white p-4 text-sm text-gray-400 flex items-center justify-center">
-                No affected locations yet
+                <FloodedArea/>
               </div>
             </TabsContent>
 
@@ -71,7 +65,6 @@ export default function InteractiveMap() {
           </Tabs>
 
           
-
           {/* Pagination */}
           <div className="mt-6 flex items-center justify-between">
             <Paginator/>

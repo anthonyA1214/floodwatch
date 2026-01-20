@@ -7,32 +7,30 @@ import {
 
 export default function MapHolder() {
     return (
-        <div className="relative w-full h-full rounded-xl overflow-hidden bg-gray-100">
-            {/* Map Content */}
-            <div className="w-full h-full flex items-center justify-center text-gray-400">
-                Interactive Map Placeholder
+        <div className="relative w-full h-full">
+            {/* Map Placeholder */}
+            <div className="absolute inset-0 bg-gray-200 flex items-center justify-center text-gray-500">
+                Interactive Map
             </div>
 
-            {/* Layers Control */}
+            {/* Layers Button */}
             <Popover>
                 <PopoverTrigger asChild>
-                    <button className="absolute top-4 right-4 bg-white p-2.5 rounded-xl shadow-sm border border-gray-200 hover:bg-gray-50 transition-colors">
-                        <Layers className="h-5 w-5 text-gray-600" />
+                    <button className="absolute top-4 right-4 bg-white p-2 rounded-lg shadow z-10">
+                        <Layers className="h-5 w-5" />
                     </button>
                 </PopoverTrigger>
 
-                <PopoverContent align="end" className="w-40 p-2">
-                    <div className="space-y-1 text-sm">
-                        <button className="w-full text-left px-2 py-1 rounded hover:bg-gray-100">
-                            Map Legend 1
-                        </button>
-                        <button className="w-full text-left px-2 py-1 rounded hover:bg-gray-100">
-                            Map Legend 2
-                        </button>
-                        <button className="w-full text-left px-2 py-1 rounded hover:bg-gray-100">
-                            Map Legend 3
-                        </button>
-                    </div>
+                <PopoverContent align="end" className="w-40">
+                    <button className="w-full text-left px-2 py-1 hover:bg-gray-100">
+                        Map Legend 1
+                    </button>
+                    <button className="w-full text-left px-2 py-1 hover:bg-gray-100">
+                        Map Legend 2
+                    </button>
+                    <button className="w-full text-left px-2 py-1 hover:bg-gray-100">
+                        Map Legend 3
+                    </button>
                 </PopoverContent>
             </Popover>
         </div>

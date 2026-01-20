@@ -21,103 +21,75 @@ import MapHolder from "./map-component"
 export default function CreateFloodAlertModal() {
     return (
         <Dialog>
-            <DialogTrigger className="w-full h-12 rounded-xl bg-[#0061C2] text-white font-bold hover:bg-[#0052a3] transition-all">
+            <DialogTrigger className="w-full rounded-sm h-15 text-white bg-[#0066CC] hover:bg-[#4894db]">
                 Create Affected Location
             </DialogTrigger>
 
-            <DialogContent className="max-w-6xl w-full p-0 overflow-hidden rounded-[32px] shadow-2xl">
-                <DialogHeader className="px-8 pt-8">
-                    <DialogTitle className="text-xl font-black text-gray-800 tracking-tight">
-                        Create Flood Alert
-                    </DialogTitle>
+            {/* Give modal a real height */}
+            <DialogContent className="max-w-md sm:max-w-lg md:max-w-2xl h-[90vh] p-0 overflow-hidden">
+
+                {/* HEADER (fixed height) */}
+                <DialogHeader className="px-6 py-4 border-b shrink-0">
+                    <DialogTitle>Create Flood Alert</DialogTitle>
                 </DialogHeader>
 
-                <div className="grid grid-cols-[1.3fr_1fr] min-h-[520px]">
-                    {/* MAP */}
-                    <div className="relative bg-slate-200">
+                {/* BODY */}
+                <div className="flex flex-col h-full">
+
+                    {/* MAP (fixed height) */}
+                    <div className="h-[240px] w-full border-b shrink-0">
                         <MapHolder />
                     </div>
 
-                    {/* FORM */}
-                    <div className="p-8 bg-white flex flex-col">
-                        <div className="bg-[#F0F7FF] rounded-[24px] p-6 border border-blue-100 space-y-4">
+                    {/* FORM (scrollable) */}
+                    <div className="flex-1 overflow-y-auto bg-[#F2F8FF]">
+                        <form className="p-6 space-y-4">
 
-                            {/* LOCATION */}
-                            <div className="space-y-1">
-                                <Label className="text-[10px] font-black text-blue-300 uppercase tracking-widest pl-1">
-                                    Location
-                                </Label>
-                                <Input
-                                    placeholder="Location Name"
-                                    className="h-11 rounded-xl shadow-sm border-none focus:ring-2 focus:ring-blue-400"
-                                />
+                            <div>
+                                <Label>Location</Label>
+                                <Input placeholder="Location Name" />
                             </div>
 
-                            {/* SEVERITY */}
-                            <div className="space-y-1">
-                                <Label className="text-[10px] font-black text-blue-300 uppercase tracking-widest pl-1">
-                                    Severity Level
-                                </Label>
+                            <div>
+                                <Label>Severity Level</Label>
                                 <Select>
-                                    <SelectTrigger className="h-11 rounded-xl bg-white shadow-sm border-none focus:ring-2 focus:ring-blue-400">
-                                        <SelectValue placeholder="Low" />
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Select severity" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="low">Low</SelectItem>
                                         <SelectItem value="moderate">Moderate</SelectItem>
                                         <SelectItem value="high">High</SelectItem>
-                                        <SelectItem value="critical">Critical</SelectItem>
                                     </SelectContent>
                                 </Select>
                             </div>
 
-                            {/* COORDINATES */}
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-1">
-                                    <Label className="text-[10px] font-black text-blue-300 uppercase tracking-widest pl-1">
-                                        Latitude
-                                    </Label>
-                                    <Input
-                                        placeholder="14.5995"
-                                        className="h-11 rounded-xl shadow-sm border-none"
-                                    />
+                                <div>
+                                    <Label>Latitude</Label>
+                                    <Input placeholder="14.5995" />
                                 </div>
-                                <div className="space-y-1">
-                                    <Label className="text-[10px] font-black text-blue-300 uppercase tracking-widest pl-1">
-                                        Longitude
-                                    </Label>
-                                    <Input
-                                        placeholder="120.9842"
-                                        className="h-11 rounded-xl shadow-sm border-none"
-                                    />
+                                <div>
+                                    <Label>Longitude</Label>
+                                    <Input placeholder="120.9842" />
                                 </div>
                             </div>
 
-                            {/* DESCRIPTION */}
-                            <div className="space-y-1">
-                                <Label className="text-[10px] font-black text-blue-300 uppercase tracking-widest pl-1">
-                                    Description
-                                </Label>
-                                <textarea
-                                    rows={3}
-                                    placeholder="Description"
-                                    className="w-full rounded-xl p-3 text-sm shadow-sm border-none resize-none focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                                />
+                            <div>
+                                <Label>Description</Label>
+                                <Input placeholder="Description" />
                             </div>
 
-                            {/* IMAGE UPLOAD */}
-                            <div className="bg-white border-2 border-dashed border-blue-100 rounded-2xl p-4 flex flex-col items-center justify-center cursor-pointer hover:bg-blue-50 transition-colors group">
-                                <ImageIcon className="w-8 h-8 text-gray-300 group-hover:text-blue-400 mb-1 transition-colors" />
-                                <span className="text-[11px] font-bold text-gray-400 group-hover:text-blue-500 uppercase tracking-tight">
-                                    Upload Image
-                                </span>
+                            {/* Upload */}
+                            <div className="border border-dashed rounded-lg p-6 text-center text-sm text-gray-500">
+                                <ImageIcon className="mx-auto mb-2" />
+                                Upload Image
                             </div>
-                        </div>
 
-                        {/* SUBMIT */}
-                        <Button className="mt-6 h-14 rounded-[18px] bg-[#0061C2] hover:bg-[#0052a3] font-black uppercase tracking-wide shadow-xl shadow-blue-100 active:scale-[0.98] transition-all">
-                            Post Flood Alert
-                        </Button>
+                            <Button className="w-full bg-[#0066CC] hover:bg-[#4894db]">
+                                Post Flood Alert
+                            </Button>
+                        </form>
                     </div>
                 </div>
             </DialogContent>
