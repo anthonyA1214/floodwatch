@@ -1,14 +1,16 @@
+"use client";
+
 export default function LatestNewsCard({
   variant = "compact",
-  title,
-  description,
+  title = "Untitled News",
+  description = "No description available.",
 }) {
   // FEATURED (LEFT BIG CARD)
   if (variant === "featured") {
     return (
       <div className="rounded-2xl bg-white shadow-md">
         {/* Image */}
-        <div className="h-[320px] rounded-t-2xl bg-gray-300 flex items-center justify-center text-white font-semibold">
+        <div className="flex h-[320px] items-center justify-center rounded-t-2xl bg-gray-300 text-white font-semibold">
           Image
         </div>
 
@@ -37,7 +39,7 @@ export default function LatestNewsCard({
   return (
     <div className="flex h-[220px] w-full gap-5 rounded-2xl bg-white p-5 shadow-md">
       {/* Image */}
-      <div className="relative w-[40%] overflow-hidden rounded-xl bg-gray-300 flex items-center justify-center text-sm font-semibold text-white">
+      <div className="flex w-[40%] items-center justify-center overflow-hidden rounded-xl bg-gray-300 text-sm font-semibold text-white">
         Image
       </div>
 
@@ -45,7 +47,7 @@ export default function LatestNewsCard({
       <div className="flex w-[60%] flex-col justify-between">
         <div>
           <span className="inline-block rounded-full bg-[#49BBBD] px-4 py-1 text-xs font-semibold text-white">
-            News
+            NEWS
           </span>
 
           <h4 className="mt-3 line-clamp-2 text-lg font-semibold text-[#2E2F35]">
