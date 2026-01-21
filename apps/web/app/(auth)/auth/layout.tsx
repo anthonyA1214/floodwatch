@@ -1,32 +1,34 @@
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
+import Logo from '@/components/auth/logo';
+import { Button } from '@/components/ui/button';
+import { redirectIfLoggedIn } from '@/lib/actions/auth-redirect';
+import Image from 'next/image';
 
-export default function AuthLayout({
+export default async function AuthLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  await redirectIfLoggedIn();
+
   return (
     <main>
-      <div className="flex h-screen w-full overflow-hidden">
-        {children}
+      <div className="min-h-screen grid grid-cols-1 md:grid-cols-2">
+        <div className="flex flex-col bg-white px-4 md:px-0">
+          <Logo />
+          {children}
+        </div>
 
-        {/* RIGHT SIDE */}
-        <div className="relative w-1/2">
-          {/* IMAGE */}
+        <div className="relative hidden md:flex">
           <Image
             src="/images/flood_rescue_image.jpg"
-            alt="Flood rescue"
+            alt="flood rescue image"
             fill
-            priority
             className="object-cover"
           />
 
-          {/* DARK OVERLAY */}
           <div className="absolute inset-0 bg-black/50" />
 
-          {/* CONTENT */}
           <div className="relative z-10 flex h-full flex-col items-center justify-center px-12 text-white">
             <h2 className="mb-4 text-center text-4xl font-bold">
-              Our flood <span className="text-blue-400">tracking</span> website
+              Our flood <span className="text-[#0066CC]">tracking</span> website
               ensures safety
             </h2>
 
@@ -37,7 +39,10 @@ export default function AuthLayout({
               everyone to stay informed and connected.
             </p>
 
-            <Button variant="secondary" className="rounded-full text-lg px-8 py-6">
+            <Button
+              variant="secondary"
+              className="rounded-full text-lg px-8 py-6"
+            >
               Learn more...
             </Button>
           </div>

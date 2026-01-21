@@ -1,27 +1,34 @@
-import { Button } from "@/components/ui/button"
-import SignUpCard from "@/components/sign-up/sign-up-card";
-import ForgotPasswordCard from "@/components/sign-up/forgot-password-card";
+import Footer from '@/components/auth/footer';
+import SignUpform from '@/components/auth/forms/sign-up-form';
+import Link from 'next/link';
 
-
-export default function SignUp() {
+export default function ForgotPassword() {
   return (
-    // SignUp
-    <>
-
-      {/* LEFT SIDE */}
-      <div className="relative flex w-1/2 items-center justify-center bg-white">
-
-        {/* FloodWatch (TOP) */}
-        <h1 className="absolute top-6 left-8 text-lg font-semibold text-blue-600">
-          <a href="/"> FloodWatch </a>
-        </h1>
-
-        {/* SIGN UP FORM */}
-        <SignUpCard/>
-        {/* <ForgotPasswordCard/> */}
-        
+    <div className="flex flex-col flex-1 mx-auto w-full max-w-md justify-center gap-y-5">
+      <div className="flex flex-col items-center gap-y-2">
+        <h3 className="text-2xl">
+          Welcome to{' '}
+          <span className="text-[#0066CC] font-bold">floodwatch!</span>
+        </h3>
+        <span className="opacity-50 text-sm text-center">
+          Please enter your details.
+        </span>
       </div>
-     
-    </>
+
+      <SignUpform />
+
+      <div className="flex flex-col py-6 gap-y-10">
+        <div className="flex justify-center text-sm text-gray-500">
+          <div className="flex justify-center gap-2 text-sm text-gray-500">
+            <span>Already have an account?</span>
+            <Link href="/auth/login" className="text-blue-600 hover:underline">
+              Login Here
+            </Link>
+          </div>
+        </div>
+
+        <Footer />
+      </div>
+    </div>
   );
 }
