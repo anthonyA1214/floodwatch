@@ -3,8 +3,15 @@ import { z } from 'zod';
 export const logInSchema = z.object({
   email: z.email('Please enter a valid email address'),
   password: z
-    .string('Password is required')
-    .min(6, 'Password must be at least 6 characters long'),
+    .string()
+    .refine((val) => val.length > 0, {
+      error: 'Password is required',
+      abort: true,
+    })
+    .refine((val) => val.length >= 6, {
+      error: 'Password must be at least 6 characters long',
+      abort: true,
+    }),
 });
 
 export const signUpSchema = z
