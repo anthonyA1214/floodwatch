@@ -1,4 +1,4 @@
-import LatestNewsCard from "./latest-news-card";
+import LatestNewsCard from './latest-news-card';
 export default function LatestNewsReport() {
   return (
     <section className=" py-16 px-4" id="latest-news">

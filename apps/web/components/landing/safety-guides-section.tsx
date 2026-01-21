@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 export default function SafetyGuidesSection() {
   return (
-    <section className="py-10" id='safety-guides'>
+    <section className="py-10" id="safety-guides">
       <div className="max-w-356 mx-auto bg-white rounded-2xl px-12 py-16">
         {/* Title */}
         <h2 className="text-4xl font-semibold text-center text-[#2E2F35]">

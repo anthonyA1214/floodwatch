@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
 export default function LatestNewsCard({
-  variant = "compact",
-  title = "Untitled News",
-  description = "No description available.",
+  variant = 'compact',
+  title = 'Untitled News',
+  description = 'No description available.',
 }) {
   // FEATURED (LEFT BIG CARD)
-  if (variant === "featured") {
+  if (variant === 'featured') {
     return (
       <div className="rounded-2xl bg-white shadow-md">
         {/* Image */}
@@ -20,9 +20,7 @@ export default function LatestNewsCard({
             NEWS
           </span>
 
-          <h3 className="mt-4 text-xl font-semibold text-[#2E2F35]">
-            {title}
-          </h3>
+          <h3 className="mt-4 text-xl font-semibold text-[#2E2F35]">{title}</h3>
 
           <p className="mt-2 text-[#696984]">
             {description}
