@@ -1,29 +1,34 @@
-export default function FloodedArea() {
+import { MapPin, Clock } from "lucide-react";
+
+export default function FloodedAreaCard({
+  barangay = "Barangay 174",
+  status = "Critical",
+  message = "Critical flood warning. Evacuation recommended.",
+  time = "2h ago",
+}) {
   return (
-    <div className="max-w-md rounded-xl bg-white p-4 shadow-md">
+    <div className="w-full rounded-2xl bg-white p-4 border">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="text-red-500 text-lg">📍</span>
+          <MapPin className="h-5 w-5 text-red-500" />
           <h2 className="text-lg font-semibold text-gray-900">
-            Barangay 174
+            {barangay}
           </h2>
         </div>
 
-        <span className="text-sm font-semibold text-red-500">
-          Critical
+        <span className="rounded-full bg-red-100 px-3 py-1 text-sm font-semibold text-red-600">
+          {status}
         </span>
       </div>
 
-      {/* Message */}
-      <p className="mt-3 text-gray-600">
-        Critical flood warning. Evacuation recommended.
+      <p className="mt-3 text-sm text-gray-600">
+        {message}
       </p>
 
-      {/* Time */}
       <div className="mt-4 flex items-center gap-2 text-sm text-gray-500">
-        <span>🕒</span>
-        <span>2h ago</span>
+        <Clock className="h-4 w-4" />
+        <span>{time}</span>
       </div>
     </div>
   );
