@@ -1,5 +1,5 @@
 import {
-  BadRequestException,
+  ConflictException,
   ForbiddenException,
   Injectable,
   UnauthorizedException,
@@ -30,7 +30,7 @@ export class AuthService {
   }
 
   login(user: User) {
-    const payload = { email: user.email, sub: user.id };
+    const payload = { sub: user.id, email: user.email, role: user.role };
     return {
       access_token: this.jwtService.sign(payload),
     };
@@ -41,7 +41,7 @@ export class AuthService {
     const { email, password, first_name, last_name, home_address } = parsedData;
 
     const user = await this.usersService.findOne(email);
-    if (user) throw new BadRequestException('Email already in use');
+    if (user) throw new ConflictException('Email already in use');
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -53,6 +53,14 @@ export class AuthService {
       home_address,
     );
 
-    return newUser;
+    const payload = {
+      sub: newUser.id,
+      email: newUser.email,
+      role: newUser.role,
+    };
+
+    return {
+      access_token: this.jwtService.sign(payload),
+    };
   }
 }

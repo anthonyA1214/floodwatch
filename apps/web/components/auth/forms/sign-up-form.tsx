@@ -1,0 +1,129 @@
+'use client';
+
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { ActionState } from '@/lib/types/action-state';
+import { useActionState } from 'react';
+import { signUp } from '@/lib/actions/auth';
+
+export default function SignUpform() {
+  const initialState: ActionState = {
+    status: null,
+    errors: null,
+  };
+
+  const [state, formAction, isPending] = useActionState(signUp, initialState);
+
+  return (
+    <form action={formAction} className="space-y-6">
+      <div className="space-y-2">
+        <Label>Full name</Label>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div>
+            <Input
+              id="first_name"
+              name="first_name"
+              placeholder="First name"
+              defaultValue={state?.data?.first_name || ''}
+              className="rounded-full px-4 shadow-sm"
+            />
+            {state?.errors &&
+              'first_name' in state.errors &&
+              state.errors.first_name && (
+                <p className="text-red-500 text-sm">
+                  {state.errors.first_name}
+                </p>
+              )}
+          </div>
+          <div>
+            <Input
+              id="last_name"
+              name="last_name"
+              placeholder="Last name"
+              defaultValue={state?.data?.last_name || ''}
+              className="rounded-full px-4 shadow-sm"
+            />
+            {state?.errors &&
+              'last_name' in state.errors &&
+              state.errors.last_name && (
+                <p className="text-red-500 text-sm">{state.errors.last_name}</p>
+              )}
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label>Email</Label>
+        <Input
+          id="email"
+          name="email"
+          type="email"
+          placeholder="Enter your Email"
+          defaultValue={state?.data?.email || ''}
+          className="rounded-full px-4 shadow-sm"
+        />
+        {state?.errors && 'email' in state.errors && state.errors.email && (
+          <p className="text-red-500 text-sm">{state.errors.email}</p>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        <Label>Home Address</Label>
+        <Input
+          id="home_address"
+          name="home_address"
+          placeholder="Enter your Home Address"
+          defaultValue={state?.data?.home_address || ''}
+          className="rounded-full px-4 shadow-sm"
+        />
+        {state?.errors &&
+          'home_address' in state.errors &&
+          state.errors.home_address && (
+            <p className="text-red-500 text-sm">{state.errors.home_address}</p>
+          )}
+      </div>
+
+      <div className="space-y-2">
+        <Label>Password</Label>
+        <Input
+          id="password"
+          name="password"
+          type="password"
+          placeholder="Enter your Password"
+          className="rounded-full px-4 shadow-sm"
+        />
+        {state?.errors &&
+          'password' in state.errors &&
+          state.errors.password && (
+            <p className="text-red-500 text-sm">{state.errors.password}</p>
+          )}
+      </div>
+
+      <div className="space-y-2">
+        <Label>Confirm Password</Label>
+        <Input
+          id="confirm_password"
+          name="confirm_password"
+          type="password"
+          placeholder="Enter your Password"
+          className="rounded-full px-4 shadow-sm"
+        />
+        {state?.errors &&
+          'confirm_password' in state.errors &&
+          state.errors.confirm_password && (
+            <p className="text-red-500 text-sm">
+              {state.errors.confirm_password}
+            </p>
+          )}
+      </div>
+
+      <Button
+        disabled={isPending}
+        className="w-full rounded-full bg-[#0066CC] hover:bg-[#005BB8]"
+      >
+        Register
+      </Button>
+    </form>
+  );
+}

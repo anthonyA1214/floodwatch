@@ -1,85 +1,30 @@
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import Footer from '@/components/auth/footer';
+import LoginForm from '@/components/auth/forms/login-form';
+import Link from 'next/link';
 
-export default function Login() {
+export default async function Login() {
   return (
-    <>
-      {/* LEFT SIDE */}
-      <div className="relative flex w-1/2 items-center justify-center bg-white">
-
-        {/* FloodWatch (TOP) */}
-        <h1 className="absolute top-6 left-8 text-lg font-semibold text-blue-600">
-          <a href="/"> FloodWatch </a>
-        </h1>
-
-        {/* LOGIN FORM */}
-        <div className="w-full max-w-sm">
-          <Card className="border-none shadow-none">
-            <CardHeader className="px-0">
-              <CardTitle className="text-2xl">
-                Welcome to <span className="text-blue-600">floodwatch!</span>
-              </CardTitle>
-              <CardDescription>
-                Please enter your details.
-              </CardDescription>
-            </CardHeader>
-
-            <CardContent className="px-0">
-              <form className="space-y-6">
-                <div className="space-y-2">
-                  <Label>Email</Label>
-                  <Input
-                    placeholder="Enter your Email"
-                    className="rounded-full px-4"
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label>Password</Label>
-                  <Input
-                    type="password"
-                    placeholder="Enter your Password"
-                    className="rounded-full px-4"
-                  />
-                  <div className="text-right text-sm text-gray-500 hover:underline cursor-pointer">
-                    <a href="/auth/forgot-password"> Forgot Password? </a>
-                  </div>
-                </div>
-              </form>
-            </CardContent>
-
-            <CardFooter className="px-0 pt-6">
-              <Button className="w-full rounded-full bg-blue-600 hover:bg-blue-700">
-                Login
-              </Button>
-            </CardFooter>
-          </Card>
-
-          {/* SIGN UP LINK */}
-          <div className="mt-6 flex justify-center gap-2 text-sm text-gray-500">
-            <span>Don't have an Account yet?</span>
-            <a href="/auth/sign-up" className="text-blue-600 hover:underline">
-              Register Here
-            </a>
-          </div>
-
-          {/* FOOTER */}
-          <div className="mt-10 text-center text-sm text-gray-400">
-            Contact us <br />
-            <span className="text-blue-500">floodwatch@gmail.com</span>
-            <p className="mt-2">© 2026 Company Name. All rights reserved.</p>
-          </div>
-        </div>
+    <div className="flex flex-col flex-1 mx-auto w-full max-w-md justify-center gap-y-5">
+      <div className="flex flex-col gap-y-2">
+        <h3 className="text-2xl">
+          Welcome to{' '}
+          <span className="text-[#0066CC] font-bold">floodwatch!</span>
+        </h3>
+        <span className="opacity-50 text-sm">Please enter your details.</span>
       </div>
-    </>
-  )
+
+      <LoginForm />
+
+      <div className="flex flex-col py-6 gap-y-10">
+        <div className="flex justify-center gap-2 text-sm">
+          <span className="opacity-50">Don&apos;t have an Account yet?</span>
+          <Link href="/auth/sign-up" className="text-blue-600 hover:underline">
+            Register Here
+          </Link>
+        </div>
+
+        <Footer />
+      </div>
+    </div>
+  );
 }
