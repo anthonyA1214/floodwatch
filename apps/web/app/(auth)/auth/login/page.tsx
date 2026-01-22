@@ -2,7 +2,7 @@ import Footer from '@/components/auth/footer';
 import LoginForm from '@/components/auth/forms/login-form';
 import Link from 'next/link';
 
-export default async function Login() {
+export default async function LoginPage() {
   return (
     <div className="flex flex-col flex-1 mx-auto w-full max-w-md justify-center gap-y-5">
       <div className="flex flex-col gap-y-2">

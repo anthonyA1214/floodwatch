@@ -2,7 +2,7 @@ import Footer from '@/components/auth/footer';
 import ForgotPasswordForm from '@/components/auth/forms/forgot-password-form';
 import Link from 'next/link';
 
-export default function ForgotPassword() {
+export default function ForgotPasswordPage() {
   return (
     <div className="flex flex-col flex-1 mx-auto w-full max-w-md justify-center gap-y-5">
       <div className="flex flex-col items-center gap-y-2">

@@ -6,7 +6,7 @@ import Image from 'next/image';
 export default async function AuthLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  await redirectIfLoggedIn();
+  // await redirectIfLoggedIn();
 
   return (
     <main>
