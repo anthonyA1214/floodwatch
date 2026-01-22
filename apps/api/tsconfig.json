@@ -21,8 +21,5 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
-    "paths": {
-      "@repo/schemas": ["../../packages/schemas/src/index.ts"]
-    }
   }
 }
