@@ -6,18 +6,23 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
-import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { User } from './types/auth-request.type';
 import { SignUpDto, signUpSchema } from '@repo/schemas';
 import jwtRefreshConfig from 'src/config/jwt-refresh.config';
 import { type ConfigType } from '@nestjs/config';
+import { TokenService } from './token/token.service';
+import { RefreshTokenService } from './refresh-token/refresh-token.service';
+import { randomUUID } from 'crypto';
+import * as bcrypt from 'bcrypt';
+import { JwtPayload } from './interfaces/jwt-payload.interface';
 
 @Injectable()
 export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private tokenService: TokenService,
+    private refreshTokenService: RefreshTokenService,
     @Inject(jwtRefreshConfig.KEY)
     private refreshTokenConfig: ConfigType<typeof jwtRefreshConfig>,
   ) {}
@@ -34,19 +39,61 @@ export class AuthService {
     return result;
   }
 
-  login(user: User) {
-    const payload = { sub: user.id, email: user.email };
-    return {
-      access_token: this.jwtService.sign(payload),
-      refresh_token: this.jwtService.sign(payload, this.refreshTokenConfig),
-    };
+  async login(userId: number) {
+    const payload: JwtPayload = { sub: userId };
+
+    const access_token = this.tokenService.signAccessToken(payload);
+    const refresh_token = this.tokenService.signRefreshToken(payload);
+
+    // hash refresh token to be inserted to db
+    const hashedToken = await bcrypt.hash(refresh_token, 10);
+
+    // random uuid for deviceId, unique only to that device
+    const deviceId = randomUUID();
+
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7);
+
+    await this.refreshTokenService.setRefreshToken(
+      userId,
+      deviceId,
+      hashedToken,
+      expiresAt,
+    );
+
+    return { access_token, refresh_token, deviceId };
   }
 
-  refreshToken(user: User) {
-    const payload = { sub: user.id, email: user.email };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+  async refreshToken(userId: number, deviceId: string, rawToken: string) {
+    // validate refresh token
+    const isValid = await this.refreshTokenService.validateRefreshToken(
+      userId,
+      deviceId,
+      rawToken,
+    );
+
+    if (!isValid) throw new UnauthorizedException('Invalid refresh token');
+
+    const payload: JwtPayload = { sub: userId };
+
+    // signing tokens
+    const access_token = this.tokenService.signAccessToken(payload);
+    const refresh_token = this.tokenService.signRefreshToken(payload);
+
+    const hashedToken = await bcrypt.hash(refresh_token, 10);
+
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7);
+
+    // rotate refresh token
+    await this.refreshTokenService.setRefreshToken(
+      userId,
+      deviceId,
+      hashedToken,
+      expiresAt,
+    );
+
+    return { access_token, refresh_token, deviceId };
   }
 
   async signup(signUpData: SignUpDto) {
@@ -66,14 +113,31 @@ export class AuthService {
       home_address,
     );
 
-    const payload = {
+    const payload: JwtPayload = {
       sub: newUser.id,
-      email: newUser.email,
     };
 
-    return {
-      access_token: this.jwtService.sign(payload),
-      refresh_token: this.jwtService.sign(payload, this.refreshTokenConfig),
-    };
+    const access_token = this.tokenService.signAccessToken(payload);
+    const refresh_token = this.tokenService.signRefreshToken(payload);
+
+    const hashedToken = await bcrypt.hash(refresh_token, 10);
+
+    const deviceId = randomUUID();
+
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7);
+
+    await this.refreshTokenService.setRefreshToken(
+      newUser.id,
+      deviceId,
+      hashedToken,
+      expiresAt,
+    );
+
+    return { access_token, refresh_token, deviceId };
+  }
+
+  async logout(userId: number, deviceId: string) {
+    await this.refreshTokenService.removeRefreshToken(userId, deviceId);
   }
 }

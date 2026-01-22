@@ -10,16 +10,27 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import jwtConfig from 'src/config/jwt.config';
 import jwtRefreshConfig from 'src/config/jwt-refresh.config';
 import { JwtRefreshStrategy } from './strategies/refresh.strategy';
+import { TokenService } from './token/token.service';
+import { RefreshTokenService } from './refresh-token/refresh-token.service';
+import { DrizzleModule } from 'src/drizzle/drizzle.module';
 
 @Module({
   imports: [
+    DrizzleModule,
     UsersModule,
     PassportModule,
     JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
     ConfigModule.forFeature(jwtRefreshConfig),
   ],
-  providers: [AuthService, LocalStrategy, JwtStrategy, JwtRefreshStrategy],
+  providers: [
+    AuthService,
+    LocalStrategy,
+    JwtStrategy,
+    JwtRefreshStrategy,
+    TokenService,
+    RefreshTokenService,
+  ],
   controllers: [AuthController],
 })
 export class AuthModule {}

@@ -8,36 +8,60 @@ import {
   UsePipes,
   Request,
   Get,
+  Res,
 } from '@nestjs/common';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
+import { logInSchema, type SignUpDto, signUpSchema } from '@repo/schemas';
 import {
-  type LogInDto,
-  logInSchema,
-  type SignUpDto,
-  signUpSchema,
-} from '@repo/schemas';
-import { type AuthRequest } from './types/auth-request.type';
+  type RefreshTokenRequest,
+  type AuthRequest,
+} from './types/auth-request.type';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth/local-auth.guard';
 import { JwtRefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
+import { type Response } from 'express';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private configService: ConfigService,
+  ) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
   @UsePipes(new ZodValidationPipe(logInSchema))
   @UseGuards(LocalAuthGuard)
-  login(@Body() logInDto: LogInDto, @Request() req: AuthRequest) {
-    return this.authService.login(req.user);
+  async login(
+    @Request() req: AuthRequest,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { access_token, refresh_token, deviceId } =
+      await this.authService.login(req.user.id);
+
+    res.cookie('refresh_token', refresh_token, {
+      httpOnly: true,
+      secure: this.configService.getOrThrow('NODE_ENV') === 'production',
+      sameSite: 'strict',
+      path: '/auth/refresh',
+    });
+
+    return { access_token, deviceId };
   }
 
   @UseGuards(JwtRefreshAuthGuard)
   @Post('refresh')
-  refreshToken(@Request() req: AuthRequest) {
-    return this.authService.refreshToken(req.user);
+  refreshToken(
+    @Body('deviceId') deviceId: string,
+    @Request() req: RefreshTokenRequest,
+  ) {
+    return this.authService.refreshToken(
+      req.user.id,
+      deviceId,
+      req.user.rawToken,
+    );
   }
 
   @Post('signup')
