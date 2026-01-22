@@ -5,6 +5,7 @@ import PreviewLocation from "@/components/admin/community-feed/preview-location-
 import CommunityPostCard from "@/components/admin/community-feed/community-post-card";
 import AffectedLocationTab from "@/components/admin/community-feed/affected-location-tab";
 import AddressLocationBanner from "@/components/admin/community-feed/address-location-banner";
+import SearchBar from "@/components/admin/community-feed/search-bar";
 
 export default function CommunityFeed() {
   return (
@@ -18,12 +19,7 @@ export default function CommunityFeed() {
       {/* ===================== SEARCH BAR ROW ===================== */}
       <div className="mt-6 flex items-center gap-4">
         <div className="relative flex-1">
-          <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400" />
-          <Input
-            type="search"
-            placeholder="Search Location"
-            className="h-14 rounded-full pl-14 pr-6 text-lg"
-          />
+          <SearchBar/>
         </div>
 
         <button className="h-14 w-14 flex items-center justify-center rounded-full border border-gray-300">
