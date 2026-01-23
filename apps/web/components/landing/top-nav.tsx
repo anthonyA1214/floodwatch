@@ -13,10 +13,10 @@ export default function TopNav() {
   return (
     <>
       <header
-        className="flex w-full bg-[#0066CC] fixed h-16 top-0 z-10 transition-shadow duration-200"
+        className="flex w-full bg-[#0066CC]/95 fixed h-16 top-0 z-10 transition-shadow duration-200"
         id="top-nav"
       >
-        <nav className="flex justify-between p-4 container mx-auto">
+        <nav className="flex justify-between py-4 max-w-7xl w-full mx-auto px-4 md:px-0">
           <div className="flex items-center gap-4 md:gap-10">
             <Link href="/" className="flex items-center gap-x-2">
               <Image
@@ -42,7 +42,7 @@ export default function TopNav() {
               ))}
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-4">
               <Link href="/auth/login">
                 <button
                   className="flex items-center justify-center gap-2 bg-[#FFFFFF] hover:bg-[#F5F5F5] active:bg-[#EAEAEA] 

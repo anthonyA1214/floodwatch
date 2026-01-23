@@ -1,18 +1,19 @@
-import LatestNewsCard from './latest-news-card';
+import LatestNewsCard from '../latest-news-card';
 export default function LatestNewsReport() {
   return (
-    <section className=" py-16 px-4" id="latest-news">
-      <div className="max-w-356 mx-auto bg-white rounded-2xl px-12 py-16">
-        {/* Title */}
-        <h2 className="text-center text-3xl font-bold">
-          <span className="text-[#2E2F35]">Latest </span>
-          <span className="text-[#2F327D]">News Report</span>
-        </h2>
+    <section id="latest-news">
+      <div className="flex flex-col gap-6 md:gap-10 py-20 max-w-7xl mx-auto px-4">
+        <div className="space-y-2">
+          {/* Title */}
+          <h2 className="font-poppins text-3xl sm:text-4xl md:text-5xl font-semibold text-center">
+            Latest <span className="text-[#2F327D]">News Report</span>
+          </h2>
 
-        {/* Subtitle */}
-        <p className="mt-4 text-center text-lg text-[#696984]">
-          Be updated on latest news for the whole week
-        </p>
+          {/* Subtitle */}
+          <p className="text-lg sm:text-xl text-gray-600 text-center">
+            Be updated on latest news for the whole week
+          </p>
+        </div>
 
         {/* Cards Layout */}
         <div className="mt-12 grid grid-cols-1 gap-8 lg:grid-cols-3">
