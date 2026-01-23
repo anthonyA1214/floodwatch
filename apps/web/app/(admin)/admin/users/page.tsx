@@ -7,7 +7,7 @@ import TotalUserTable from "@/components/admin/user-management-components/total-
 export default function UserManagement() {
   return (
     // user management
-    <div className="flex-1 rounded-2xl p-8 bg-[#F8F8F8]">
+    <div className="flex-1 rounded-2xl p-8 bg-white">
       <h1 className="text-4xl font-bold"> User Management </h1>
       <SearchBar/>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
