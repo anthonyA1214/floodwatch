@@ -23,49 +23,70 @@ export default function InteractiveMap() {
         </div>
 
         {/* Sidebar Controls */}
-        <div className="flex-1 min-w-[380px] flex flex-col">
-          <Tabs defaultValue="affected" className="w-full">
+        <div className="flex-1 min-w-[380px] flex flex-col h-full">
+
+          {/* ===== TABS (FULL HEIGHT) ===== */}
+          <Tabs defaultValue="affected" className="w-full flex flex-col flex-1">
+
+            {/* TAB HEADERS */}
             <TabsList className="w-full bg-[#6FA8DC] rounded-sm flex h-18 p-2">
               <TabsTrigger
                 value="affected"
-                className=" flex-1 rounded-sm text-lg  text-white data-[state=active]:bg-[#0066CC] data-[state=active]:text-white transition-all">
+                className="flex-1 rounded-sm text-md text-white data-[state=active]:bg-[#0066CC] data-[state=active]:text-white transition-all"
+              >
                 Affected Locations
               </TabsTrigger>
 
               <TabsTrigger
                 value="safe"
-                className="flex-1 rounded-sm text-lg  text-white data-[state=active]:bg-[#0066CC] data-[state=active]:text-white transition-all">
+                className="flex-1 rounded-sm text-md text-white data-[state=active]:bg-[#0066CC] data-[state=active]:text-white transition-all"
+              >
                 Safe Zone
               </TabsTrigger>
             </TabsList>
-            {/* Fix this  */}
-            <TabsContent value="affected" className=" w-full flex flex-col gap-4">
-              <CreateFloodAlertModal />
 
-              {/* Affected locations list will go here */}
-              <div className="flex-1 rounded-xl border border-gray-200 bg-white p-4">
-                <FloodedAreaCard />
+            {/* ===== TAB CONTENTS ===== */}
+            <TabsContent
+              value="affected"
+              className="flex-1 flex flex-col overflow-hidden"
+            >
+
+              {/* Button to open modal */}
+              <div className="py-2">
+                <CreateFloodAlertModal />
               </div>
 
+              {/* Scrollable list */}
+              <div className="flex-1 rounded-xl border border-gray-200 bg-white p-4 overflow-y-auto">
+                <FloodedAreaCard />
+              </div>
             </TabsContent>
 
-            <TabsContent value="safe" className=" w-full flex flex-col gap-4">
-              <CreateSafeZoneModal />
+            <TabsContent
+              value="safe"
+              className="flex-1 flex flex-col overflow-hidden"
+            >
 
-              {/* Safe zones list will go here */}
-              <div className="flex-1 rounded-xl border border-gray-200 bg-white p-4">
+              {/* Button to open modal */}
+              <div className="py-2">
+                <CreateSafeZoneModal />
+              </div>
+
+              {/* Scrollable list */}
+              <div className="flex-1 rounded-xl border border-gray-200 bg-white p-4 overflow-y-auto">
                 <SafeAreaCard />
               </div>
             </TabsContent>
 
           </Tabs>
 
-
-          {/* Pagination */}
-          <div className="mt-6 flex items-center justify-between">
+          {/* ===== PAGINATOR STUCK TO BOTTOM ===== */}
+          <div className="mt-auto pt-4 border-t border-gray-200 bg-white">
             <Paginator />
           </div>
+
         </div>
+
 
       </div>
     </div>

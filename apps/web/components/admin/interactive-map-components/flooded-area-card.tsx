@@ -22,7 +22,7 @@ export default function FloodedAreaCard({
         </span>
       </div>
 
-      <p className="mt-3 text-sm text-gray-600">
+      <p className="mt-3 text-sm text-gray-600 line-clamp-2">
         {message}
       </p>
 
