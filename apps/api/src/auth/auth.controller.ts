@@ -9,6 +9,7 @@ import {
   Request,
   Get,
   Res,
+  Headers,
 } from '@nestjs/common';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import { logInSchema, type SignUpDto, signUpSchema } from '@repo/schemas';
@@ -53,15 +54,31 @@ export class AuthController {
 
   @UseGuards(JwtRefreshAuthGuard)
   @Post('refresh')
-  refreshToken(
-    @Body('deviceId') deviceId: string,
+  async refreshToken(
+    @Headers('x-device-id') deviceId: string,
     @Request() req: RefreshTokenRequest,
+    @Res({ passthrough: true }) res: Response,
   ) {
-    return this.authService.refreshToken(
+    const refreshToken = req.cookies['refresh_token'];
+
+    const {
+      access_token,
+      refresh_token,
+      deviceId: newDeviceId,
+    } = await this.authService.refreshToken(
       req.user.id,
       deviceId,
-      req.user.rawToken,
+      refreshToken,
     );
+
+    res.cookie('refresh_token', refresh_token, {
+      httpOnly: true,
+      secure: this.configService.getOrThrow('NODE_ENV') === 'production',
+      sameSite: 'lax',
+      path: '/',
+    });
+
+    return { access_token, deviceId: newDeviceId };
   }
 
   @Post('signup')

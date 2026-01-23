@@ -6,6 +6,14 @@ export const api = axios.create({
   withCredentials: true,
 });
 
+api.interceptors.request.use((config) => {
+  const deviceId = localStorage.getItem('deviceId');
+  if (deviceId) {
+    config.headers['x-device-id'] = deviceId;
+  }
+  return config;
+});
+
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -21,9 +29,13 @@ api.interceptors.response.use(
         originalRequest._retry = true;
 
         try {
-          const response = await api.post('/auth/refresh');
-          const { access_token, deviceId } = response.data;
-          if (access_token && deviceId) {
+          const response = await api.post('/auth/refresh', null, {
+            headers: {
+              'x-device-id': deviceId,
+            },
+          });
+          const { access_token, deviceId: newDeviceId } = response.data;
+          if (access_token && newDeviceId) {
             setAccessToken(access_token);
             originalRequest.headers['Authorization'] = `Bearer ${access_token}`;
             return api(originalRequest);

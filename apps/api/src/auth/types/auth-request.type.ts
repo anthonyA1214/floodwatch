@@ -11,6 +11,8 @@ export interface AuthRequest extends Request {
 export interface RefreshTokenRequest extends Request {
   user: {
     id: number;
-    rawToken: string;
+  };
+  cookies: {
+    refresh_token: string;
   };
 }
