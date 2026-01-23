@@ -1,64 +1,60 @@
 export default function ProfileInformationCard() {
     return (
-        <div className="w-full h-full rounded-lg bg-white p-6">
+        <div className="flex flex-1 flex-col rounded-xl border bg-white p-6">
             <h2 className="mb-6 text-lg font-semibold">Profile Information</h2>
 
             {/* Name */}
-            <div className="mb-4">
+            <div className="mb-5">
                 <label className="mb-1 block text-sm font-medium">Name</label>
-                <div className="flex items-center gap-2">
+                <div className="relative">
                     <input
-                        type="text"
                         value="Lawrence Dullo"
                         disabled
-                        className="w-full rounded-md bg-gray-100 px-3 py-2 text-gray-700 focus:outline-none"
+                        className="w-full rounded-md border bg-gray-50 px-4 py-3 pr-10 text-sm"
                     />
-                    <button className="text-gray-500 hover:text-gray-700">✏️</button>
+                    <span className="absolute right-3 top-3 text-gray-400">✏️</span>
                 </div>
             </div>
 
             {/* Email */}
-            <div className="mb-4">
+            <div className="mb-5">
                 <label className="mb-1 block text-sm font-medium">
                     Email Address
                 </label>
                 <input
-                    type="email"
                     value="sample@gmail.com"
                     disabled
-                    className="w-full rounded-md bg-gray-100 px-3 py-2 text-gray-700 focus:outline-none"
+                    className="w-full rounded-md border bg-gray-50 px-4 py-3 text-sm"
                 />
             </div>
 
             {/* Phone */}
-            <div className="mb-4">
+            <div className="mb-5">
                 <label className="mb-1 block text-sm font-medium">
                     Phone Number
                 </label>
                 <input
-                    type="text"
                     value="09123456891"
                     disabled
-                    className="w-full rounded-md bg-gray-100 px-3 py-2 text-gray-700 focus:outline-none"
+                    className="w-full rounded-md border bg-gray-50 px-4 py-3 text-sm"
                 />
             </div>
 
             {/* Address */}
-            <div className="mb-6">
+            <div className="mb-8">
                 <label className="mb-1 block text-sm font-medium">Address</label>
-                <div className="flex items-center gap-2">
+                <div className="relative">
                     <input
-                        type="text"
                         value="Home Address Blk Sample"
                         disabled
-                        className="w-full rounded-md bg-gray-100 px-3 py-2 text-gray-700 focus:outline-none"
+                        className="w-full rounded-md border bg-gray-50 px-4 py-3 pr-10 text-sm"
                     />
-                    <button className="text-gray-500 hover:text-gray-700">✏️</button>
+                    <span className="absolute right-3 top-3 text-gray-400">✏️</span>
                 </div>
             </div>
 
             {/* Button */}
-            <button className="mt-auto w-full rounded-md bg-blue-600 py-3 font-medium text-white transition hover:bg-blue-700">
+            <button className="mt-auto w-full rounded-md bg-blue-600 py-3 text-sm font-semibold text-white hover:bg-blue-700">
                 Change Password
             </button>
         </div>

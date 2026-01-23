@@ -1,11 +1,11 @@
 export default function ProfileFieldCard() {
     return (
-        <div className="w-full h-full rounded-xl bg-white p-6 ">
+        <div className="h-full rounded-xl border bg-white p-6">
             {/* Avatar */}
             <div className="relative flex justify-center">
-                <div className="flex h-32 w-32 items-center justify-center rounded-full bg-blue-100">
+                <div className="flex h-36 w-36 items-center justify-center rounded-full bg-gray-200">
                     <svg
-                        className="h-20 w-20 text-blue-400"
+                        className="h-20 w-20 text-gray-500"
                         fill="currentColor"
                         viewBox="0 0 24 24"
                     >
@@ -13,35 +13,31 @@ export default function ProfileFieldCard() {
                     </svg>
                 </div>
 
-                {/* Camera button */}
-                <button className="absolute bottom-1 right-[calc(50%-64px)] flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-white shadow-md">
+                <button className="absolute bottom-2 right-[calc(50%-72px)] flex h-9 w-9 items-center justify-center rounded-full bg-blue-600 text-white shadow">
                     📷
                 </button>
             </div>
 
-            {/* Name & Email */}
+            {/* Name */}
             <div className="mt-4 text-center">
-                <h2 className="text-xl font-semibold text-gray-900">John Doe</h2>
+                <h2 className="text-lg font-semibold">John Doe</h2>
                 <p className="text-sm text-gray-500">sample@gmail.com</p>
             </div>
 
-            {/* Divider */}
             <div className="my-6 border-t" />
 
             {/* Stats */}
             <div className="space-y-4 text-sm">
-                <div className="flex justify-between text-gray-700">
-                    <span>Member Since</span>
+                <div className="flex justify-between">
+                    <span className="text-gray-500">Member Since</span>
                     <span className="font-medium">October 5, 2025</span>
                 </div>
-
-                <div className="flex justify-between text-gray-700">
-                    <span>Posts</span>
+                <div className="flex justify-between">
+                    <span className="text-gray-500">Posts</span>
                     <span className="font-medium">3</span>
                 </div>
-
-                <div className="flex justify-between text-gray-700">
-                    <span>Reports Submitted</span>
+                <div className="flex justify-between">
+                    <span className="text-gray-500">Reports Submitted</span>
                     <span className="font-medium">14</span>
                 </div>
             </div>

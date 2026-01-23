@@ -3,7 +3,7 @@ import ProfileInformationCard from "@/components/admin/profile-components/profil
 
 export default function Page() {
   return (
-    <div className="w-full bg-white rounded-2xl p-8">
+    <div className="w-full rounded-2xl bg-white p-8">
       {/* Header */}
       <h1 className="text-4xl font-bold text-black">Profile</h1>
       <p className="mt-2 text-gray-600">
@@ -12,16 +12,15 @@ export default function Page() {
 
       {/* Content */}
       <div className="mt-10 grid w-full grid-cols-1 gap-10 items-stretch lg:grid-cols-3">
-        {/* Left */}
-        <div className="h-full lg:col-span-1">
+        <div className="lg:col-span-1">
           <ProfileFieldCard />
         </div>
 
-        {/* Right */}
-        <div className="h-full lg:col-span-2">
+        <div className="lg:col-span-2">
           <ProfileInformationCard />
         </div>
       </div>
+
     </div>
   );
 }
