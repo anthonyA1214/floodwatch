@@ -2,6 +2,7 @@
 
 import Map from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import Geocoder from './geocoder';
 
 export default function InteractiveMap() {
   return (
@@ -11,7 +12,9 @@ export default function InteractiveMap() {
         latitude: 14.754587,
         zoom: 20,
       }}
-      mapStyle="https://tiles.openfreemap.org/styles/liberty"
-    />
+      mapStyle="https://tiles.openfreemap.org/styles/bright"
+    >
+      <Geocoder />
+    </Map>
   );
 }
