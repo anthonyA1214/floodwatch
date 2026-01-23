@@ -5,8 +5,7 @@ import { logInSchema, signUpSchema } from '@repo/schemas';
 import z from 'zod';
 import { api } from '@/lib/api';
 import axios from 'axios';
-import { cookies } from 'next/headers';
-import { env } from '@/config/env';
+import { loginClient } from './auth-api';
 
 // ============================ Log In Action ========================= //
 export async function logIn(
@@ -28,20 +27,12 @@ export async function logIn(
   const { email, password } = parsed.data;
 
   try {
-    const response = await api.post('/auth/login', { email, password });
-    const { access_token } = response.data;
-
-    const cookieStore = await cookies();
-    cookieStore.set('access_token', access_token, {
-      httpOnly: true,
-      maxAge: 60 * 60 * 24 * 7,
-      path: '/',
-      secure: env.NODE_ENV === 'production',
-    });
+    const { access_token, deviceId } = await loginClient(email, password);
 
     return {
       errors: {},
       status: 'success',
+      data: { access_token, deviceId },
     };
   } catch (err) {
     if (axios.isAxiosError(err)) {
@@ -109,19 +100,12 @@ export async function signUp(
       confirm_password,
     });
 
-    const { access_token } = response.data;
-
-    const cookieStore = await cookies();
-    cookieStore.set('access_token', access_token, {
-      httpOnly: true,
-      maxAge: 60 * 60 * 24 * 7,
-      path: '/',
-      secure: env.NODE_ENV === 'production',
-    });
+    const { access_token, deviceId } = response.data;
 
     return {
       errors: {},
       status: 'success',
+      data: { access_token, deviceId },
     };
   } catch (err) {
     if (axios.isAxiosError(err)) {

@@ -4,20 +4,71 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { useActionState } from 'react';
+import { useState } from 'react';
 import { ActionState } from '@/lib/types/action-state';
-import { logIn } from '@/lib/actions/auth';
+import { useAuth } from '@/providers/auth-provider';
+import { logInSchema } from '@repo/schemas';
+import z from 'zod';
+import { loginClient } from '@/lib/actions/auth-api';
+import { mapAuthError } from '@/lib/actions/map-auth-error';
 
 export default function LoginForm() {
-  const initialState: ActionState = {
+  const { setAuth } = useAuth();
+
+  const [state, setState] = useState<ActionState>({
     status: null,
     errors: null,
-  };
+    data: undefined,
+  });
 
-  const [state, formAction, isPending] = useActionState(logIn, initialState);
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setIsPending(true);
+
+    const formData = new FormData(e.currentTarget);
+
+    const parsed = logInSchema.safeParse({
+      email: formData.get('email'),
+      password: formData.get('password'),
+    });
+
+    if (!parsed.success) {
+      setState({
+        errors: z.flattenError(parsed.error).fieldErrors,
+        status: 'error',
+        data: undefined,
+      });
+      setIsPending(false);
+      return;
+    }
+
+    const { email, password } = parsed.data;
+
+    try {
+      const { access_token, deviceId } = await loginClient(email, password);
+
+      setState({
+        errors: {},
+        status: 'success',
+        data: { access_token, deviceId },
+      });
+
+      setAuth(access_token, deviceId);
+    } catch (err) {
+      setState({
+        errors: mapAuthError(err).errors,
+        status: 'error',
+        data: undefined,
+      });
+    } finally {
+      setIsPending(false);
+    }
+  }
+
+  const [isPending, setIsPending] = useState(false);
 
   return (
-    <form action={formAction} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-2">
         <Label htmlFor="email">Email</Label>
         <Input

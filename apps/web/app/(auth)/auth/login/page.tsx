@@ -4,7 +4,7 @@ import Link from 'next/link';
 
 export default async function LoginPage() {
   return (
-    <div className="flex flex-col flex-1 mx-auto w-full max-w-md justify-center gap-y-5">
+    <div className="flex flex-col flex-1 mx-auto w-full max-w-md justify-center gap-y-5 px-0 md:px-4">
       <div className="flex flex-col gap-y-2">
         <h3 className="text-2xl">
           Welcome to{' '}

@@ -44,8 +44,8 @@ export class AuthController {
     res.cookie('refresh_token', refresh_token, {
       httpOnly: true,
       secure: this.configService.getOrThrow('NODE_ENV') === 'production',
-      sameSite: 'strict',
-      path: '/auth/refresh',
+      sameSite: 'lax',
+      path: '/',
     });
 
     return { access_token, deviceId };
