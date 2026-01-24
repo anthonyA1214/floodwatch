@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import ChangePasswordCard from "@/components/admin/profile-components/change-password-card";
-import ProfileFieldCard from "@/components/admin/profile-components/profile-field-card";
-import ProfileInformationCard from "@/components/admin/profile-components/profile-information-card";
+import { useState } from 'react';
+import ChangePasswordCard from '@/components/admin/profile-components/change-password-card';
+import ProfileFieldCard from '@/components/admin/profile-components/profile-field-card';
+import ProfileInformationCard from '@/components/admin/profile-components/profile-information-card';
 
 export default function Page() {
-  const [view, setView] = useState<"profile" | "password">("profile");
+  const [view, setView] = useState<'profile' | 'password'>('profile');
 
   return (
     <div className="w-full rounded-2xl bg-white p-8">
@@ -23,16 +23,14 @@ export default function Page() {
         </div>
 
         <div className="lg:col-span-2">
-          {view === "profile" && (
+          {view === 'profile' && (
             <ProfileInformationCard
-              onChangePassword={() => setView("password")}
+              onChangePassword={() => setView('password')}
             />
           )}
 
-          {view === "password" && (
-            <ChangePasswordCard
-              onBack={() => setView("profile")}
-            />
+          {view === 'password' && (
+            <ChangePasswordCard onBack={() => setView('profile')} />
           )}
         </div>
       </div>

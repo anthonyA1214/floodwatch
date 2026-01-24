@@ -1,4 +1,4 @@
-import Image from "next/image";
+import Image from 'next/image';
 
 export default function PreviewLocation() {
   return (
@@ -25,9 +25,7 @@ export default function PreviewLocation() {
         </div>
 
         <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-700">
-            Severity Level :
-          </span>
+          <span className="text-sm text-gray-700">Severity Level :</span>
           <span className="px-3 py-1 text-xs font-semibold text-red-700 bg-red-200 border border-red-400 rounded-full">
             Critical
           </span>

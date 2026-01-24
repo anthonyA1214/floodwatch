@@ -6,13 +6,9 @@ export default function ActiveFloodAlertsCard() {
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
             {/* Location icon */}
-            <div className="text-red-600">
-                Icon
-            </div>
+            <div className="text-red-600">Icon</div>
 
-            <span className="font-medium text-black">
-              Barangay 174
-            </span>
+            <span className="font-medium text-black">Barangay 174</span>
           </div>
 
           {/* Status badge */}

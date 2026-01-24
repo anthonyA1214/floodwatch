@@ -18,12 +18,12 @@ export default function LatestNewsReport() {
         {/* News Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
           <div>
-            <LatestNewsCard variant="featured" src="/images/chloe.jfif" />
+            <LatestNewsCard variant="featured" src="/images/chloe.jpg" />
           </div>
           <div className="flex flex-col gap-6">
-            <LatestNewsCard src="/images/luna.jfif" />
-            <LatestNewsCard src="/images/tobi.jfif" />
-            <LatestNewsCard src="/images/kazy.jfif" />
+            <LatestNewsCard src="/images/luna.jpg" />
+            <LatestNewsCard src="/images/tobi.jpg" />
+            <LatestNewsCard src="/images/kazy.jpg" />
           </div>
         </div>
       </div>
