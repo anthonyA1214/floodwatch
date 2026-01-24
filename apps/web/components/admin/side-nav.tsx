@@ -17,7 +17,7 @@ import { NavItems } from './nav-items';
 export default function SideNav() {
   return (
     <div className="p-4">
-      <Sidebar collapsible="none" className="flex rounded-2xl">
+      <Sidebar collapsible="none" className="flex rounded-2xl bg-white">
         <SidebarHeader className="w-full py-6 flex items-center">
           <Link href="/" className="flex items-center gap-x-2">
             <Image
