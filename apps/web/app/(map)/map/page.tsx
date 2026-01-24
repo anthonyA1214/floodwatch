@@ -1,6 +1,9 @@
-export default function InteractiveMap() {
+import InteractiveMap from '@/components/map/interactive-map';
+
+export default function MapPage() {
   return (
-    // map
-    <h1>mapp</h1>
+    <div className="h-full w-full">
+      <InteractiveMap />
+    </div>
   );
 }

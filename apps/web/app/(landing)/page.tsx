@@ -1,7 +1,17 @@
+import AboutUs from '@/components/landing/sections/about-us-section';
+import HeroSection from '@/components/landing/sections/hero-section';
+import LatestNewsReport from '@/components/landing/sections/latest-news-report-section';
+import SafetyGuidesSection from '@/components/landing/sections/safety-guides-section';
+import Features from '@/components/landing/sections/features-section';
+
 export default function Page() {
   return (
-    <div className="flex flex-col max-w-356 mx-auto px-4 py-8 md:py-0 pt-16">
-      {/* dito ilalagay ung mga sections */}
-    </div>
+    <>
+      <HeroSection />
+      <Features />
+      <SafetyGuidesSection />
+      <LatestNewsReport />
+      <AboutUs />
+    </>
   );
 }

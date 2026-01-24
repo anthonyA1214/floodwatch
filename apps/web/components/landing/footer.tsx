@@ -1,88 +1,146 @@
-import Image from "next/image"
-import { Separator } from "@radix-ui/react-separator"
+import Image from 'next/image';
+import { Separator } from '@radix-ui/react-separator';
+import { FacebookIcon, GitHubIcon } from '@/components/icons';
+import Link from 'next/link';
+
+const quickLinks = [
+  { label: 'Home', href: '#' },
+  { label: 'Features', href: '#features' },
+  { label: 'Safety Guides', href: '#safety-guides' },
+  { label: 'Latest News', href: '#latest-news' },
+  { label: 'About Us', href: '#about-us' },
+];
+
+const resourcesLinks = [
+  {
+    label: 'Emergency Hotlines',
+    href: 'https://caloocancity.gov.ph/news/caloocan-emergency-hotline-888-along25664/',
+  },
+  { label: 'Flood Alerts', href: '#' },
+  { label: 'Evacuation Centers', href: '#' },
+  { label: 'Preparation Checklist', href: '#' },
+  { label: 'Weather Updates', href: '#' },
+];
+
+const contactUsLinks = [
+  { label: '0969-512-6532' },
+  { label: 'floodwatch@gmail.com' },
+  { label: 'University of Caloocan City, Congressional Road' },
+];
 
 export default function Footer() {
-    return (
-        <footer className="bg-[#2F327D] mt-auto">
-            <div className="max-w-7xl mx-auto px-6 py-16">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-
-                    {/* Logo + Description */}
-                    <div className="flex gap-5 items-start">
-                        <Image
-                            src="/logo-white.svg"
-                            alt="FloodWatch Logo"
-                            width={60}
-                            height={60}
-                        />
-                        <div className="space-y-3">
-                            <h3 className="text-2xl text-white font-semibold">
-                                Flood Watch
-                            </h3>
-                            <p className="text-white/80 text-sm leading-relaxed">
-                                Partner with Us. Help FloodWatch
-                                <br />
-                                protect communities everywhere.
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* Contacts */}
-                    <div className="flex flex-col text-white gap-4">
-                        <h2 className="text-xl font-semibold">Contacts</h2>
-                        <span className="text-white/80 text-sm">
-                            0969-512-6532
-                        </span>
-                        <span className="text-white/80 text-sm">
-                            floodwatch@gmail.com
-                        </span>
-                        <span className="text-white/80 text-sm leading-relaxed">
-                            University of Caloocan City,
-                            <br />
-                            Congressional Road
-                        </span>
-                    </div>
-
-                    {/* Quick Links */}
-                    <div className="flex flex-col text-white gap-4">
-                        <h2 className="text-xl font-semibold">Quick Links</h2>
-                        <span className="text-white/80 text-sm hover:text-white cursor-pointer">
-                            About
-                        </span>
-                        <span className="text-white/80 text-sm hover:text-white cursor-pointer">
-                            Partners
-                        </span>
-                        <span className="text-white/80 text-sm hover:text-white cursor-pointer">
-                            Contact
-                        </span>
-                    </div>
-
-                    {/* Social Media */}
-                    <div className="flex flex-col text-white gap-4">
-                        <h2 className="text-xl font-semibold">Social Media</h2>
-                        <span className="text-white/80 text-sm hover:text-white cursor-pointer">
-                            Facebook
-                        </span>
-                        <span className="text-white/80 text-sm hover:text-white cursor-pointer">
-                            Twitter
-                        </span>
-                        <span className="text-white/80 text-sm hover:text-white cursor-pointer">
-                            Instagram
-                        </span>
-                        <span className="text-white/80 text-sm hover:text-white cursor-pointer">
-                            Indeed
-                        </span>
-                    </div>
-
-                </div>
-
-                <Separator orientation="horizontal" className="my-12 h-px w-full bg-white/30"/>
-                
-                {/* Bottom */}
-                <div className="m-auto">
-                    <h2 className="text-white"> © 2026 Company Name. All rights reserve </h2>
-                </div>
+  return (
+    <footer className="relative bg-[#2F327D] mt-auto rounded-t-[2.5rem]">
+      <div className="absolute top-0 left-0 h-16 w-full bg-white -z-10"></div>
+      <div className="max-w-7xl mx-auto px-4 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-5 w-full gap-6 sm:gap-8 md:gap-12">
+          {/* Logo, taglines and social */}
+          <div className="flex flex-col gap-4 md:col-span-2">
+            <div className="flex items-center gap-4">
+              <Image
+                src="/logo-white.svg"
+                alt="FloodWatch Logo"
+                width={48}
+                height={48}
+              />
+              <h1 className="font-poppins font-medium text-lg text-white">
+                FloodWatch
+              </h1>
             </div>
-        </footer>
-    )
+
+            <span className="text-sm text-white/90">
+              Partner with us. Help FloodWatch protect communities everywhere.
+            </span>
+
+            <div className="flex items-center gap-4">
+              {/* github */}
+              <a
+                href="https://www.facebook.com/profile.php?id=61580210802670"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <button className="text-white rounded-2xl text-3xl">
+                  <FacebookIcon />
+                </button>
+              </a>
+
+              {/* github */}
+              <a
+                href="https://github.com/anthonyA1214/floodwatch"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <button className="text-white rounded-2xl text-3xl">
+                  <GitHubIcon />
+                </button>
+              </a>
+            </div>
+          </div>
+
+          {/* Links */}
+          <div className="grid grid-cols-2  md:grid-cols-3 gap-6 sm:gap-8 md:gap-12 col-span-3">
+            {/* quick links */}
+            <div className="flex flex-col gap-4">
+              <h3 className="font-poppins text-white font-semibold text-xl">
+                Quick Links
+              </h3>
+              <ul className="flex flex-col text-sm text-white/90 gap-4">
+                {quickLinks.map((link, i) => (
+                  <li key={i}>
+                    <a
+                      href={link.href}
+                      className="inline-block text-white/90 hover:text-white transform hover:translate-x-1 transition duration-200"
+                    >
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* resources */}
+            <div className="flex flex-col gap-4">
+              <h3 className="font-poppins text-white font-semibold text-xl">
+                Resources
+              </h3>
+              <ul className="flex flex-col text-sm text-white/90 gap-4">
+                {resourcesLinks.map((link, i) => (
+                  <li key={i}>
+                    <Link
+                      href={link.href}
+                      className="inline-block text-white/90 hover:text-white transform hover:translate-x-1 transition duration-200"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* contact us */}
+            <div className="flex flex-col gap-4">
+              <h3 className="font-poppins text-white font-semibold text-xl">
+                Contact Us
+              </h3>
+              <ul className="flex flex-col text-sm text-white/90 gap-4">
+                {contactUsLinks.map((link, i) => (
+                  <li key={i}>
+                    <p className="inline-block text-white/90 hover:text-white transition duration-200">
+                      {link.label}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <Separator className="my-10 bg-white/30 h-px" />
+
+        <div className="flex justify-between items-center text-white">
+          &copy; 2026 AidLink Tech. All rights reserved.
+        </div>
+      </div>
+    </footer>
+  );
 }

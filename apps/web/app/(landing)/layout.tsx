@@ -1,3 +1,4 @@
+import Footer from '@/components/landing/footer';
 import TopNav from '@/components/landing/top-nav';
 
 export default function MainLayout({
@@ -8,7 +9,7 @@ export default function MainLayout({
     <>
       <TopNav />
       <main>{children}</main>
-      {/* footer */}
+      <Footer />
     </>
   );
 }

@@ -1,9 +1,12 @@
 import SideNav from '@/components/admin/side-nav';
 import { SidebarProvider } from '@/components/ui/sidebar';
+import { redirectIfNotAdmin } from '@/lib/actions/auth-redirect';
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  // await redirectIfNotAdmin();
+
   return (
     <SidebarProvider>
       <SideNav />

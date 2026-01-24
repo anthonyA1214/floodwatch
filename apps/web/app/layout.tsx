@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { inter } from '@/app/config/fonts';
+import { inter, poppins } from '@/app/config/fonts';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -15,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.className} bg-[#EAEAEA] antialiased min-h-screen`}
+        className={`${inter.className} ${poppins.variable} bg-[#EAEAEA] antialiased min-h-screen`}
       >
         {children}
       </body>
