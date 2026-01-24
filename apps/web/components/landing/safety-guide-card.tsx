@@ -13,7 +13,13 @@ export default function SafetyGuideCard({
 }) {
   return (
     <div className="relative rounded-2xl aspect-square overflow-hidden">
-      <Image src={src} alt={alt} fill className="object-cover" />
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        className="object-cover"
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+      />
 
       <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white text-center px-4 sm:px-6 md:px-10">
         <div className="space-y-6">

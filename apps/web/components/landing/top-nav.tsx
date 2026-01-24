@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import TopNavShadow from '@/components/top-nav-shadow';
+import CollapsibleMenu from '@/components/landing/collapsible-menu';
 
 const navItems = [
   { label: 'Features', url: '#features' },
@@ -61,6 +62,11 @@ export default function TopNav() {
                   Sign Up
                 </button>
               </Link>
+            </div>
+
+            {/* Mobile Menu */}
+            <div className="md:hidden flex items-center">
+              <CollapsibleMenu />
             </div>
           </div>
         </nav>

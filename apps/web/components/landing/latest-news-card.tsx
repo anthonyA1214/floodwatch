@@ -1,58 +1,78 @@
 'use client';
 
+import Image from 'next/image';
+
 export default function LatestNewsCard({
+  src,
   variant = 'compact',
   title = 'Untitled News',
   description = 'No description available.',
+}: {
+  src: string;
+  variant?: 'featured' | 'compact';
+  title?: string;
+  description?: string;
 }) {
-  // FEATURED (LEFT BIG CARD)
+  // FEATURED CARD
   if (variant === 'featured') {
     return (
-      <div className="rounded-2xl bg-white shadow-md">
+      <div className="bg-white h-full flex flex-col rounded-2xl shadow-lg overflow-hidden">
         {/* Image */}
-        <div className="flex h-[320px] items-center justify-center rounded-t-2xl bg-gray-300 text-white font-semibold">
-          Image
+        <div className="relative aspect-video">
+          <Image
+            src={src}
+            alt={title}
+            fill
+            className="object-cover rounded-t-2xl"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
         </div>
 
         {/* Content */}
-        <div className="p-6">
-          <span className="inline-block rounded-full bg-[#49BBBD] px-4 py-1 text-xs font-semibold text-white">
-            NEWS
+        <div className="flex flex-1 flex-col gap-4 p-6 sm:p-6 md:p-8 rounded-b-2xl">
+          <span className="inline-block w-fit rounded-full bg-[#49BBBD] px-3 py-1 text-[10px] sm:text-xs font-semibold text-white">
+            FEATURED NEWS
           </span>
 
-          <h3 className="mt-4 text-xl font-semibold text-[#2E2F35]">{title}</h3>
+          <div className="space-y-1">
+            <h3 className="font-poppins text-lg sm:text-xl lg:text-2xl font-semibold leading-snug">
+              {title}
+            </h3>
 
-          <p className="mt-2 text-[#696984]">
-            {description}
-            <span className="ml-1 cursor-pointer font-medium text-[#2F327D]">
-              Read more...
-            </span>
-          </p>
+            <p className="text-sm sm:text-base text-gray-600 line-clamp-3">
+              {description}
+            </p>
+          </div>
         </div>
       </div>
     );
   }
 
-  // COMPACT (RIGHT SIDE CARDS)
+  // COMPACT CARD
   return (
-    <div className="flex h-[220px] w-full gap-5 rounded-2xl bg-white p-5 shadow-md">
+    <div className="bg-white h-full flex rounded-2xl shadow-lg p-3 sm:p-4 gap-3 sm:gap-4">
       {/* Image */}
-      <div className="flex w-[40%] items-center justify-center overflow-hidden rounded-xl bg-gray-300 text-sm font-semibold text-white">
-        Image
+      <div className="relative aspect-square w-20 sm:w-24 md:w-28 shrink-0">
+        <Image
+          src={src}
+          alt={title}
+          fill
+          className="object-cover rounded-2xl"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
       </div>
 
       {/* Content */}
-      <div className="flex w-[60%] flex-col justify-between">
-        <div>
-          <span className="inline-block rounded-full bg-[#49BBBD] px-4 py-1 text-xs font-semibold text-white">
-            NEWS
-          </span>
-
-          <h4 className="mt-3 line-clamp-2 text-lg font-semibold text-[#2E2F35]">
+      <div className="flex flex-1 flex-col gap-2">
+        <span className="w-fit rounded-full bg-[#49BBBD] px-2.5 py-0.5 text-[10px] sm:text-xs font-semibold text-white">
+          NEWS
+        </span>
+        <div className="space-y-1">
+          <h3 className="font-poppins text-sm sm:text-base leading-snug font-semibold">
             {title}
-          </h4>
+          </h3>
 
-          <p className="mt-2 line-clamp-3 text-sm text-[#696984]">
+          <p className="text-xs sm:text-sm text-gray-600 line-clamp-2">
             {description}
           </p>
         </div>
