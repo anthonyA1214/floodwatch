@@ -4,19 +4,91 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ActionState } from '@/lib/types/action-state';
-import { useActionState } from 'react';
-import { signUp } from '@/lib/actions/auth';
+import React, { useState } from 'react';
+import { useAuth } from '@/providers/auth-provider';
+import { signUpSchema } from '@repo/schemas';
+import z from 'zod';
+import { signupClient } from '@/lib/auth/auth-api';
+import { mapAuthError } from '@/lib/auth/map-auth-error';
 
 export default function SignUpform() {
-  const initialState: ActionState = {
+  const { setAuth } = useAuth();
+
+  const [isPending, setIsPending] = useState(false);
+  const [state, setState] = useState<ActionState>({
     status: null,
     errors: null,
-  };
+  });
 
-  const [state, formAction, isPending] = useActionState(signUp, initialState);
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setIsPending(true);
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    const parsed = signUpSchema.safeParse({
+      first_name: formData.get('first_name'),
+      last_name: formData.get('last_name'),
+      home_address: formData.get('home_address'),
+      email: formData.get('email'),
+      password: formData.get('password'),
+      confirm_password: formData.get('confirm_password'),
+    });
+
+    if (!parsed.success) {
+      setState({
+        status: 'error',
+        errors: z.flattenError(parsed.error).fieldErrors,
+      });
+
+      (form.elements.namedItem('password') as HTMLInputElement).value = '';
+      (form.elements.namedItem('confirm_password') as HTMLInputElement).value =
+        '';
+
+      setIsPending(false);
+      return;
+    }
+
+    const {
+      first_name,
+      last_name,
+      home_address,
+      email,
+      password,
+      confirm_password,
+    } = parsed.data;
+
+    try {
+      const { access_token, deviceId } = await signupClient(
+        first_name,
+        last_name,
+        home_address,
+        email,
+        password,
+        confirm_password,
+      );
+
+      setState({
+        status: 'success',
+        errors: {},
+      });
+
+      setAuth(access_token, deviceId);
+
+      form.reset();
+    } catch (err) {
+      setState({
+        errors: mapAuthError(err).errors,
+        status: 'error',
+      });
+    } finally {
+      setIsPending(false);
+    }
+  }
 
   return (
-    <form action={formAction} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-2">
         <Label>Full name</Label>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -25,7 +97,6 @@ export default function SignUpform() {
               id="first_name"
               name="first_name"
               placeholder="First name"
-              defaultValue={state?.data?.first_name || ''}
               className="rounded-full px-4 shadow-sm"
             />
             {state?.errors &&
@@ -41,7 +112,6 @@ export default function SignUpform() {
               id="last_name"
               name="last_name"
               placeholder="Last name"
-              defaultValue={state?.data?.last_name || ''}
               className="rounded-full px-4 shadow-sm"
             />
             {state?.errors &&
@@ -60,7 +130,6 @@ export default function SignUpform() {
           name="email"
           type="email"
           placeholder="Enter your Email"
-          defaultValue={state?.data?.email || ''}
           className="rounded-full px-4 shadow-sm"
         />
         {state?.errors && 'email' in state.errors && state.errors.email && (
@@ -74,7 +143,6 @@ export default function SignUpform() {
           id="home_address"
           name="home_address"
           placeholder="Enter your Home Address"
-          defaultValue={state?.data?.home_address || ''}
           className="rounded-full px-4 shadow-sm"
         />
         {state?.errors &&

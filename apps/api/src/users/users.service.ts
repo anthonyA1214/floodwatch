@@ -19,12 +19,32 @@ export class UsersService {
     return user;
   }
 
+  async findByIdWithProfile(userId: number) {
+    const [user] = await this.db
+      .select({
+        id: users.id,
+        email: users.email,
+        role: users.role,
+        profile: {
+          firstName: profileInfo.firstName,
+          lastName: profileInfo.lastName,
+          profilePicture: profileInfo.profilePicture,
+        },
+      })
+      .from(users)
+      .where(eq(users.id, userId))
+      .leftJoin(profileInfo, eq(users.id, profileInfo.userId))
+      .limit(1);
+
+    return user;
+  }
+
   async createUser(
     email: string,
     password: string,
-    first_name: string,
-    last_name: string,
-    home_address: string,
+    firstName: string,
+    lastName: string,
+    homeAddress: string,
   ) {
     const [newUser] = await this.db
       .insert(users)
@@ -35,9 +55,9 @@ export class UsersService {
       .insert(profileInfo)
       .values({
         userId: newUser.id,
-        firstName: first_name,
-        lastName: last_name,
-        homeAddress: home_address,
+        firstName,
+        lastName,
+        homeAddress,
       })
       .returning();
 

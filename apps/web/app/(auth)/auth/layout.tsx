@@ -1,13 +1,10 @@
 import Logo from '@/components/auth/logo';
 import { Button } from '@/components/ui/button';
-import { redirectIfLoggedIn } from '@/lib/actions/auth-redirect';
 import Image from 'next/image';
 
-export default async function AuthLayout({
+export default function AuthLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
-  // await redirectIfLoggedIn();
-
   return (
     <main>
       <div className="min-h-screen grid grid-cols-1 md:grid-cols-2">

@@ -7,7 +7,6 @@ import {
   UseGuards,
   UsePipes,
   Request,
-  Get,
   Res,
   Headers,
 } from '@nestjs/common';
@@ -18,7 +17,6 @@ import {
   type AuthRequest,
 } from './types/auth-request.type';
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 import { LocalAuthGuard } from './guards/local-auth/local-auth.guard';
 import { JwtRefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
 import { type Response } from 'express';
@@ -39,17 +37,26 @@ export class AuthController {
     @Request() req: AuthRequest,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { access_token, refresh_token, deviceId } =
-      await this.authService.login(req.user.id);
+    const { access_token, refresh_token, deviceId, user } =
+      await this.authService.login(req.user.id, req.user.role);
+
+    res.cookie('access_token', access_token, {
+      httpOnly: true,
+      secure: this.configService.getOrThrow('NODE_ENV') === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 15 * 60 * 1000, // 15 minutes
+    });
 
     res.cookie('refresh_token', refresh_token, {
       httpOnly: true,
       secure: this.configService.getOrThrow('NODE_ENV') === 'production',
       sameSite: 'lax',
-      path: '/',
+      path: '/auth/refresh',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    return { access_token, deviceId };
+    return { deviceId, user };
   }
 
   @UseGuards(JwtRefreshAuthGuard)
@@ -65,31 +72,58 @@ export class AuthController {
       access_token,
       refresh_token,
       deviceId: newDeviceId,
+      user,
     } = await this.authService.refreshToken(
       req.user.id,
+      req.user.role,
       deviceId,
       refreshToken,
     );
+
+    res.cookie('access_token', access_token, {
+      httpOnly: true,
+      secure: this.configService.getOrThrow('NODE_ENV') === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 15 * 60 * 1000, // 15 minutes
+    });
 
     res.cookie('refresh_token', refresh_token, {
       httpOnly: true,
       secure: this.configService.getOrThrow('NODE_ENV') === 'production',
       sameSite: 'lax',
-      path: '/',
+      path: '/auth/refresh',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    return { access_token, deviceId: newDeviceId };
+    return { deviceId: newDeviceId, user };
   }
 
   @Post('signup')
   @UsePipes(new ZodValidationPipe(signUpSchema))
-  signup(@Body() signUpDto: SignUpDto) {
-    return this.authService.signup(signUpDto);
-  }
+  async signup(
+    @Body() signUpDto: SignUpDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { access_token, refresh_token, deviceId, user } =
+      await this.authService.signup(signUpDto);
 
-  @UseGuards(JwtAuthGuard)
-  @Get('profile')
-  getProfile(@Request() req: AuthRequest) {
-    return req.user;
+    res.cookie('access_token', access_token, {
+      httpOnly: true,
+      secure: this.configService.getOrThrow('NODE_ENV') === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 15 * 60 * 1000, // 15 minutes
+    });
+
+    res.cookie('refresh_token', refresh_token, {
+      httpOnly: true,
+      secure: this.configService.getOrThrow('NODE_ENV') === 'production',
+      sameSite: 'lax',
+      path: '/auth/refresh',
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    return { deviceId, user };
   }
 }

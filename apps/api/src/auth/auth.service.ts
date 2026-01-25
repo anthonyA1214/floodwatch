@@ -39,8 +39,8 @@ export class AuthService {
     return result;
   }
 
-  async login(userId: number) {
-    const payload: JwtPayload = { sub: userId };
+  async login(userId: number, role: string) {
+    const payload: JwtPayload = { sub: userId, role };
 
     const access_token = this.tokenService.signAccessToken(payload);
     const refresh_token = this.tokenService.signRefreshToken(payload);
@@ -61,10 +61,17 @@ export class AuthService {
       expiresAt,
     );
 
-    return { access_token, refresh_token, deviceId };
+    const user = await this.usersService.findByIdWithProfile(userId);
+
+    return { access_token, refresh_token, deviceId, user };
   }
 
-  async refreshToken(userId: number, deviceId: string, rawToken: string) {
+  async refreshToken(
+    userId: number,
+    role: string,
+    deviceId: string,
+    rawToken: string,
+  ) {
     // validate refresh token
     const isValid = await this.refreshTokenService.validateRefreshToken(
       userId,
@@ -74,7 +81,7 @@ export class AuthService {
 
     if (!isValid) throw new UnauthorizedException('Invalid refresh token');
 
-    const payload: JwtPayload = { sub: userId };
+    const payload: JwtPayload = { sub: userId, role };
 
     // signing tokens
     const access_token = this.tokenService.signAccessToken(payload);
@@ -93,7 +100,9 @@ export class AuthService {
       expiresAt,
     );
 
-    return { access_token, refresh_token, deviceId };
+    const user = await this.usersService.findByIdWithProfile(userId);
+
+    return { access_token, refresh_token, deviceId, user };
   }
 
   async signup(signUpData: SignUpDto) {
@@ -115,6 +124,7 @@ export class AuthService {
 
     const payload: JwtPayload = {
       sub: newUser.id,
+      role: newUser.role,
     };
 
     const access_token = this.tokenService.signAccessToken(payload);
@@ -134,7 +144,7 @@ export class AuthService {
       expiresAt,
     );
 
-    return { access_token, refresh_token, deviceId };
+    return { access_token, refresh_token, deviceId, user: newUser };
   }
 
   async logout(userId: number, deviceId: string) {

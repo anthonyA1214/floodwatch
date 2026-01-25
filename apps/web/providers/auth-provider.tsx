@@ -1,26 +1,16 @@
 'use client';
 
 import { api } from '@/lib/api';
-import {
-  createContext,
-  useCallback,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
-import {
-  setAccessToken as setMemoryAccessToken,
-  clearAuth as clearAuthUtil,
-} from '@/utils/auth-utils';
+import { createContext, useCallback, useContext, useEffect } from 'react';
+import { clearAuth as clearAuthUtil } from '@/utils/auth-utils';
+import { User } from '@/lib/types/user';
 
 interface AuthContextType {
-  accessToken: string | null;
-  setAuth: (token: string, deviceId: string) => void;
+  setAuth: (deviceId: string, user: User) => void;
   clearAuth: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
-  accessToken: null,
   setAuth: () => {},
   clearAuth: () => {},
 });
@@ -30,16 +20,12 @@ export function AuthContextProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [accessToken, setAccessToken] = useState<string | null>(null);
-
-  const setAuth = useCallback((token: string, deviceId: string) => {
-    setAccessToken(token);
-    setMemoryAccessToken(token);
+  const setAuth = useCallback((deviceId: string, user: User) => {
+    localStorage.setItem('user', JSON.stringify(user));
     localStorage.setItem('deviceId', deviceId);
   }, []);
 
   const clearAuth = useCallback(() => {
-    setAccessToken(null);
     clearAuthUtil();
   }, []);
 
@@ -49,11 +35,10 @@ export function AuthContextProvider({
 
     const refreshAccessToken = async () => {
       try {
-        console.log('API URL:', process.env.NEXT_PUBLIC_API_URL);
         const response = await api.post('/auth/refresh');
-        const { access_token, deviceId } = response.data;
-        if (access_token && deviceId) {
-          setAuth(access_token, deviceId);
+        const { deviceId, user } = response.data;
+        if (deviceId) {
+          setAuth(deviceId, user);
         } else {
           clearAuth();
         }
@@ -67,7 +52,7 @@ export function AuthContextProvider({
   }, [setAuth, clearAuth]);
 
   return (
-    <AuthContext.Provider value={{ accessToken, setAuth, clearAuth }}>
+    <AuthContext.Provider value={{ setAuth, clearAuth }}>
       {children}
     </AuthContext.Provider>
   );

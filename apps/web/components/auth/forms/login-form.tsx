@@ -9,23 +9,24 @@ import { ActionState } from '@/lib/types/action-state';
 import { useAuth } from '@/providers/auth-provider';
 import { logInSchema } from '@repo/schemas';
 import z from 'zod';
-import { loginClient } from '@/lib/actions/auth-api';
-import { mapAuthError } from '@/lib/actions/map-auth-error';
+import { loginClient } from '@/lib/auth/auth-api';
+import { mapAuthError } from '@/lib/auth/map-auth-error';
 
 export default function LoginForm() {
   const { setAuth } = useAuth();
 
+  const [isPending, setIsPending] = useState(false);
   const [state, setState] = useState<ActionState>({
     status: null,
     errors: null,
-    data: undefined,
   });
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsPending(true);
 
-    const formData = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    const formData = new FormData(form);
 
     const parsed = logInSchema.safeParse({
       email: formData.get('email'),
@@ -36,8 +37,10 @@ export default function LoginForm() {
       setState({
         errors: z.flattenError(parsed.error).fieldErrors,
         status: 'error',
-        data: undefined,
       });
+
+      (form.elements.namedItem('password') as HTMLInputElement).value = '';
+
       setIsPending(false);
       return;
     }
@@ -45,27 +48,28 @@ export default function LoginForm() {
     const { email, password } = parsed.data;
 
     try {
-      const { access_token, deviceId } = await loginClient(email, password);
+      const { access_token, deviceId, user } = await loginClient(
+        email,
+        password,
+      );
 
       setState({
         errors: {},
         status: 'success',
-        data: { access_token, deviceId },
       });
 
-      setAuth(access_token, deviceId);
+      setAuth(access_token, deviceId, user);
+
+      form.reset();
     } catch (err) {
       setState({
         errors: mapAuthError(err).errors,
         status: 'error',
-        data: undefined,
       });
     } finally {
       setIsPending(false);
     }
   }
-
-  const [isPending, setIsPending] = useState(false);
 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
