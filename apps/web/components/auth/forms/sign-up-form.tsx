@@ -10,6 +10,7 @@ import { signUpSchema } from '@repo/schemas';
 import z from 'zod';
 import { signupClient } from '@/lib/auth/auth-api';
 import { mapAuthError } from '@/lib/auth/map-auth-error';
+import { Spinner } from '@/components/ui/spinner';
 
 export default function SignUpform() {
   const { setAuth } = useAuth();
@@ -190,7 +191,13 @@ export default function SignUpform() {
         disabled={isPending}
         className="w-full rounded-full bg-[#0066CC] hover:bg-[#005BB8]"
       >
-        Register
+        {isPending ? (
+          <>
+            Signing up... <Spinner />
+          </>
+        ) : (
+          'Sign up'
+        )}
       </Button>
     </form>
   );

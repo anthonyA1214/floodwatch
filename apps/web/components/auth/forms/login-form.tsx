@@ -11,9 +11,12 @@ import { logInSchema } from '@repo/schemas';
 import z from 'zod';
 import { loginClient } from '@/lib/auth/auth-api';
 import { mapAuthError } from '@/lib/auth/map-auth-error';
+import { useRouter } from 'next/navigation';
+import { Spinner } from '@/components/ui/spinner';
 
 export default function LoginForm() {
   const { setAuth } = useAuth();
+  const router = useRouter();
 
   const [isPending, setIsPending] = useState(false);
   const [state, setState] = useState<ActionState>({
@@ -57,6 +60,7 @@ export default function LoginForm() {
 
       setAuth(deviceId, user);
 
+      router.refresh();
       form.reset();
     } catch (err) {
       setState({
@@ -111,7 +115,13 @@ export default function LoginForm() {
         type="submit"
         className="w-full rounded-full bg-[#0066CC] hover:bg-[#005BB8]"
       >
-        Login
+        {isPending ? (
+          <>
+            Logging in... <Spinner />
+          </>
+        ) : (
+          'Login'
+        )}
       </Button>
     </form>
   );
