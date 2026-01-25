@@ -48,17 +48,14 @@ export default function LoginForm() {
     const { email, password } = parsed.data;
 
     try {
-      const { access_token, deviceId, user } = await loginClient(
-        email,
-        password,
-      );
+      const { deviceId, user } = await loginClient(email, password);
 
       setState({
         errors: {},
         status: 'success',
       });
 
-      setAuth(access_token, deviceId, user);
+      setAuth(deviceId, user);
 
       form.reset();
     } catch (err) {

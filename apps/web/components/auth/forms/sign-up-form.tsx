@@ -60,7 +60,7 @@ export default function SignUpform() {
     } = parsed.data;
 
     try {
-      const { access_token, deviceId } = await signupClient(
+      const { deviceId, user } = await signupClient(
         first_name,
         last_name,
         home_address,
@@ -74,7 +74,7 @@ export default function SignUpform() {
         errors: {},
       });
 
-      setAuth(access_token, deviceId);
+      setAuth(deviceId, user);
 
       form.reset();
     } catch (err) {

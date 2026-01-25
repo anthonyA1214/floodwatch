@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { decodeJwt } from '@/lib/jwt';
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const accessToken = request.cookies.get('access_token');
   const { pathname } = request.nextUrl;
 
