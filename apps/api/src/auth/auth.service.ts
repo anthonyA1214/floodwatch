@@ -7,7 +7,16 @@ import {
 } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { SignUpDto, signUpSchema } from '@repo/schemas';
+import {
+  ForgotPasswordDto,
+  forgotPasswordSchema,
+  ResetPasswordDto,
+  resetPasswordSchema,
+  SignUpDto,
+  signUpSchema,
+  VerifyOtpDto,
+  verifyOtpSchema,
+} from '@repo/schemas';
 import jwtRefreshConfig from 'src/config/jwt-refresh.config';
 import { type ConfigType } from '@nestjs/config';
 import { TokenService } from './token/token.service';
@@ -15,6 +24,9 @@ import { RefreshTokenService } from './refresh-token/refresh-token.service';
 import { randomUUID } from 'crypto';
 import * as bcrypt from 'bcrypt';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
+import { MailerService } from 'src/mailer/mailer.service';
+import Redis from 'ioredis';
+import { generateOtp, hashOtp } from 'src/utils/otp-util';
 
 @Injectable()
 export class AuthService {
@@ -25,10 +37,12 @@ export class AuthService {
     private refreshTokenService: RefreshTokenService,
     @Inject(jwtRefreshConfig.KEY)
     private refreshTokenConfig: ConfigType<typeof jwtRefreshConfig>,
+    private mailerService: MailerService,
+    @Inject('REDIS_CLIENT') private redis: Redis,
   ) {}
 
   async validateUser(email: string, password: string) {
-    const user = await this.usersService.findOne(email);
+    const user = await this.usersService.findByEmail(email);
     if (!user) throw new ForbiddenException();
 
     const passwordMatch = await bcrypt.compare(password, user.hashedPassword);
@@ -109,7 +123,7 @@ export class AuthService {
     const parsedData = signUpSchema.parse(signUpData);
     const { email, password, first_name, last_name, home_address } = parsedData;
 
-    const user = await this.usersService.findOne(email);
+    const user = await this.usersService.findByEmail(email);
     if (user) throw new ConflictException('Email already in use');
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -149,5 +163,88 @@ export class AuthService {
 
   async logout(userId: number, deviceId: string) {
     await this.refreshTokenService.removeRefreshToken(userId, deviceId);
+  }
+
+  async forgotPassword(forgotPasswordData: ForgotPasswordDto) {
+    const parsedData = forgotPasswordSchema.parse(forgotPasswordData);
+    const { email } = parsedData;
+
+    const user = await this.usersService.findByEmail(email);
+    if (!user) return;
+
+    const otp = generateOtp();
+    const hashedOtp = await hashOtp(otp);
+
+    await this.redis.set(`forgot-password-otp:${email}`, hashedOtp, 'EX', 300);
+    await this.redis.set(`forgot-password-otp-attempts:${email}`, 0, 'EX', 300);
+
+    await this.mailerService.sendOtpEmail(email, otp);
+
+    return;
+  }
+
+  async verifyOtp(verifyOtpDto: VerifyOtpDto) {
+    const parsedData = verifyOtpSchema.parse(verifyOtpDto);
+    const { email, otp } = parsedData;
+
+    const otpKey = `forgot-password-otp:${email}`;
+    const attemptsKey = `forgot-password-otp-attempts:${email}`;
+
+    const hashedOtp = await this.redis.get(otpKey);
+    console.log(hashedOtp);
+    if (!hashedOtp) {
+      throw new UnauthorizedException('OTP has expired or is invalid');
+    }
+
+    const attempts = Number(await this.redis.get(attemptsKey));
+    if (attempts >= 5) {
+      // Max attempts exceeded, delete OTP and attempts
+      await this.redis.del(otpKey, attemptsKey);
+      throw new UnauthorizedException('Maximum OTP attempts exceeded');
+    }
+
+    const isValid = await bcrypt.compare(otp, hashedOtp);
+    if (!isValid) {
+      await this.redis.incr(attemptsKey);
+      throw new UnauthorizedException('Invalid OTP');
+    }
+
+    // OTP is valid, proceed with password reset process
+    await this.redis.del(otpKey, attemptsKey);
+
+    // generate reset session id and store in redis
+    const resetSessionId = randomUUID();
+    await this.redis.set(`reset-session:${resetSessionId}`, email, 'EX', 600);
+
+    return { resetSessionId };
+  }
+
+  async resetPassword(resetPasswordDto: ResetPasswordDto) {
+    const parsedData = resetPasswordSchema.parse(resetPasswordDto);
+    const { new_password, resetSessionId } = parsedData;
+
+    const emailKey = `reset-session:${resetSessionId}`;
+    const email = await this.redis.get(emailKey);
+
+    if (!email) {
+      throw new UnauthorizedException(
+        'Invalid or expired reset session. Please verify OTP again.',
+      );
+    }
+
+    // Find user by email
+    const user = await this.usersService.findByEmail(email);
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    // Update user's password
+    const hashedPassword = await bcrypt.hash(new_password, 10);
+    await this.usersService.updatePassword(user.id, hashedPassword);
+
+    // Invalidate the reset session
+    await this.redis.del(emailKey);
+
+    return;
   }
 }
