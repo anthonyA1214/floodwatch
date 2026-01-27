@@ -3,6 +3,7 @@
 import Map from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import Geocoder from './geocoder';
+import Routing from './routing';
 
 export default function InteractiveMap() {
   return (
@@ -15,6 +16,7 @@ export default function InteractiveMap() {
       mapStyle="https://tiles.openfreemap.org/styles/bright"
     >
       <Geocoder />
+      <Routing/>
     </Map>
   );
 }
