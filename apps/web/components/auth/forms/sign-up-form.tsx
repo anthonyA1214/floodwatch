@@ -11,9 +11,11 @@ import z from 'zod';
 import { signupClient } from '@/lib/auth/auth-api';
 import { mapAuthError } from '@/lib/auth/map-auth-error';
 import { Spinner } from '@/components/ui/spinner';
+import { useRouter } from 'next/navigation';
 
-export default function SignUpform() {
-  const { setAuth } = useAuth();
+export default function SignUpForm() {
+  const router = useRouter();
+  const { refreshAuth } = useAuth();
 
   const [isPending, setIsPending] = useState(false);
   const [state, setState] = useState<ActionState>({
@@ -61,7 +63,7 @@ export default function SignUpform() {
     } = parsed.data;
 
     try {
-      const { deviceId, user } = await signupClient(
+      await signupClient(
         first_name,
         last_name,
         home_address,
@@ -75,14 +77,19 @@ export default function SignUpform() {
         errors: {},
       });
 
-      setAuth(deviceId, user);
+      await refreshAuth();
 
       form.reset();
+      router.refresh();
     } catch (err) {
       setState({
         errors: mapAuthError(err).errors,
         status: 'error',
       });
+
+      (form.elements.namedItem('password') as HTMLInputElement).value = '';
+      (form.elements.namedItem('confirm_password') as HTMLInputElement).value =
+        '';
     } finally {
       setIsPending(false);
     }

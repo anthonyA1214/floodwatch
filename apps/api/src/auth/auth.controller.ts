@@ -8,7 +8,6 @@ import {
   UsePipes,
   Request,
   Res,
-  Headers,
   Delete,
 } from '@nestjs/common';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
@@ -26,6 +25,7 @@ import {
 import {
   type RefreshTokenRequest,
   type AuthRequest,
+  type LogoutRequest,
 } from './types/auth-request.type';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth/local-auth.guard';
@@ -33,6 +33,7 @@ import { JwtRefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
 import { type Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { setAuthCookies } from 'src/utils/auth-util';
+import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -54,7 +55,7 @@ export class AuthController {
 
     const isProduction =
       this.configService.getOrThrow('NODE_ENV') === 'production';
-    setAuthCookies(res, access_token, refresh_token, isProduction);
+    setAuthCookies(res, access_token, refresh_token, deviceId, isProduction);
 
     return { deviceId, user };
   }
@@ -63,16 +64,16 @@ export class AuthController {
   @UseGuards(JwtRefreshAuthGuard)
   @Post('refresh')
   async refreshToken(
-    @Headers('x-device-id') deviceId: string,
     @Request() req: RefreshTokenRequest,
     @Res({ passthrough: true }) res: Response,
   ) {
     const refreshToken = req.cookies['refresh_token'];
+    const deviceId = req.cookies['device_id'];
 
     const {
       access_token,
       refresh_token,
-      deviceId: newDeviceId,
+      deviceId: device_id,
       user,
     } = await this.authService.refreshToken(
       req.user.id,
@@ -83,9 +84,9 @@ export class AuthController {
 
     const isProduction =
       this.configService.getOrThrow('NODE_ENV') === 'production';
-    setAuthCookies(res, access_token, refresh_token, isProduction);
+    setAuthCookies(res, access_token, refresh_token, device_id, isProduction);
 
-    return { deviceId: newDeviceId, user };
+    return { deviceId: device_id, user };
   }
 
   @HttpCode(HttpStatus.CREATED)
@@ -100,22 +101,25 @@ export class AuthController {
 
     const isProduction =
       this.configService.getOrThrow('NODE_ENV') === 'production';
-    setAuthCookies(res, access_token, refresh_token, isProduction);
+    setAuthCookies(res, access_token, refresh_token, deviceId, isProduction);
 
     return { deviceId, user };
   }
 
   @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
   @Delete('logout')
   async logout(
-    @Headers('x-device-id') deviceId: string,
-    @Request() req: AuthRequest,
+    @Request() req: LogoutRequest,
     @Res({ passthrough: true }) res: Response,
   ) {
+    const deviceId = req.cookies['device_id'];
+
     await this.authService.logout(req.user.id, deviceId);
 
     res.clearCookie('access_token');
     res.clearCookie('refresh_token');
+    res.clearCookie('device_id');
 
     return { message: 'Logged out successfully' };
   }

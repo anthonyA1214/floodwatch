@@ -15,8 +15,8 @@ import { useRouter } from 'next/navigation';
 import { Spinner } from '@/components/ui/spinner';
 
 export default function LoginForm() {
-  const { setAuth } = useAuth();
   const router = useRouter();
+  const { refreshAuth } = useAuth();
 
   const [isPending, setIsPending] = useState(false);
   const [state, setState] = useState<ActionState>({
@@ -51,22 +51,24 @@ export default function LoginForm() {
     const { email, password } = parsed.data;
 
     try {
-      const { deviceId, user } = await loginClient(email, password);
+      await loginClient(email, password);
+
+      await refreshAuth();
 
       setState({
         errors: {},
         status: 'success',
       });
 
-      setAuth(deviceId, user);
-
-      router.refresh();
       form.reset();
+      router.refresh();
     } catch (err) {
       setState({
         errors: mapAuthError(err).errors,
         status: 'error',
       });
+
+      (form.elements.namedItem('password') as HTMLInputElement).value = '';
     } finally {
       setIsPending(false);
     }
