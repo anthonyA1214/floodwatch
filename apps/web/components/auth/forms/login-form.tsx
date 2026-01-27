@@ -82,7 +82,7 @@ export default function LoginForm() {
           id="email"
           name="email"
           type="email"
-          placeholder="Enter your Email"
+          placeholder="Enter your email"
           className="rounded-full"
         />
         {state?.errors && 'email' in state.errors && state.errors.email && (
@@ -96,7 +96,7 @@ export default function LoginForm() {
           id="password"
           name="password"
           type="password"
-          placeholder="Enter your Password"
+          placeholder="Enter your password"
           className="rounded-full"
         />
         {state?.errors &&
@@ -108,7 +108,7 @@ export default function LoginForm() {
           <p className="text-red-500 text-sm">{state.errors._form}</p>
         )}
         <div className="text-right text-sm text-gray-500 hover:underline cursor-pointer">
-          <Link href="/auth/forgot-password"> Forgot Password? </Link>
+          <Link href="/auth/forgot-password"> Forgot password? </Link>
         </div>
       </div>
 
