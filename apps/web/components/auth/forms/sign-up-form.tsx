@@ -8,10 +8,10 @@ import React, { useState } from 'react';
 import { useAuth } from '@/providers/auth-provider';
 import { signUpSchema } from '@repo/schemas';
 import z from 'zod';
-import { signupClient } from '@/lib/auth/auth-api';
-import { mapAuthError } from '@/lib/auth/map-auth-error';
+import { mapSignupAuthError } from '@/lib/auth/signup-auth-error';
 import { Spinner } from '@/components/ui/spinner';
 import { useRouter } from 'next/navigation';
+import { api } from '@/lib/api';
 
 export default function SignUpForm() {
   const router = useRouter();
@@ -63,14 +63,14 @@ export default function SignUpForm() {
     } = parsed.data;
 
     try {
-      await signupClient(
+      await api.post('/auth/signup', {
         first_name,
         last_name,
         home_address,
         email,
         password,
         confirm_password,
-      );
+      });
 
       setState({
         status: 'success',
@@ -83,7 +83,7 @@ export default function SignUpForm() {
       router.refresh();
     } catch (err) {
       setState({
-        errors: mapAuthError(err).errors,
+        errors: mapSignupAuthError(err).errors,
         status: 'error',
       });
 

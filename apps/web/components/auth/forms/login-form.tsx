@@ -9,10 +9,10 @@ import { ActionState } from '@/lib/types/action-state';
 import { useAuth } from '@/providers/auth-provider';
 import { logInSchema } from '@repo/schemas';
 import z from 'zod';
-import { loginClient } from '@/lib/auth/auth-api';
-import { mapAuthError } from '@/lib/auth/map-auth-error';
+import { mapLoginAuthError } from '@/lib/auth/login-auth-error';
 import { useRouter } from 'next/navigation';
 import { Spinner } from '@/components/ui/spinner';
+import { api } from '@/lib/api';
 
 export default function LoginForm() {
   const router = useRouter();
@@ -51,7 +51,7 @@ export default function LoginForm() {
     const { email, password } = parsed.data;
 
     try {
-      await loginClient(email, password);
+      await api.post('/auth/login', { email, password });
 
       await refreshAuth();
 
@@ -64,7 +64,7 @@ export default function LoginForm() {
       router.refresh();
     } catch (err) {
       setState({
-        errors: mapAuthError(err).errors,
+        errors: mapLoginAuthError(err).errors,
         status: 'error',
       });
 

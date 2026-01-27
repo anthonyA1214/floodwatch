@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   ForbiddenException,
   Inject,
@@ -10,6 +11,8 @@ import { JwtService } from '@nestjs/jwt';
 import {
   ForgotPasswordDto,
   forgotPasswordSchema,
+  ResendOtpDto,
+  resendOtpSchema,
   ResetPasswordDto,
   resetPasswordSchema,
   SignUpDto,
@@ -175,8 +178,8 @@ export class AuthService {
     const otp = generateOtp();
     const hashedOtp = await hashOtp(otp);
 
-    await this.redis.set(`forgot-password-otp:${email}`, hashedOtp, 'EX', 300);
-    await this.redis.set(`forgot-password-otp-attempts:${email}`, 0, 'EX', 300);
+    await this.redis.set(`otp:reset:${email}`, hashedOtp, 'EX', 300);
+    await this.redis.set(`otp:attempts:${email}`, 0, 'EX', 300);
 
     await this.mailerService.sendOtpEmail(email, otp);
 
@@ -187,16 +190,15 @@ export class AuthService {
     const parsedData = verifyOtpSchema.parse(verifyOtpDto);
     const { email, otp } = parsedData;
 
-    const otpKey = `forgot-password-otp:${email}`;
-    const attemptsKey = `forgot-password-otp-attempts:${email}`;
+    const otpKey = `otp:reset:${email}`;
+    const attemptsKey = `otp:attempts:${email}`;
 
     const hashedOtp = await this.redis.get(otpKey);
-    console.log(hashedOtp);
     if (!hashedOtp) {
       throw new UnauthorizedException('OTP has expired or is invalid');
     }
 
-    const attempts = Number(await this.redis.get(attemptsKey));
+    const attempts = Number(await this.redis.get(attemptsKey)) || 0;
     if (attempts >= 5) {
       // Max attempts exceeded, delete OTP and attempts
       await this.redis.del(otpKey, attemptsKey);
@@ -214,7 +216,7 @@ export class AuthService {
 
     // generate reset session id and store in redis
     const resetSessionId = randomUUID();
-    await this.redis.set(`reset-session:${resetSessionId}`, email, 'EX', 600);
+    await this.redis.set(`reset:session:${resetSessionId}`, email, 'EX', 600);
 
     return { resetSessionId };
   }
@@ -223,8 +225,10 @@ export class AuthService {
     const parsedData = resetPasswordSchema.parse(resetPasswordDto);
     const { new_password, resetSessionId } = parsedData;
 
-    const emailKey = `reset-session:${resetSessionId}`;
-    const email = await this.redis.get(emailKey);
+    const key = `reset:session:${resetSessionId}`;
+    const email = await this.redis.get(key);
+
+    console.log(email);
 
     if (!email) {
       throw new UnauthorizedException(
@@ -239,11 +243,56 @@ export class AuthService {
     }
 
     // Update user's password
-    const hashedPassword = await bcrypt.hash(new_password, 10);
+    const hashedPassword = await bcrypt.hash(new_password, 12);
     await this.usersService.updatePassword(user.id, hashedPassword);
 
     // Invalidate the reset session
-    await this.redis.del(emailKey);
+    await this.redis.del(key);
+
+    return;
+  }
+
+  async resendOtp(resendOtpDto: ResendOtpDto) {
+    const parsedData = resendOtpSchema.parse(resendOtpDto);
+    const { email } = parsedData;
+
+    const user = await this.usersService.findByEmail(email);
+    if (!user) return;
+
+    const cooldownKey = `otp:cooldown:${email}`;
+    const resendCountKey = `otp:resend-count:${email}`;
+    const otpKey = `otp:reset:${email}`;
+    const attemptsKey = `otp:attempts:${email}`;
+
+    const existingOtp = await this.redis.get(otpKey);
+    if (!existingOtp) {
+      throw new BadRequestException(
+        'No active OTP found. Please request a new OTP.',
+      );
+    }
+
+    if (await this.redis.get(cooldownKey)) {
+      throw new BadRequestException('Please wait before resending OTP');
+    }
+
+    const resendCount = Number(await this.redis.get(resendCountKey)) || 0;
+    if (resendCount >= 5) {
+      throw new ForbiddenException(
+        'Maximum OTP resend attempts reached. Please try again later.',
+      );
+    }
+
+    const otp = generateOtp();
+    const hashedOtp = await hashOtp(otp);
+
+    await this.redis.set(otpKey, hashedOtp, 'EX', 300);
+    await this.redis.set(attemptsKey, 0, 'EX', 300);
+
+    await this.redis.set(cooldownKey, '1', 'EX', 30); // 30 seconds cooldown
+    await this.redis.incr(resendCountKey); // increment resend count
+    await this.redis.expire(resendCountKey, 300); // expire resend count after 5 minutes
+
+    await this.mailerService.sendOtpEmail(email, otp);
 
     return;
   }

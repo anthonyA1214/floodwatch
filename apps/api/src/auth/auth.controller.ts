@@ -21,6 +21,8 @@ import {
   type VerifyOtpDto,
   resetPasswordSchema,
   type ResetPasswordDto,
+  resendOtpSchema,
+  type ResendOtpDto,
 } from '@repo/schemas';
 import {
   type RefreshTokenRequest,
@@ -146,5 +148,12 @@ export class AuthController {
   @UsePipes(new ZodValidationPipe(resetPasswordSchema))
   async resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     await this.authService.resetPassword(resetPasswordDto);
+  }
+
+  @HttpCode(HttpStatus.OK)
+  @Post('resend-otp')
+  @UsePipes(new ZodValidationPipe(resendOtpSchema))
+  async resendOtp(@Body() resendOtpDto: ResendOtpDto) {
+    await this.authService.resendOtp(resendOtpDto);
   }
 }

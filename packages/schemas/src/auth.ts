@@ -95,8 +95,13 @@ export const resetPasswordSchema = z
     error: 'Passwords do not match',
   });
 
+export const resendOtpSchema = z.object({
+  email: z.email('Please enter a valid email address'),
+});
+
 export type LogInDto = z.infer<typeof logInSchema>;
 export type SignUpDto = z.infer<typeof signUpSchema>;
 export type ForgotPasswordDto = z.infer<typeof forgotPasswordSchema>;
 export type VerifyOtpDto = z.infer<typeof verifyOtpSchema>;
 export type ResetPasswordDto = z.infer<typeof resetPasswordSchema>;
+export type ResendOtpDto = z.infer<typeof resendOtpSchema>;
