@@ -8,7 +8,7 @@ export default function UserManagementPage() {
   return (
     // user management
     <div className="flex-1 rounded-2xl p-8 bg-white">
-      <h1 className="text-4xl font-bold"> User Management </h1>
+      <h1 className="text-3xl font-bold"> User Management </h1>
       <SearchBar />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
         <div>

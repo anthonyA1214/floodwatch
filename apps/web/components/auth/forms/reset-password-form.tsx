@@ -82,7 +82,7 @@ export default function ResetPasswordForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       <div className="space-y-2">
-        <Label>New Password</Label>
+        <Label htmlFor="new_password">New Password</Label>
         <Input
           id="new_password"
           name="new_password"
@@ -98,7 +98,7 @@ export default function ResetPasswordForm() {
       </div>
 
       <div className="space-y-2">
-        <Label>Confirm Password</Label>
+        <Label htmlFor="confirm_new_password">Confirm Password</Label>
         <Input
           id="confirm_new_password"
           name="confirm_new_password"

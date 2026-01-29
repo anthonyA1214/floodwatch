@@ -11,7 +11,7 @@ export default function CommunityFeedPage() {
   return (
     <div className="flex-1 bg-white p-8 rounded-2xl">
       {/* ===================== TITLE ===================== */}
-      <h1 className="text-4xl font-bold text-black">Community Feed</h1>
+      <h1 className="text-3xl font-bold text-black">Community Feed</h1>
 
       {/* ===================== SEARCH BAR ROW ===================== */}
       <div className="mt-6 flex items-center gap-4">

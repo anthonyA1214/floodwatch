@@ -14,7 +14,7 @@ export default function DashboardPage() {
     <div className="flex-1 flex flex-col bg-white p-8 rounded-2xl gap-8 min-h-0">
       {/* Header */}
       <div className="space-y-2">
-        <h1 className="text-4xl font-bold">Hello, John Doe</h1>
+        <h1 className="font-poppins text-3xl font-bold">Hello, John Doe</h1>
         <p>Here&apos;s what is happening with FloodWatch today</p>
       </div>
 

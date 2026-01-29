@@ -11,7 +11,7 @@ export default function ProfilePage() {
   return (
     <div className="w-full rounded-2xl bg-white p-8">
       {/* Header */}
-      <h1 className="text-4xl font-bold text-black">Profile</h1>
+      <h1 className="text-3xl font-bold text-black">Profile</h1>
       <p className="mt-2 text-gray-600">
         Manage your account settings and preferences
       </p>
