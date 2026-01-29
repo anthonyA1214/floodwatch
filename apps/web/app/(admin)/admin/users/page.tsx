@@ -1,10 +1,10 @@
-import SearchBar from '@/components/admin/user-management-components/search-bar';
-import TotalUserCard from '@/components/admin/user-management-components/total-users-card';
-import ActiveUsersCard from '@/components/admin/user-management-components/active-users-card';
-import BlockedUsersCard from '@/components/admin/user-management-components/blocked-users-card';
-import TotalUserTable from '@/components/admin/user-management-components/total-user-table';
+import SearchBar from '@/components/admin/users/search-bar';
+import TotalUserCard from '@/components/admin/users/total-users-card';
+import ActiveUsersCard from '@/components/admin/users/active-users-card';
+import BlockedUsersCard from '@/components/admin/users/blocked-users-card';
+import TotalUserTable from '@/components/admin/users/total-user-table';
 
-export default function UserManagement() {
+export default function UserManagementPage() {
   return (
     // user management
     <div className="flex-1 rounded-2xl p-8 bg-white">

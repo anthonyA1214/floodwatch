@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import ChangePasswordCard from '@/components/admin/profile-components/change-password-card';
-import ProfileFieldCard from '@/components/admin/profile-components/profile-field-card';
-import ProfileInformationCard from '@/components/admin/profile-components/profile-information-card';
+import ChangePasswordCard from '@/components/admin/profile/change-password-card';
+import ProfileFieldCard from '@/components/admin/profile/profile-field-card';
+import ProfileInformationCard from '@/components/admin/profile/profile-information-card';
 
-export default function Page() {
+export default function ProfilePage() {
   const [view, setView] = useState<'profile' | 'password'>('profile');
 
   return (

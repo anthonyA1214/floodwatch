@@ -1,17 +1,17 @@
-import SearchBar from '@/components/admin/interactive-map-components/search-bar-component';
-import MapHolder from '@/components/admin/interactive-map-components/map-component';
+import SearchBar from '@/components/admin/map/search-bar-component';
+import MapHolder from '@/components/admin/map/map-component';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Button } from '@/components/ui/button';
-import Paginator from '@/components/admin/interactive-map-components/paginator-component';
-import CreateFloodAlertModal from '@/components/admin/interactive-map-components/create-flood-alert-modal';
-import CreateSafeZoneModal from '@/components/admin/interactive-map-components/create-safe-zone-modal';
-import FloodedAreaCard from '@/components/admin/interactive-map-components/flooded-area-card';
-import SafeAreaCard from '@/components/admin/interactive-map-components/safe-area-card';
 
-export default function InteractiveMap() {
+import Paginator from '@/components/admin/map/paginator-component';
+import CreateFloodAlertModal from '@/components/admin/map/create-flood-alert-modal';
+import CreateSafeZoneModal from '@/components/admin/map/create-safe-zone-modal';
+import FloodedAreaCard from '@/components/admin/map/flooded-area-card';
+import SafeAreaCard from '@/components/admin/map/safe-area-card';
+
+export default function InteractiveMapPage() {
   return (
     <div className="flex-1 rounded-3xl p-8 bg-white shadow-sm border border-gray-100 min-h-screen">
-      <h2 className="text-3xl font-bold text-gray-900 mb-6 tracking-tight">
+      <h2 className="text-4xl font-bold text-gray-900 mb-6 tracking-tight">
         Interactive Map
       </h2>
       <div className="mb-6">

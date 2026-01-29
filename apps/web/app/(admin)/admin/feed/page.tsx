@@ -1,13 +1,13 @@
 import { Input } from '@/components/ui/input';
 import { Search, Flag } from 'lucide-react';
-import PostCard from '@/components/admin/community-feed/post-card';
-import PreviewLocation from '@/components/admin/community-feed/preview-location-card';
-import CommunityPostCard from '@/components/admin/community-feed/community-post-card';
-import AffectedLocationTab from '@/components/admin/community-feed/affected-location-tab';
-import AddressLocationBanner from '@/components/admin/community-feed/address-location-banner';
-import SearchBar from '@/components/admin/community-feed/search-bar';
+import PostCard from '@/components/admin/feed/post-card';
+import PreviewLocation from '@/components/admin/feed/preview-location-card';
+import CommunityPostCard from '@/components/admin/feed/community-post-card';
+import AffectedLocationTab from '@/components/admin/feed/affected-location-tab';
+import AddressLocationBanner from '@/components/admin/feed/address-location-banner';
+import SearchBar from '@/components/admin/feed/search-bar';
 
-export default function CommunityFeed() {
+export default function CommunityFeedPage() {
   return (
     <div className="flex-1 bg-white p-8 rounded-2xl">
       {/* ===================== TITLE ===================== */}
