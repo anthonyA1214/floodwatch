@@ -4,9 +4,9 @@ export default function MapLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <>
+    <div className="flex flex-col h-screen">
       <TopNav />
-      <main>{children}</main>
-    </>
+      <main className="flex-1 overflow-hidden">{children}</main>
+    </div>
   );
 }

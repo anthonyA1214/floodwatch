@@ -7,7 +7,7 @@ export default function AdminLayout({
   return (
     <SidebarProvider>
       <SideNav />
-      <main className="flex py-4 pe-4 w-full">{children}</main>
+      <main className="flex py-4 pe-4 w-full h-screen">{children}</main>
     </SidebarProvider>
   );
 }
