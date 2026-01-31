@@ -1,11 +1,15 @@
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogTrigger } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogTrigger,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import InteractiveMap from './interactive-map';
+import InteractiveMap from '@/components/admin/map/interactive-map';
 import { Textarea } from '@/components/ui/textarea';
 import Dropzone from '@/components/admin/map/dropzone';
-import { DialogTitle } from '@radix-ui/react-dialog';
 import {
   Select,
   SelectContent,
@@ -28,7 +32,7 @@ export default function CreateFloodAlertModal() {
             <InteractiveMap />
           </div>
           <div className="grid col-span-1 gap-y-6">
-            <DialogTitle className="text-xl font-semibold">
+            <DialogTitle className="font-poppins text-xl font-semibold">
               Create Flood Alert
             </DialogTitle>
 
@@ -40,7 +44,6 @@ export default function CreateFloodAlertModal() {
                 name="location"
                 type="text"
                 placeholder="Enter the location"
-                className="rounded-full"
               />
             </div>
 
@@ -71,7 +74,6 @@ export default function CreateFloodAlertModal() {
                 name="latitude"
                 type="text"
                 placeholder="Enter the latitude"
-                className="rounded-full"
               />
             </div>
 
@@ -83,7 +85,6 @@ export default function CreateFloodAlertModal() {
                 name="longitude"
                 type="text"
                 placeholder="Enter the longitude"
-                className="rounded-full"
               />
             </div>
 
@@ -93,7 +94,8 @@ export default function CreateFloodAlertModal() {
               <Textarea
                 id="description"
                 placeholder="Enter the description"
-                className="min-h-[120px] resize-none"
+                className="min-h-[120px] max-h-[120px]"
+                style={{ wordBreak: 'break-word' }}
               />
             </div>
 

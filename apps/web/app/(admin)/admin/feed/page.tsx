@@ -1,5 +1,4 @@
-import { Input } from '@/components/ui/input';
-import { Search, Flag } from 'lucide-react';
+import { Flag } from 'lucide-react';
 import PostCard from '@/components/admin/feed/post-card';
 import PreviewLocation from '@/components/admin/feed/preview-location-card';
 import CommunityPostCard from '@/components/admin/feed/community-post-card';
@@ -11,7 +10,9 @@ export default function CommunityFeedPage() {
   return (
     <div className="flex-1 bg-white p-8 rounded-2xl">
       {/* ===================== TITLE ===================== */}
-      <h1 className="text-3xl font-bold text-black">Community Feed</h1>
+      <h1 className="font-poppins text-3xl font-bold text-black">
+        Community Feed
+      </h1>
 
       {/* ===================== SEARCH BAR ROW ===================== */}
       <div className="mt-6 flex items-center gap-4">

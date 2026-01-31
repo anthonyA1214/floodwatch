@@ -22,11 +22,17 @@ export default function DashboardPage() {
         <div className="space-y-8 pr-4">
           {/* Stat Card */}
           <div className="grid grid-cols-2 gap-8">
-            <StatCard icon={IconBell} color="#155DFC" label="Flood Alerts" />
+            <StatCard
+              icon={IconBell}
+              color="#0066CC"
+              label="Flood Alerts"
+              count={1}
+            />
             <StatCard
               icon={IconFileText}
               color="#D08700"
               label="Total Reports"
+              count={42}
             />
           </div>
 

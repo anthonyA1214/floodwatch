@@ -12,22 +12,14 @@ export default function ActiveFloodAlertsCard({
   message: string;
   reportedAt: string;
 }) {
-  let color;
+  const severityColorMap = {
+    critical: '#FB2C36',
+    high: '#FF6900',
+    moderate: '#F0B204',
+    low: '#2B7FFF',
+  };
 
-  switch (severity) {
-    case 'critical':
-      color = '#FB2C36';
-      break;
-    case 'high':
-      color = '#FF6900';
-      break;
-    case 'moderate':
-      color = '#F0B204';
-      break;
-    case 'low':
-      color = '#2B7FFF';
-      break;
-  }
+  const color = severityColorMap[severity];
 
   return (
     <div

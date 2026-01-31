@@ -3,7 +3,7 @@
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ActionState } from '@/lib/types/action-state';
 import { useRouter } from 'next/navigation';
 import { resetPasswordSchema } from '@repo/schemas';
@@ -20,6 +20,11 @@ export default function ResetPasswordForm() {
     status: null,
     errors: null,
   });
+
+  useEffect(() => {
+    sessionStorage.removeItem('reset_email');
+    sessionStorage.removeItem('otp_cooldown');
+  }, []);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();

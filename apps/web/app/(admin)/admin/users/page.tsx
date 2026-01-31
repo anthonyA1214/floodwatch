@@ -1,34 +1,35 @@
-import SearchBar from '@/components/admin/users/search-bar';
-import TotalUserCard from '@/components/admin/users/total-users-card';
-import ActiveUsersCard from '@/components/admin/users/active-users-card';
-import BlockedUsersCard from '@/components/admin/users/blocked-users-card';
-import TotalUserTable from '@/components/admin/users/total-user-table';
+import UserStatCard from '@/components/admin/users/user-stat-card';
+import SearchBar from '@/components/search-bar';
+import { DataTable } from './data-table';
+import { columns } from './columns';
+import { getUsers } from '@/lib/users/users';
+import { AddNewAdminModal } from '@/components/admin/users/add-new-admin-modal';
 
-export default function UserManagementPage() {
+export default async function UserManagementPage() {
+  // Dummy data for demonstration purposes
+  const data = await getUsers();
+
   return (
-    // user management
-    <div className="flex-1 rounded-2xl p-8 bg-white">
-      <h1 className="text-3xl font-bold"> User Management </h1>
-      <SearchBar />
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
-        <div>
-          <TotalUserCard />
-        </div>
+    <div className="flex-1 flex flex-col bg-white p-8 rounded-2xl gap-8 min-h-0">
+      {/* Header */}
+      <h1 className="font-poppins text-3xl font-bold">User Management</h1>
 
-        <div>
-          <ActiveUsersCard />
+      <div className="flex justify-between gap-4">
+        <div className="flex-1">
+          <SearchBar placeholder="Search by name..." />
         </div>
-
-        <div>
-          <BlockedUsersCard />
+        <div className="flex w-fit">
+          <AddNewAdminModal />
         </div>
       </div>
 
-      <h1 className="text-2xl mt-4"> Total Users </h1>
-
-      <div>
-        <TotalUserTable />
+      <div className="grid grid-cols-3 gap-8">
+        <UserStatCard label="Total Users" count={1234} status="total" />
+        <UserStatCard label="Active Users" count={567} status="active" />
+        <UserStatCard label="Blocked Users" count={12} status="blocked" />
       </div>
+
+      <DataTable columns={columns} data={data} />
     </div>
   );
 }
