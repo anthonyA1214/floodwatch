@@ -1,6 +1,6 @@
 import SearchBar from '@/components/search-bar';
-import MapPanel from '@/components/admin/map/map-panel';
-import LocationsPanel from '@/components/admin/map/locations-panel';
+import MapLeft from '@/components/admin/map/map-left';
+import MapRight from '@/components/admin/map/map-right';
 
 export default function InteractiveMapPage() {
   return (
@@ -13,10 +13,10 @@ export default function InteractiveMapPage() {
 
         <div className="flex flex-1 gap-6 min-h-0">
           {/* Map Panel */}
-          <MapPanel />
+          <MapLeft />
 
           {/* Locations Panel */}
-          <LocationsPanel />
+          <MapRight />
         </div>
       </div>
     </div>

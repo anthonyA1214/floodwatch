@@ -1,6 +1,3 @@
-'use client';
-
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import {
   IconCircleCheck,
   IconUserCancel,
@@ -9,16 +6,21 @@ import {
 } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
 
+type UserStatCardProps = {
+  label: string;
+  count: number;
+  status: 'total' | 'active' | 'blocked';
+  isActive: boolean;
+  onClick: () => void;
+};
+
 export default function UserStatCard({
   label,
   count,
   status,
-}: {
-  label: string;
-  count: number;
-
-  status: 'total' | 'active' | 'blocked';
-}) {
+  isActive,
+  onClick,
+}: UserStatCardProps) {
   const iconMap = {
     total: IconUsers,
     active: IconUserCheck,
@@ -41,28 +43,9 @@ export default function UserStatCard({
   const color = statusColorMap[status];
   const statusText = statusTextMap[status];
 
-  const pathname = usePathname();
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  const currentStatus = searchParams.get('status') || 'total';
-  const isActive = currentStatus === status;
-
-  const handleClick = () => {
-    const params = new URLSearchParams(searchParams.toString());
-
-    if (status === 'total') {
-      params.delete('status');
-    } else {
-      params.set('status', status);
-    }
-
-    router.push(`${pathname}?${params.toString()}`);
-  };
-
   return (
     <div
-      onClick={handleClick}
+      onClick={onClick}
       className={cn(
         'relative flex flex-col rounded-2xl border shadow-md p-6 gap-2',
         isActive

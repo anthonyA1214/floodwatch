@@ -2,7 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AffectedLocationsTab from '@/components/admin/map/affected-locations-tab';
 import SafeZoneTab from '@/components/admin/map/safe-zone-tab';
 
-export default function LocationsPanel() {
+export default function MapRight() {
   return (
     <div className="flex-1 min-h-0 rounded-2xl overflow-hidden">
       <Tabs
