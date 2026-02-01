@@ -8,8 +8,8 @@ export default function MapPage() {
     <div className="h-full w-full">
       {/* <InteractiveMap /> */}
       <UserFunctionButton />
-      {/* <AffectedLocationPopup />
-      <SafetyLocationPopup /> */}
+      <AffectedLocationPopup />
+      {/* <SafetyLocationPopup /> */}
 
     </div>
   );
