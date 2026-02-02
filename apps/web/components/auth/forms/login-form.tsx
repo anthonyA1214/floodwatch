@@ -115,7 +115,7 @@ export default function LoginForm() {
       <Button
         disabled={isPending}
         type="submit"
-        className="w-full rounded-full bg-[#0066CC] hover:bg-[#005BB8]"
+        className="w-full rounded-full"
       >
         {isPending ? (
           <>

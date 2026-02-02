@@ -194,10 +194,7 @@ export default function SignUpForm() {
           )}
       </div>
 
-      <Button
-        disabled={isPending}
-        className="w-full rounded-full bg-[#0066CC] hover:bg-[#005BB8]"
-      >
+      <Button disabled={isPending} className="w-full rounded-full">
         {isPending ? (
           <>
             Signing up... <Spinner />

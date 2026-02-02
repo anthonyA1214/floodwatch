@@ -78,10 +78,7 @@ export default function ForgotPasswordForm() {
         )}
       </div>
 
-      <Button
-        disabled={isPending}
-        className="w-full rounded-full bg-blue-600 hover:bg-blue-700"
-      >
+      <Button disabled={isPending} className="w-full rounded-full">
         {isPending ? (
           <>
             Sending... <Spinner />

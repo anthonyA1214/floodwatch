@@ -1,7 +1,6 @@
 'use client';
 
 import { IconLogout } from '@tabler/icons-react';
-import { SidebarMenuItem, SidebarMenuButton } from '@/components/ui/sidebar';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { clearAuth } from '@/utils/auth-utils';
@@ -32,18 +31,12 @@ export default function LogoutButton() {
   }
 
   return (
-    <SidebarMenuItem>
-      <SidebarMenuButton
-        onClick={handleLogout}
-        disabled={isPending}
-        asChild
-        className="text-lg hover:cursor-pointer"
-      >
-        <div className="flex items-center gap-4 py-6 pl-4 border-l-4 border-transparent text-base">
-          <IconLogout className="w-[1.5em]! h-[1.5em]!" aria-hidden />
-          {isPending ? <>Signing out...</> : 'Sign out'}
-        </div>
-      </SidebarMenuButton>
-    </SidebarMenuItem>
+    <button
+      onClick={handleLogout}
+      disabled={isPending}
+      style={isPending ? { color: '#9E9E9E' } : {}}
+    >
+      <IconLogout />
+    </button>
   );
 }

@@ -4,35 +4,51 @@ import {
   AvatarFallback,
   AvatarImage,
 } from '@/components/ui/avatar';
-import { IconLogout } from '@tabler/icons-react';
 import Avatar from 'boring-avatars';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '../ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useState } from 'react';
+import { SecurityVerification } from '@/components/empty';
+import LogoutButton from '@/components/map/logout-button';
 
 export default function ProfilePanel() {
-  const [edit, isEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
   return (
     <div className="flex flex-col bg-white rounded-xl shadow-md p-4 w-[20vw] gap-8 h-[80vh]">
-      <h3 className="text-[#0066CC] font-semibold">Profile Information</h3>
+      <h3 className="text-[#0066CC] font-semibold">
+        {isChangingPassword ? 'Change Password' : 'Profile Information'}
+      </h3>
 
-      <ScrollArea className="flex-1 min-h-0 pr-4">
-        <ProfileInformationForm isEditing={edit} />
-      </ScrollArea>
+      {isChangingPassword ? (
+        <SecurityVerification onCancel={() => setIsChangingPassword(false)} />
+      ) : (
+        <>
+          <ScrollArea className="flex-1 min-h-0 pr-4">
+            <ProfileInformationForm isEditing={isEditing} />
+          </ScrollArea>
 
-      {/* buttons */}
-      <div className="flex flex-col gap-4 w-full mt-auto">
-        {edit && (
-          <Button variant="outline" className="w-full py-6">
-            Change Password
-          </Button>
-        )}
-        <Button className="w-full py-6" onClick={() => isEditing(!edit)}>
-          {edit ? 'Save Changes' : 'Edit Profile'}
-        </Button>
-      </div>
+          <div className="flex flex-col gap-4 w-full mt-auto">
+            {isEditing && (
+              <Button
+                variant="outline"
+                className="w-full py-6"
+                onClick={() => setIsChangingPassword(true)}
+              >
+                Change Password
+              </Button>
+            )}
+            <Button
+              className="w-full py-6"
+              onClick={() => setIsEditing(!isEditing)}
+            >
+              {isEditing ? 'Save Changes' : 'Edit Profile'}
+            </Button>
+          </div>
+        </>
+      )}
 
       <div className="flex flex-col gap-2 w-full text-xs mt-auto">
         <div className="flex justify-between">
@@ -65,9 +81,7 @@ export default function ProfilePanel() {
         </div>
 
         {/* logout */}
-        <button>
-          <IconLogout />
-        </button>
+        <LogoutButton />
       </div>
     </div>
   );
