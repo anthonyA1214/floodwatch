@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { IconBell } from '@tabler/icons-react';
+import ProfileInfoSheet from './profile-info-sheet';
 
 export default function TopNav() {
   return (
@@ -28,14 +29,16 @@ export default function TopNav() {
                 <IconBell className="w-[1em]! h-[1em]!" />
               </Button>
 
-              {/* Avatar dropdown bato? */}
-              <Avatar className="ring size-10">
-                <AvatarImage
-                  src="https://github.com/shadcn.png"
-                  alt="@shadcn"
-                />
-                <AvatarFallback>CN</AvatarFallback>
-              </Avatar>
+              <ProfileInfoSheet>
+                {/* Avatar dropdown bato? */}
+                <Avatar className="ring size-10">
+                  <AvatarImage
+                    src="https://github.com/shadcn.png"
+                    alt="@shadcn"
+                  />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+              </ProfileInfoSheet>
             </div>
           </div>
         </nav>
