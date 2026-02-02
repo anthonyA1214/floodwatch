@@ -1,11 +1,15 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { IconBell } from '@tabler/icons-react';
-import ProfileInfoSheet from './profile-info-sheet';
+import { useProfile } from '@/contexts/profile-context';
 
 export default function TopNav() {
+  const { toggle } = useProfile();
+
   return (
     <>
       <header className="flex w-full bg-[#0066CC] h-16">
@@ -29,8 +33,7 @@ export default function TopNav() {
                 <IconBell className="w-[1em]! h-[1em]!" />
               </Button>
 
-              <ProfileInfoSheet>
-                {/* Avatar dropdown bato? */}
+              <button onClick={toggle}>
                 <Avatar className="ring size-10">
                   <AvatarImage
                     src="https://github.com/shadcn.png"
@@ -38,7 +41,7 @@ export default function TopNav() {
                   />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
-              </ProfileInfoSheet>
+              </button>
             </div>
           </div>
         </nav>

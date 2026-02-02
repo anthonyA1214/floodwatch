@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ActionState } from '@/lib/types/action-state';
 import React, { useState } from 'react';
-import { useAuth } from '@/providers/auth-provider';
+import { useAuth } from '@/contexts/auth-context';
 import { signUpSchema } from '@repo/schemas';
 import z from 'zod';
 import { mapSignupAuthError } from '@/lib/auth/signup-auth-error';
