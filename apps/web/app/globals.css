@@ -1,6 +1,11 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@theme {
+  --font-inter: var(--font-inter);
+  --font-poppins: var(--font-poppins);
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -144,5 +149,14 @@
   body {
     @apply bg-background text-foreground;
     letter-spacing: var(--tracking-normal);
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  html {
+    @apply scroll-smooth;
   }
 }
