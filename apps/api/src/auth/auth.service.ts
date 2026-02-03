@@ -7,7 +7,6 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
-import { JwtService } from '@nestjs/jwt';
 import {
   ForgotPasswordDto,
   forgotPasswordSchema,
@@ -20,8 +19,6 @@ import {
   VerifyOtpDto,
   verifyOtpSchema,
 } from '@repo/schemas';
-import jwtRefreshConfig from 'src/config/jwt-refresh.config';
-import { type ConfigType } from '@nestjs/config';
 import { TokenService } from './token/token.service';
 import { RefreshTokenService } from './refresh-token/refresh-token.service';
 import { randomUUID } from 'crypto';
@@ -35,11 +32,8 @@ import { generateOtp, hashOtp } from 'src/utils/otp-util';
 export class AuthService {
   constructor(
     private usersService: UsersService,
-    private jwtService: JwtService,
     private tokenService: TokenService,
     private refreshTokenService: RefreshTokenService,
-    @Inject(jwtRefreshConfig.KEY)
-    private refreshTokenConfig: ConfigType<typeof jwtRefreshConfig>,
     private mailerService: MailerService,
     @Inject('REDIS_CLIENT') private redis: Redis,
   ) {}
