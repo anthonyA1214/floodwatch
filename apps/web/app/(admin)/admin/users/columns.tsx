@@ -15,6 +15,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { cn } from '@/lib/utils';
 
 export const columns: ColumnDef<UsersDto>[] = [
   {
@@ -108,7 +109,16 @@ export const columns: ColumnDef<UsersDto>[] = [
   {
     accessorKey: 'actions',
     header: () => <span className="flex justify-center">ACTIONS</span>,
-    cell: () => {
+    cell: ({ row }) => {
+      const user = row.original;
+
+      const buttonColorMap = {
+        active: 'text-[#FB323B] bg-[#FB323B]/10 hover:bg-[#FB323B]/20',
+        blocked: 'text-[#00D69B] bg-[#00D69B]/10 hover:bg-[#00D69B]/20',
+      };
+
+      const color = buttonColorMap[user.status];
+
       return (
         <div className="flex justify-center gap-2">
           <Tooltip>
@@ -121,11 +131,11 @@ export const columns: ColumnDef<UsersDto>[] = [
           </Tooltip>
 
           <Tooltip>
-            <TooltipTrigger className="text-[#FB2C36] bg-[#FB2C36]/10 rounded-lg p-1.5 hover:bg-[#FB2C36]/20 transition">
+            <TooltipTrigger className={cn(`rounded-lg p-1.5 hover:`, color)}>
               <IconBan className="w-[1.5em]! h-[1.5em]!" />
             </TooltipTrigger>
             <TooltipContent>
-              <p>Block user</p>
+              <p>{user.status === 'active' ? 'Block user' : 'Unblock user'}</p>
             </TooltipContent>
           </Tooltip>
         </div>

@@ -25,7 +25,7 @@ export default function CreateSafeZoneModal() {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="py-6">Create Flood Alert</Button>
+        <Button className="py-6">Create Safety Location</Button>
       </DialogTrigger>
       <DialogContent className="min-w-[80vw] sm:max-w-md md:max-w-lg lg:max-w-xl">
         <div className="grid grid-cols-3 gap-4">
@@ -35,7 +35,7 @@ export default function CreateSafeZoneModal() {
 
           <div className="grid col-span-1 gap-y-6">
             <DialogTitle className="font-poppins text-xl font-semibold">
-              Create Flood Alert
+              Create Safety Location
             </DialogTitle>
 
             <ScrollArea className="flex-1 min-h-0 max-h-[80vh] overflow-hidden">
@@ -109,7 +109,7 @@ export default function CreateSafeZoneModal() {
                   <Dropzone />
                 </div>
 
-                <Button className="py-6">Post Flood Alert</Button>
+                <Button className="py-6">Post Safety Location</Button>
               </div>
             </ScrollArea>
           </div>

@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AffectedLocationsTab from '@/components/admin/map/affected-locations-tab';
-import SafeZoneTab from '@/components/admin/map/safe-zone-tab';
+import SafetyLocationsTab from '@/components/admin/map/safety-locations-tab';
 
 export default function MapRight() {
   return (
@@ -20,7 +20,7 @@ export default function MapRight() {
             value="safe"
             className="data-[state=active]:bg-[#0066CC] data-[state=active]:text-white hover:bg-[#DBEAFE] py-5"
           >
-            Safe Zone
+            Safety Locations
           </TabsTrigger>
         </TabsList>
 
@@ -37,7 +37,7 @@ export default function MapRight() {
           value="safe"
           className="flex-1 flex flex-col space-y-2 min-h-0"
         >
-          <SafeZoneTab />
+          <SafetyLocationsTab />
         </TabsContent>
       </Tabs>
     </div>
