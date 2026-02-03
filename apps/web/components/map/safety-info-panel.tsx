@@ -244,4 +244,5 @@ export default function SafetyInfoPanel({ locationId = "loc-001" }: { locationId
       </div>
     </Panel>
   );
+  //hello po
 }
