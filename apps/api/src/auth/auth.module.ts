@@ -15,6 +15,8 @@ import { RefreshTokenService } from './refresh-token/refresh-token.service';
 import { DrizzleModule } from 'src/drizzle/drizzle.module';
 import { MailerModule } from 'src/mailer/mailer.module';
 import { RedisModule } from 'src/redis/redis.module';
+import googleOathConfig from 'src/config/google-oath.config';
+import { GoogleStrategy } from './strategies/google.strategy';
 
 @Module({
   imports: [
@@ -24,6 +26,7 @@ import { RedisModule } from 'src/redis/redis.module';
     JwtModule.registerAsync(jwtConfig.asProvider()),
     ConfigModule.forFeature(jwtConfig),
     ConfigModule.forFeature(jwtRefreshConfig),
+    ConfigModule.forFeature(googleOathConfig),
     MailerModule,
     RedisModule,
   ],
@@ -33,8 +36,9 @@ import { RedisModule } from 'src/redis/redis.module';
     JwtStrategy,
     JwtRefreshStrategy,
     TokenService,
-    RefreshTokenService,
+    RefreshTokenService, 
+    GoogleStrategy, 
   ],
   controllers: [AuthController],
 })
-export class AuthModule {}
+export class AuthModule { }

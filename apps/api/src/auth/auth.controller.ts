@@ -9,6 +9,7 @@ import {
   Request,
   Res,
   Delete,
+  Get,
 } from '@nestjs/common';
 import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
 import {
@@ -36,13 +37,16 @@ import { type Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { setAuthCookies } from 'src/utils/auth-util';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
+import { GoogleAuthGuard } from './guards/google-auth/google-auth.guard';
+import { Public } from './decorators/public.decorator';
+
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private authService: AuthService,
     private configService: ConfigService,
-  ) {}
+  ) { }
 
   @HttpCode(HttpStatus.OK)
   @Post('login')
@@ -156,4 +160,21 @@ export class AuthController {
   async resendOtp(@Body() resendOtpDto: ResendOtpDto) {
     await this.authService.resendOtp(resendOtpDto);
   }
+
+  @Public()
+  @UseGuards(GoogleAuthGuard)
+  @Get("google/login")
+  googleLogin() {
+
+  }
+
+  @Public()
+  @UseGuards(GoogleAuthGuard)
+  @Get("google/callback")
+  googleCallback() {
+
+  }
+
+
 }
+
