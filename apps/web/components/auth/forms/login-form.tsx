@@ -125,25 +125,6 @@ export default function LoginForm() {
           'Login'
         )}
       </Button>
-
-      <div className="flex items-center gap-3 text-center">
-        <hr className="flex-1 border-gray-300" />
-        <span className="text-sm text-gray-500">or continue with</span>
-        <hr className="flex-1 border-gray-300" />
-      </div>
-
-      <Button variant='outline' className="w-full rounded-full">
-        <a href="http://localhost:4001/auth/google/login"></a>
-        <img src='https://cdn.shadcnstudio.com/ss-assets/brand-logo/google-icon.png?width=20&height=20&format=auto'
-          alt="Google icon" />
-        Google
-      </Button>
-
-
-
-
-
-
     </form>
   );
 }

@@ -13,7 +13,7 @@ import { LoggerModule } from 'nestjs-pino';
     ConfigModule.forRoot({ isGlobal: true }),
     LoggerModule.forRoot({
       pinoHttp: {
-        customProps: (req, res) => ({
+        customProps: (_req, _res) => ({
           context: 'HTTP',
         }),
         transport: {

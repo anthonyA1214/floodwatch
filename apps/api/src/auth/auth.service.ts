@@ -26,7 +26,7 @@ import * as bcrypt from 'bcrypt';
 import { JwtPayload } from './interfaces/jwt-payload.interface';
 import { MailerService } from 'src/mailer/mailer.service';
 import Redis from 'ioredis';
-import { generateOtp, hashOtp } from 'src/utils/otp-util';
+import { generateOtp, hashOtp } from 'src/auth/utils/otp-util';
 
 @Injectable()
 export class AuthService {
@@ -42,12 +42,14 @@ export class AuthService {
     const user = await this.usersService.findByEmail(email);
     if (!user) throw new ForbiddenException();
 
-    const passwordMatch = await bcrypt.compare(password, user.hashedPassword);
-    if (!passwordMatch) throw new UnauthorizedException();
+    const isPasswordValid = await this.usersService.validatePassword(
+      user.id,
+      password,
+    );
 
-    const { hashedPassword: _hashedPassword, ...result } = user;
+    if (!isPasswordValid) throw new UnauthorizedException();
 
-    return result;
+    return user;
   }
 
   async login(userId: number, role: string) {
@@ -72,9 +74,7 @@ export class AuthService {
       expiresAt,
     );
 
-    const user = await this.usersService.findByIdWithProfile(userId);
-
-    return { access_token, refresh_token, deviceId, user };
+    return { access_token, refresh_token, deviceId };
   }
 
   async refreshToken(
@@ -111,9 +111,7 @@ export class AuthService {
       expiresAt,
     );
 
-    const user = await this.usersService.findByIdWithProfile(userId);
-
-    return { access_token, refresh_token, deviceId, user };
+    return { access_token, refresh_token, deviceId };
   }
 
   async signup(signUpData: SignUpDto) {
@@ -125,9 +123,15 @@ export class AuthService {
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = await this.usersService.createUser(
+    const newUser = await this.usersService.createUser(email);
+    await this.usersService.createAuthAccount(
+      newUser.id,
+      'local',
       email,
       hashedPassword,
+    );
+    await this.usersService.createUserProfile(
+      newUser.id,
       first_name,
       last_name,
       home_address,
@@ -155,7 +159,7 @@ export class AuthService {
       expiresAt,
     );
 
-    return { access_token, refresh_token, deviceId, user: newUser };
+    return { access_token, refresh_token, deviceId, newUser };
   }
 
   async logout(userId: number, deviceId: string) {
@@ -222,8 +226,6 @@ export class AuthService {
     const key = `reset:session:${resetSessionId}`;
     const email = await this.redis.get(key);
 
-    console.log(email);
-
     if (!email) {
       throw new UnauthorizedException(
         'Invalid or expired reset session. Please verify OTP again.',
@@ -237,8 +239,7 @@ export class AuthService {
     }
 
     // Update user's password
-    const hashedPassword = await bcrypt.hash(new_password, 12);
-    await this.usersService.updatePassword(user.id, hashedPassword);
+    await this.usersService.updatePassword(user.id, new_password);
 
     // Invalidate the reset session
     await this.redis.del(key);
@@ -291,5 +292,72 @@ export class AuthService {
     return;
   }
 
-  
+  async handleGoogleLogin(googleUser: {
+    googleId: string;
+    email: string;
+    firstName: string;
+    lastName: string;
+    profilePicture: string;
+  }) {
+    let user = await this.usersService.findByEmail(googleUser.email);
+
+    if (!user) {
+      user = await this.usersService.createUser(googleUser.email);
+      await this.usersService.createAuthAccount(
+        user.id,
+        'google',
+        googleUser.googleId,
+      );
+      await this.usersService.createUserProfile(
+        user.id,
+        googleUser.firstName,
+        googleUser.lastName,
+        '',
+      );
+    } else {
+      const googleAuth = await this.usersService.findAuthAccount(
+        user.id,
+        'google',
+      );
+
+      if (!googleAuth) {
+        await this.usersService.createAuthAccount(
+          user.id,
+          'google',
+          googleUser.googleId,
+        );
+      }
+
+      // Update profile picture if not set
+      const profile = await this.usersService.findProfileByUserId(user.id);
+      if (profile && !profile.profilePicture) {
+        await this.usersService.updateProfile(user.id, {
+          profilePicture: googleUser.profilePicture,
+        });
+      }
+    }
+
+    const payload: JwtPayload = {
+      sub: user.id,
+      role: user.role,
+    };
+
+    const access_token = this.tokenService.signAccessToken(payload);
+    const refresh_token = this.tokenService.signRefreshToken(payload);
+
+    const hashedToken = await bcrypt.hash(refresh_token, 10);
+    const deviceId = randomUUID();
+
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 7);
+
+    await this.refreshTokenService.setRefreshToken(
+      user.id,
+      deviceId,
+      hashedToken,
+      expiresAt,
+    );
+
+    return { access_token, refresh_token, deviceId, user };
+  }
 }

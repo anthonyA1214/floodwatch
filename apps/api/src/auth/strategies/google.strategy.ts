@@ -1,33 +1,40 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
-import { Strategy, StrategyOptions,VerifyCallback } from 'passport-google-oauth20';
+import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 import type { ConfigType } from '@nestjs/config';
-import googleOathConfig from 'src/config/google-oath.config';
-
+import googleOauthConfig from 'src/config/google-oauth.config';
+import { GoogleOAuthProfile } from 'src/types/google';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
-    constructor(
-        @Inject(googleOathConfig.KEY)
-        private googleConfiguration: ConfigType<typeof googleOathConfig>,
-    ) {
-        super({
-            clientID: googleConfiguration.clientId,          // fallback to empty string
-            clientSecret: googleConfiguration.clientSecret,  // fallback to empty string
-            callbackURL: googleConfiguration.callbackURL,    // fallback to empty string
-            scope: ['email', 'profile'],
-            passReqToCallback: false, // required to satisfy TypeScript
-        } as StrategyOptions);
-    }
+  constructor(
+    @Inject(googleOauthConfig.KEY)
+    private googleConfiguration: ConfigType<typeof googleOauthConfig>,
+  ) {
+    super({
+      clientID: googleConfiguration.clientId,
+      clientSecret: googleConfiguration.clientSecret,
+      callbackURL: googleConfiguration.callbackURL,
+      scope: ['email', 'profile'],
+    });
+  }
 
-    async validate(
-        accessToken: string,
-        refreshToken: string,
-        profile: any,
-        done: VerifyCallback,
-    ) {
-        // Here you can map Google profile to your NestJS user entity
-        console.log({ profile });
-        return profile;
-    }
+  validate(
+    _accessToken: string,
+    _refreshToken: string,
+    profile: { _json: GoogleOAuthProfile },
+    done: VerifyCallback,
+  ) {
+    const google = profile._json;
+
+    const user = {
+      googleId: google.sub,
+      email: google.email,
+      firstName: google.given_name,
+      lastName: google.family_name || google.given_name,
+      profilePicture: google.picture,
+    };
+
+    done(null, user);
+  }
 }

@@ -13,6 +13,8 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     const user = await this.authService.validateUser(email, password);
 
     if (!user) throw new UnauthorizedException('Invalid credentials');
+    if (user.status === 'blocked')
+      throw new UnauthorizedException('User is blocked');
 
     return user;
   }
