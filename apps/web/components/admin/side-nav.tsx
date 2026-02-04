@@ -11,10 +11,11 @@ import Image from 'next/image';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { NavItems } from './nav-items';
 import LogoutButton from './logout-button';
+import { ScrollArea } from '../ui/scroll-area';
 
 export default function SideNav() {
   return (
-    <div className="p-4">
+    <div className="p-4 h-screen">
       <Sidebar collapsible="none" className="flex rounded-2xl bg-white">
         <SidebarHeader className="w-full py-6 flex items-center">
           <Link href="/" className="flex items-center gap-x-2">
@@ -27,7 +28,9 @@ export default function SideNav() {
             <h1 className="text-[#0066CC] font-bold text-xl">FloodWatch</h1>
           </Link>
         </SidebarHeader>
-        <SidebarContent className="w-full">
+
+        <SidebarContent className="w-full flex-1 min-h-0">
+          {/* profile */}
           <SidebarGroup>
             <SidebarGroupContent className="flex flex-col items-center justify-center py-4">
               <div className="py-2">
@@ -46,11 +49,14 @@ export default function SideNav() {
               </div>
             </SidebarGroupContent>
           </SidebarGroup>
-          <SidebarGroup>
-            <SidebarGroupContent className="space-y-2">
-              <NavItems />
-            </SidebarGroupContent>
-          </SidebarGroup>
+          {/* Nav items - scrollable */}
+          <ScrollArea className="flex-1 min-h-0 h-0">
+            <SidebarGroup>
+              <SidebarGroupContent className="space-y-2">
+                <NavItems />
+              </SidebarGroupContent>
+            </SidebarGroup>
+          </ScrollArea>
         </SidebarContent>
         <SidebarFooter className="border-t py-4 w-full">
           <SidebarGroup>

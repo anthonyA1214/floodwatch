@@ -1,6 +1,6 @@
 import { IconMapPin } from '@tabler/icons-react';
 
-export default function AffectedLocationCard() {
+export default function AffectedLocationsCard() {
   return (
     <div className="flex-1 flex flex-col gap-4 h-full border p-4 rounded-2xl">
       <h2 className="font-poppins text-xl font-semibold">Affected Locations</h2>

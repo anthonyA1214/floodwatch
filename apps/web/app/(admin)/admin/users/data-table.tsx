@@ -18,6 +18,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { useState } from 'react';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -42,7 +43,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="overflow-hidden rounded-lg">
+    <div className="overflow-hidden rounded-lg flex flex-col flex-1 min-h-0 h-0">
       <Table>
         <TableHeader className="font-poppins bg-[#0066CC]">
           {table.getHeaderGroups().map((headerGroup) => (
@@ -62,29 +63,41 @@ export function DataTable<TData, TValue>({
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && 'selected'}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
-                No results.
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
       </Table>
+      <div className="flex-1 min-h-0 overflow-hidden">
+        <ScrollArea className="h-full">
+          <Table>
+            <TableBody>
+              {table.getRowModel().rows?.length ? (
+                table.getRowModel().rows.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    data-state={row.getIsSelected() && 'selected'}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <TableCell key={cell.id}>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </ScrollArea>
+      </div>
     </div>
   );
 }

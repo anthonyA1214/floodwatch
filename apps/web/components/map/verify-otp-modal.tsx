@@ -1,11 +1,8 @@
-'use client';
-
 import {
   InputOTP,
   InputOTPGroup,
   InputOTPSlot,
 } from '@/components/ui/input-otp';
-import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import { ActionState } from '@/lib/types/action-state';
@@ -15,7 +12,18 @@ import z from 'zod';
 import { api } from '@/lib/api';
 import { mapVerifyOtpAuthError } from '@/lib/auth/verify-otp-auth-error';
 
-export default function VerifyOtpForm() {
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { IconMail } from '@tabler/icons-react';
+
+export default function VerifyOtpModal() {
   const router = useRouter();
   const formRef = useRef<HTMLFormElement>(null);
 
@@ -136,69 +144,86 @@ export default function VerifyOtpForm() {
   }
 
   return (
-    <form ref={formRef} onSubmit={handleVerify} className="space-y-6">
-      <div className="flex flex-col items-center gap-y-4">
-        <InputOTP
-          maxLength={6}
-          id="otp"
-          name="otp"
-          value={otp}
-          onChange={setOtp}
-          onComplete={() => {
-            if (!isVerifying) {
-              formRef.current?.requestSubmit();
-            }
-          }}
-          disabled={isVerifying || isResending}
-        >
-          <InputOTPGroup className="grid grid-cols-6 gap-2">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <InputOTPSlot
-                key={i}
-                index={i}
-                className="w-12 h-12 text-xl rounded-md border"
-              />
-            ))}
-          </InputOTPGroup>
-        </InputOTP>
-
-        {state?.errors && 'otp' in state.errors && state.errors.otp && (
-          <p className="text-red-500 text-sm">{state.errors.otp}</p>
-        )}
-      </div>
-
-      <div className="flex flex-col gap-y-4">
-        <Button
-          disabled={isVerifying || isResending}
-          className="w-full rounded-full"
-        >
-          {isVerifying ? (
-            <>
-              Verifying... <Spinner />
-            </>
-          ) : (
-            'Verify code'
-          )}
+    <Dialog>
+      <DialogTrigger asChild>
+        <Button className="flex items-center gap-2">
+          <IconMail className="w-[1.5em]! h-[1.5em]!" />
+          Send OTP to Email
         </Button>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Verify code!</DialogTitle>
+          <DialogDescription>
+            This action cannot be undone. This will permanently delete your
+            account and remove your data from our servers.
+          </DialogDescription>
+        </DialogHeader>
+        <form ref={formRef} onSubmit={handleVerify} className="space-y-6">
+          <div className="flex flex-col items-center gap-y-4">
+            <InputOTP
+              maxLength={6}
+              id="otp"
+              name="otp"
+              value={otp}
+              onChange={setOtp}
+              onComplete={() => {
+                if (!isVerifying) {
+                  formRef.current?.requestSubmit();
+                }
+              }}
+              disabled={isVerifying || isResending}
+            >
+              <InputOTPGroup className="grid grid-cols-6 gap-2">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <InputOTPSlot
+                    key={i}
+                    index={i}
+                    className="w-12 h-12 text-xl rounded-md border"
+                  />
+                ))}
+              </InputOTPGroup>
+            </InputOTP>
 
-        <Button
-          type="button"
-          onClick={handleResend}
-          disabled={isVerifying || isResending || cooldown > 0}
-          variant="secondary"
-          className="w-full rounded-full"
-        >
-          {isResending ? (
-            <>
-              Resending... <Spinner />
-            </>
-          ) : cooldown > 0 ? (
-            `Resend in ${cooldown}s`
-          ) : (
-            'Resend code'
-          )}
-        </Button>
-      </div>
-    </form>
+            {state?.errors && 'otp' in state.errors && state.errors.otp && (
+              <p className="text-red-500 text-sm">{state.errors.otp}</p>
+            )}
+          </div>
+
+          <div className="flex flex-col gap-y-4">
+            <Button
+              disabled={isVerifying || isResending}
+              className="w-full rounded-full bg-[#0066CC] hover:bg-[#005BB5]"
+            >
+              {isVerifying ? (
+                <>
+                  Verifying... <Spinner />
+                </>
+              ) : (
+                'Verify code'
+              )}
+            </Button>
+
+            <Button
+              type="button"
+              onClick={handleResend}
+              disabled={isVerifying || isResending || cooldown > 0}
+              variant="secondary"
+              className="w-full rounded-full"
+            >
+              {isResending ? (
+                <>
+                  Resending... <Spinner />
+                </>
+              ) : cooldown > 0 ? (
+                `Resend in ${cooldown}s`
+              ) : (
+                'Resend code'
+              )}
+            </Button>
+          </div>
+        </form>
+      </DialogContent>
+    </Dialog>
   );
 }
