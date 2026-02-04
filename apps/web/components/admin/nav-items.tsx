@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import {
   IconClipboard,
   IconMap,
+  IconSettings2,
   IconUser,
   IconUserCog,
   IconUsers,
@@ -35,9 +36,9 @@ export function NavItems() {
       icon: IconUsers,
     },
     {
-      title: 'Profile',
-      url: '/admin/profile',
-      icon: IconUser,
+      title: 'Settings',
+      url: '/admin/settings',
+      icon: IconSettings2,
     },
   ];
 

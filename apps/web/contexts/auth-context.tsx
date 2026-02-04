@@ -37,6 +37,10 @@ export function AuthContextProvider({
     }
   };
 
+  const loginWithGoogle = () => {
+    window.location.href = 'http://localhost:3000/auth/google';
+  };
+
   useEffect(() => {
     refreshAuth().finally(() => setIsLoading(false));
   }, []);
