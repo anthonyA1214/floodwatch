@@ -8,14 +8,13 @@ import {
   AvatarImage,
 } from '@/components/ui/avatar';
 import Avatar from 'boring-avatars';
-import { Button } from '@/components/ui/button';
 import { IconBell } from '@tabler/icons-react';
-import { useProfile } from '@/contexts/profile-context';
+import { usePanel } from '@/contexts/panel-context';
 import { useAuth } from '@/contexts/auth-context';
 import AuthButtons from '@/components/auth-buttons';
 
 export default function TopNav() {
-  const { toggle } = useProfile();
+  const { toggle } = usePanel();
   const { isAuthenticated } = useAuth();
 
   return (
@@ -30,11 +29,14 @@ export default function TopNav() {
           <div className="flex items-center gap-10">
             <div className="flex items-center gap-4">
               {/* Notification button maybe dropdown */}
-              <Button size="icon" className="text-2xl">
-                <IconBell className="w-[1em]! h-[1em]!" />
-              </Button>
+              <button
+                className="text-base text-white hover:text-[#F5F5F5] active:text-[#EAEAEA] transition-colors"
+                onClick={() => toggle('notification')}
+              >
+                <IconBell className="w-[1.5em]! h-[1.5em]!" />
+              </button>
 
-              <button onClick={toggle}>
+              <button onClick={() => toggle('profile')}>
                 <UIAvatar className="size-8 border">
                   <AvatarImage src="" />
                   <AvatarFallback>
