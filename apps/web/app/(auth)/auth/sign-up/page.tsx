@@ -1,5 +1,6 @@
 import Footer from '@/components/auth/footer';
 import SignUpform from '@/components/auth/forms/sign-up-form';
+import OAuthButton from '@/components/oauth-button';
 import Link from 'next/link';
 
 export default function SignUpPage() {
@@ -16,6 +17,14 @@ export default function SignUpPage() {
       </div>
 
       <SignUpform />
+
+      <div className="flex gap-4 text-xs items-center text-gray-600">
+        <div className="h-px flex-1 bg-gray-100"></div>
+        OR
+        <div className="h-px flex-1 bg-gray-100"></div>
+      </div>
+
+      <OAuthButton provider="google" />
 
       <div className="flex flex-col py-6 gap-y-10">
         <div className="flex justify-center text-sm text-gray-500">

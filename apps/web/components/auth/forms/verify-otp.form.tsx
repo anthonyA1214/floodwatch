@@ -170,7 +170,7 @@ export default function VerifyOtpForm() {
       <div className="flex flex-col gap-y-4">
         <Button
           disabled={isVerifying || isResending}
-          className="w-full rounded-full bg-blue-600 hover:bg-blue-700"
+          className="w-full rounded-full"
         >
           {isVerifying ? (
             <>

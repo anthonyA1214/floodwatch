@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { inter, poppins } from '@/config/fonts';
 import './globals.css';
-import { AuthContextProvider } from '@/providers/auth-provider';
+import { AuthContextProvider } from '@/contexts/auth-context';
 
 export const metadata: Metadata = {
   title: 'FloodWatch',

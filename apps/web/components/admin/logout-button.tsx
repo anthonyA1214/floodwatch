@@ -3,12 +3,13 @@
 import { IconLogout } from '@tabler/icons-react';
 import { SidebarMenuItem, SidebarMenuButton } from '@/components/ui/sidebar';
 import { useState } from 'react';
-import { api } from '@/lib/api';
 import { useRouter } from 'next/navigation';
 import { clearAuth } from '@/utils/auth-utils';
+import { useAuth } from '@/contexts/auth-context';
 
-export default function Logoutbutton() {
+export default function LogoutButton() {
   const router = useRouter();
+  const { logout } = useAuth();
 
   const [isPending, setIsPending] = useState(false);
 
@@ -18,7 +19,7 @@ export default function Logoutbutton() {
 
     try {
       // Perform logout logic here, e.g., call an API endpoint to log out
-      await api.delete('/auth/logout');
+      await logout();
 
       clearAuth();
       router.replace('/auth/login');
