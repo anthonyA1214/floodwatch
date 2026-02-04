@@ -9,6 +9,8 @@ import { useProfile } from '@/contexts/profile-context';
 import FloatingActionButtonMenu from '@/components/map/floating-action-button-menu';
 import AffectedLocationPopup from '@/components/map/affected-locations-popup';
 import SafetyLocationsPopup from '@/components/map/safety-locations-popup';
+import AffectedLocationPanel from '@/components/map/affected-location-area/affected-location-panel';
+import SafetyLocationPanel from '@/components/map/safety-location-area/safety-location-panel';
 export default function InteractiveMapPage() {
   const [showLegend, setShowLegend] = useState(false);
   const [activePopup, setActivePopup] = useState<'affected' | 'safety' | null>(
@@ -51,6 +53,8 @@ export default function InteractiveMapPage() {
         {isOpen && <ProfilePanel />}
       </div>
 
+      {/* <SafetyLocationPanel/> */}
+      <AffectedLocationPanel/> 
       <InteractiveMap />
     </div>
   );

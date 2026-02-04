@@ -47,11 +47,9 @@ export default function SafetyLocationsPopup({
           </SelectTrigger>
 
           <SelectContent>
-            <SelectItem value="all-levels">All Levels</SelectItem>
-            <SelectItem value="critical">Critical</SelectItem>
-            <SelectItem value="high">High</SelectItem>
-            <SelectItem value="moderate">Moderate</SelectItem>
-            <SelectItem value="low">Low</SelectItem>
+            <SelectItem value="all-levels">All</SelectItem>
+            <SelectItem value="hospital">Hospital</SelectItem>
+            <SelectItem value="shelter">Shelter</SelectItem>
           </SelectContent>
         </Select>
       </div>
