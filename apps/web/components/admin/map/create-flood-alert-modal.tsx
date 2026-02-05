@@ -42,7 +42,7 @@ export default function CreateSafeZoneModal() {
               <div className="flex flex-col pr-4 gap-y-6 ms-1">
                 {/* Location name */}
                 <div className="space-y-2">
-                  <Label htmlFor="location">Location name</Label>
+                  <Label htmlFor="location">Location Name</Label>
                   <Input
                     id="location"
                     name="location"

@@ -42,7 +42,7 @@ export default function CreateSafeZoneModal() {
               <div className="flex flex-col pr-4 gap-y-6 ms-1">
                 {/* Location name */}
                 <div className="space-y-2">
-                  <Label htmlFor="location">Location name</Label>
+                  <Label htmlFor="location">Location Name</Label>
                   <Input
                     id="location"
                     name="location"
@@ -51,20 +51,18 @@ export default function CreateSafeZoneModal() {
                   />
                 </div>
 
-                {/* Severity Level */}
+                {/* Safety Location Type */}
                 <div className="space-y-2">
-                  <Label htmlFor="severity">Severity Level</Label>
+                  <Label htmlFor="severity">Safety Location Type</Label>
                   <Select name="severity">
                     <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Severity Level" />
+                      <SelectValue placeholder="Safety Location Type" />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
-                        <SelectLabel>Severity Level</SelectLabel>
-                        <SelectItem value="critical">Critical</SelectItem>
-                        <SelectItem value="high">High</SelectItem>
-                        <SelectItem value="moderate">Moderate</SelectItem>
-                        <SelectItem value="low">Low</SelectItem>
+                        <SelectLabel>Safety Location Type</SelectLabel>
+                        <SelectItem value="hospital">Hospital</SelectItem>
+                        <SelectItem value="shelter">Shelter</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>

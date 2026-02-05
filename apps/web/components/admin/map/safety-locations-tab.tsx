@@ -12,31 +12,37 @@ export default function SafetyLocationsTab() {
           <ScrollArea className="h-full p-4">
             <div className="space-y-4 pr-4">
               <SafetyLocationsCard
+                type="shelter"
                 name="Community Safe Haven"
                 address="123 Safety St, Safeville"
                 availability="Open 24/7"
               />
               <SafetyLocationsCard
+                type="shelter"
                 name="Downtown Shelter"
                 address="456 Help Ave, Caretown"
                 availability="Mon-Fri 9am-5pm"
               />
               <SafetyLocationsCard
+                type="shelter"
                 name="Neighborhood Refuge"
                 address="789 Support Rd, Kindcity"
                 availability="Open 24/7"
               />
               <SafetyLocationsCard
+                type="hospital"
                 name="City Aid Center"
                 address="101 Relief Blvd, Hopeville"
                 availability="Mon-Sun 8am-8pm"
               />
               <SafetyLocationsCard
+                type="shelter"
                 name="Urban Safe Spot"
                 address="202 Protection Ln, Securetown"
                 availability="Open 24/7"
               />
               <SafetyLocationsCard
+                type="hospital"
                 name="Harbor Shelter"
                 address="303 Sanctuary St, Havenport"
                 availability="Mon-Fri 10am-6pm"

@@ -8,59 +8,52 @@ import {
   AvatarImage,
 } from '@/components/ui/avatar';
 import Avatar from 'boring-avatars';
-import { Button } from '@/components/ui/button';
 import { IconBell } from '@tabler/icons-react';
-import { useProfile } from '@/contexts/profile-context';
+import { usePanel } from '@/contexts/panel-context';
 import AuthButtons from '@/components/auth-buttons';
 import { useUser } from '@/hooks/use-user';
 
 export default function TopNav() {
-  const { toggle } = useProfile();
+  const { toggle } = usePanel();
   const { user } = useUser();
 
   return (
-    <>
-      <header className="flex w-full bg-[#0066CC] h-16">
-        <nav className="flex justify-between p-4 container mx-auto">
-          <div className="flex items-center gap-4 md:gap-10">
-            <Link href="/" className="flex items-center gap-x-2">
-              <Image
-                src="/logo-white.svg"
-                alt="FloodWatch Logo"
-                width={32}
-                height={32}
-              />
-              <h1 className="text-[#FFFFFF] font-bold text-xl">FloodWatch</h1>
-            </Link>
-          </div>
+    <header className="flex w-full bg-[#0066CC] h-16 relative z-50">
+      <nav className="flex justify-between p-4 container mx-auto items-center">
+        <Link href="/" className="flex items-center gap-x-2">
+          <Image src="/logo-white.svg" alt="Logo" width={32} height={32} />
+          <h1 className="text-white font-bold text-xl">FloodWatch</h1>
+        </Link>
 
-          {user ? (
-            <div className="flex items-center gap-10">
-              <div className="flex items-center gap-4">
-                {/* Notification button maybe dropdown */}
-                <Button size="icon" className="text-2xl">
-                  <IconBell className="w-[1em]! h-[1em]!" />
-                </Button>
+        {user ? (
+          <div className="flex items-center gap-10">
+            <div className="flex items-center gap-4">
+              {/* Notification button maybe dropdown */}
+              <button
+                className="text-base text-white hover:text-[#F5F5F5] active:text-[#EAEAEA] transition-colors"
+                onClick={() => toggle('notification')}
+              >
+                <IconBell className="w-[1.5em]! h-[1.5em]!" />
+              </button>
 
-                <button onClick={toggle}>
-                  <UIAvatar className="size-8 border">
-                    <AvatarImage src={user?.profilePicture} />
-                    <AvatarFallback>
-                      <Avatar
-                        name={`${user?.name} ${user?.id}`}
-                        variant="beam"
-                        className="size-8"
-                      />
-                    </AvatarFallback>
-                  </UIAvatar>
-                </button>
-              </div>
+              <button onClick={() => toggle('profile')}>
+                <UIAvatar className="size-8 border">
+                  <AvatarImage src={user?.profilePicture} />
+                  <AvatarFallback>
+                    <Avatar
+                      name={`${user?.name} ${user?.id}`}
+                      variant="beam"
+                      className="size-8"
+                    />
+                  </AvatarFallback>
+                </UIAvatar>
+              </button>
             </div>
-          ) : (
-            <AuthButtons />
-          )}
-        </nav>
-      </header>
-    </>
+          </div>
+        ) : (
+          <AuthButtons />
+        )}
+      </nav>
+    </header>
   );
 }
