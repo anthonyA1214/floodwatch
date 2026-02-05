@@ -1,13 +1,16 @@
 import { z } from 'zod';
 
-export const usersSchema = z.object({
+export const getMeSchema = z.object({
   id: z.number(),
-  name: z.string().min(1),
-  profilePicture: z.string().optional(),
   email: z.email(),
   role: z.enum(['admin', 'user']),
-  joinDate: z.string(),
   status: z.enum(['active', 'blocked']),
+  firstName: z.string(),
+  lastName: z.string(),
+  name: z.string().min(1),
+  profilePicture: z.string().optional(),
+  homeAddress: z.string().optional(),
+  createdAt: z.string(),
 });
 
-export type UsersDto = z.infer<typeof usersSchema>;
+export type GetMeDto = z.infer<typeof getMeSchema>;

@@ -9,7 +9,7 @@ import { ActionState } from '@/lib/types/action-state';
 import { useAuth } from '@/contexts/auth-context';
 import { logInSchema } from '@repo/schemas';
 import z from 'zod';
-import { mapLoginAuthError } from '@/lib/auth/login-auth-error';
+import { mapLoginAuthError } from '@/lib/services/auth/login-auth-error';
 import { useRouter } from 'next/navigation';
 import { Spinner } from '@/components/ui/spinner';
 import { api } from '@/lib/api';

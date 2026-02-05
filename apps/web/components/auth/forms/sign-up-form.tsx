@@ -8,7 +8,7 @@ import React, { useState } from 'react';
 import { useAuth } from '@/contexts/auth-context';
 import { signUpSchema } from '@repo/schemas';
 import z from 'zod';
-import { mapSignupAuthError } from '@/lib/auth/signup-auth-error';
+import { mapSignupAuthError } from '@/lib/services/auth/signup-auth-error';
 import { Spinner } from '@/components/ui/spinner';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';

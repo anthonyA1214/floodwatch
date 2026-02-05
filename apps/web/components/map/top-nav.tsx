@@ -11,12 +11,12 @@ import Avatar from 'boring-avatars';
 import { Button } from '@/components/ui/button';
 import { IconBell } from '@tabler/icons-react';
 import { useProfile } from '@/contexts/profile-context';
-import { useAuth } from '@/contexts/auth-context';
 import AuthButtons from '@/components/auth-buttons';
+import { useUser } from '@/hooks/use-user';
 
 export default function TopNav() {
   const { toggle } = useProfile();
-  const { isAuthenticated } = useAuth();
+  const { user } = useUser();
 
   return (
     <>
@@ -34,7 +34,7 @@ export default function TopNav() {
             </Link>
           </div>
 
-          {isAuthenticated ? (
+          {user ? (
             <div className="flex items-center gap-10">
               <div className="flex items-center gap-4">
                 {/* Notification button maybe dropdown */}
