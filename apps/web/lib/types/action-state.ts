@@ -4,5 +4,4 @@ export type ActionState = {
     [key: string]: string[] | undefined;
   } | null;
   status?: 'success' | 'error' | null;
-  data?: Record<string, string>;
 };

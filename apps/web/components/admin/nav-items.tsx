@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import {
   IconClipboard,
   IconMap,
+  IconSettings2,
   IconUser,
   IconUserCog,
   IconUsers,
@@ -35,9 +36,9 @@ export function NavItems() {
       icon: IconUsers,
     },
     {
-      title: 'Profile',
-      url: '/admin/profile',
-      icon: IconUser,
+      title: 'Settings',
+      url: '/admin/settings',
+      icon: IconSettings2,
     },
   ];
 
@@ -49,7 +50,7 @@ export function NavItems() {
         const isActive = pathname === item.url;
         return (
           <SidebarMenuItem key={item.title}>
-            <SidebarMenuButton asChild className="text-lg">
+            <SidebarMenuButton asChild className="text-base">
               <Link
                 href={item.url}
                 className={cn(
@@ -58,8 +59,8 @@ export function NavItems() {
                     'border-[#0066CC] text-[#0066CC] hover:text-[#0066CC]! hover:bg-transparent',
                 )}
               >
-                <item.icon className="w-[1em]! h-[1em]!" aria-hidden />
-                <span>{item.title}</span>
+                <item.icon className="w-[1.5em]! h-[1.5em]!" aria-hidden />
+                <span className="text-lg">{item.title}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>
