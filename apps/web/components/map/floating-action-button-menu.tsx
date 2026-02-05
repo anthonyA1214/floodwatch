@@ -9,9 +9,11 @@ import {
 export default function FloatingActionButtonMenu({
   toggleAffectedLocations,
   toggleSafetyLocations,
+  toggleHotlines,
 }: {
   toggleAffectedLocations: () => void;
   toggleSafetyLocations: () => void;
+  toggleHotlines: () => void;
 }) {
   return (
     <div className="flex flex-col bg-white text-sm rounded-xl shadow-lg h-fit w-fit p-4">
@@ -45,6 +47,7 @@ export default function FloatingActionButtonMenu({
         <Button
           variant="ghost"
           className="flex items-center gap-2 justify-start"
+          onClick={toggleHotlines}
         >
           <IconPhoneCall className="w-[1.5em]! h-[1.5em]! text-[#FF6900]" />
           <span>Hotlines</span>

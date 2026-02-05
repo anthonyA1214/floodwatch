@@ -12,26 +12,18 @@ export default function AffectedLocationsCard({
   message: string;
   reportedAt: string;
 }) {
-  let color;
+  const severityColorMap = {
+    critical: '#FB2C36',
+    high: '#FF6900',
+    moderate: '#F0B204',
+    low: '#2B7FFF',
+  };
 
-  switch (severity) {
-    case 'critical':
-      color = '#FB2C36';
-      break;
-    case 'high':
-      color = '#FF6900';
-      break;
-    case 'moderate':
-      color = '#F0B204';
-      break;
-    case 'low':
-      color = '#2B7FFF';
-      break;
-  }
+  const color = severityColorMap[severity];
 
   return (
     <div className="grid rounded-lg p-4 gap-3 border">
-      <div className="flex justify-between">
+      <div className="flex justify-between gap-8 items-center">
         {/* Location */}
         <div className="font-poppins flex items-center gap-2 text-sm font-semibold">
           <IconMapPin

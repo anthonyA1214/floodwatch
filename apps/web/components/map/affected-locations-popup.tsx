@@ -1,4 +1,3 @@
-import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
@@ -26,15 +25,15 @@ export default function AffectedLocationsPopup({
     border max-w-sm p-4 gap-4 max-h-[60vh] overflow-hidden min-h-0"
     >
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-8">
         <div className="flex items-center gap-2 font-semibold text-sm">
           <IconAlertTriangle className="w-[1.5em]! h-[1.5em]! text-[#FB2C36]" />
           <span>Affected Locations</span>
         </div>
 
-        <Button variant="ghost" size="icon-sm" onClick={onClose}>
-          <IconX className="w-[1.5em]! h-[1.5em]!" />
-        </Button>
+        <button onClick={onClose} className="text-xs">
+          <IconX className="w-[1.5em]! h-[1.5em]! text-[#525254] hover:text-black" />
+        </button>
       </div>
 
       <Separator />

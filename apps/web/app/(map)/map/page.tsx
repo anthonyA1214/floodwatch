@@ -10,19 +10,16 @@ import FloatingActionButtonMenu from '@/components/map/floating-action-button-me
 import AffectedLocationPopup from '@/components/map/affected-locations-popup';
 import SafetyLocationsPopup from '@/components/map/safety-locations-popup';
 import NotificationPanel from '@/components/map/notification-panel';
+import HotlinesPopup from '@/components/map/hotlines-popup';
 export default function InteractiveMapPage() {
   const [showLegend, setShowLegend] = useState(false);
-  const [activePopup, setActivePopup] = useState<'affected' | 'safety' | null>(
-    null,
-  );
+  const [activePopup, setActivePopup] = useState<
+    'affected' | 'safety' | 'hotlines' | null
+  >(null);
   const { activePanel } = usePanel();
 
-  const toggleAffectedLocations = () => {
-    setActivePopup(activePopup === 'affected' ? null : 'affected');
-  };
-
-  const toggleSafetyLocations = () => {
-    setActivePopup(activePopup === 'safety' ? null : 'safety');
+  const togglePopup = (popup: 'affected' | 'safety' | 'hotlines') => {
+    setActivePopup(activePopup === popup ? null : popup);
   };
 
   return (
@@ -34,8 +31,9 @@ export default function InteractiveMapPage() {
           <div className="flex gap-4 justify-end">
             <MapLegend show={showLegend} />
             <FloatingActionButtonMenu
-              toggleAffectedLocations={toggleAffectedLocations}
-              toggleSafetyLocations={toggleSafetyLocations}
+              toggleAffectedLocations={() => togglePopup('affected')}
+              toggleSafetyLocations={() => togglePopup('safety')}
+              toggleHotlines={() => togglePopup('hotlines')}
             />
           </div>
           <div className="flex justify-end">
@@ -45,6 +43,10 @@ export default function InteractiveMapPage() {
             />
             <SafetyLocationsPopup
               show={activePopup === 'safety'}
+              onClose={() => setActivePopup(null)}
+            />
+            <HotlinesPopup
+              show={activePopup === 'hotlines'}
               onClose={() => setActivePopup(null)}
             />
           </div>
