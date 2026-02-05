@@ -78,18 +78,39 @@ export default function DashboardPage() {
             </div>
             <div className="grid gap-4">
               <SafetyLocationsCard
+                type="shelter"
                 name="Community Safe Haven"
                 address="123 Safety St, Safeville"
                 availability="Open 24/7"
               />
               <SafetyLocationsCard
+                type="shelter"
                 name="Central Evacuation Center"
                 address="456 Rescue Ave, Sheltertown"
                 availability="Open 24/7"
               />
               <SafetyLocationsCard
+                type="shelter"
                 name="District Emergency Hub"
                 address="789 Protection Blvd, Refugeville"
+                availability="Open 24/7"
+              />
+              <SafetyLocationsCard
+                type="hospital"
+                name="Metro General Hospital"
+                address="321 Medical Lane, City Center"
+                availability="Open 24/7"
+              />
+              <SafetyLocationsCard
+                type="hospital"
+                name="St. Mary's Medical Center"
+                address="654 Healthcare Dr, North District"
+                availability="Open 24/7"
+              />
+              <SafetyLocationsCard
+                type="shelter"
+                name="Regional Relief Station"
+                address="987 Haven Rd, East Zone"
                 availability="Open 24/7"
               />
             </div>

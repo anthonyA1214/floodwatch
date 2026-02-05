@@ -26,7 +26,7 @@ export default function ActiveFloodAlertsCard({
       className="grid border-l-4 rounded-lg p-4 gap-4"
       style={{ borderLeftColor: color, backgroundColor: `${color}10` }}
     >
-      <div className="flex justify-between">
+      <div className="flex justify-between gap-8 items-center">
         {/* Location */}
         <div className="font-poppins flex items-center gap-2 text-base font-semibold">
           <IconMapPin

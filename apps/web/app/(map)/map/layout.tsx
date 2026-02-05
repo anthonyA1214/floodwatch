@@ -1,15 +1,15 @@
 import TopNav from '@/components/map/top-nav';
-import { ProfileContextProvider } from '@/contexts/profile-context';
+import { PanelContextProvider } from '@/contexts/panel-context';
 
 export default function MapLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <ProfileContextProvider>
+    <PanelContextProvider>
       <div className="flex flex-col h-screen">
         <TopNav />
         <main className="flex-1 overflow-hidden">{children}</main>
       </div>
-    </ProfileContextProvider>
+    </PanelContextProvider>
   );
 }
