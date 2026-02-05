@@ -44,9 +44,13 @@ export default function TopNav() {
 
                 <button onClick={toggle}>
                   <UIAvatar className="size-8 border">
-                    <AvatarImage src="" />
+                    <AvatarImage src={user?.profilePicture} />
                     <AvatarFallback>
-                      <Avatar name="Lawrence Dullo" variant="beam" />
+                      <Avatar
+                        name={`${user?.name} ${user?.id}`}
+                        variant="beam"
+                        className="size-8"
+                      />
                     </AvatarFallback>
                   </UIAvatar>
                 </button>

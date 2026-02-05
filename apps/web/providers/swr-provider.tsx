@@ -4,18 +4,20 @@ import { SWRConfig } from 'swr';
 
 export default function SWRProvider({
   children,
+  fallback,
 }: {
   children: React.ReactNode;
+  fallback: Record<string, unknown>;
 }) {
   return (
     <SWRConfig
       value={{
+        fallback,
         revalidateOnFocus: false,
         shouldRetryOnError: false,
         revalidateOnReconnect: false,
-
-        // optional but VERY good
-        dedupingInterval: 60000, // 1 minute
+        dedupingInterval: 60000,
+        keepPreviousData: true,
       }}
     >
       {children}

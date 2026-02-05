@@ -1,3 +1,5 @@
+'use client';
+
 import useSWR from 'swr';
 import { getMe } from '@/lib/services/user/get-me';
 import { SWR_KEYS } from '@/lib/constants/swr-keys';

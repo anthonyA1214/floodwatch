@@ -10,8 +10,13 @@ export async function getMeServer() {
     next: { revalidate: 300 },
   });
 
+  if (response.status === 401) {
+    return null;
+  }
+
   if (!response.ok) {
-    throw new Error('Failed to fetch user data');
+    console.error('ME ERROR:', response.status);
+    return null;
   }
 
   const data = await response.json();
