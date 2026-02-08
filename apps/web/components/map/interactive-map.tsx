@@ -6,6 +6,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 export default function InteractiveMap() {
   return (
     <Map
+      id="main-map"
       initialViewState={{
         longitude: 121.030909,
         latitude: 14.754587,

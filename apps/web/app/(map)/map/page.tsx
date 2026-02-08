@@ -12,6 +12,9 @@ import SafetyLocationsPopup from '@/components/map/safety-locations-popup';
 import NotificationPanel from '@/components/map/notification-panel';
 import HotlinesPopup from '@/components/map/hotlines-popup';
 import { GoogleLinkToastHandler } from '@/components/google-link-toast-handler';
+
+import { MapProvider } from 'react-map-gl/maplibre';
+
 export default function InteractiveMapPage() {
   const [showLegend, setShowLegend] = useState(false);
   const [activePopup, setActivePopup] = useState<
@@ -24,43 +27,45 @@ export default function InteractiveMapPage() {
   };
 
   return (
-    <div className="relative w-full h-full">
-      <Suspense fallback={null}>
-        <GoogleLinkToastHandler />
-      </Suspense>
+    <MapProvider>
+      <div className="relative w-full h-full">
+        <Suspense fallback={null}>
+          <GoogleLinkToastHandler />
+        </Suspense>
 
-      <SearchBar toggleLegend={() => setShowLegend(!showLegend)} />
+        <SearchBar toggleLegend={() => setShowLegend(!showLegend)} />
 
-      <div className="absolute top-4 right-4 z-10 flex gap-4 h-full">
-        <div className="flex flex-col gap-4">
-          <div className="flex gap-4 justify-end">
-            <MapLegend show={showLegend} />
-            <FloatingActionButtonMenu
-              toggleAffectedLocations={() => togglePopup('affected')}
-              toggleSafetyLocations={() => togglePopup('safety')}
-              toggleHotlines={() => togglePopup('hotlines')}
-            />
+        <div className="absolute top-4 right-4 z-10 flex gap-4 h-full">
+          <div className="flex flex-col gap-4">
+            <div className="flex gap-4 justify-end">
+              <MapLegend show={showLegend} />
+              <FloatingActionButtonMenu
+                toggleAffectedLocations={() => togglePopup('affected')}
+                toggleSafetyLocations={() => togglePopup('safety')}
+                toggleHotlines={() => togglePopup('hotlines')}
+              />
+            </div>
+            <div className="flex justify-end">
+              <AffectedLocationPopup
+                show={activePopup === 'affected'}
+                onClose={() => setActivePopup(null)}
+              />
+              <SafetyLocationsPopup
+                show={activePopup === 'safety'}
+                onClose={() => setActivePopup(null)}
+              />
+              <HotlinesPopup
+                show={activePopup === 'hotlines'}
+                onClose={() => setActivePopup(null)}
+              />
+            </div>
           </div>
-          <div className="flex justify-end">
-            <AffectedLocationPopup
-              show={activePopup === 'affected'}
-              onClose={() => setActivePopup(null)}
-            />
-            <SafetyLocationsPopup
-              show={activePopup === 'safety'}
-              onClose={() => setActivePopup(null)}
-            />
-            <HotlinesPopup
-              show={activePopup === 'hotlines'}
-              onClose={() => setActivePopup(null)}
-            />
-          </div>
+          {activePanel === 'notification' && <NotificationPanel />}
+          {activePanel === 'profile' && <ProfilePanel />}
         </div>
-        {activePanel === 'notification' && <NotificationPanel />}
-        {activePanel === 'profile' && <ProfilePanel />}
-      </div>
 
-      <InteractiveMap />
-    </div>
+        <InteractiveMap />
+      </div>
+    </MapProvider>
   );
 }
