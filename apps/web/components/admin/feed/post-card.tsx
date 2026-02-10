@@ -23,6 +23,7 @@ interface PostCardProps {
   location: string;
   timestamp: string;
   reportCount: number;
+  onDelete?: () => void; // Added frontend prop
 }
 
 export default function PostCard({
@@ -32,9 +33,10 @@ export default function PostCard({
   location,
   timestamp,
   reportCount,
+  onDelete, // Added destructuring
 }: PostCardProps) {
   return (
-    <div className="flex flex-col rounded-2xl p-4 border gap-4">
+    <div className="flex flex-col rounded-2xl p-4 border gap-4 bg-white">
       {/* 1st */}
       <div className="flex gap-2 items-center">
         <UIAvatar className="size-10">
@@ -46,7 +48,7 @@ export default function PostCard({
 
         <div className="flex flex-col w-full">
           <div className="flex justify-between w-full items-center">
-            <span className="font-semibold">{author.name}</span>
+            <span className="font-semibold text-gray-900">{author.name}</span>
 
             <div className="flex items-center gap-4 text-xs text-gray-600">
               <div className="flex items-center gap-1">
@@ -56,7 +58,11 @@ export default function PostCard({
                 <span>{reportCount}</span>
               </div>
 
-              <button className="rounded-full hover:bg-gray-100 p-2 transition">
+              {/* Trash Button Trigger */}
+              <button
+                onClick={onDelete}
+                className="rounded-full hover:bg-red-50 hover:text-red-500 p-2 transition"
+              >
                 <IconTrash className="w-[1.5em]! h-[1.5em]!" />
               </button>
             </div>
@@ -79,7 +85,7 @@ export default function PostCard({
         </div>
       </div>
       <div>
-        <p className="text-sm">{content}</p>
+        <p className="text-sm text-gray-800">{content}</p>
       </div>
       <div>
         {imageUrl && (
@@ -88,7 +94,7 @@ export default function PostCard({
             alt="Post Image"
             width={500}
             height={300}
-            className="w-full h-auto rounded-lg"
+            className="w-full h-auto rounded-lg object-cover"
           />
         )}
       </div>
