@@ -50,3 +50,28 @@ export async function updateProfilePhoto(formData: FormData) {
     };
   }
 }
+
+export async function removeProfilePhoto() {
+  try {
+    const cookie = (await headers()).get('cookie');
+
+    await api.delete('/users/me/avatar', {
+      headers: {
+        cookie,
+      },
+      withCredentials: true,
+    });
+
+    return {
+      errors: {},
+      status: 'success',
+    };
+  } catch {
+    return {
+      errors: {
+        file: ['Failed to remove profile photo. Please try again.'],
+      },
+      status: 'error',
+    };
+  }
+}

@@ -14,6 +14,7 @@ import * as bcrypt from 'bcrypt';
 import { profileInfo } from 'src/drizzle/schemas';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { ImagesService } from 'src/images/images.service';
+import { UpdateProfileDto, updateProfileSchema } from '@repo/schemas';
 
 @Injectable()
 export class UsersService {
@@ -222,20 +223,32 @@ export class UsersService {
     return profile;
   }
 
-  async updateProfile(
-    userId: number,
-    updates: {
-      firstName?: string;
-      lastName?: string;
-      profilePicture?: string;
-      homeAddress?: string;
-    },
-  ) {
+  async updateProfile(userId: number, updates: UpdateProfileDto) {
+    const parsedData = updateProfileSchema.safeParse(updates);
+
+    if (!parsedData.success) {
+      throw new BadRequestException('Invalid profile data');
+    }
+
+    const { firstName, lastName, homeAddress } = parsedData.data;
+
+    const updateData: Partial<typeof profileInfo.$inferInsert> = {
+      updatedAt: new Date(),
+    };
+
+    if (firstName !== undefined) updateData.firstName = firstName;
+    if (lastName !== undefined) updateData.lastName = lastName;
+    if (homeAddress !== undefined) updateData.homeAddress = homeAddress;
+
     const [updatedProfile] = await this.db
       .update(profileInfo)
-      .set({ ...updates, updatedAt: new Date() })
+      .set(updateData)
       .where(eq(profileInfo.userId, userId))
       .returning();
+
+    if (!updatedProfile) {
+      throw new NotFoundException(`Profile not found for user ${userId}`);
+    }
 
     return updatedProfile;
   }

@@ -9,12 +9,17 @@ import {
   UseGuards,
   UseInterceptors,
   Delete,
+  Patch,
+  UsePipes,
+  Body,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 import { type MeRequest } from 'src/types/me-request.type';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { type AuthRequest } from 'src/auth/types/auth-request.type';
+import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
+import { type UpdateProfileDto, updateProfileSchema } from '@repo/schemas';
 
 @Controller('users')
 export class UsersController {
@@ -29,6 +34,17 @@ export class UsersController {
     return user;
   }
 
+  @Patch('me')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(new ZodValidationPipe(updateProfileSchema))
+  async updateProfile(
+    @Request() req: MeRequest,
+    @Body() updateProfileDto: UpdateProfileDto,
+  ) {
+    return await this.usersService.updateProfile(req.user.id, updateProfileDto);
+  }
+
   @Post('me/avatar')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
@@ -38,8 +54,6 @@ export class UsersController {
     @UploadedFile()
     file: Express.Multer.File,
   ) {
-    console.log(req.user.id, file);
-
     return await this.usersService.uploadAvatar(req.user.id, file);
   }
 

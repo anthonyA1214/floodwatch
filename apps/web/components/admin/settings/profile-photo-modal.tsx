@@ -25,19 +25,22 @@ import Avatar from 'boring-avatars';
 import { Separator } from '@/components/ui/separator';
 import { useUser } from '@/hooks/use-user';
 import { useState, useRef } from 'react';
-import { updateProfilePhoto } from '@/lib/actions/profile-photo-actions';
-import { mutate } from 'swr';
-import { SWR_KEYS } from '@/lib/constants/swr-keys';
+import {
+  removeProfilePhoto,
+  updateProfilePhoto,
+} from '@/lib/actions/profile-photo-actions';
+import { Spinner } from '@/components/ui/spinner';
 
 interface FileWithPreview extends File {
   preview: string;
 }
 
 export function ProfilePhotoModal() {
-  const { user } = useUser();
+  const { user, mutateUser } = useUser();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<FileWithPreview | null>(null);
   const [open, setOpen] = useState(false);
+  const [isRemoving, setIsRemoving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -66,13 +69,25 @@ export function ProfilePhotoModal() {
     fileInputRef.current?.click();
   };
 
-  const handleRemove = () => {
-    if (file) {
-      URL.revokeObjectURL(file.preview);
-    }
-    setFile(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+  const handleRemove = async () => {
+    if (!user?.profilePicture) return;
+
+    setIsRemoving(true);
+    setError(null);
+
+    try {
+      const result = await removeProfilePhoto();
+      if (result.status === 'success') {
+        await mutateUser();
+        setOpen(false);
+      } else {
+        setError(result.errors?.file?.[0] || 'Failed to remove profile photo.');
+      }
+    } catch (err) {
+      setError('Failed to remove profile photo. Please try again.');
+      console.error('Remove error:', err);
+    } finally {
+      setIsRemoving(false);
     }
   };
 
@@ -91,7 +106,7 @@ export function ProfilePhotoModal() {
       const result = await updateProfilePhoto(formData);
 
       if (result.status === 'success') {
-        await mutate(SWR_KEYS.me);
+        await mutateUser();
         setOpen(false);
 
         URL.revokeObjectURL(file.preview);
@@ -185,23 +200,43 @@ export function ProfilePhotoModal() {
                   <Button
                     type="button"
                     onClick={handleRemove}
-                    disabled={!user?.profilePicture}
+                    disabled={
+                      !user?.profilePicture || isUploading || isRemoving
+                    }
                     variant="ghost"
                     className="flex gap-2 items-center w-full text-base py-5 hover:bg-[#FB2C36]/10 hover:text-[#FB2C36] disabled:opacity-50"
                   >
-                    <IconTrash className="w-[1em]! h-[1em]!" />
-                    Remove
+                    {isRemoving ? (
+                      <>
+                        <span>Removing...</span>
+                        <Spinner />
+                      </>
+                    ) : (
+                      <>
+                        <IconTrash className="w-[1em]! h-[1em]!" />
+                        <span>Remove</span>
+                      </>
+                    )}
                   </Button>
                 </div>
 
                 {file && (
                   <Button
                     type="submit"
-                    disabled={!file || isUploading}
+                    disabled={!file || isUploading || isRemoving}
                     className="flex gap-2 items-center w-full text-base py-5 disabled:opacity-50"
                   >
-                    <IconCheck className="w-[1em]! h-[1em]!" />
-                    <span>{isUploading ? 'Applying...' : 'Apply Changes'}</span>
+                    {isUploading ? (
+                      <>
+                        <span>Applying...</span>
+                        <Spinner className="size-4" />
+                      </>
+                    ) : (
+                      <>
+                        <IconCheck className="w-[1em]! h-[1em]!" />
+                        <span>Apply Changes</span>
+                      </>
+                    )}
                   </Button>
                 )}
               </div>

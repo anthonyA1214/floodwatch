@@ -11,11 +11,11 @@ import z from 'zod';
 import { mapLoginAuthError } from '@/lib/services/auth/login-auth-error';
 import { Spinner } from '@/components/ui/spinner';
 import { api } from '@/lib/api';
-import { mutate } from 'swr';
-import { SWR_KEYS } from '@/lib/constants/swr-keys';
 import { useRouter } from 'next/navigation';
+import { useUser } from '@/hooks/use-user';
 
 export default function LoginForm() {
+  const { mutateUser } = useUser();
   const [isPending, setIsPending] = useState(false);
   const [state, setState] = useState<ActionState>({
     status: null,
@@ -59,7 +59,7 @@ export default function LoginForm() {
       });
 
       form.reset();
-      await mutate(SWR_KEYS.me);
+      await mutateUser();
 
       if (user?.role === 'admin') router.push('/admin');
       else router.push('/map');
