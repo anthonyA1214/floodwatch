@@ -10,7 +10,8 @@ export async function getMeServer() {
         headers: {
           cookie: cookie || '',
         },
-        next: { revalidate: 300 },
+        credentials: 'include',
+        cache: 'no-store',
       },
     );
 

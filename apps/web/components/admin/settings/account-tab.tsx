@@ -1,10 +1,14 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { GetMeDto } from '@repo/schemas';
+import { useUser } from '@/hooks/use-user';
 import { IconPencil } from '@tabler/icons-react';
 
-export default function AccountTab({ user }: { user: GetMeDto }) {
+export default function AccountTab() {
+  const { user } = useUser();
+
   return (
     <>
       <h3 className="font-poppins font-semibold">Profile Information</h3>

@@ -2,9 +2,9 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import PostComposer from '@/components/admin/feed/post-composer';
 import PostCard from '@/components/admin/feed/post-card';
 import { IconMapPin } from '@tabler/icons-react';
-import { GetMeDto } from '@repo/schemas';
+import { useUser } from '@/hooks/use-user';
 
-export default function CommunityFeedLeft({ user }: { user: GetMeDto }) {
+export default function CommunityFeedLeft() {
   return (
     <div className="flex-2 flex flex-col gap-6 min-h-0">
       {/* location */}
@@ -16,7 +16,7 @@ export default function CommunityFeedLeft({ user }: { user: GetMeDto }) {
       <ScrollArea className="flex-1 min-h-0">
         <div className="flex flex-col gap-6 pr-4">
           {/* post composer */}
-          <PostComposer user={user} />
+          <PostComposer />
 
           {/* feed items */}
           <PostCard

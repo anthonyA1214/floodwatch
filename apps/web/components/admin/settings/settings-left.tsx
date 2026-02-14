@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Avatar as UIAvatar,
   AvatarFallback,
@@ -6,10 +8,15 @@ import {
 import Avatar from 'boring-avatars';
 import { ProfilePhotoModal } from '@/components/admin/settings/profile-photo-modal';
 import { Separator } from '@/components/ui/separator';
-import { GetMeDto } from '@repo/schemas';
 import { format } from 'date-fns';
+import { useUser } from '@/hooks/use-user';
+import SettingsLeftSkeleton from './skeletons/settings-left-skeleton';
 
-export default function SettingsLeft({ user }: { user: GetMeDto }) {
+export default function SettingsLeft() {
+  const { user, isLoading } = useUser();
+
+  if (isLoading) return <SettingsLeftSkeleton />;
+
   let formatted;
   if (user) {
     formatted = format(new Date(user?.createdAt), 'MMMM d, yyyy');

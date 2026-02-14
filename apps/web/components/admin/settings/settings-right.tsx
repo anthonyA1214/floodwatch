@@ -2,9 +2,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import AccountTab from '@/components/admin/settings/account-tab';
 import { IconLock, IconUser } from '@tabler/icons-react';
 import SecurityTab from '@/components/admin/settings/security-tab';
-import { GetMeDto } from '@repo/schemas';
 
-export default function SettingsRight({ user }: { user: GetMeDto }) {
+export default function SettingsRight() {
   return (
     <div className="flex-1 min-h-0">
       <Tabs
@@ -35,7 +34,7 @@ export default function SettingsRight({ user }: { user: GetMeDto }) {
           value="account"
           className="flex-1 flex flex-col min-h-0 p-4 gap-8"
         >
-          <AccountTab user={user} />
+          <AccountTab />
         </TabsContent>
         <TabsContent
           value="password"

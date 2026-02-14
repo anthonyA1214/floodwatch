@@ -10,7 +10,7 @@ export const setAuthCookies = (
   res.cookie('access_token', accessToken, {
     httpOnly: true,
     secure: isProduction,
-    sameSite: 'none',
+    sameSite: isProduction ? 'none' : 'lax',
     path: '/',
     maxAge: 15 * 60 * 1000, // 15 minutes
   });
@@ -18,7 +18,7 @@ export const setAuthCookies = (
   res.cookie('refresh_token', refreshToken, {
     httpOnly: true,
     secure: isProduction,
-    sameSite: 'none',
+    sameSite: isProduction ? 'none' : 'lax',
     path: '/',
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
@@ -26,7 +26,7 @@ export const setAuthCookies = (
   res.cookie('device_id', deviceId, {
     httpOnly: true,
     secure: isProduction,
-    sameSite: 'none',
+    sameSite: isProduction ? 'none' : 'lax',
     path: '/',
     maxAge: 365 * 24 * 60 * 60 * 1000, // 1 year
   });

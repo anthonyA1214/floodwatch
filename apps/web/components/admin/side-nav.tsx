@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Sidebar,
   SidebarContent,
@@ -17,10 +19,11 @@ import Avatar from 'boring-avatars';
 import { NavItems } from './nav-items';
 import LogoutButton from './logout-button';
 import { ScrollArea } from '../ui/scroll-area';
-import { getMeServer } from '@/lib/server/get-me';
+import { useUser } from '@/hooks/use-user';
+import { Skeleton } from '../ui/skeleton';
 
-export default async function SideNav() {
-  const user = await getMeServer();
+export default function SideNav() {
+  const { user, isLoading } = useUser();
 
   return (
     <div className="p-4 h-screen">
@@ -42,23 +45,36 @@ export default async function SideNav() {
           <SidebarGroup>
             <SidebarGroupContent className="flex flex-col items-center justify-center py-4">
               <div className="py-2">
-                <UIAvatar className="size-24 border">
-                  <AvatarImage src={user?.profilePicture} />
-                  <AvatarFallback>
-                    <Avatar
-                      name={`${user?.name} ${user?.id}`}
-                      variant="beam"
-                      className="size-24"
-                    />
-                  </AvatarFallback>
-                </UIAvatar>
+                {isLoading ? (
+                  <Skeleton className="size-24 rounded-full" />
+                ) : (
+                  <UIAvatar className="size-24 border">
+                    <AvatarImage src={user?.profilePicture} />
+                    <AvatarFallback>
+                      <Avatar
+                        name={`${user?.name} ${user?.id}`}
+                        variant="beam"
+                        className="size-24"
+                      />
+                    </AvatarFallback>
+                  </UIAvatar>
+                )}
               </div>
 
               <div className="flex flex-col text-center">
-                <span className="text-lg font-bold">{user?.name}</span>
-                <span className="text-muted-foreground">
-                  {user?.role.toUpperCase()}
-                </span>
+                {isLoading ? (
+                  <>
+                    <Skeleton className="h-7 w-32" />
+                    <Skeleton className="h-5 w-24 mx-auto" />
+                  </>
+                ) : (
+                  <>
+                    <span className="text-lg font-bold">{user?.name}</span>
+                    <span className="text-muted-foreground">
+                      {user?.role.toUpperCase()}
+                    </span>
+                  </>
+                )}
               </div>
             </SidebarGroupContent>
           </SidebarGroup>
