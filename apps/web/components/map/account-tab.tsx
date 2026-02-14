@@ -14,9 +14,11 @@ import LogoutButton from '@/components/map/logout-button';
 import { useState } from 'react';
 import { useUser } from '@/hooks/use-user';
 import { format } from 'date-fns';
+import { Spinner } from '@/components/ui/spinner';
 
 export default function AccountTab() {
   const [isEditing, setIsEditing] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { user } = useUser();
 
   let formatted;
@@ -24,18 +26,45 @@ export default function AccountTab() {
     formatted = format(new Date(user?.createdAt), 'MMMM d, yyyy');
   }
 
+  const handleButtonClick = () => {
+    if (!isEditing) {
+      // Enter edit mode
+      setIsEditing(true);
+    } else {
+      // Submit the form
+      const form = document.getElementById(
+        'profile-information-form',
+      ) as HTMLFormElement;
+      form?.requestSubmit();
+    }
+  };
+
   return (
     <div className="flex flex-col gap-8 h-full">
       <h3 className="font-poppins font-semibold">Profile Information</h3>
       <ScrollArea className="flex-1 min-h-0 pr-4">
-        <ProfileInformationForm isEditing={isEditing} />
+        <ProfileInformationForm
+          isEditing={isEditing}
+          setIsEditing={setIsEditing}
+          setIsSubmitting={setIsSubmitting}
+        />
       </ScrollArea>
       <div className="flex flex-col gap-4 w-full mt-auto">
         <Button
-          className="w-full py-6"
-          onClick={() => setIsEditing(!isEditing)}
+          className="w-full py-6 flex gap-2 justify-center items-center"
+          onClick={handleButtonClick}
+          disabled={isSubmitting}
         >
-          {isEditing ? 'Save Changes' : 'Edit Profile'}
+          {isSubmitting ? (
+            <>
+              <span>Saving...</span>
+              <Spinner className="size-4" />
+            </>
+          ) : isEditing ? (
+            'Save Changes'
+          ) : (
+            'Edit Profile'
+          )}
         </Button>
       </div>
 

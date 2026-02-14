@@ -24,5 +24,12 @@ export const getMeSchema = z.object({
   createdAt: z.string(),
 });
 
+export const updateProfileSchema = z.object({
+  firstName: z.string().min(1).optional(),
+  lastName: z.string().min(1).optional(),
+  homeAddress: z.string().optional(),
+});
+
 export type UsersDto = z.infer<typeof usersSchema>;
 export type GetMeDto = z.infer<typeof getMeSchema>;
+export type UpdateProfileDto = z.infer<typeof updateProfileSchema>;
