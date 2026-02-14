@@ -15,9 +15,6 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 import { type MeRequest } from 'src/types/me-request.type';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { type AuthRequest } from 'src/auth/types/auth-request.type';
-import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
-import { uploadMulterImageSchema } from '@repo/schemas';
-import { ZodType } from 'zod';
 
 @Controller('users')
 export class UsersController {
@@ -41,6 +38,8 @@ export class UsersController {
     @UploadedFile()
     file: Express.Multer.File,
   ) {
+    console.log(req.user.id, file);
+
     return await this.usersService.uploadAvatar(req.user.id, file);
   }
 

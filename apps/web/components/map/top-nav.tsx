@@ -12,10 +12,11 @@ import { IconBell } from '@tabler/icons-react';
 import { usePanel } from '@/contexts/panel-context';
 import AuthButtons from '@/components/auth-buttons';
 import { useUser } from '@/hooks/use-user';
+import { Skeleton } from '@/components/ui/skeleton';
 
 export default function TopNav() {
   const { toggle } = usePanel();
-  const { user } = useUser();
+  const { user, isLoading } = useUser();
 
   return (
     <header className="flex w-full bg-[#0066CC] h-16 relative z-50">
@@ -25,7 +26,12 @@ export default function TopNav() {
           <h1 className="text-white font-bold text-xl">FloodWatch</h1>
         </Link>
 
-        {user ? (
+        {isLoading ? (
+          <div className="flex items-center gap-4">
+            <Skeleton className="w-6 h-6 rounded-md bg-white/20" />
+            <Skeleton className="size-8 rounded-full bg-white/20" />
+          </div>
+        ) : user ? (
           <div className="flex items-center gap-10">
             <div className="flex items-center gap-4">
               {/* Notification button maybe dropdown */}
