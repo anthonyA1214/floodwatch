@@ -1,3 +1,4 @@
+import SuccessEmpty from '@/components/success-empty';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -20,7 +21,7 @@ export function AddNewAdminModal() {
           <Button className="py-6">Add New Admin</Button>
         </DialogTrigger>
         <DialogContent>
-          <DialogHeader>
+          {/* <DialogHeader>
             <DialogTitle className="font-poppins text-xl font-semibold">
               Add <span className="text-[#0066CC] font-bold">New Admin!</span>
             </DialogTitle>
@@ -96,7 +97,8 @@ export function AddNewAdminModal() {
               <Button variant="outline">Cancel</Button>
             </DialogClose>
             <Button type="submit">Save changes</Button>
-          </DialogFooter>
+          </DialogFooter> */}
+          <SuccessEmpty />
         </DialogContent>
       </form>
     </Dialog>
