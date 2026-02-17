@@ -14,6 +14,7 @@ import HotlinesPopup from '@/components/map/hotlines-popup';
 import { GoogleLinkToastHandler } from '@/components/google-link-toast-handler';
 
 import { MapProvider } from 'react-map-gl/maplibre';
+import AffectedLocationPanel from '@/components/map/affected-location-panel';
 
 export type SelectedLocation = {
   longitude: number;
@@ -81,6 +82,8 @@ export default function InteractiveMapPage() {
           {activePanel === 'notification' && <NotificationPanel />}
           {activePanel === 'profile' && <ProfilePanel />}
         </div>
+
+        <AffectedLocationPanel/>
 
         <InteractiveMap selectedLocation={selectedLocation} />
       </div>
