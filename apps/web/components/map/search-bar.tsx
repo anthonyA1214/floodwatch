@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useMap } from 'react-map-gl/maplibre';
 import {
   InputGroup,
   InputGroupAddon,
@@ -17,6 +16,13 @@ type NominatimResult = {
   type?: string;
 };
 
+export type SelectedLocation = {
+  longitude: number;
+  latitude: number;
+  label: string;
+  source?: 'nominatim' | 'custom';
+};
+
 function useDebouncedValue<T>(value: T, delayMs: number) {
   const [debounced, setDebounced] = useState(value);
 
@@ -30,12 +36,11 @@ function useDebouncedValue<T>(value: T, delayMs: number) {
 
 export default function SearchBar({
   toggleLegend,
+  onSelectLocation,
 }: {
   toggleLegend: () => void;
+  onSelectLocation?: (location: SelectedLocation) => void;
 }) {
-  const { ['main-map']: mapRef } = useMap();
-  const map = mapRef?.getMap();
-
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -52,37 +57,37 @@ export default function SearchBar({
 
   const debouncedQuery = useDebouncedValue(query.trim(), 250);
 
-  const flyToResult = (result: NominatimResult) => {
-    if (!map) return;
-
+  const emitLocation = (result: NominatimResult) => {
     const lon = Number(result.lon);
     const lat = Number(result.lat);
 
     if (!Number.isFinite(lon) || !Number.isFinite(lat)) return;
 
-    map.flyTo({
-      center: [lon, lat],
-      zoom: Math.max(map.getZoom(), 16),
-      essential: true,
+    onSelectLocation?.({
+      longitude: lon,
+      latitude: lat,
+      label: result.display_name,
+      source: 'nominatim',
     });
   };
 
   const runSearch = async () => {
     const q = query.trim();
-    if (!q || !map) return;
+    if (!q) return;
 
     setLoading(true);
     try {
       // If we already have suggestions, prefer the highlighted or first one.
       const pick =
         activeIndex >= 0 ? suggestions[activeIndex] : suggestions[0];
+
       if (pick) {
-        flyToResult(pick);
+        emitLocation(pick);
         setOpen(false);
         return;
       }
 
-      // Fallback: fetch a single result (same as your original behavior)
+      // Fallback: fetch a single result
       const url = `${endpoint}?format=json&q=${encodeURIComponent(q)}&limit=1&addressdetails=0`;
       const res = await fetch(url, { headers: { Accept: 'application/json' } });
       if (!res.ok) throw new Error(`Geocode failed: ${res.status}`);
@@ -90,7 +95,7 @@ export default function SearchBar({
       const data: NominatimResult[] = await res.json();
       if (!data[0]) return;
 
-      flyToResult(data[0]);
+      emitLocation(data[0]);
       setOpen(false);
     } catch (err) {
       console.error(err);
@@ -103,7 +108,6 @@ export default function SearchBar({
   useEffect(() => {
     const q = debouncedQuery;
 
-    // clear
     if (!q) {
       abortRef.current?.abort();
       setSuggestions([]);
@@ -112,7 +116,6 @@ export default function SearchBar({
       return;
     }
 
-    // Abort previous request
     abortRef.current?.abort();
     const controller = new AbortController();
     abortRef.current = controller;
@@ -121,10 +124,6 @@ export default function SearchBar({
       try {
         setLoading(true);
 
-        // Nominatim suggestion-style search:
-        // - limit multiple
-        // - dedupe-ish by place_id
-        // - include polygon=0 to keep response small
         const url =
           `${endpoint}?format=json` +
           `&q=${encodeURIComponent(q)}` +
@@ -141,7 +140,6 @@ export default function SearchBar({
 
         const data: NominatimResult[] = await res.json();
 
-        // Keep stable order + remove accidental duplicates
         const seen = new Set<number>();
         const cleaned = (data ?? []).filter((item) => {
           if (!item?.place_id) return false;
@@ -154,7 +152,6 @@ export default function SearchBar({
         setOpen(true);
         setActiveIndex(-1);
       } catch (err) {
-        // ignore abort errors
         if ((err as any)?.name !== 'AbortError') console.error(err);
       } finally {
         setLoading(false);
@@ -207,11 +204,10 @@ export default function SearchBar({
               setActiveIndex((prev) => Math.max(prev - 1, 0));
             } else if (event.key === 'Enter') {
               event.preventDefault();
-              // choose active suggestion, else do normal search
               if (open && activeIndex >= 0 && suggestions[activeIndex]) {
                 const chosen = suggestions[activeIndex];
                 setQuery(chosen.display_name);
-                flyToResult(chosen);
+                emitLocation(chosen);
                 setOpen(false);
               } else {
                 runSearch();
@@ -245,7 +241,6 @@ export default function SearchBar({
         </InputGroupAddon>
       </InputGroup>
 
-      {/* Suggestions dropdown */}
       {open && suggestions.length > 0 && (
         <div className="mt-2 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
           <ul className="max-h-72 overflow-auto py-1">
@@ -262,7 +257,7 @@ export default function SearchBar({
                     onMouseEnter={() => setActiveIndex(idx)}
                     onClick={() => {
                       setQuery(item.display_name);
-                      flyToResult(item);
+                      emitLocation(item);
                       setOpen(false);
                     }}
                   >

@@ -15,11 +15,24 @@ import { GoogleLinkToastHandler } from '@/components/google-link-toast-handler';
 
 import { MapProvider } from 'react-map-gl/maplibre';
 
+export type SelectedLocation = {
+  longitude: number;
+  latitude: number;
+  label: string;
+  source?: 'nominatim' | 'custom';
+};
+
 export default function InteractiveMapPage() {
   const [showLegend, setShowLegend] = useState(false);
+
+  // ✅ Shared state: search → map pin
+  const [selectedLocation, setSelectedLocation] =
+    useState<SelectedLocation | null>(null);
+
   const [activePopup, setActivePopup] = useState<
     'affected' | 'safety' | 'hotlines' | null
   >(null);
+
   const { activePanel } = usePanel();
 
   const togglePopup = (popup: 'affected' | 'safety' | 'hotlines') => {
@@ -33,7 +46,10 @@ export default function InteractiveMapPage() {
           <GoogleLinkToastHandler />
         </Suspense>
 
-        <SearchBar toggleLegend={() => setShowLegend(!showLegend)} />
+        <SearchBar
+          toggleLegend={() => setShowLegend(!showLegend)}
+          onSelectLocation={setSelectedLocation}
+        />
 
         <div className="absolute top-4 right-4 z-10 flex gap-4 h-full">
           <div className="flex flex-col gap-4">
@@ -60,11 +76,13 @@ export default function InteractiveMapPage() {
               />
             </div>
           </div>
+
+          
           {activePanel === 'notification' && <NotificationPanel />}
           {activePanel === 'profile' && <ProfilePanel />}
         </div>
 
-        <InteractiveMap />
+        <InteractiveMap selectedLocation={selectedLocation} />
       </div>
     </MapProvider>
   );
