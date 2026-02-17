@@ -15,6 +15,7 @@ import { GoogleLinkToastHandler } from '@/components/google-link-toast-handler';
 
 import { MapProvider } from 'react-map-gl/maplibre';
 import AffectedLocationPanel from '@/components/map/affected-location-panel';
+import SafetyLocationPanel from '@/components/map/safety-location-panel';
 
 export type SelectedLocation = {
   longitude: number;
@@ -83,7 +84,9 @@ export default function InteractiveMapPage() {
           {activePanel === 'profile' && <ProfilePanel />}
         </div>
 
-        <AffectedLocationPanel/>
+        {/* <SafetyLocationPanel/> */}
+
+        {/* <AffectedLocationPanel/> */}
 
         <InteractiveMap selectedLocation={selectedLocation} />
       </div>
