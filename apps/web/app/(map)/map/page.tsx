@@ -30,7 +30,6 @@ export default function InteractiveMapPage() {
 
   const [reportOpen, setReportOpen] = useState(false);
 
-
   // ✅ Shared state: search → map pin
   const [selectedLocation, setSelectedLocation] =
     useState<SelectedLocation | null>(null);
@@ -38,8 +37,6 @@ export default function InteractiveMapPage() {
   const [activePopup, setActivePopup] = useState<
     'affected' | 'safety' | 'hotlines' | null
   >(null);
-
-
 
   const { activePanel } = usePanel();
 
@@ -83,11 +80,12 @@ export default function InteractiveMapPage() {
                 show={activePopup === 'hotlines'}
                 onClose={() => setActivePopup(null)}
               />
-              <ReportFloodAlertDialog open={reportOpen} onOpenChange={setReportOpen} />
-
+              <ReportFloodAlertDialog
+                open={reportOpen}
+                onOpenChange={setReportOpen}
+              />
             </div>
           </div>
-
 
           {activePanel === 'notification' && <NotificationPanel />}
           {activePanel === 'profile' && <ProfilePanel />}

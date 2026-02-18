@@ -1,26 +1,26 @@
 'use client';
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import UserStatCard from '@/components/admin/users/user-stat-card';
+import ReportStatCard from './report-stat-card';
 
-type UserStatCardsProps = {
+type ReportStatCardsProps = {
   totalCount: number;
-  activeCount: number;
-  blockedCount: number;
+  verifiedCount: number;
+  unverifiedCount: number;
 };
 
-export default function UserStatCards({
+export default function ReportStatCards({
   totalCount,
-  activeCount,
-  blockedCount,
-}: UserStatCardsProps) {
+  verifiedCount,
+  unverifiedCount,
+}: ReportStatCardsProps) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const currentStatus = searchParams.get('status') || 'total';
 
-  const handleStatusChange = (status: 'total' | 'active' | 'blocked') => {
+  const handleStatusChange = (status: 'total' | 'verified' | 'unverified') => {
     const params = new URLSearchParams(searchParams.toString());
 
     if (status === 'total') {
@@ -36,26 +36,26 @@ export default function UserStatCards({
 
   return (
     <div className="grid grid-cols-3 gap-8">
-      <UserStatCard
-        label="Total Users"
+      <ReportStatCard
+        label="Total Reports"
         count={totalCount}
         status="total"
         isActive={currentStatus === 'total'}
         onClick={() => handleStatusChange('total')}
       />
-      <UserStatCard
-        label="Active Users"
-        count={activeCount}
-        status="active"
-        isActive={currentStatus === 'active'}
-        onClick={() => handleStatusChange('active')}
+      <ReportStatCard
+        label="Verified Reports"
+        count={verifiedCount}
+        status="verified"
+        isActive={currentStatus === 'verified'}
+        onClick={() => handleStatusChange('verified')}
       />
-      <UserStatCard
-        label="Blocked Users"
-        count={blockedCount}
-        status="blocked"
-        isActive={currentStatus === 'blocked'}
-        onClick={() => handleStatusChange('blocked')}
+      <ReportStatCard
+        label="Unverified Reports"
+        count={unverifiedCount}
+        status="unverified"
+        isActive={currentStatus === 'unverified'}
+        onClick={() => handleStatusChange('unverified')}
       />
     </div>
   );
