@@ -4,7 +4,7 @@ import { updateProfileSchema } from '@repo/schemas';
 import { ActionState } from '../types/action-state';
 import { z } from 'zod';
 import { api } from '../api';
-import { headers } from 'next/headers';
+import { cookies } from 'next/headers';
 
 export async function updateProfile(
   prevState: ActionState,
@@ -26,7 +26,7 @@ export async function updateProfile(
   const { firstName, lastName, homeAddress } = parsedData.data;
 
   try {
-    const cookie = (await headers()).get('cookie');
+    const cookieStore = await cookies();
 
     await api.patch(
       '/users/me',
@@ -36,7 +36,7 @@ export async function updateProfile(
         homeAddress,
       },
       {
-        headers: { cookie },
+        headers: { Cookie: cookieStore.toString() },
         withCredentials: true,
       },
     );

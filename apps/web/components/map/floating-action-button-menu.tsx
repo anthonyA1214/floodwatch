@@ -4,21 +4,30 @@ import {
   IconCurrentLocation,
   IconPhoneCall,
   IconShieldCheck,
-  IconWaterpolo
+  IconWaterpolo,
 } from '@tabler/icons-react';
-import Dropzone from '@/components/admin/map/dropzone';
+import { getUserLocation } from '@/lib/utils/get-user-location';
 
 export default function FloatingActionButtonMenu({
   toggleAffectedLocations,
   toggleSafetyLocations,
   toggleHotlines,
-  openReportDialog
+  openReportDialog,
 }: {
   toggleAffectedLocations: () => void;
   toggleSafetyLocations: () => void;
   toggleHotlines: () => void;
   openReportDialog: () => void;
 }) {
+  const handleLocationClick = async () => {
+    try {
+      const { longitude, latitude } = await getUserLocation();
+      alert(`Latitude: ${latitude}, Longitude: ${longitude}`);
+    } catch (err) {
+      alert(err instanceof Error ? err.message : 'Failed to get location');
+    }
+  };
+
   return (
     <div className="flex flex-col bg-white text-sm rounded-xl shadow-lg h-fit w-fit p-4">
       <div className="flex flex-col gap-4">
@@ -43,6 +52,7 @@ export default function FloatingActionButtonMenu({
         <Button
           variant="ghost"
           className="flex items-center gap-2 justify-start"
+          onClick={handleLocationClick}
         >
           <IconCurrentLocation className="w-[1.5em]! h-[1.5em]! text-[#3182FF]" />
           <span>Location</span>

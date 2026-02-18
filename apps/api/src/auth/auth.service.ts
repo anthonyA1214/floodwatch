@@ -103,7 +103,7 @@ export class AuthService {
     const user = await this.usersService.findByEmail(email);
     if (user) throw new ConflictException('Email already in use');
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const hashedPassword = await bcrypt.hash(password, 12);
 
     const newUser = await this.usersService.createUser(email);
     await this.usersService.createAuthAccount(

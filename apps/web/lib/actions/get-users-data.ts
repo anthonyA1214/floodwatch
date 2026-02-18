@@ -2,7 +2,7 @@
 
 import { userQuerySchema } from '@repo/schemas';
 import { UserQuery } from '@/lib/types/user-query';
-import { headers } from 'next/headers';
+import { cookies } from 'next/headers';
 
 export async function getUsersData(params: UserQuery) {
   const parsed = userQuerySchema.safeParse(params);
@@ -21,14 +21,14 @@ export async function getUsersData(params: UserQuery) {
   });
 
   try {
-    const cookie = (await headers()).get('cookie');
+    const cookieStore = await cookies();
     const res = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/users?${querySearch.toString()}`,
       {
         method: 'GET',
         credentials: 'include',
         headers: {
-          cookie: cookie || '',
+          Cookie: cookieStore.toString(),
         },
       },
     );

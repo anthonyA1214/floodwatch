@@ -44,8 +44,8 @@ export async function handleVerify(
 }
 
 export async function handleResend(
-  _prevState: ActionState,
-  _formData: FormData,
+  prevState: ActionState,
+  formData: FormData,
 ): Promise<ActionState> {
   try {
     await api.post('/auth/change-password/resend-otp');

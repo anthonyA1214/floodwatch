@@ -1,6 +1,6 @@
 'use server';
 
-import { headers } from 'next/headers';
+import { cookies } from 'next/headers';
 import { api } from '../api';
 
 export async function updateProfilePhoto(formData: FormData) {
@@ -30,11 +30,11 @@ export async function updateProfilePhoto(formData: FormData) {
   }
 
   try {
-    const cookie = (await headers()).get('cookie');
+    const cookieStore = await cookies();
 
     await api.post('/users/me/avatar', formData, {
       headers: {
-        cookie,
+        Cookie: cookieStore.toString(),
       },
       withCredentials: true,
     });
@@ -43,7 +43,7 @@ export async function updateProfilePhoto(formData: FormData) {
       errors: {},
       status: 'success',
     };
-  } catch {
+  } catch (err) {
     return {
       errors: { file: ['Failed to upload profile photo. Please try again.'] },
       status: 'error',
@@ -53,11 +53,11 @@ export async function updateProfilePhoto(formData: FormData) {
 
 export async function removeProfilePhoto() {
   try {
-    const cookie = (await headers()).get('cookie');
+    const cookieStore = await cookies();
 
     await api.delete('/users/me/avatar', {
       headers: {
-        cookie,
+        Cookie: cookieStore.toString(),
       },
       withCredentials: true,
     });
@@ -66,7 +66,7 @@ export async function removeProfilePhoto() {
       errors: {},
       status: 'success',
     };
-  } catch {
+  } catch (err) {
     return {
       errors: {
         file: ['Failed to remove profile photo. Please try again.'],

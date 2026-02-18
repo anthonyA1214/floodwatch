@@ -24,7 +24,5 @@ export const authAccounts = pgTable(
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),
   },
-  (table) => ({
-    uniqueProviderProviderId: unique().on(table.provider, table.providerId),
-  }),
+  (t) => [unique('unique_provider_provider_id').on(t.provider, t.providerId)],
 );
