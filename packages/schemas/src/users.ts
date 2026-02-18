@@ -39,12 +39,58 @@ export const userQuerySchema = z.object({
   q: z.string().optional(),
 });
 
+export const createAdminSchema = z
+  .object({
+    first_name: z
+      .string()
+      .refine((val) => val.length > 0, {
+        error: 'First name is required',
+        abort: true,
+      })
+      .max(50, 'First name cannot exceed 50 characters'),
+    last_name: z
+      .string()
+      .refine((val) => val.length > 0, {
+        error: 'Last name is required',
+        abort: true,
+      })
+      .max(50, 'Last name cannot exceed 50 characters'),
+    home_address: z
+      .string()
+      .refine((val) => val.length > 0, {
+        error: 'Home address is required',
+        abort: true,
+      })
+      .refine((val) => val.length >= 6, {
+        error: 'Home address must be at least 5 characters long',
+        abort: true,
+      }),
+    email: z.email('Please enter a valid email address'),
+    password: z
+      .string()
+      .refine((val) => val.length > 0, {
+        error: 'Password is required',
+        abort: true,
+      })
+      .refine((val) => val.length >= 6, {
+        error: 'Password must be at least 6 characters long',
+        abort: true,
+      }),
+    confirm_password: z.string('Please confirm your password'),
+  })
+  .refine((data) => data.password === data.confirm_password, {
+    error: 'Passwords do not match',
+    path: ['confirm_password'],
+  });
+
 export class UsersDto extends createZodDto(usersSchema) {}
 export class GetMeDto extends createZodDto(getMeSchema) {}
 export class UpdateProfileDto extends createZodDto(updateProfileSchema) {}
 export class UserQueryDto extends createZodDto(userQuerySchema) {}
+export class CreateAdminDto extends createZodDto(createAdminSchema) {}
 
 export type UsersInput = z.infer<typeof usersSchema>;
 export type GetMeInput = z.infer<typeof getMeSchema>;
 export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;
 export type UserQueryInput = z.infer<typeof userQuerySchema>;
+export type CreateAdminInput = z.infer<typeof createAdminSchema>;

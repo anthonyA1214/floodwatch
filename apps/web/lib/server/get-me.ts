@@ -1,14 +1,14 @@
-import { headers } from 'next/headers';
+import { cookies } from 'next/headers';
 
 export async function getMeServer() {
-  const cookie = (await headers()).get('cookie');
+  const cookieStore = await cookies();
 
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_API_URL}/users/me`,
       {
         headers: {
-          cookie: cookie || '',
+          Cookie: cookieStore.toString(),
         },
         credentials: 'include',
         cache: 'no-store',
@@ -26,5 +26,8 @@ export async function getMeServer() {
 
     const data = await response.json();
     return data;
-  } catch {}
+  } catch (err) {
+    console.error('Error fetching user data:', err);
+    return null;
+  }
 }

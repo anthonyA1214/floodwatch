@@ -12,7 +12,6 @@ import SafetyLocationsPopup from '@/components/map/safety-locations-popup';
 import NotificationPanel from '@/components/map/notification-panel';
 import HotlinesPopup from '@/components/map/hotlines-popup';
 import { GoogleLinkToastHandler } from '@/components/google-link-toast-handler';
-
 import { MapProvider } from 'react-map-gl/maplibre';
 import AffectedLocationPanel from '@/components/map/affected-location-panel';
 import SafetyLocationPanel from '@/components/map/safety-location-panel';

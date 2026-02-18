@@ -12,8 +12,8 @@ export default function HotlinesPopup({
 
   return (
     <div
-      className="flex-1 flex flex-col bg-white rounded-xl shadow-lg 
-    border max-w-sm p-4 gap-4 max-h-[60vh] overflow-hidden min-h-0"
+      className="flex flex-col bg-white rounded-xl shadow-lg 
+    border w-fit p-4 gap-4 max-h-[60vh] overflow-hidden min-h-0"
     >
       {/* Header */}
       <div className="flex items-center justify-between gap-8">

@@ -8,6 +8,7 @@ import { RedisModule } from './redis/redis.module';
 import { LoggerModule } from 'nestjs-pino';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ImagesModule } from './images/images.module';
+import { AdminModule } from './admin/admin.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { ImagesModule } from './images/images.module';
     RedisModule,
     CloudinaryModule,
     ImagesModule,
+    AdminModule,
   ],
 })
 export class AppModule {}

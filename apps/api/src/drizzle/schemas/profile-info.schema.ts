@@ -24,8 +24,8 @@ export const profileInfo = pgTable(
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),
   },
-  (table) => ({
-    firstNameIdx: index('first_name_idx').on(table.firstName),
-    lastNameIdx: index('last_name_idx').on(table.lastName),
-  }),
+  (t) => [
+    index('first_name_idx').on(t.firstName),
+    index('last_name_idx').on(t.lastName),
+  ],
 );
