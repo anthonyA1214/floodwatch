@@ -8,6 +8,7 @@ import IconBox from '../icon-box';
 import Image from 'next/image';
 import { useUser } from '@/hooks/use-user';
 import SetPasswordForm from '@/components/forms/set-password-form';
+import { getApiUrl } from '@/lib/utils/get-api-url';
 
 export default function SecurityTab() {
   const [passwordAction, setPasswordAction] = useState<'change' | 'set' | null>(
@@ -16,7 +17,7 @@ export default function SecurityTab() {
   const { user } = useUser();
 
   const handleLink = () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google/link`;
+    window.location.href = `${getApiUrl()}/auth/google/link`;
   };
 
   if (passwordAction === 'change') {

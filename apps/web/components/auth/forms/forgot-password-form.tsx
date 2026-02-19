@@ -8,8 +8,8 @@ import { useState } from 'react';
 import { ActionState } from '@/lib/types/action-state';
 import { sendOtpSchema } from '@repo/schemas';
 import z from 'zod';
-import { api } from '@/lib/api';
 import { Spinner } from '@/components/ui/spinner';
+import { apiFetchClient } from '@/lib/api-fetch-client';
 
 export default function ForgotPasswordForm() {
   const router = useRouter();
@@ -47,7 +47,11 @@ export default function ForgotPasswordForm() {
     sessionStorage.setItem('reset_email', email);
 
     try {
-      await api.post('/auth/forgot-password/send-otp', { email });
+      await apiFetchClient('/auth/forgot-password/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
 
       setState({
         errors: {},

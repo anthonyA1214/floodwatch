@@ -1,8 +1,10 @@
-import { api } from '@/lib/api';
+import { apiFetchClient } from '@/lib/api-fetch-client';
 
 export async function logout() {
   try {
-    await api.delete('/auth/logout');
+    await apiFetchClient('/auth/logout', {
+      method: 'DELETE',
+    });
   } catch (err) {
     console.error('Logout failed', err);
   }

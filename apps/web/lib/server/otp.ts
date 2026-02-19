@@ -1,8 +1,10 @@
-import { api } from '../api';
+import { apiFetchServer } from '../api-fetch-server';
 
 export async function sendOtp() {
   try {
-    const res = await api.post('/auth/change-password/send-otp');
-    return res.data;
+    const res = await apiFetchServer('/auth/change-password/send-otp', {
+      method: 'POST',
+    });
+    return res.json();
   } catch {}
 }

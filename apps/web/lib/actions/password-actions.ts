@@ -1,10 +1,10 @@
+'use server';
+
 import { ActionState } from '@/lib/types/action-state';
 import { changePasswordSchema, setPasswordSchema } from '@repo/schemas';
 import z from 'zod';
 import { mapResetPasswordAuthError } from '../services/auth/reset-password-auth-error';
-import { api } from '../api';
-import { mutate } from 'swr';
-import { SWR_KEYS } from '../constants/swr-keys';
+import { apiFetchServer } from '../api-fetch-server';
 
 export async function changePassword(
   prevState: ActionState,
@@ -15,8 +15,6 @@ export async function changePassword(
     new_password: formData.get('new_password'),
     confirm_new_password: formData.get('confirm_new_password'),
   });
-
-  console.log(parsedData.error);
 
   if (!parsedData.success) {
     return {
@@ -29,13 +27,17 @@ export async function changePassword(
     parsedData.data;
 
   try {
-    await api.post('/auth/change-password', {
-      resetSessionId,
-      new_password,
-      confirm_new_password,
+    await apiFetchServer('/auth/change-password', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        resetSessionId,
+        new_password,
+        confirm_new_password,
+      }),
     });
-
-    await mutate(SWR_KEYS.me);
 
     return {
       errors: {},
@@ -45,7 +47,7 @@ export async function changePassword(
     console.log('Change password error:', err);
 
     return {
-      errors: mapResetPasswordAuthError(err).errors,
+      errors: (await mapResetPasswordAuthError(err)).errors,
       status: 'error',
     };
   }
@@ -70,12 +72,16 @@ export async function setPassword(
   const { new_password, confirm_new_password } = parsedData.data;
 
   try {
-    await api.post('/auth/set-password', {
-      new_password,
-      confirm_new_password,
+    await apiFetchServer('/auth/set-password', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        new_password,
+        confirm_new_password,
+      }),
     });
-
-    await mutate(SWR_KEYS.me);
 
     return {
       errors: {},

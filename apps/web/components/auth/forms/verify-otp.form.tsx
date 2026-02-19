@@ -12,8 +12,8 @@ import { ActionState } from '@/lib/types/action-state';
 import { Spinner } from '@/components/ui/spinner';
 import { verifyOtpSchema } from '@repo/schemas';
 import z from 'zod';
-import { api } from '@/lib/api';
 import { mapVerifyOtpAuthError } from '@/lib/services/auth/verify-otp-auth-error';
+import { apiFetchClient } from '@/lib/api-fetch-client';
 
 export default function VerifyOtpForm() {
   const router = useRouter();
@@ -80,12 +80,18 @@ export default function VerifyOtpForm() {
     }
 
     try {
-      const response = await api.post('/auth/forgot-password/verify-otp', {
-        email: resetEmail,
-        otp,
+      const res = await apiFetchClient('/auth/forgot-password/verify-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: resetEmail,
+          otp,
+        }),
       });
 
-      const { resetSessionId } = response.data;
+      const { resetSessionId } = await res.json();
       sessionStorage.setItem('resetSessionId', resetSessionId);
 
       setState({
@@ -96,7 +102,7 @@ export default function VerifyOtpForm() {
       router.push('/auth/reset-password');
     } catch (err) {
       setState({
-        errors: mapVerifyOtpAuthError(err).errors,
+        errors: (await mapVerifyOtpAuthError(err)).errors,
         status: 'error',
       });
       setOtp('');
@@ -118,7 +124,13 @@ export default function VerifyOtpForm() {
     }
 
     try {
-      await api.post('/auth/forgot-password/resend-otp', { email: resetEmail });
+      await apiFetchClient('/auth/forgot-password/resend-otp', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: resetEmail }),
+      });
 
       setState({
         errors: {},

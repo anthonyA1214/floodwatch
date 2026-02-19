@@ -2,8 +2,7 @@
 
 import { userQuerySchema } from '@repo/schemas';
 import { UserQuery } from '@/lib/types/user-query';
-import { cookies } from 'next/headers';
-import { getApiUrl } from '@/lib/utils/get-api-url';
+import { apiFetchServer } from '../api-fetch-server';
 
 export async function getUsersData(params: UserQuery) {
   const parsed = userQuerySchema.safeParse(params);
@@ -22,14 +21,8 @@ export async function getUsersData(params: UserQuery) {
   });
 
   try {
-    const cookieStore = await cookies();
-
-    const res = await fetch(`${getApiUrl()}/users?${querySearch.toString()}`, {
+    const res = await apiFetchServer(`/users?${querySearch.toString()}`, {
       method: 'GET',
-      credentials: 'include',
-      headers: {
-        Cookie: cookieStore.toString(),
-      },
     });
 
     return res.json();
