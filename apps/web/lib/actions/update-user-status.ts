@@ -1,21 +1,19 @@
 'use server';
 
 import { cookies } from 'next/headers';
+import { getApiUrl } from '@/lib/utils/get-api-url';
 
 export async function blockUser(userId: number) {
   try {
     const cookieStore = await cookies();
 
-    await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/admin/users/${userId}/block`,
-      {
-        method: 'PATCH',
-        credentials: 'include',
-        headers: {
-          Cookie: cookieStore.toString(),
-        },
+    await fetch(`${getApiUrl()}/admin/users/${userId}/block`, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: {
+        Cookie: cookieStore.toString(),
       },
-    );
+    });
 
     return { status: 'success' };
   } catch (error) {
@@ -28,16 +26,13 @@ export async function unblockUser(userId: number) {
   try {
     const cookieStore = await cookies();
 
-    await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/admin/users/${userId}/unblock`,
-      {
-        method: 'PATCH',
-        credentials: 'include',
-        headers: {
-          Cookie: cookieStore.toString(),
-        },
+    await fetch(`${getApiUrl()}/admin/users/${userId}/unblock`, {
+      method: 'PATCH',
+      credentials: 'include',
+      headers: {
+        Cookie: cookieStore.toString(),
       },
-    );
+    });
 
     return { status: 'success' };
   } catch (error) {

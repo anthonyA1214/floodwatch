@@ -3,6 +3,7 @@
 import { userQuerySchema } from '@repo/schemas';
 import { UserQuery } from '@/lib/types/user-query';
 import { cookies } from 'next/headers';
+import { getApiUrl } from '@/lib/utils/get-api-url';
 
 export async function getUsersData(params: UserQuery) {
   const parsed = userQuerySchema.safeParse(params);
@@ -22,16 +23,14 @@ export async function getUsersData(params: UserQuery) {
 
   try {
     const cookieStore = await cookies();
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/users?${querySearch.toString()}`,
-      {
-        method: 'GET',
-        credentials: 'include',
-        headers: {
-          Cookie: cookieStore.toString(),
-        },
+
+    const res = await fetch(`${getApiUrl()}/users?${querySearch.toString()}`, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        Cookie: cookieStore.toString(),
       },
-    );
+    });
 
     return res.json();
   } catch (error) {
