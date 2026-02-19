@@ -3,8 +3,7 @@
 import { updateProfileSchema } from '@repo/schemas';
 import { ActionState } from '../types/action-state';
 import { z } from 'zod';
-import { api } from '../api';
-import { cookies } from 'next/headers';
+import { apiFetchServer } from '../api-fetch-server';
 
 export async function updateProfile(
   prevState: ActionState,
@@ -26,20 +25,17 @@ export async function updateProfile(
   const { firstName, lastName, homeAddress } = parsedData.data;
 
   try {
-    const cookieStore = await cookies();
-
-    await api.patch(
-      '/users/me',
-      {
+    await apiFetchServer('/users/me', {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
         firstName,
         lastName,
         homeAddress,
-      },
-      {
-        headers: { Cookie: cookieStore.toString() },
-        withCredentials: true,
-      },
-    );
+      }),
+    });
 
     return {
       errors: {},

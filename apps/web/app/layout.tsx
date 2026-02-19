@@ -2,8 +2,6 @@ import type { Metadata } from 'next';
 import { inter, poppins } from '@/config/fonts';
 import './globals.css';
 import SWRProvider from '@/providers/swr-provider';
-import { getMeServer } from '@/lib/server/get-me';
-import { SWR_KEYS } from '@/lib/constants/swr-keys';
 import { Toaster } from '@/components/ui/sonner';
 
 export const metadata: Metadata = {
@@ -16,14 +14,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const user = await getMeServer();
-
   return (
     <html lang="en">
       <body
         className={`${inter.className} ${poppins.variable} bg-[#EAEAEA] antialiased min-h-screen`}
       >
-        <SWRProvider fallback={{ [SWR_KEYS.me]: user }}>{children}</SWRProvider>
+        <SWRProvider fallback={{}}>{children}</SWRProvider>
         <Toaster richColors theme="light" position="top-center" />
       </body>
     </html>

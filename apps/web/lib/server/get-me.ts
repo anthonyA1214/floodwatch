@@ -1,28 +1,21 @@
-import { cookies } from 'next/headers';
-import { getApiUrl } from '@/lib/utils/get-api-url';
+import { apiFetchServer } from '../api-fetch-server';
 
 export async function getMeServer() {
-  const cookieStore = await cookies();
-
   try {
-    const response = await fetch(`${getApiUrl()}/users/me`, {
-      headers: {
-        Cookie: cookieStore.toString(),
-      },
-      credentials: 'include',
-      cache: 'no-store',
+    const res = await apiFetchServer('/users/me', {
+      method: 'GET',
     });
 
-    if (response.status === 401) {
+    if (res.status === 401) {
       return null;
     }
 
-    if (!response.ok) {
-      console.error('ME ERROR:', response.status);
+    if (!res.ok) {
+      console.error('ME ERROR:', res.status);
       return null;
     }
 
-    const data = await response.json();
+    const data = await res.json();
     return data;
   } catch (err) {
     console.error('Error fetching user data:', err);

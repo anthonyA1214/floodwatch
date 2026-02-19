@@ -1,23 +1,35 @@
-import axios from 'axios';
+// lib/services/auth/reset-password-auth-error.ts
 import { ActionState } from '@/lib/types/action-state';
 
-export function mapResetPasswordAuthError(err: unknown): ActionState {
-  if (axios.isAxiosError(err)) {
-    const status = err.response?.status;
-    const data = err.response?.data;
+export async function mapResetPasswordAuthError(
+  err: unknown,
+): Promise<ActionState> {
+  // If it's a Response from fetch
+  if (err instanceof Response) {
+    let data: Record<string, unknown> | null = null;
 
+    try {
+      data = (await err.json().catch(() => null)) as Record<
+        string,
+        unknown
+      > | null;
+    } catch (parseErr) {
+      console.error('Failed to parse JSON', parseErr);
+    }
+
+    const status = err.status;
     console.log(status);
 
-    // Password validation / mismatch
-    if (data?.errors) {
+    // Password validation / mismatch errors
+    if (data?.errors && typeof data.errors === 'object') {
       return {
         status: 'error',
-        errors: data.errors,
+        errors: data.errors as Record<string, string[]>,
       };
     }
 
     // OTP / reset session expired or invalid
-    if (status === 400 || status === 401 || status === 410) {
+    if ([400, 401, 410].includes(status)) {
       return {
         status: 'error',
         errors: {
@@ -28,6 +40,7 @@ export function mapResetPasswordAuthError(err: unknown): ActionState {
       };
     }
 
+    // Generic fallback
     return {
       status: 'error',
       errors: {
@@ -38,6 +51,7 @@ export function mapResetPasswordAuthError(err: unknown): ActionState {
     };
   }
 
+  // Network or unknown error
   console.error(err);
 
   return {

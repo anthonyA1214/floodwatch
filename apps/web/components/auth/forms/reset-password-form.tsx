@@ -8,9 +8,9 @@ import { ActionState } from '@/lib/types/action-state';
 import { useRouter } from 'next/navigation';
 import { resetPasswordSchema } from '@repo/schemas';
 import z from 'zod';
-import { api } from '@/lib/api';
 import { Spinner } from '@/components/ui/spinner';
 import { mapResetPasswordAuthError } from '@/lib/services/auth/reset-password-auth-error';
+import { apiFetchClient } from '@/lib/api-fetch-client';
 
 export default function ResetPasswordForm() {
   const router = useRouter();
@@ -59,10 +59,16 @@ export default function ResetPasswordForm() {
     const { new_password, confirm_new_password } = parsed.data;
 
     try {
-      await api.post('/auth/forgot-password/reset-password', {
-        resetSessionId,
-        new_password,
-        confirm_new_password,
+      await apiFetchClient('/auth/forgot-password/reset-password', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          resetSessionId,
+          new_password,
+          confirm_new_password,
+        }),
       });
 
       setState({
@@ -73,7 +79,7 @@ export default function ResetPasswordForm() {
       sessionStorage.removeItem('resetSessionId');
       router.replace('/auth/login');
     } catch (err) {
-      setState(mapResetPasswordAuthError(err));
+      setState(await mapResetPasswordAuthError(err));
 
       (form.elements.namedItem('new_password') as HTMLInputElement).value = '';
       (
