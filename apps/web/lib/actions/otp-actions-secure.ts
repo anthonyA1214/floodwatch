@@ -5,7 +5,7 @@ import { mapVerifyOtpAuthError } from '../services/auth/verify-otp-auth-error';
 import { apiFetchClient } from '../api-fetch-client';
 
 export async function handleVerify(
-  prevState: ActionState,
+  _prevState: ActionState,
   formData: FormData,
 ): Promise<ActionState> {
   const parsedData = verifyOtpSecureSchema.safeParse({
@@ -33,7 +33,7 @@ export async function handleVerify(
     if (!res.ok) {
       const errorData = await res.json();
       return {
-        errors: mapVerifyOtpAuthError(errorData).errors,
+        errors: (await mapVerifyOtpAuthError(errorData)).errors,
         status: 'error',
       };
     }
@@ -51,15 +51,15 @@ export async function handleVerify(
     console.error('Failed to verify OTP:', err);
 
     return {
-      errors: mapVerifyOtpAuthError(err).errors,
+      errors: (await mapVerifyOtpAuthError(err)).errors,
       status: 'error',
     };
   }
 }
 
 export async function handleResend(
-  prevState: ActionState,
-  formData: FormData,
+  _prevState: ActionState,
+  _formData: FormData,
 ): Promise<ActionState> {
   try {
     await apiFetchClient('/auth/change-password/resend-otp', {
