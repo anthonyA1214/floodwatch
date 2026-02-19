@@ -10,7 +10,7 @@ import {
   Res,
   Delete,
 } from '@nestjs/common';
-import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
+import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 import {
   logInSchema,
   SetPasswordDto,

@@ -11,6 +11,7 @@ export const setAuthCookies = (
     httpOnly: true,
     secure: isProduction,
     sameSite: isProduction ? 'none' : 'lax',
+    domain: isProduction ? '.floodwatch.me' : undefined,
     path: '/',
     maxAge: 15 * 60 * 1000, // 15 minutes
   });
@@ -19,6 +20,7 @@ export const setAuthCookies = (
     httpOnly: true,
     secure: isProduction,
     sameSite: isProduction ? 'none' : 'lax',
+    domain: isProduction ? '.floodwatch.me' : undefined,
     path: '/',
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
@@ -27,6 +29,7 @@ export const setAuthCookies = (
     httpOnly: true,
     secure: isProduction,
     sameSite: isProduction ? 'none' : 'lax',
+    domain: isProduction ? '.floodwatch.me' : undefined,
     path: '/',
     maxAge: 365 * 24 * 60 * 60 * 1000, // 1 year
   });

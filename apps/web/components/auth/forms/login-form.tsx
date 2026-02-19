@@ -10,9 +10,9 @@ import { logInSchema } from '@repo/schemas';
 import z from 'zod';
 import { mapLoginAuthError } from '@/lib/services/auth/login-auth-error';
 import { Spinner } from '@/components/ui/spinner';
-import { api } from '@/lib/api';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/hooks/use-user';
+import { apiFetchClient } from '@/lib/api-fetch-client';
 
 export default function LoginForm() {
   const { mutateUser } = useUser();
@@ -50,8 +50,13 @@ export default function LoginForm() {
     const { email, password } = parsed.data;
 
     try {
-      const res = await api.post('/auth/login', { email, password });
-      const { user } = res.data;
+      const res = await apiFetchClient('/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const { user } = await res.json();
 
       setState({
         errors: {},
@@ -65,7 +70,7 @@ export default function LoginForm() {
       else router.replace('/map');
     } catch (err) {
       setState({
-        errors: mapLoginAuthError(err).errors,
+        errors: (await mapLoginAuthError(err)).errors,
         status: 'error',
       });
 

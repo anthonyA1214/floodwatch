@@ -16,16 +16,16 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
-import { type MeRequest } from 'src/types/me-request.type';
+import { type MeRequest } from 'src/common/types/me-request.type';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { type AuthRequest } from 'src/auth/types/auth-request.type';
-import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
+import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 import {
   type UpdateProfileDto,
   updateProfileSchema,
   UserQueryDto,
 } from '@repo/schemas';
-import { UserStatusGuard } from 'src/guards/user-status/user-status.guard';
+import { UserStatusGuard } from 'src/common/guards/user-status/user-status.guard';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard, UserStatusGuard)

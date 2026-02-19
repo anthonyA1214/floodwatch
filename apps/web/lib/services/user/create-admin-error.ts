@@ -1,16 +1,26 @@
-import axios from 'axios';
+// lib/services/admin/create-admin-error.ts
 import { ActionState } from '@/lib/types/action-state';
 
-export function mapCreateAdminError(err: unknown): ActionState {
-  if (axios.isAxiosError(err)) {
-    const status = err.response?.status;
-    const data = err.response?.data;
+export async function mapCreateAdminError(err: unknown): Promise<ActionState> {
+  // If the error is a Response from fetch
+  if (err instanceof Response) {
+    const status = err.status;
+
+    let data: Record<string, unknown> | null = null;
+    try {
+      data = (await err.json().catch(() => null)) as Record<
+        string,
+        unknown
+      > | null;
+    } catch (parseErr) {
+      console.error('Failed to parse JSON', parseErr);
+    }
 
     // Validation errors from backend
-    if (data?.errors) {
+    if (data?.errors && typeof data.errors === 'object') {
       return {
         status: 'error',
-        errors: data.errors,
+        errors: data.errors as Record<string, string[]>,
       };
     }
 
@@ -24,6 +34,7 @@ export function mapCreateAdminError(err: unknown): ActionState {
       };
     }
 
+    // Generic fallback
     return {
       status: 'error',
       errors: {
@@ -34,10 +45,10 @@ export function mapCreateAdminError(err: unknown): ActionState {
     };
   }
 
+  // Network or unknown error
+  console.error(err);
   return {
     status: 'error',
-    errors: {
-      _form: ['Something went wrong. Please try again.'],
-    },
+    errors: { _form: ['Something went wrong. Please try again.'] },
   };
 }

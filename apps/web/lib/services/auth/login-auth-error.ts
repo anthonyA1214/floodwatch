@@ -1,32 +1,59 @@
-import axios from 'axios';
+// lib/services/auth/login-auth-error.ts
 import { ActionState } from '@/lib/types/action-state';
 
-export function mapLoginAuthError(err: unknown): ActionState {
-  if (axios.isAxiosError(err)) {
-    if (err.response?.status === 401) {
+export async function mapLoginAuthError(err: unknown): Promise<ActionState> {
+  // If the error is a Response from fetch
+  if (err instanceof Response) {
+    const status = err.status;
+
+    // Optional: parse server JSON for more detailed errors
+    let data: Record<string, unknown> | null = null;
+    try {
+      data = (await err.json().catch(() => null)) as Record<
+        string,
+        unknown
+      > | null;
+    } catch (parseErr) {
+      console.error('Failed to parse JSON', parseErr);
+    }
+
+    // 401 Unauthorized → invalid credentials
+    if (status === 401) {
       return {
-        errors: { _form: ['Invalid email or password'] },
         status: 'error',
+        errors: { _form: ['Invalid email or password'] },
       };
     }
 
-    if (err.response?.status === 403) {
+    // 403 Forbidden → blocked account
+    if (status === 403) {
       return {
+        status: 'error',
         errors: {
           _form: ['Your account has been blocked. Please contact support.'],
         },
-        status: 'error',
       };
     }
 
+    // Optional: handle server-provided validation errors
+    if (data?.errors && typeof data.errors === 'object') {
+      return {
+        status: 'error',
+        errors: data.errors as Record<string, string[]>,
+      };
+    }
+
+    // Generic fallback
     return {
-      errors: { _form: ['Something went wrong. Please try again.'] },
       status: 'error',
+      errors: { _form: ['Something went wrong. Please try again.'] },
     };
   }
 
+  // Network or unknown error
+  console.error(err);
   return {
-    errors: { _form: ['An unexpected error occurred'] },
     status: 'error',
+    errors: { _form: ['An unexpected error occurred'] },
   };
 }
