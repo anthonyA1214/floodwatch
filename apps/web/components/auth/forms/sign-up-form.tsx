@@ -10,9 +10,9 @@ import z from 'zod';
 import { mapSignupAuthError } from '@/lib/services/auth/signup-auth-error';
 import { Spinner } from '@/components/ui/spinner';
 import { useRouter } from 'next/navigation';
-import { api } from '@/lib/api';
 import { mutate } from 'swr';
 import { SWR_KEYS } from '@/lib/constants/swr-keys';
+import { apiFetchClient } from '@/lib/api-fetch-client';
 
 export default function SignUpForm() {
   const router = useRouter();
@@ -63,16 +63,22 @@ export default function SignUpForm() {
     } = parsed.data;
 
     try {
-      const res = await api.post('/auth/signup', {
-        first_name,
-        last_name,
-        home_address,
-        email,
-        password,
-        confirm_password,
+      const res = await apiFetchClient('/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          first_name,
+          last_name,
+          home_address,
+          email,
+          password,
+          confirm_password,
+        }),
       });
 
-      const { user } = res.data;
+      const { user } = await res.json();
 
       setState({
         status: 'success',
@@ -87,7 +93,7 @@ export default function SignUpForm() {
       router.refresh();
     } catch (err) {
       setState({
-        errors: mapSignupAuthError(err).errors,
+        errors: (await mapSignupAuthError(err)).errors,
         status: 'error',
       });
 

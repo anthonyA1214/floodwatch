@@ -1,7 +1,6 @@
 import {
   ConflictException,
   Controller,
-  ForbiddenException,
   Get,
   NotFoundException,
   Request,
@@ -9,7 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { setAuthCookies } from '../utils/auth-util';
-import { Public } from '../../decorators/public.decorator';
+import { Public } from '../../common/decorators/public.decorator';
 import { GoogleAuthGuard } from '../guards/google-auth/google-auth.guard';
 import { type GoogleRequest } from '../types/google-request.type';
 import { ConfigService } from '@nestjs/config';
@@ -18,7 +17,7 @@ import { type Response } from 'express';
 import { JwtAuthGuard } from '../guards/jwt-auth/jwt-auth.guard';
 import { GoogleLinkAuthGuard } from '../guards/google-link-auth/google-link-auth.guard';
 import { type GoogleLinkRequest } from '../types/google-link-request.type';
-import { UserStatusGuard } from 'src/guards/user-status/user-status.guard';
+import { UserStatusGuard } from 'src/common/guards/user-status/user-status.guard';
 
 @Controller('auth/google')
 export class GoogleController {

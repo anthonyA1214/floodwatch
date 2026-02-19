@@ -5,7 +5,7 @@ import { ActionState } from '@/lib/types/action-state';
 import { z } from 'zod';
 import { mapCreateAdminError } from '@/lib/services/user/create-admin-error';
 import { revalidatePath } from 'next/cache';
-import { cookies } from 'next/headers';
+import { apiFetchServer } from '../api-fetch-server';
 
 export default async function createAdmin(
   prevState: ActionState,
@@ -37,30 +37,24 @@ export default async function createAdmin(
   } = parsedData.data;
 
   try {
-    const cookieStore = await cookies();
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/admin/create`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Cookie: cookieStore.toString(),
-        },
-        body: JSON.stringify({
-          first_name,
-          last_name,
-          email,
-          home_address,
-          password,
-          confirm_password,
-        }),
+    const res: Response = await apiFetchServer('/admin/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    );
+      body: JSON.stringify({
+        first_name,
+        last_name,
+        email,
+        home_address,
+        password,
+        confirm_password,
+      }),
+    });
 
-    if (!response.ok) {
-      const errorData = await response.json();
+    if (!res.ok) {
       return {
-        errors: mapCreateAdminError(errorData).errors,
+        errors: (await mapCreateAdminError(res)).errors,
         status: 'error',
       };
     }
@@ -73,7 +67,7 @@ export default async function createAdmin(
     };
   } catch (err) {
     return {
-      errors: mapCreateAdminError(err).errors,
+      errors: (await mapCreateAdminError(err)).errors,
       status: 'error',
     };
   }

@@ -16,7 +16,7 @@ import {
   resendOtpSchema,
   ResendOtpDto,
 } from '@repo/schemas';
-import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
+import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 import { ForgotPasswordService } from './forgot-password.service';
 
 @Controller('auth/forgot-password')

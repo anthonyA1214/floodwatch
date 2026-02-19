@@ -1,13 +1,13 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import sharp from 'sharp';
-import { fileTypeFromBuffer } from 'file-type';
+import { fromBuffer } from 'file-type';
 
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 
 @Injectable()
 export class ImagesService {
   async detectMimeType(buffer: Buffer): Promise<string | null> {
-    const fileType = await fileTypeFromBuffer(buffer);
+    const fileType = await fromBuffer(buffer);
     if (!fileType || !ACCEPTED_IMAGE_TYPES.includes(fileType.mime)) {
       throw new BadRequestException(
         'Invalid file type. Only image files are allowed.',

@@ -78,8 +78,7 @@ export default function SearchBar({
     setLoading(true);
     try {
       // If we already have suggestions, prefer the highlighted or first one.
-      const pick =
-        activeIndex >= 0 ? suggestions[activeIndex] : suggestions[0];
+      const pick = activeIndex >= 0 ? suggestions[activeIndex] : suggestions[0];
 
       if (pick) {
         emitLocation(pick);
@@ -176,7 +175,10 @@ export default function SearchBar({
   }, []);
 
   return (
-    <div ref={wrapperRef} className="absolute top-4 left-4 z-50 w-full max-w-md">
+    <div
+      ref={wrapperRef}
+      className="absolute top-4 left-4 z-50 w-full max-w-md"
+    >
       <InputGroup className="h-12 rounded-xl bg-white shadow-md">
         <InputGroupInput
           placeholder="Search location..."

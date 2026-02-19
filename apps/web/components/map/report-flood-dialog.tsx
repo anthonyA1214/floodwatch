@@ -2,11 +2,7 @@
 
 import * as React from 'react';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import InteractiveMap from './interactive-map';
@@ -87,8 +83,6 @@ export function ReportFloodAlertDialog({
                     placeholder="Enter range of flood"
                   />
                 </div>
-
-                
 
                 {/* Upload image */}
                 <div className="space-y-2">

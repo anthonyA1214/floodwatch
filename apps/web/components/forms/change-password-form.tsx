@@ -7,12 +7,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useActionState, useEffect } from 'react';
 import { changePassword } from '@/lib/actions/password-actions';
+import { useUser } from '@/hooks/use-user';
 
 export default function ChangePasswordForm({
   onSuccess,
 }: {
   onSuccess: () => void;
 }) {
+  const { mutateUser } = useUser();
+
   const initialState: ActionState = {
     status: null,
     errors: null,
@@ -24,11 +27,16 @@ export default function ChangePasswordForm({
   );
 
   useEffect(() => {
-    if (state.status === 'success') {
-      // Notify parent component after successful password change
-      onSuccess();
+    async function handleSuccess() {
+      if (state.status === 'success') {
+        // Notify parent component after successful password change
+        await mutateUser();
+        onSuccess();
+      }
     }
-  }, [state.status, onSuccess]);
+
+    handleSuccess();
+  }, [state.status, onSuccess, mutateUser]);
 
   const resetSessionId = sessionStorage.getItem('resetSessionId');
 
@@ -65,15 +73,10 @@ export default function ChangePasswordForm({
         {state?.errors && '_form' in state.errors && state.errors._form && (
           <p className="text-red-500 text-sm">{state.errors._form}</p>
         )}
-        {!resetSessionId && (
-          <p className="text-red-500">
-            No valid session found. Please verify your identity again.
-          </p>
-        )}
       </div>
 
       <Button
-        disabled={isPending || !resetSessionId}
+        disabled={isPending}
         type="submit"
         className="w-full rounded-full"
       >

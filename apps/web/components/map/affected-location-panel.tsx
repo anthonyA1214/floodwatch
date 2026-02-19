@@ -1,6 +1,15 @@
 'use client';
 
-import { Clock, Users, ArrowRight, Navigation, Crosshair, ImagePlus, Send, X } from 'lucide-react';
+import {
+  Clock,
+  Users,
+  ArrowRight,
+  Navigation,
+  Crosshair,
+  ImagePlus,
+  Send,
+  X,
+} from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -64,7 +73,9 @@ export default function AffectedLocationPanel({
             </div>
 
             <div className="flex items-center gap-2">
-              <Badge className={`${severityBadgeClass(report.severity)} text-[10px] uppercase rounded-full px-3`}>
+              <Badge
+                className={`${severityBadgeClass(report.severity)} text-[10px] uppercase rounded-full px-3`}
+              >
                 {report.severity}
               </Badge>
               <Badge className="bg-slate-900 text-white text-[10px] uppercase rounded-full px-3">
@@ -89,17 +100,28 @@ export default function AffectedLocationPanel({
           </TabsList>
 
           {/* DIRECTION TAB */}
-          <TabsContent value="direction" className="flex-1 overflow-y-auto pt-6 space-y-6 pr-2">
+          <TabsContent
+            value="direction"
+            className="flex-1 overflow-y-auto pt-6 space-y-6 pr-2"
+          >
             <div className="flex gap-4 items-start">
               {/* INPUTS */}
               <div className="flex-1 space-y-3">
                 <div className="relative">
-                  <Input className="h-12 px-5" placeholder="Choose starting point..." />
+                  <Input
+                    className="h-12 px-5"
+                    placeholder="Choose starting point..."
+                  />
                   <Navigation className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
                 </div>
 
                 <div className="relative">
-                  <Input className="h-12 px-5" placeholder="Choose destination..." value={report.locationName} readOnly />
+                  <Input
+                    className="h-12 px-5"
+                    placeholder="Choose destination..."
+                    value={report.locationName}
+                    readOnly
+                  />
                 </div>
               </div>
             </div>
@@ -111,15 +133,22 @@ export default function AffectedLocationPanel({
                 </div>
 
                 <div className="flex flex-col text-left">
-                  <span className="text-sm font-semibold text-slate-800">Your Location</span>
-                  <span className="text-xs text-slate-400">Click to use GPS</span>
+                  <span className="text-sm font-semibold text-slate-800">
+                    Your Location
+                  </span>
+                  <span className="text-xs text-slate-400">
+                    Click to use GPS
+                  </span>
                 </div>
               </div>
             </Button>
           </TabsContent>
 
           {/* COMMUNITY TAB */}
-          <TabsContent value="community" className="flex-1 pt-2 text-sm flex flex-col min-h-0">
+          <TabsContent
+            value="community"
+            className="flex-1 pt-2 text-sm flex flex-col min-h-0"
+          >
             <div className="rounded-xl border bg-white p-4 space-y-3 mb-6">
               <Textarea
                 placeholder="Share with your community..."
@@ -127,7 +156,12 @@ export default function AffectedLocationPanel({
               />
 
               <div className="flex items-center justify-end gap-2">
-                <input type="file" id="imageUpload" className="hidden" accept="image/*" />
+                <input
+                  type="file"
+                  id="imageUpload"
+                  className="hidden"
+                  accept="image/*"
+                />
 
                 <label
                   htmlFor="imageUpload"

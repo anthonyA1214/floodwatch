@@ -93,7 +93,9 @@ export default function FloodReportsPage() {
           />
         </Suspense>
 
-        <DataTable columns={columns} data={data} />
+        <Suspense>
+          <DataTable columns={columns} data={data} />
+        </Suspense>
 
         {/* <div className="flex items-center justify-between">
           <span className="text-sm text-gray-600">
