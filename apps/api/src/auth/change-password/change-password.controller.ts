@@ -14,7 +14,7 @@ import {
   ChangePasswordDto,
   changePasswordSchema,
 } from '@repo/schemas';
-import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
+import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 import { JwtAuthGuard } from '../guards/jwt-auth/jwt-auth.guard';
 import { ChangePasswordService } from './change-password.service';
 import { type AuthRequest } from '../types/auth-request.type';

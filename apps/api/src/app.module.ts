@@ -9,6 +9,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ImagesModule } from './images/images.module';
 import { AdminModule } from './admin/admin.module';
+import { ReportsModule } from './reports/reports.module';
 
 @Module({
   imports: [
@@ -37,6 +38,7 @@ import { AdminModule } from './admin/admin.module';
     CloudinaryModule,
     ImagesModule,
     AdminModule,
+    ReportsModule,
   ],
 })
 export class AppModule {}

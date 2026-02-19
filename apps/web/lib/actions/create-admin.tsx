@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { mapCreateAdminError } from '@/lib/services/user/create-admin-error';
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
+import { getApiUrl } from '../utils/get-api-url';
 
 export default async function createAdmin(
   prevState: ActionState,
@@ -38,24 +39,22 @@ export default async function createAdmin(
 
   try {
     const cookieStore = await cookies();
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/admin/create`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Cookie: cookieStore.toString(),
-        },
-        body: JSON.stringify({
-          first_name,
-          last_name,
-          email,
-          home_address,
-          password,
-          confirm_password,
-        }),
+
+    const response = await fetch(`${getApiUrl()}/admin/create`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Cookie: cookieStore.toString(),
       },
-    );
+      body: JSON.stringify({
+        first_name,
+        last_name,
+        email,
+        home_address,
+        password,
+        confirm_password,
+      }),
+    });
 
     if (!response.ok) {
       const errorData = await response.json();

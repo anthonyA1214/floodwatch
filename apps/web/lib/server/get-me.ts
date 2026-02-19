@@ -1,19 +1,17 @@
 import { cookies } from 'next/headers';
+import { getApiUrl } from '@/lib/utils/get-api-url';
 
 export async function getMeServer() {
   const cookieStore = await cookies();
 
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/users/me`,
-      {
-        headers: {
-          Cookie: cookieStore.toString(),
-        },
-        credentials: 'include',
-        cache: 'no-store',
+    const response = await fetch(`${getApiUrl()}/users/me`, {
+      headers: {
+        Cookie: cookieStore.toString(),
       },
-    );
+      credentials: 'include',
+      cache: 'no-store',
+    });
 
     if (response.status === 401) {
       return null;

@@ -18,7 +18,7 @@ import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handleba
           },
         },
         defaults: {
-          from: '"FloodWatch" <no-reply@floodwatch-web.com>', // sender address
+          from: '"FloodWatch" <floodwatch874@gmail.com>', // sender address
         },
         template: {
           dir: __dirname + '/templates',

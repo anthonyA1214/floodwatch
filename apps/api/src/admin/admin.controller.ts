@@ -14,7 +14,7 @@ import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 import { type AuthRequest } from 'src/auth/types/auth-request.type';
 import { AdminService } from './admin.service';
 import { CreateAdminDto, createAdminSchema } from '@repo/schemas';
-import { ZodValidationPipe } from 'src/pipes/zod-validation.pipe';
+import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 
 @Controller('admin')
 export class AdminController {
