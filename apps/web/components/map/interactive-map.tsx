@@ -17,7 +17,7 @@ type SelectedLocation = {
 };
 
 //Mock data
-export type FloodSeverity = 'Low' | 'Medium' | 'High';
+export type FloodSeverity = 'low' | 'moderate' | 'high' | 'critical';
 export type FloodStatus = 'Pending' | 'Verified' | 'Resolved';
 
 export type MockFloodReport = {
@@ -33,10 +33,11 @@ export type MockFloodReport = {
 //end
 
 //function helper for color
-function severityPinClass(severity: 'Low' | 'Medium' | 'High') {
-  if (severity === 'High') return 'bg-red-600 border-t-red-600';
-  if (severity === 'Medium') return 'bg-orange-500 border-t-orange-500';
-  return 'bg-yellow-400 border-t-yellow-400';
+function severityPinClass(severity: 'low' | 'moderate' | 'high' | 'critical') {
+  if (severity === 'high') return 'bg-[#FF6900] border-t-[#FF6900]';
+  if (severity === 'moderate') return 'bg-[#F0B204] border-t-[#F0B204]';
+  if (severity === 'critical') return 'bg-[#FB2C36] border-t-[#FB2C36]';
+  return 'bg-[#2B7FFF] border-t-[#2B7FFF]';
 }
 
 export default function InteractiveMap({

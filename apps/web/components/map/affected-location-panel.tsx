@@ -29,9 +29,9 @@ function timeAgo(iso: string) {
 }
 
 function severityBadgeClass(severity: MockFloodReport['severity']) {
-  if (severity === 'High') return 'bg-[#FF6900] border-t-[#FF6900]';
-  if (severity === 'Medium') return 'bg-[#F0B204] border-t-[#F0B204]';
-  if (severity === 'Critical') return 'bg-[#FB2C36] border-t-[#FB2C36]';
+  if (severity === 'high') return 'bg-[#FF6900] border-t-[#FF6900]';
+  if (severity === 'moderate') return 'bg-[#F0B204] border-t-[#F0B204]';
+  if (severity === 'critical') return 'bg-[#FB2C36] border-t-[#FB2C36]';
   return 'bg-[#2B7FFF] border-t-[#2B7FFF]';
 }
 
