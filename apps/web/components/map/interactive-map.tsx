@@ -47,6 +47,8 @@ export default function InteractiveMap({
 
   // ✅ ADDED (STEP #2): caloocanGeoJson prop so we can draw the zone overlay
   caloocanGeoJson,
+  caloocanOutlineGeoJson, // ✅ add this
+
 }: {
   selectedLocation?: SelectedLocation | null;
   mapId?: string; //added
@@ -55,6 +57,8 @@ export default function InteractiveMap({
 
   // ✅ ADDED (STEP #2): accept GeoJSON boundary data (Feature or FeatureCollection)
   caloocanGeoJson?: any;
+  caloocanOutlineGeoJson?: any; // ✅ add this
+
 }) {
   const mapRef = useRef<MapRef | null>(null);
 
@@ -101,28 +105,30 @@ export default function InteractiveMap({
       }}
       mapStyle="https://tiles.openfreemap.org/styles/bright"
     >
-      {/* ✅ ADDED (STEP #2): Caloocan boundary overlay */}
+      {/* ✅ OPTIONAL: Detailed data fill (no lines inside, just light fill) */}
       {caloocanGeoJson && (
-        <Source id="caloocan-zone" type="geojson" data={caloocanGeoJson}>
-          {/* ✅ ADDED: zone fill (light transparent) */}
+        <Source id="caloocan-data" type="geojson" data={caloocanGeoJson}>
           <Layer
             id="caloocan-fill"
             type="fill"
             paint={{
-              // keep it subtle so pins are still visible
-              'fill-opacity': 0.08,
-              'fill-color': '#3b82f6',
+              'fill-color': '#0066CC',
+              'fill-opacity': 0.10,
             }}
           />
+        </Source>
+      )}
 
-          {/* ✅ ADDED: zone outline */}
+      {/* ✅ OUTLINE ONLY: use the dissolved outline geojson so NO internal lines */}
+      {caloocanOutlineGeoJson && (
+        <Source id="caloocan-outline-src" type="geojson" data={caloocanOutlineGeoJson}>
           <Layer
             id="caloocan-outline"
             type="line"
             paint={{
-              'line-width': 1,
-              'line-opacity': 0.85,
-              'line-color': '#1e40af', 
+              'line-color': '#0066CC',
+              'line-width': 3,
+              'line-opacity': 0.95,
             }}
           />
         </Source>

@@ -81,17 +81,23 @@ export default function InteractiveMapPage() {
     setActivePopup(activePopup === popup ? null : popup);
   };
 
+  // add these states
   const [caloocanGeoJson, setCaloocanGeoJson] = useState<any>(null);
+  const [caloocanOutlineGeoJson, setCaloocanOutlineGeoJson] = useState<any>(null);
 
   useEffect(() => {
-    // IMPORTANT:
-    // Put your file in /public/geo/caloocan.geojson
-    fetch('/geo/caloocan.geojson')
-      .then((res) => res.json())
-      .then((data) => setCaloocanGeoJson(data))
+    // fetch BOTH: detailed + outline-only
+    Promise.all([
+      fetch('/geo/caloocan.geojson').then((res) => res.json()),
+      fetch('/geo/caloocan-outline.geojson').then((res) => res.json()),
+    ])
+      .then(([detailed, outline]) => {
+        setCaloocanGeoJson(detailed);
+        setCaloocanOutlineGeoJson(outline);
+      })
       .catch((err) => {
-        console.error('Failed to load Caloocan GeoJSON', err);
-        alert('Failed to load Caloocan boundary file.');
+        console.error('Failed to load Caloocan GeoJSON files', err);
+        alert('Failed to load Caloocan boundary files.');
       });
   }, []);
 
@@ -182,6 +188,7 @@ export default function InteractiveMapPage() {
           reports={mockReports}
           onSelectReport={setSelectedReport}
           caloocanGeoJson={caloocanGeoJson}
+          caloocanOutlineGeoJson={caloocanOutlineGeoJson}
         />
       </div>
     </MapProvider>
