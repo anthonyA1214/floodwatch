@@ -112,7 +112,7 @@ export default function InteractiveMap({
             id="caloocan-fill"
             type="fill"
             paint={{
-              'fill-color': '#0066CC',
+              'fill-color': '#85F7FF',
               'fill-opacity': 0.10,
             }}
           />
@@ -127,7 +127,7 @@ export default function InteractiveMap({
             type="line"
             paint={{
               'line-color': '#0066CC',
-              'line-width': 3,
+              'line-width': 2,
               'line-opacity': 0.95,
             }}
           />
