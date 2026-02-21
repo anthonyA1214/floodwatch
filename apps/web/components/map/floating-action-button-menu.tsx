@@ -16,7 +16,7 @@ export default function FloatingActionButtonMenu({
   toggleHotlines,
   openReportDialog,
 
-  // To get current location
+  // ✅ ADDED
   onUseCurrentLocation,
 }: {
   toggleAffectedLocations: () => void;
@@ -24,15 +24,14 @@ export default function FloatingActionButtonMenu({
   toggleHotlines: () => void;
   openReportDialog: () => void;
 
-  // To get Current Location
+  // ✅ ADDED
   onUseCurrentLocation: (coords: { latitude: number; longitude: number }) => void;
-
 }) {
   const handleLocationClick = async () => {
     try {
       const { longitude, latitude } = await getUserLocation();
-      
-      // Changed in getting current location
+
+      // ✅ CHANGED: send coordinates to page.tsx instead of alert()
       onUseCurrentLocation({ latitude, longitude });
     } catch (err) {
       alert(err instanceof Error ? err.message : 'Failed to get location');

@@ -15,6 +15,10 @@ import { GoogleLinkToastHandler } from '@/components/google-link-toast-handler';
 import { MapProvider } from 'react-map-gl/maplibre';
 import AffectedLocationPanel from '@/components/map/affected-location-panel';
 import { ReportFloodAlertDialog } from '@/components/map/report-flood-dialog';
+import { useEffect } from 'react';
+import { point } from '@turf/helpers';
+import boolean, { booleanPointInPolygon } from '@turf/boolean-point-in-polygon';
+
 
 export type SelectedLocation = {
   longitude: number;
@@ -77,6 +81,37 @@ export default function InteractiveMapPage() {
     setActivePopup(activePopup === popup ? null : popup);
   };
 
+  const [caloocanGeoJson, setCaloocanGeoJson] = useState<any>(null);
+
+  useEffect(() => {
+    // IMPORTANT:
+    // Put your file in /public/geo/caloocan.geojson
+    fetch('/geo/caloocan.geojson')
+      .then((res) => res.json())
+      .then((data) => setCaloocanGeoJson(data))
+      .catch((err) => {
+        console.error('Failed to load Caloocan GeoJSON', err);
+        alert('Failed to load Caloocan boundary file.');
+      });
+  }, []);
+
+  function isInsideCaloocan(latitude: number, longitude: number) {
+    if (!caloocanGeoJson) return null; // null = still loading
+
+    const userPoint = point([longitude, latitude]);
+
+    // If it's a FeatureCollection (example: barangays),
+    // check if the point is inside ANY feature polygon.
+    if (caloocanGeoJson.type === 'FeatureCollection') {
+      return caloocanGeoJson.features.some((feature: any) =>
+        booleanPointInPolygon(userPoint, feature)
+      );
+    }
+
+    // If it’s a Feature / Polygon / MultiPolygon
+    return booleanPointInPolygon(userPoint, caloocanGeoJson);
+  }
+
   return (
     <MapProvider>
       <div className="relative w-full h-full">
@@ -98,9 +133,23 @@ export default function InteractiveMapPage() {
                 toggleSafetyLocations={() => togglePopup('safety')}
                 toggleHotlines={() => togglePopup('hotlines')}
                 openReportDialog={() => setReportOpen(true)}
-                
-                // ✅ ADDED: sets your selectedLocation, so the map flies + shows red pin
+
                 onUseCurrentLocation={({ latitude, longitude }) => {
+                  const inside = isInsideCaloocan(latitude, longitude);
+
+                  // boundary still loading
+                  if (inside === null) {
+                    alert('Loading Caloocan boundary… try again in a second.');
+                    return;
+                  }
+
+                  // outside Caloocan
+                  if (!inside) {
+                    alert('You are outside Caloocan City. This feature is limited to Caloocan City only.');
+                    return;
+                  }
+
+                  // inside Caloocan ✅
                   setSelectedLocation({
                     latitude,
                     longitude,
@@ -132,6 +181,7 @@ export default function InteractiveMapPage() {
           selectedLocation={selectedLocation}
           reports={mockReports}
           onSelectReport={setSelectedReport}
+          caloocanGeoJson={caloocanGeoJson}
         />
       </div>
     </MapProvider>
