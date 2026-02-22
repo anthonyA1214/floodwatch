@@ -1,1 +1,0 @@
-ALTER TABLE "profile_info" ADD COLUMN "profile_picture_public_id" text;

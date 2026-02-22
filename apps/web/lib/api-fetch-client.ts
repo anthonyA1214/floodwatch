@@ -1,3 +1,5 @@
+'use client';
+
 import { getApiUrl } from './utils/get-api-url';
 
 let refreshing: Promise<void> | null = null;
@@ -35,10 +37,6 @@ export async function apiFetchClient(path: string, init: RequestInit = {}) {
 
   let res = await request();
 
-  if (!res.ok) {
-    throw res;
-  }
-
   if (res.status === 401) {
     await refreshToken();
     res = await request();
@@ -50,6 +48,11 @@ export async function apiFetchClient(path: string, init: RequestInit = {}) {
       credentials: 'include',
     });
     window.location.href = '/auth/login';
+  }
+
+  if (!res.ok) {
+    console.error('API Fetch Error:', res.status, res.statusText);
+    throw res;
   }
 
   return res;

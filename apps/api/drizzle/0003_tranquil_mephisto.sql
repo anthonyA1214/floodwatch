@@ -1,1 +1,0 @@
-CREATE UNIQUE INDEX "refresh_tokens_user_id_device_id_index" ON "refresh_tokens" USING btree ("user_id","device_id");

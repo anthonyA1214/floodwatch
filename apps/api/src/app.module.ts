@@ -10,6 +10,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ImagesModule } from './images/images.module';
 import { AdminModule } from './admin/admin.module';
 import { ReportsModule } from './reports/reports.module';
+import { GeocoderModule } from './geocoder/geocoder.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { ReportsModule } from './reports/reports.module';
     ImagesModule,
     AdminModule,
     ReportsModule,
+    GeocoderModule,
   ],
 })
 export class AppModule {}
