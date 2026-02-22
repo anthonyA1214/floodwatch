@@ -2,7 +2,6 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import PostComposer from '@/components/admin/feed/post-composer';
 import PostCard from '@/components/admin/feed/post-card';
 import { IconMapPin } from '@tabler/icons-react';
-import { useUser } from '@/hooks/use-user';
 
 export default function CommunityFeedLeft() {
   return (

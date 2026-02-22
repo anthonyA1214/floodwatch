@@ -1,14 +1,11 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
-
-// ✅ CHANGED: added Source and Layer imports so we can draw the Caloocan boundary overlay
-import Map, { Marker, Source, Layer, type MapRef } from 'react-map-gl/maplibre';
-
+import { Fragment, useEffect, useRef } from 'react';
+import Map, { Marker, type MapRef } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
-// ⚠️ NOTE: This import is not needed in Next.js frontend and can cause warnings/errors.
-// If you’re not using it, remove it.
-// import { report } from 'process';
+import { FloodReportsDto } from '@repo/schemas';
+import { SEVERITY_COLOR_MAP } from '@/lib/utils/get-severity-color';
+import RadiusCircle from './radius-circle';
 
 type SelectedLocation = {
   longitude: number;
@@ -16,50 +13,14 @@ type SelectedLocation = {
   label: string;
 };
 
-//Mock data
-export type FloodSeverity = 'low' | 'moderate' | 'high' | 'critical';
-export type FloodStatus = 'Pending' | 'Verified' | 'Resolved';
-
-export type MockFloodReport = {
-  id: string;
-  longitude: number;
-  latitude: number;
-  locationName: string;
-  severity: FloodSeverity;
-  description: string;
-  reportedAt: string; // ISO string
-  status: FloodStatus;
-};
-//end
-
-//function helper for color
-function severityPinClass(severity: 'low' | 'moderate' | 'high' | 'critical') {
-  if (severity === 'high') return 'bg-[#FF6900] border-t-[#FF6900]';
-  if (severity === 'moderate') return 'bg-[#F0B204] border-t-[#F0B204]';
-  if (severity === 'critical') return 'bg-[#FB2C36] border-t-[#FB2C36]';
-  return 'bg-[#2B7FFF] border-t-[#2B7FFF]';
-}
-
 export default function InteractiveMap({
   selectedLocation,
-  mapId = 'main-map',
-  reports = [], //added
-  onSelectReport, //added
-
-  // ✅ ADDED (STEP #2): caloocanGeoJson prop so we can draw the zone overlay
-  caloocanGeoJson,
-  caloocanOutlineGeoJson, // ✅ add this
-
+  reports,
+  onSelectReport,
 }: {
   selectedLocation?: SelectedLocation | null;
-  mapId?: string; //added
-  reports?: MockFloodReport[]; //added
-  onSelectReport?: (report: MockFloodReport) => void; //added
-
-  // ✅ ADDED (STEP #2): accept GeoJSON boundary data (Feature or FeatureCollection)
-  caloocanGeoJson?: any;
-  caloocanOutlineGeoJson?: any; // ✅ add this
-
+  reports: FloodReportsDto[];
+  onSelectReport: (report: FloodReportsDto) => void;
 }) {
   const mapRef = useRef<MapRef | null>(null);
 
@@ -78,25 +39,18 @@ export default function InteractiveMap({
     });
   }, [selectedLocation]);
 
-  const handleReportClick = (report: MockFloodReport) => {
-    onSelectReport?.(report);
-
-    // Optional: also fly to the report pin when clicked
-    const map = mapRef.current;
-    if (!map) return;
-
-    const currentZoom = typeof map.getZoom === 'function' ? map.getZoom() : 0;
-
-    map.flyTo({
+  const handleSelectReport = (report: FloodReportsDto) => {
+    mapRef?.current?.flyTo({
       center: [report.longitude, report.latitude],
-      zoom: Math.max(currentZoom, 16),
+      zoom: Math.max(mapRef?.current.getZoom(), 16),
       essential: true,
     });
+    onSelectReport(report);
   };
 
   return (
     <Map
-      id={mapId}
+      id="interactive-map"
       ref={mapRef}
       initialViewState={{
         // Center around Metro Manila area (so your sample pins are visible)
@@ -106,85 +60,33 @@ export default function InteractiveMap({
       }}
       mapStyle="https://tiles.openfreemap.org/styles/bright"
     >
-      {/* ✅ OPTIONAL: Detailed data fill (no lines inside, just light fill) */}
-      {caloocanGeoJson && (
-        <Source id="caloocan-data" type="geojson" data={caloocanGeoJson}>
-          <Layer
-            id="caloocan-fill"
-            type="fill"
-            paint={{
-              'fill-color': '#85F7FF',
-              'fill-opacity': 0.10,
-            }}
-          />
-        </Source>
-      )}
-
-      {/* ✅ OUTLINE ONLY: use the dissolved outline geojson so NO internal lines */}
-      {caloocanOutlineGeoJson && (
-        <Source id="caloocan-outline-src" type="geojson" data={caloocanOutlineGeoJson}>
-          <Layer
-            id="caloocan-outline"
-            type="line"
-            paint={{
-              'line-color': '#0066CC',
-              'line-width': 2,
-              'line-opacity': 0.95,
-            }}
-          />
-        </Source>
-      )}
-
-      {/* ✅ Mock report pins */}
-      {reports.map((report) => {
-        // ✅ determine pin color based on severity
-        const pinClass = severityPinClass(report.severity);
-
-        // ✅ split into circle class + triangle class
-        const [circleClass, triangleClass] = pinClass.split(' ');
-
-        return (
+      {/* Flood report pins */}
+      {reports.map((report) => (
+        <Fragment key={report.id}>
           <Marker
             key={report.id}
             longitude={report.longitude}
             latitude={report.latitude}
-            anchor="bottom"
-          >
-            <button
-              type="button"
-              onClick={() => handleReportClick(report)}
-              className="relative"
-              title={report.locationName}
-              aria-label={`Flood report pin: ${report.locationName}`}
-            >
-              {/* ✅ Pin circle (severity-based color) */}
-              <div className={`h-5 w-5 rounded-full shadow-md ${circleClass}`} />
+            color={SEVERITY_COLOR_MAP[report.severity]}
+            onClick={() => handleSelectReport(report)}
+          />
+          <RadiusCircle
+            id={`${report.id}`}
+            longitude={report.longitude}
+            latitude={report.latitude}
+            range={report.range}
+            severity={report.severity}
+          />
+        </Fragment>
+      ))}
 
-              {/* ✅ Pin triangle (severity-based color) */}
-              <div
-                className={`mx-auto -mt-1 h-0 w-0 border-x-8 border-x-transparent border-t-12 ${triangleClass}`}
-              />
-            </button>
-          </Marker>
-        );
-      })}
-
-      {/* ✅ Search-selected location pin (red) */}
+      {/* Search-selected location pin (red) */}
       {selectedLocation && (
         <Marker
           longitude={selectedLocation.longitude}
           latitude={selectedLocation.latitude}
-          anchor="bottom"
-        >
-          <div
-            title={selectedLocation.label}
-            className="relative"
-            aria-label="Selected location pin"
-          >
-            <div className="h-6 w-6 rounded-full bg-red-600 shadow-md" />
-            <div className="mx-auto -mt-1 h-0 w-0 border-x-8 border-x-transparent border-t-12 border-t-red-600" />
-          </div>
-        </Marker>
+          color="#FF0000"
+        />
       )}
     </Map>
   );

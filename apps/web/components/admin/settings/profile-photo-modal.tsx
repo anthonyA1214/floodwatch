@@ -49,14 +49,12 @@ export function ProfilePhotoModal() {
     if (selectedFile) {
       // Validate file type
       if (!selectedFile.type.startsWith('image/')) {
-        alert('Please select an image file');
-        return;
+        return alert('Please select an image file');
       }
 
       // Validate file size (e.g., max 5MB)
       if (selectedFile.size > 5 * 1024 * 1024) {
-        alert('File size must be less than 5MB');
-        return;
+        return alert('File size must be less than 5MB');
       }
 
       const preview = URL.createObjectURL(selectedFile);

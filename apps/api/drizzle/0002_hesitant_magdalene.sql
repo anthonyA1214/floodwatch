@@ -1,1 +1,0 @@
-ALTER TABLE "refresh_tokens" ADD COLUMN "device_id" varchar(255) NOT NULL;

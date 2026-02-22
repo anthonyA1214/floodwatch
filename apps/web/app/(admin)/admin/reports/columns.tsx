@@ -1,7 +1,7 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { FloodReportDto } from '@repo/schemas';
+import { FloodReportsDto } from '@repo/schemas';
 import {
   Avatar as UIAvatar,
   AvatarFallback,
@@ -17,7 +17,7 @@ import {
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
-export const columns: ColumnDef<FloodReportDto>[] = [
+export const columns: ColumnDef<FloodReportsDto>[] = [
   {
     accessorKey: 'name',
     header: ({ column }) => {
