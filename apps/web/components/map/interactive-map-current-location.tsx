@@ -1,9 +1,10 @@
 'use client';
 
-import { Map, Marker } from 'react-map-gl/maplibre';
+import { Layer, Map, Marker, Source } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Spinner } from '@/components/ui/spinner';
-import RadiusCircle from '../radius-circle';
+import RadiusCircle from '@/components/radius-circle';
+import { useBoundary } from '@/contexts/boundary-context';
 import { SEVERITY_COLOR_MAP } from '@/lib/utils/get-severity-color';
 
 export default function CurrentLocationInteractiveMap({
@@ -17,6 +18,8 @@ export default function CurrentLocationInteractiveMap({
   range: number;
   severity: 'critical' | 'high' | 'moderate' | 'low';
 }) {
+  const { caloocanGeoJSON, caloocanOutlineGeoJSON } = useBoundary();
+
   if (longitude === null || latitude === null) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center gap-2">
@@ -35,6 +38,38 @@ export default function CurrentLocationInteractiveMap({
       }}
       mapStyle="https://tiles.openfreemap.org/styles/bright"
     >
+      {/* boundary fill */}
+      {caloocanGeoJSON && (
+        <Source id="caloocan" type="geojson" data={caloocanGeoJSON}>
+          <Layer
+            id="caloocan-fill"
+            type="fill"
+            paint={{
+              'fill-color': '#0066CC',
+              'fill-opacity': 0.05,
+            }}
+          />
+        </Source>
+      )}
+
+      {/* boundary outline */}
+      {caloocanOutlineGeoJSON && (
+        <Source
+          id="caloocan-outline"
+          type="geojson"
+          data={caloocanOutlineGeoJSON}
+        >
+          <Layer
+            id="caloocan-outline-line"
+            type="line"
+            paint={{
+              'line-color': '#0066CC',
+              'line-width': 2,
+            }}
+          />
+        </Source>
+      )}
+
       <RadiusCircle
         longitude={longitude}
         latitude={latitude}
