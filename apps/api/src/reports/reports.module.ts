@@ -2,9 +2,12 @@ import { Module } from '@nestjs/common';
 import { ReportsService } from './reports.service';
 import { ReportsController } from './reports.controller';
 import { DrizzleModule } from 'src/drizzle/drizzle.module';
+import { ImagesModule } from 'src/images/images.module';
+import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
+import { GeocoderModule } from 'src/geocoder/geocoder.module';
 
 @Module({
-  imports: [DrizzleModule],
+  imports: [DrizzleModule, ImagesModule, CloudinaryModule, GeocoderModule],
   providers: [ReportsService],
   controllers: [ReportsController],
 })

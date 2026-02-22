@@ -5,78 +5,15 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1768621196879,
-      "tag": "0000_dear_legion",
+      "when": 1771695522254,
+      "tag": "0000_late_glorian",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1769068449724,
-      "tag": "0001_talented_hydra",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1769081899255,
-      "tag": "0002_hesitant_magdalene",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1769084736918,
-      "tag": "0003_tranquil_mephisto",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1769733295498,
-      "tag": "0004_empty_glorian",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1770202131332,
-      "tag": "0005_salty_valeria_richards",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1770210236666,
-      "tag": "0006_clammy_johnny_blaze",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1770211832026,
-      "tag": "0007_chemical_gertrude_yorkes",
-      "breakpoints": true
-    },
-    {
-      "idx": 8,
-      "version": "7",
-      "when": 1770360317755,
-      "tag": "0008_steep_cyclops",
-      "breakpoints": true
-    },
-    {
-      "idx": 9,
-      "version": "7",
-      "when": 1770772030887,
-      "tag": "0009_graceful_warbird",
-      "breakpoints": true
-    },
-    {
-      "idx": 10,
-      "version": "7",
-      "when": 1771386792241,
-      "tag": "0010_previous_zemo",
+      "when": 1771725443243,
+      "tag": "0001_outstanding_alex_wilder",
       "breakpoints": true
     }
   ]

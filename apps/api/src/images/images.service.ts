@@ -37,4 +37,23 @@ export class ImagesService {
       throw new Error('Failed to process image');
     }
   }
+
+  async normalizeImage(
+    buffer: Buffer,
+  ): Promise<{ buffer: Buffer; mimetype: string }> {
+    try {
+      const normalizedBuffer = await sharp(buffer)
+        .rotate()
+        .webp({ quality: 85, effort: 4 })
+        .toBuffer();
+
+      return {
+        buffer: normalizedBuffer,
+        mimetype: 'image/webp',
+      };
+    } catch (error) {
+      console.error('Error processing image:', error);
+      throw new Error('Failed to process image');
+    }
+  }
 }

@@ -6,15 +6,14 @@ import {
   IconCurrentLocation,
   IconPhoneCall,
   IconShieldCheck,
-  IconWaterpolo,
 } from '@tabler/icons-react';
 import { getUserLocation } from '@/lib/utils/get-user-location';
+import ReportFloodAlertModal from './report-flood-alert-modal';
 
 export default function FloatingActionButtonMenu({
   toggleAffectedLocations,
   toggleSafetyLocations,
   toggleHotlines,
-  openReportDialog,
 
   // To get current location
   onUseCurrentLocation,
@@ -22,16 +21,17 @@ export default function FloatingActionButtonMenu({
   toggleAffectedLocations: () => void;
   toggleSafetyLocations: () => void;
   toggleHotlines: () => void;
-  openReportDialog: () => void;
 
   // To get Current Location
-  onUseCurrentLocation: (coords: { latitude: number; longitude: number }) => void;
-
+  onUseCurrentLocation: (coords: {
+    latitude: number;
+    longitude: number;
+  }) => void;
 }) {
   const handleLocationClick = async () => {
     try {
       const { longitude, latitude } = await getUserLocation();
-      
+
       // Changed in getting current location
       onUseCurrentLocation({ latitude, longitude });
     } catch (err) {
@@ -69,14 +69,7 @@ export default function FloatingActionButtonMenu({
           <span>Location</span>
         </Button>
 
-        <Button
-          variant="ghost"
-          className="flex items-center gap-2 justify-start"
-          onClick={openReportDialog}
-        >
-          <IconWaterpolo className="w-[1.5em]! h-[1.5em]! text-[#3182FF]" />
-          <span>Report</span>
-        </Button>
+        <ReportFloodAlertModal />
 
         <Button
           variant="ghost"

@@ -1,4 +1,4 @@
-import InteractiveMap from '@/components/map/interactive-map';
+import InteractiveMap from '@/components/admin/map/interactive-map';
 import { IconLayersIntersect } from '@tabler/icons-react';
 
 export default function MapLeft() {

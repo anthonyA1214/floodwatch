@@ -9,7 +9,17 @@ import {
 import { users } from './users.schema';
 import { doublePrecision } from 'drizzle-orm/pg-core';
 
-export const severityEnum = pgEnum('severity', ['low', 'medium', 'high']);
+export const severityEnum = pgEnum('severity', [
+  'low',
+  'moderate',
+  'high',
+  'critical',
+]);
+
+export const reportsStatusEnum = pgEnum('report_status', [
+  'unverified',
+  'verified',
+]);
 
 export const reports = pgTable('reports', {
   id: serial('id').primaryKey(),
@@ -18,11 +28,13 @@ export const reports = pgTable('reports', {
   }),
   latitude: doublePrecision('latitude').notNull(),
   longitude: doublePrecision('longitude').notNull(),
-  location: text('location').notNull(),
-  range: integer('range').notNull(),
+  location: text('location').notNull().default('Unknown location'),
+  range: doublePrecision('range').notNull(),
   description: text('description'),
   image: text('image'),
+  imagePublicId: text('image_public_id'),
   severity: severityEnum().notNull(),
+  status: reportsStatusEnum().notNull().default('unverified'),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });
