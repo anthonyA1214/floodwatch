@@ -32,7 +32,7 @@ export default function RadiusCircle({
 
     const circleGeoJSON = circle([longitude, latitude], range, {
       steps: 64,
-      units: 'kilometers',
+      units: 'meters',
     });
     const color = SEVERITY_COLOR_MAP[severity] ?? SEVERITY_COLOR_MAP.low;
 

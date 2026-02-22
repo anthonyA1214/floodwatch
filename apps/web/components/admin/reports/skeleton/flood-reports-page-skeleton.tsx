@@ -1,7 +1,7 @@
-import { DataTableSkeleton } from '@/components/admin/users/skeleton/data-table-skeleton';
 import PaginationSkeleton from '@/components/admin/pagination-skeleton';
 import { Skeleton } from '@/components/ui/skeleton';
 import ReportStatCardSkeleton from './report-stat-card-skeleton';
+import { FloodReportsDataTableSkeleton } from './flood-reports-data-table-skeleton';
 
 export default function FloodReportsPageSkeleton() {
   return (
@@ -10,9 +10,8 @@ export default function FloodReportsPageSkeleton() {
       <Skeleton className="h-9 w-56" />
 
       {/* Search bar + Add button row */}
-      <div className="flex justify-between gap-4">
-        <Skeleton className="flex-1 h-10" />
-        <Skeleton className="w-36 h-10" />
+      <div className="flex">
+        <Skeleton className="flex-1 h-12 rounded-full" />
       </div>
 
       <div className="flex-1 flex flex-col min-h-0 gap-4">
@@ -22,7 +21,7 @@ export default function FloodReportsPageSkeleton() {
           ))}
         </div>
 
-        <DataTableSkeleton />
+        <FloodReportsDataTableSkeleton />
 
         <div className="flex items-center justify-between">
           <Skeleton className="h-4 w-40" />

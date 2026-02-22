@@ -5,7 +5,7 @@ import Map, { Marker, type MapRef } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { FloodReportsDto } from '@repo/schemas';
 import { SEVERITY_COLOR_MAP } from '@/lib/utils/get-severity-color';
-import RadiusCircle from './radius-circle';
+import RadiusCircle from '../radius-circle';
 
 type SelectedLocation = {
   longitude: number;

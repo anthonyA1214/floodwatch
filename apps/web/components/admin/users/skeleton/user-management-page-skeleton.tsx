@@ -1,4 +1,4 @@
-import { DataTableSkeleton } from '@/components/admin/users/skeleton/data-table-skeleton';
+import { UserManagementDataTableSkeleton } from '@/components/admin/users/skeleton/user-management-data-table-skeleton';
 import PaginationSkeleton from '@/components/admin/pagination-skeleton';
 import { Skeleton } from '@/components/ui/skeleton';
 import UserStatCardSkeleton from '@/components/admin/users/skeleton/user-stat-card-skeleton';
@@ -11,8 +11,8 @@ export default function UserManagementPageSkeleton() {
 
       {/* Search bar + Add button row */}
       <div className="flex justify-between gap-4">
-        <Skeleton className="flex-1 h-10" />
-        <Skeleton className="w-36 h-10" />
+        <Skeleton className="flex-1 h-12 rounded-full" />
+        <Skeleton className="w-36 h-12" />
       </div>
 
       <div className="flex-1 flex flex-col min-h-0 gap-4">
@@ -22,7 +22,7 @@ export default function UserManagementPageSkeleton() {
           ))}
         </div>
 
-        <DataTableSkeleton />
+        <UserManagementDataTableSkeleton />
 
         <div className="flex items-center justify-between">
           <Skeleton className="h-4 w-40" />

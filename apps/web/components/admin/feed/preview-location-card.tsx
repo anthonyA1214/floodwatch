@@ -8,7 +8,7 @@ export default function PreviewLocationCard() {
       <h2 className="font-poppins text-xl font-semibold">Preview Location</h2>
 
       {/* image */}
-      <div className="relative flex-1 rounded-2xl overflow-hidden">
+      <div className="relative w-full aspect-video rounded-2xl overflow-hidden">
         <Image
           src="/images/after_flood_image.jpg"
           alt="Map preview"

@@ -63,7 +63,7 @@ export default function InteractiveMapPage() {
           <GoogleLinkToastHandler />
         </Suspense>
 
-        <div className="absolute flex justify-center top-0 left-0 w-full h-full p-4 z-10 max-w-lg min-h-0">
+        <div className="absolute flex justify-center top-0 left-0 w-full h-full p-4 z-10 max-w-lg min-h-0 pointer-events-none">
           <SearchBar
             toggleLegend={() => setShowLegend(!showLegend)}
             onSelectLocation={setSelectedLocation}

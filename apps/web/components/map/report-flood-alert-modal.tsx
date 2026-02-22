@@ -7,7 +7,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import InteractiveMap from './current-location-interactive-map';
+import InteractiveMapCurrentLocation from '@/components/map/interactive-map-current-location';
 import { Textarea } from '@/components/ui/textarea';
 import {
   Select,
@@ -23,7 +23,7 @@ import { IconWaterpolo } from '@tabler/icons-react';
 import { useState } from 'react';
 import { getUserLocation } from '@/lib/utils/get-user-location';
 import { apiFetchClient } from '@/lib/api-fetch-client';
-import { Spinner } from '../ui/spinner';
+import { Spinner } from '@/components/ui/spinner';
 import { reportFloodAlertSchema } from '@repo/schemas';
 import { useUser } from '@/hooks/use-user';
 import { toast } from 'sonner';
@@ -161,7 +161,7 @@ export default function ReportFloodAlertModal() {
         <form onSubmit={handleSubmit}>
           <div className="grid md:grid-cols-3 gap-4">
             <div className="grid col-span-2">
-              <InteractiveMap
+              <InteractiveMapCurrentLocation
                 longitude={location?.longitude ?? null}
                 latitude={location?.latitude ?? null}
                 range={radius}

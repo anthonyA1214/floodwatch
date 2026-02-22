@@ -1,21 +1,17 @@
 import { Skeleton } from '@/components/ui/skeleton';
 
-export function DataTableSkeleton() {
+export function FloodReportsDataTableSkeleton() {
   return (
     <div className="overflow-hidden rounded-lg flex flex-col flex-1 min-h-0 h-0">
-      {/* Header - matches bg-[#0066CC] */}
+      {/* Header */}
       <div className="bg-[#0066CC] flex items-center px-4 py-3 gap-4">
         {/* USER col */}
         <div className="flex-2">
           <Skeleton className="h-3 w-10 bg-blue-400" />
         </div>
-        {/* ROLE col */}
+        {/* REPORTED DATE col */}
         <div className="flex-1">
-          <Skeleton className="h-3 w-10 bg-blue-400" />
-        </div>
-        {/* JOIN DATE col */}
-        <div className="flex-1">
-          <Skeleton className="h-3 w-16 bg-blue-400" />
+          <Skeleton className="h-3 w-24 bg-blue-400" />
         </div>
         {/* STATUS col */}
         <div className="flex-1 flex justify-center">
@@ -41,19 +37,15 @@ export function DataTableSkeleton() {
               <Skeleton className="h-2.5 w-32" />
             </div>
           </div>
-          {/* ROLE */}
-          <div className="flex-1">
-            <Skeleton className="h-3 w-10" />
-          </div>
-          {/* JOIN DATE */}
+          {/* REPORTED DATE */}
           <div className="flex-1">
             <Skeleton className="h-3 w-28" />
           </div>
           {/* STATUS: pill */}
           <div className="flex-1 flex justify-center">
-            <Skeleton className="h-7 w-20 rounded-full" />
+            <Skeleton className="h-7 w-24 rounded-full" />
           </div>
-          {/* ACTIONS: two icon buttons */}
+          {/* ACTIONS: eye + trash */}
           <div className="flex-1 flex justify-center gap-2">
             <Skeleton className="h-8 w-8 rounded-lg" />
             <Skeleton className="h-8 w-8 rounded-lg" />
