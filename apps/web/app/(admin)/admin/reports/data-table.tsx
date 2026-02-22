@@ -20,14 +20,31 @@ import {
 import { useState } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
+// ✅ ADDED: type for your report rows (so meta handlers can use it)
+import type { FloodReportDto } from '@repo/schemas'; // ✅ ADDED
+
+// ✅ ADDED: meta type shared with columns (actions column will call these)
+export type FloodReportsTableMeta = {
+  onViewReport?: (report: FloodReportDto) => void;
+  onDeleteReport?: (report: FloodReportDto) => void;
+}; // ✅ ADDED
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+
+  // ✅ ADDED: optional handlers (only used when TData is FloodReportDto in this page)
+  onViewReport?: (report: FloodReportDto) => void;
+  onDeleteReport?: (report: FloodReportDto) => void;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+
+  // ✅ ADDED: receive handlers from page.tsx
+  onViewReport,
+  onDeleteReport,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
 
@@ -40,6 +57,12 @@ export function DataTable<TData, TValue>({
     state: {
       sorting,
     },
+
+    // ✅ ADDED: pass handlers to TanStack Table meta (used by Action buttons in columns.tsx)
+    meta: {
+      onViewReport,
+      onDeleteReport,
+    } satisfies FloodReportsTableMeta,
   });
 
   return (
@@ -64,6 +87,7 @@ export function DataTable<TData, TValue>({
           ))}
         </TableHeader>
       </Table>
+
       <div className="flex-1 min-h-0 overflow-hidden">
         <ScrollArea className="h-full">
           <Table className="w-full table-fixed">

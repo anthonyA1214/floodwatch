@@ -1,10 +1,36 @@
+'use client'; // ✅ ADDED: needed because we will use React state for the modal
+
 import ReportStatCards from '@/components/reports/report-stat-cards';
 import SearchBar from '@/components/search-bar';
-import { Suspense } from 'react';
+import { Suspense, useState } from 'react'; // ✅ ADDED: useState
 import { DataTable } from './data-table';
 import { columns } from './columns';
 
+// ✅ ADDED: import your modal component (adjust path/name if yours differs)
+import ViewReportDialog from '@/components/reports/view-report-modal';
+
+// ✅ ADDED: import FloodReportDto type (adjust if your type location differs)
+import type { FloodReportDto } from '@repo/schemas';
+
+// ✅ ADDED: import delete modal (static for now)
+import DeleteReportDialog from '@/components/reports/delete-report-modal';
+
 export default function FloodReportsPage() {
+  // ✅ ADDED: state for modal open/close
+  const [isViewOpen, setIsViewOpen] = useState(false);
+
+  // ✅ ADDED: state for selected report row
+  const [selectedReport, setSelectedReport] = useState<FloodReportDto | null>(
+    null,
+  );
+
+  // ✅ ADDED: state for delete modal open/close
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false);
+
+  // ✅ ADDED: state for selected report row (delete)
+  const [selectedDeleteReport, setSelectedDeleteReport] =
+    useState<FloodReportDto | null>(null);
+
   const data = [
     {
       id: 1,
@@ -67,7 +93,25 @@ export default function FloodReportsPage() {
       status: 'unverified' as const,
       reportedAt: '2024-11-01T12:30:00Z',
     },
-  ];
+  ] satisfies FloodReportDto[]; // ✅ ADDED: helps TS + ensures selectedReport type matches
+
+  // ✅ ADDED: handler to open modal with clicked row
+  function handleViewReport(report: FloodReportDto) {
+    setSelectedReport(report);
+    setIsViewOpen(true);
+  }
+
+  // ✅ ADDED: handler to open delete modal with clicked row
+  function handleOpenDelete(report: FloodReportDto) {
+    setSelectedDeleteReport(report);
+    setIsDeleteOpen(true);
+  }
+
+  // ✅ ADDED: static delete confirm (no API call yet)
+  function handleConfirmDelete(report: FloodReportDto) {
+    // ✅ ADDED: static for now — you’ll connect to Nest API later
+    console.log('DELETE CONFIRMED (static):', report.id);
+  }
 
   return (
     <div className="flex-1 flex flex-col bg-white p-8 rounded-2xl gap-8 min-h-0">
@@ -94,8 +138,41 @@ export default function FloodReportsPage() {
         </Suspense>
 
         <Suspense>
-          <DataTable columns={columns} data={data} />
+          <DataTable
+            columns={columns}
+            data={data}
+            // ✅ ADDED: wire action button (eye icon) to open the modal
+            onViewReport={handleViewReport}
+            // ✅ ADDED: wire action button (trash icon) to open delete modal
+            onDeleteReport={handleOpenDelete}
+          />
         </Suspense>
+
+        {/* ✅ ADDED: mount your static modal and feed it the selected report */}
+        <ViewReportDialog
+          open={isViewOpen}
+          onOpenChange={(open: boolean) => {
+            setIsViewOpen(open);
+
+            // ✅ ADDED: optional cleanup when closing
+            if (!open) setSelectedReport(null);
+          }}
+          report={selectedReport}
+        />
+
+        {/* ✅ ADDED: mount your static delete modal */}
+        <DeleteReportDialog
+          open={isDeleteOpen}
+          onOpenChange={(open: boolean) => {
+            setIsDeleteOpen(open);
+
+            // ✅ ADDED: optional cleanup when closing
+            if (!open) setSelectedDeleteReport(null);
+          }}
+          report={selectedDeleteReport}
+          // ✅ ADDED: static confirm handler (no API yet)
+          onConfirm={handleConfirmDelete}
+        />
 
         {/* <div className="flex items-center justify-between">
           <span className="text-sm text-gray-600">

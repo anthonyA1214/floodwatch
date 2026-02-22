@@ -17,6 +17,12 @@ import {
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
+// ✅ ADDED: meta type (must match what DataTable passes in meta)
+type FloodReportsTableMeta = {
+  onViewReport?: (report: FloodReportDto) => void;
+  onDeleteReport?: (report: FloodReportDto) => void;
+};
+
 export const columns: ColumnDef<FloodReportDto>[] = [
   {
     accessorKey: 'name',
@@ -90,11 +96,20 @@ export const columns: ColumnDef<FloodReportDto>[] = [
   {
     accessorKey: 'actions',
     header: () => <span className="flex justify-center">ACTIONS</span>,
-    cell: ({ row }) => {
+
+    // ✅ UPDATED: include table so we can call meta handlers, design unchanged
+    cell: ({ row, table }) => {
+      const report = row.original; // ✅ ADDED: the clicked row report
+      const meta = table.options.meta as FloodReportsTableMeta | undefined; // ✅ ADDED
+
       return (
         <div className="flex justify-center gap-2">
           <Tooltip>
-            <TooltipTrigger className="text-[#0066CC] bg-[#0066CC]/10 rounded-lg p-1.5 hover:bg-[#0066CC]/20 transition">
+            <TooltipTrigger
+              className="text-[#0066CC] bg-[#0066CC]/10 rounded-lg p-1.5 hover:bg-[#0066CC]/20 transition"
+              // ✅ ADDED: open View modal
+              onClick={() => meta?.onViewReport?.(report)}
+            >
               <IconEye className="w-[1.5em]! h-[1.5em]!" />
             </TooltipTrigger>
             <TooltipContent>
@@ -107,6 +122,8 @@ export const columns: ColumnDef<FloodReportDto>[] = [
               className={cn(
                 `text-[#FB323B] bg-[#FB323B]/10 rounded-lg p-1.5 hover:bg-[#FB323B]/20 transition`,
               )}
+              // ✅ ADDED: open Delete modal (static for now)
+              onClick={() => meta?.onDeleteReport?.(report)}
             >
               <IconTrash className="w-[1.5em]! h-[1.5em]!" />
             </TooltipTrigger>
