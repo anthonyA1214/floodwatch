@@ -29,9 +29,11 @@ export function UserStatusDialogProvider({
   };
 
   const closeDialog = () => {
-    setUserId(null);
-    setAction(null);
     setOpen(false);
+    setTimeout(() => {
+      setUserId(null);
+      setAction(null);
+    }, 150);
   };
 
   return (

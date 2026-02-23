@@ -28,7 +28,11 @@ import { reportFloodAlertSchema } from '@repo/schemas';
 import { useUser } from '@/hooks/use-user';
 import { toast } from 'sonner';
 
-export default function ReportFloodAlertModal() {
+export default function ReportFloodAlertModal({
+  onSuccess,
+}: {
+  onSuccess: () => void;
+}) {
   const { user } = useUser();
 
   const [radius, setRadius] = useState(0); // range
@@ -43,6 +47,15 @@ export default function ReportFloodAlertModal() {
     longitude: number;
     latitude: number;
   } | null>(null);
+
+  const resetForm = () => {
+    setRadius(0);
+    setSeverity('low');
+    setDescription('');
+    setImage(null);
+    setLocation(null);
+    setState({ status: null, errors: null });
+  };
 
   const [state, setState] = useState<{
     status: 'error' | 'success' | null;
@@ -138,11 +151,13 @@ export default function ReportFloodAlertModal() {
       });
       setState({ status: 'success', errors: null });
       toast.success('Flood alert reported successfully!');
+      onSuccess?.();
       setOpen(false);
     } catch (err) {
       console.error('Failed to submit report:', err);
     } finally {
       setIsPending(false);
+      resetForm();
     }
   };
 

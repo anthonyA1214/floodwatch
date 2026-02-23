@@ -14,14 +14,14 @@ export default function FloatingActionButtonMenu({
   toggleAffectedLocations,
   toggleSafetyLocations,
   toggleHotlines,
-
+  onReportSuccess,
   // ✅ ADDED
   onUseCurrentLocation,
 }: {
   toggleAffectedLocations: () => void;
   toggleSafetyLocations: () => void;
   toggleHotlines: () => void;
-
+  onReportSuccess: () => void;
   // To get Current Location
   onUseCurrentLocation: (coords: {
     latitude: number;
@@ -69,7 +69,7 @@ export default function FloatingActionButtonMenu({
           <span>Location</span>
         </Button>
 
-        <ReportFloodAlertModal />
+        <ReportFloodAlertModal onSuccess={onReportSuccess} />
 
         <Button
           variant="ghost"
