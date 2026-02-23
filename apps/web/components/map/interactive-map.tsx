@@ -56,9 +56,9 @@ export default function InteractiveMap({
       ref={mapRef}
       initialViewState={{
         // Center around Metro Manila area (so your sample pins are visible)
-        longitude: 121.03,
-        latitude: 14.62,
-        zoom: 12.8,
+        latitude: 14.69906,
+        longitude: 120.99772,
+        zoom: 11.5,
       }}
       mapStyle="https://tiles.openfreemap.org/styles/bright"
     >
