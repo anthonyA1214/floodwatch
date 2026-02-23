@@ -9,7 +9,7 @@ export default function SafetyLocationsTab() {
       <CreateSafetyLocationsModal />
       <div className="flex-1 flex flex-col rounded-2xl border min-h-0">
         <div className="flex-1 overflow-hidden min-h-0">
-          <ScrollArea className="h-full p-4">
+          <ScrollArea className="h-full ps-4 py-4">
             <div className="space-y-4 pr-4">
               <SafetyLocationsCard
                 type="shelter"

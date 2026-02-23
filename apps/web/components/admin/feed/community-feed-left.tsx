@@ -5,11 +5,15 @@ import { IconMapPin } from '@tabler/icons-react';
 
 export default function CommunityFeedLeft() {
   return (
-    <div className="flex-2 flex flex-col gap-6 min-h-0">
+    <div className="flex-3 flex flex-col gap-6 min-h-0">
       {/* location */}
       <div className="flex items-center gap-2 bg-[#0066CC] text-white rounded-xl p-4 font-medium">
         <IconMapPin className="w-[1.5em]! h-[1.5em]!" />
-        <span>Location: BRGY 174 blablabla</span>
+        <span className="w-0 flex-1 truncate">
+          Location: Kai Mall Zabarte, Camarin Road, Barangay 174, Zone 15,
+          Camarin, District 1, Caloocan, Northern Manila District, Metro Manila,
+          1422, Philippines
+        </span>
       </div>
 
       <ScrollArea className="flex-1 min-h-0">

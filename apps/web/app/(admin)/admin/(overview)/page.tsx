@@ -16,7 +16,7 @@ export default function DashboardPage() {
   const { user } = useUser();
 
   return (
-    <div className="flex-1 flex flex-col bg-white p-8 rounded-2xl gap-8 min-h-0">
+    <div className="flex-1 flex flex-col bg-white ps-8 py-8 rounded-2xl gap-8 min-h-0">
       {/* Header */}
       <div className="space-y-2">
         <h1 className="font-poppins text-3xl font-bold">Hello, {user?.name}</h1>
@@ -24,7 +24,7 @@ export default function DashboardPage() {
       </div>
 
       <ScrollArea className="flex-1 h-0">
-        <div className="space-y-8 pr-4">
+        <div className="space-y-8 pr-8">
           {/* Stat Card */}
           <div className="grid grid-cols-2 gap-8">
             <StatCard

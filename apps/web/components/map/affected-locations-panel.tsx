@@ -34,7 +34,7 @@ export default function AffectedLocationsPanel({
   };
 
   return (
-    <div className="absolute top-0 left-0 w-full h-full bg-white z-49 min-h-0 flex flex-col">
+    <div className="absolute top-0 left-0 w-full h-full bg-white z-49 min-h-0 flex flex-col pointer-events-auto">
       <div className="aspect-video w-full relative bg-muted shrink-0">
         {report?.image ? (
           <Image

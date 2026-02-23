@@ -4,7 +4,7 @@ import { columns } from './columns';
 import { AddNewAdminModal } from '@/components/admin/users/add-new-admin-modal';
 import UserStatCards from '@/components/admin/users/user-stat-cards';
 import { Suspense } from 'react';
-import UserStatCardsSkeleton from '@/components/admin/users/user-stat-cards-skeleton';
+import UserStatCardsSkeleton from '@/components/admin/users/skeleton/user-stat-cards-skeleton';
 import UserPagination from '@/components/admin/users/user-pagination';
 import { getUsersData } from '@/lib/actions/get-users-data';
 import { UserQuery } from '@/lib/types/user-query';

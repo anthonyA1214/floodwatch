@@ -3,17 +3,11 @@
 import { Layer, Map, Marker, Source } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Spinner } from '@/components/ui/spinner';
-import RadiusCircle from './radius-circle';
+import RadiusCircle from '@/components/radius-circle';
 import { useBoundary } from '@/contexts/boundary-context';
+import { SEVERITY_COLOR_MAP } from '@/lib/utils/get-severity-color';
 
-const SEVERITY_COLOR_MAP: Record<string, string> = {
-  critical: '#FB2C36',
-  high: '#FF6900',
-  moderate: '#F0B204',
-  low: '#2B7FFF',
-};
-
-export default function InteractiveMap({
+export default function CurrentLocationInteractiveMap({
   longitude,
   latitude,
   range,

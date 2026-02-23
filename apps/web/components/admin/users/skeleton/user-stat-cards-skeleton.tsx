@@ -1,4 +1,4 @@
-import UserStatCardSkeleton from '@/components/admin/users/user-stat-card-skeleton';
+import UserStatCardSkeleton from '@/components/admin/users/skeleton/user-stat-card-skeleton';
 
 export default function UserStatCardsSkeleton() {
   return (

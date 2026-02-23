@@ -175,7 +175,10 @@ export default function SearchBar({
   }, []);
 
   return (
-    <div ref={wrapperRef} className="flex z-50 w-full h-fit">
+    <div
+      ref={wrapperRef}
+      className="flex z-50 w-full h-fit pointer-events-auto"
+    >
       <InputGroup className="h-12 rounded-xl bg-white shadow-md">
         <InputGroupInput
           placeholder="Search location..."

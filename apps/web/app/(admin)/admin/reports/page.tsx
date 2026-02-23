@@ -1,4 +1,4 @@
-import ReportStatCards from '@/components/reports/report-stat-cards';
+import ReportStatCards from '@/components/admin/reports/report-stat-cards';
 import SearchBar from '@/components/search-bar';
 import { Suspense } from 'react';
 import { DataTable } from './data-table';
