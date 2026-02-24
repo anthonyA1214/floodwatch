@@ -3,8 +3,6 @@ import { DataTable } from './data-table';
 import { columns } from './columns';
 import { AddNewAdminModal } from '@/components/admin/users/add-new-admin-modal';
 import UserStatCards from '@/components/admin/users/user-stat-cards';
-import { Suspense } from 'react';
-import UserStatCardsSkeleton from '@/components/admin/users/skeleton/user-stat-cards-skeleton';
 import { getUsersData } from '@/lib/actions/get-users-data';
 import { UserQuery } from '@/lib/types/user-query';
 import UserManagementClient from '@/components/admin/users/user-management-client';
@@ -35,13 +33,11 @@ export default async function UserManagementPage({
         </div>
 
         <div className="flex-1 flex flex-col min-h-0 gap-4">
-          <Suspense fallback={<UserStatCardsSkeleton />}>
-            <UserStatCards
-              totalCount={data?.stats?.totalCount ?? 0}
-              activeCount={data?.stats?.activeCount ?? 0}
-              blockedCount={data?.stats?.blockedCount ?? 0}
-            />
-          </Suspense>
+          <UserStatCards
+            totalCount={data?.stats?.totalCount ?? 0}
+            activeCount={data?.stats?.activeCount ?? 0}
+            blockedCount={data?.stats?.blockedCount ?? 0}
+          />
 
           <UserDataTableWrapper>
             <DataTable columns={columns} data={data?.data ?? []} />

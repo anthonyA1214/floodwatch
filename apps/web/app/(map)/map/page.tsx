@@ -3,7 +3,7 @@
 import SearchBar from '@/components/map/search-bar';
 import MapLegend from '@/components/map/map-legend';
 import InteractiveMap from '@/components/map/interactive-map';
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useState } from 'react';
 import ProfilePanel from '@/components/map/profile-panel';
 import { usePanel } from '@/contexts/panel-context';
 import FloatingActionButtonMenu from '@/components/map/floating-action-button-menu';
@@ -14,9 +14,9 @@ import HotlinesPopup from '@/components/map/hotlines-popup';
 import { GoogleLinkToastHandler } from '@/components/google-link-toast-handler';
 import { MapProvider } from 'react-map-gl/maplibre';
 import AffectedLocationsPanel from '@/components/map/affected-locations-panel';
-import { apiFetchClient } from '@/lib/api-fetch-client';
-import { ReportDto } from '@repo/schemas';
+import { ReportsDto } from '@repo/schemas';
 import { BoundaryProvider } from '@/contexts/boundary-context';
+import { useReports } from '@/hooks/use-reports';
 
 export type SelectedLocation = {
   longitude: number;
@@ -28,7 +28,7 @@ export type SelectedLocation = {
 export default function InteractiveMapPage() {
   const [selectedLocation, setSelectedLocation] =
     useState<SelectedLocation | null>(null);
-  const [selectedReport, setSelectedReport] = useState<ReportDto | null>(null);
+  const [selectedReport, setSelectedReport] = useState<ReportsDto | null>(null);
   const [activePopup, setActivePopup] = useState<
     'affected' | 'safety' | 'hotlines' | null
   >(null);
@@ -37,21 +37,14 @@ export default function InteractiveMapPage() {
   const togglePopup = (popup: 'affected' | 'safety' | 'hotlines') => {
     setActivePopup(activePopup === popup ? null : popup);
   };
-  const [reports, setReports] = useState<ReportDto[]>([]);
 
-  useEffect(() => {
-    const fetchReports = async () => {
-      try {
-        const res = await apiFetchClient('/reports', { method: 'GET' });
-        const data = await res.json();
-        setReports(data);
-      } catch (error) {
-        console.error('Error fetching reports:', error);
-      }
-    };
+  const { reports, refreshReports } = useReports();
+  const [mapKey, setMapKey] = useState(0);
 
-    fetchReports();
-  }, []);
+  const handleReportSuccess = () => {
+    refreshReports();
+    setMapKey((prev) => prev + 1);
+  };
 
   return (
     <BoundaryProvider>
@@ -61,18 +54,19 @@ export default function InteractiveMapPage() {
             <GoogleLinkToastHandler />
           </Suspense>
 
-          <div className="absolute flex justify-center top-0 left-0 w-full h-full p-4 z-10 max-w-lg min-h-0 pointer-events-none">
-            <SearchBar
-              toggleLegend={() => setShowLegend(!showLegend)}
-              onSelectLocation={setSelectedLocation}
-            />
-
+          <div className="absolute flex top-0 left-0 w-full h-full z-10 min-h-0 pointer-events-none">
             {selectedReport && (
               <AffectedLocationsPanel
                 report={selectedReport}
                 onClose={() => setSelectedReport(null)}
               />
             )}
+            <div className="ms-4 mt-4 max-w-lg w-full">
+              <SearchBar
+                toggleLegend={() => setShowLegend(!showLegend)}
+                onSelectLocation={setSelectedLocation}
+              />
+            </div>
           </div>
 
           <div className="absolute top-4 right-4 z-10 flex gap-4 h-full">
@@ -83,6 +77,7 @@ export default function InteractiveMapPage() {
                   toggleAffectedLocations={() => togglePopup('affected')}
                   toggleSafetyLocations={() => togglePopup('safety')}
                   toggleHotlines={() => togglePopup('hotlines')}
+                  onReportSuccess={handleReportSuccess}
                   // ADDED: sets your selectedLocation, so the map flies + shows red pin
                   onUseCurrentLocation={({ latitude, longitude }) => {
                     setSelectedLocation({
@@ -116,6 +111,7 @@ export default function InteractiveMapPage() {
           </div>
 
           <InteractiveMap
+            key={mapKey}
             selectedLocation={selectedLocation}
             reports={reports}
             onSelectReport={setSelectedReport}
