@@ -1,6 +1,6 @@
 import { Skeleton } from '@/components/ui/skeleton';
 
-export function UserManagementDataTableSkeleton() {
+export function UserDataTableSkeleton() {
   return (
     <div className="overflow-hidden rounded-lg flex flex-col flex-1 min-h-0 h-0">
       {/* Header - matches bg-[#0066CC] */}

@@ -1,4 +1,4 @@
-import { UserManagementDataTableSkeleton } from '@/components/admin/users/skeleton/user-management-data-table-skeleton';
+import { UserDataTableSkeleton } from '@/components/admin/users/skeleton/user-data-table-skeleton';
 import PaginationSkeleton from '@/components/admin/pagination-skeleton';
 import { Skeleton } from '@/components/ui/skeleton';
 import UserStatCardSkeleton from '@/components/admin/users/skeleton/user-stat-card-skeleton';
@@ -22,7 +22,7 @@ export default function UserManagementPageSkeleton() {
           ))}
         </div>
 
-        <UserManagementDataTableSkeleton />
+        <UserDataTableSkeleton />
 
         <div className="flex items-center justify-between">
           <Skeleton className="h-4 w-40" />

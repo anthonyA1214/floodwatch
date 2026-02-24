@@ -9,6 +9,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from '@/components/ui/pagination';
+import { useNavigation } from '@/contexts/navigation-context';
 import { usePathname, useSearchParams } from 'next/navigation';
 
 type UserPaginationProps = {
@@ -27,6 +28,7 @@ export default function UserPagination({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentPage = Number(currentPageProp);
+  const { navigate } = useNavigation();
 
   const createPageUrl = (page: number) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -73,9 +75,13 @@ export default function UserPagination({
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            href={hasPrevPage ? createPageUrl(currentPage - 1) : undefined}
+            href={createPageUrl(currentPage - 1)}
             aria-disabled={!hasPrevPage}
             className={!hasPrevPage ? 'pointer-events-none opacity-50' : ''}
+            onClick={(e) => {
+              e.preventDefault();
+              if (hasPrevPage) navigate(createPageUrl(currentPage - 1));
+            }}
           />
         </PaginationItem>
 
@@ -94,6 +100,10 @@ export default function UserPagination({
               <PaginationLink
                 href={createPageUrl(pageNum)}
                 isActive={pageNum === currentPage}
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigate(createPageUrl(pageNum));
+                }}
               >
                 {pageNum}
               </PaginationLink>
@@ -103,9 +113,13 @@ export default function UserPagination({
 
         <PaginationItem>
           <PaginationNext
-            href={hasNextPage ? createPageUrl(currentPage + 1) : undefined}
+            href={createPageUrl(currentPage + 1)}
             aria-disabled={!hasNextPage}
             className={!hasNextPage ? 'pointer-events-none opacity-50' : ''}
+            onClick={(e) => {
+              e.preventDefault();
+              if (hasNextPage) navigate(createPageUrl(currentPage + 1));
+            }}
           />
         </PaginationItem>
       </PaginationContent>
