@@ -27,8 +27,14 @@ export default function PagePagination({
 }: PagePaginationProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const currentPage = Number(currentPageProp);
+  const pageParam = searchParams.get('page');
+  const currentPageFromParams = pageParam ? Number(pageParam) : NaN;
+  const currentPage = Number.isFinite(currentPageFromParams)
+    ? currentPageFromParams
+    : Number(currentPageProp);
   const { navigate } = useNavigation();
+  const canGoPrev = currentPage > 1 && hasPrevPage;
+  const canGoNext = currentPage < totalPages && hasNextPage;
 
   const createPageUrl = (page: number) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -76,11 +82,11 @@ export default function PagePagination({
         <PaginationItem>
           <PaginationPrevious
             href={createPageUrl(currentPage - 1)}
-            aria-disabled={!hasPrevPage}
-            className={!hasPrevPage ? 'pointer-events-none opacity-50' : ''}
+            aria-disabled={!canGoPrev}
+            className={!canGoPrev ? 'pointer-events-none opacity-50' : ''}
             onClick={(e) => {
               e.preventDefault();
-              if (hasPrevPage) navigate(createPageUrl(currentPage - 1));
+              if (canGoPrev) navigate(createPageUrl(currentPage - 1));
             }}
           />
         </PaginationItem>
@@ -114,11 +120,11 @@ export default function PagePagination({
         <PaginationItem>
           <PaginationNext
             href={createPageUrl(currentPage + 1)}
-            aria-disabled={!hasNextPage}
-            className={!hasNextPage ? 'pointer-events-none opacity-50' : ''}
+            aria-disabled={!canGoNext}
+            className={!canGoNext ? 'pointer-events-none opacity-50' : ''}
             onClick={(e) => {
               e.preventDefault();
-              if (hasNextPage) navigate(createPageUrl(currentPage + 1));
+              if (canGoNext) navigate(createPageUrl(currentPage + 1));
             }}
           />
         </PaginationItem>

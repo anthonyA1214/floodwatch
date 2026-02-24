@@ -2,9 +2,12 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Delete,
   Get,
   HttpCode,
   HttpStatus,
+  Param,
+  Patch,
   Post,
   Query,
   Request,
@@ -61,5 +64,19 @@ export class ReportsController {
       createFloodReportDto,
       image,
     );
+  }
+
+  @Patch(':id/verify')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard, UserStatusGuard)
+  async verifyReportStatus(@Param('id') id: string) {
+    return await this.reportsService.verifyReportStatus(id);
+  }
+
+  @Delete(':id/delete')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard, UserStatusGuard)
+  async deleteReport(@Param('id') id: string) {
+    return await this.reportsService.deleteReport(id);
   }
 }

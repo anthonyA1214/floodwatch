@@ -343,7 +343,6 @@ export class UsersService {
     const limitNumber = Number(limit) || 10;
     const offset = (pageNumber - 1) * limitNumber;
 
-    // Build search condition once, reused across all queries
     const searchCondition = q
       ? or(
           like(users.email, `%${q}%`),
@@ -353,7 +352,6 @@ export class UsersService {
         )
       : undefined;
 
-    // Full where clause (search + optional status filter)
     const whereClause =
       status && searchCondition
         ? and(eq(users.status, status), searchCondition)
@@ -361,7 +359,7 @@ export class UsersService {
           ? eq(users.status, status)
           : searchCondition;
 
-    const [data, counts] = await Promise.all([
+    const [data, counts, statsResult] = await Promise.all([
       // Main paginated query
       this.db
         .select()
@@ -372,10 +370,17 @@ export class UsersService {
         .limit(limitNumber)
         .offset(offset),
 
-      // All counts in a single query using FILTER
+      // ✅ Paginated total: respects BOTH status filter + search
+      this.db
+        .select({ total: count() })
+        .from(users)
+        .leftJoin(profileInfo, eq(users.id, profileInfo.userId))
+        .where(whereClause),
+
+      // ✅ Stats: only respects search, not status (so counts are always accurate)
       this.db
         .select({
-          total: count(),
+          totalCount: count(),
           activeCount: sql<number>`COUNT(*) FILTER (WHERE ${users.status} = 'active')`,
           blockedCount: sql<number>`COUNT(*) FILTER (WHERE ${users.status} = 'blocked')`,
         })
@@ -384,7 +389,8 @@ export class UsersService {
         .where(searchCondition),
     ]);
 
-    const { total, activeCount, blockedCount } = counts[0];
+    const { total } = counts[0];
+    const { totalCount, activeCount, blockedCount } = statsResult[0];
 
     const formattedData = data.map((item) => ({
       id: item.users.id,
@@ -411,8 +417,7 @@ export class UsersService {
       stats: {
         activeCount,
         blockedCount,
-        // total here is unfiltered by status, same as before
-        totalCount: total,
+        totalCount,
       },
     };
   }

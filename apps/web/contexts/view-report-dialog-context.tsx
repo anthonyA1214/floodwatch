@@ -1,12 +1,12 @@
 'use client';
 
-import { ReportDto } from '@repo/schemas';
+import { ReportsDto } from '@repo/schemas';
 import { createContext, useContext, useState } from 'react';
 
 interface ViewReportDialogContextType {
-  report: ReportDto | null;
+  report: ReportsDto | null;
   open: boolean;
-  openDialog: (report: ReportDto) => void;
+  openDialog: (report: ReportsDto) => void;
   closeDialog: () => void;
 }
 
@@ -18,10 +18,10 @@ export default function ViewReportDialogProvider({
 }: {
   children: React.ReactNode;
 }) {
-  const [report, setReport] = useState<ReportDto | null>(null);
+  const [report, setReport] = useState<ReportsDto | null>(null);
   const [open, setOpen] = useState(false);
 
-  const openDialog = (report: ReportDto | null) => {
+  const openDialog = (report: ReportsDto | null) => {
     setReport(report);
     setOpen(true);
   };

@@ -67,8 +67,8 @@ export default function ViewReportDialog() {
                     <InteractiveMapReportedLocation
                       latitude={report?.latitude}
                       longitude={report?.longitude}
-                      range={500}
-                      severity="high"
+                      range={report?.range}
+                      severity={report?.severity}
                     />
                   </div>
                 </div>

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { ReportFloodAlertInput, ReportQueryInput } from '@repo/schemas';
 import { and, count, desc, eq, like, or, sql } from 'drizzle-orm';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
@@ -70,7 +70,7 @@ export class ReportsService {
           ? eq(reports.status, status)
           : searchCondition;
 
-    const [data, counts] = await Promise.all([
+    const [data, counts, statsResult] = await Promise.all([
       // Main paginated query
       this.db
         .select()
@@ -82,10 +82,17 @@ export class ReportsService {
         .limit(limitNumber)
         .offset(offset),
 
+      this.db
+        .select({ total: count() })
+        .from(reports)
+        .leftJoin(users, eq(reports.userId, users.id))
+        .leftJoin(profileInfo, eq(users.id, profileInfo.userId))
+        .where(whereClause),
+
       // All counts in a single query using FILTER
       this.db
         .select({
-          total: count(),
+          totalCount: count(),
           verifiedCount: sql<number>`COUNT(*) FILTER (WHERE ${reports.status} = 'verified')`,
           unverifiedCount: sql<number>`COUNT(*) FILTER (WHERE ${reports.status} = 'unverified')`,
         })
@@ -95,7 +102,8 @@ export class ReportsService {
         .where(searchCondition),
     ]);
 
-    const { total, verifiedCount, unverifiedCount } = counts[0];
+    const { total } = counts[0];
+    const { totalCount, verifiedCount, unverifiedCount } = statsResult[0];
 
     const formattedData = data.map((item) => ({
       id: item.reports.id,
@@ -133,7 +141,7 @@ export class ReportsService {
       stats: {
         verifiedCount,
         unverifiedCount,
-        totalCount: total,
+        totalCount,
       },
     };
   }
@@ -189,5 +197,45 @@ export class ReportsService {
       imagePublicId,
       location: displayName,
     });
+  }
+
+  async verifyReportStatus(id: string) {
+    const report = await this.db
+      .select()
+      .from(reports)
+      .where(eq(reports.id, id))
+      .limit(1);
+
+    if (!report.length) {
+      throw new NotFoundException('Report not found');
+    }
+
+    await this.db
+      .update(reports)
+      .set({ status: 'verified', updatedAt: new Date() })
+      .where(eq(reports.id, id));
+
+    return { message: 'Report verified successfully' };
+  }
+
+  async deleteReport(id: string) {
+    const [report] = await this.db
+      .select()
+      .from(reports)
+      .where(eq(reports.id, id))
+      .limit(1);
+
+    if (!report) {
+      throw new NotFoundException('Report not found');
+    }
+
+    // Delete image from Cloudinary if exists
+    if (report.imagePublicId) {
+      await this.cloudinaryService.deleteImage(report.imagePublicId);
+    }
+
+    await this.db.delete(reports).where(eq(reports.id, id));
+
+    return { message: 'Report deleted successfully' };
   }
 }
