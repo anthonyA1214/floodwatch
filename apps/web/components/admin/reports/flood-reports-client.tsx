@@ -2,7 +2,8 @@
 
 import { NavigationProvider } from '@/contexts/navigation-context';
 import ViewReportDialog from './view-report-dialog';
-import ViewReportDialogProvider from '@/contexts/view-report-dialog-context';
+import ReportDialogProvider from '@/contexts/report-dialog-context';
+import DeleteReportDialog from './delete-report-dialog';
 
 export default function FloodReportsClient({
   children,
@@ -10,11 +11,12 @@ export default function FloodReportsClient({
   children: React.ReactNode;
 }) {
   return (
-    <ViewReportDialogProvider>
+    <ReportDialogProvider>
       <NavigationProvider>
         {children}
         <ViewReportDialog />
+        <DeleteReportDialog />
       </NavigationProvider>
-    </ViewReportDialogProvider>
+    </ReportDialogProvider>
   );
 }

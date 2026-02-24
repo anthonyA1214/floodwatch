@@ -66,14 +66,14 @@ export class ReportsController {
     );
   }
 
-  @Patch(':id/verify')
+  @Patch(':id')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard, UserStatusGuard)
   async verifyReportStatus(@Param('id') id: string) {
     return await this.reportsService.verifyReportStatus(id);
   }
 
-  @Delete(':id/delete')
+  @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(JwtAuthGuard, UserStatusGuard)
   async deleteReport(@Param('id') id: string) {

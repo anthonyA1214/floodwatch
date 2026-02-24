@@ -1,7 +1,7 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { ReportDto } from '@repo/schemas';
+import { ReportsDto } from '@repo/schemas';
 import {
   Avatar as UIAvatar,
   AvatarFallback,
@@ -17,9 +17,9 @@ import {
 } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { REPORT_STATUS_COLOR_MAP } from '@/lib/utils/get-color-map';
-import { useViewReportDialog } from '@/contexts/view-report-dialog-context';
+import { useReportDialog } from '@/contexts/report-dialog-context';
 
-export const columns: ColumnDef<ReportDto>[] = [
+export const columns: ColumnDef<ReportsDto>[] = [
   {
     accessorKey: 'name',
     header: ({ column }) => {
@@ -101,15 +101,15 @@ export const columns: ColumnDef<ReportDto>[] = [
   },
 ];
 
-function ActionCell({ report }: { report: ReportDto }) {
-  const { openDialog } = useViewReportDialog();
+function ActionCell({ report }: { report: ReportsDto }) {
+  const { openDialog } = useReportDialog();
 
   return (
     <div className="flex justify-center gap-2">
       <Tooltip>
         <TooltipTrigger
           className="text-[#0066CC] bg-[#0066CC]/10 rounded-lg p-1.5 hover:bg-[#0066CC]/20 transition"
-          onClick={() => openDialog(report)}
+          onClick={() => openDialog('view', report)}
         >
           <IconEye className="w-[1.5em]! h-[1.5em]!" />
         </TooltipTrigger>
@@ -123,6 +123,7 @@ function ActionCell({ report }: { report: ReportDto }) {
           className={cn(
             `text-[#FB323B] bg-[#FB323B]/10 rounded-lg p-1.5 hover:bg-[#FB323B]/20 transition`,
           )}
+          onClick={() => openDialog('delete', report)}
         >
           <IconTrash className="w-[1.5em]! h-[1.5em]!" />
         </TooltipTrigger>
