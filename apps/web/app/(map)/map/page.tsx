@@ -15,7 +15,7 @@ import { GoogleLinkToastHandler } from '@/components/google-link-toast-handler';
 import { MapProvider } from 'react-map-gl/maplibre';
 import AffectedLocationsPanel from '@/components/map/affected-locations-panel';
 import { apiFetchClient } from '@/lib/api-fetch-client';
-import { FloodReportsDto } from '@repo/schemas';
+import { ReportDto } from '@repo/schemas';
 import { BoundaryProvider } from '@/contexts/boundary-context';
 
 export type SelectedLocation = {
@@ -28,9 +28,7 @@ export type SelectedLocation = {
 export default function InteractiveMapPage() {
   const [selectedLocation, setSelectedLocation] =
     useState<SelectedLocation | null>(null);
-  const [selectedReport, setSelectedReport] = useState<FloodReportsDto | null>(
-    null,
-  );
+  const [selectedReport, setSelectedReport] = useState<ReportDto | null>(null);
   const [activePopup, setActivePopup] = useState<
     'affected' | 'safety' | 'hotlines' | null
   >(null);
@@ -39,7 +37,7 @@ export default function InteractiveMapPage() {
   const togglePopup = (popup: 'affected' | 'safety' | 'hotlines') => {
     setActivePopup(activePopup === popup ? null : popup);
   };
-  const [reports, setReports] = useState<FloodReportsDto[]>([]);
+  const [reports, setReports] = useState<ReportDto[]>([]);
 
   useEffect(() => {
     const fetchReports = async () => {

@@ -1,4 +1,4 @@
-import { FloodReportsDto } from '@repo/schemas';
+import { ReportDto } from '@repo/schemas';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import {
@@ -18,7 +18,7 @@ export default function AffectedLocationsPanel({
   report,
   onClose,
 }: {
-  report: FloodReportsDto;
+  report: ReportDto;
   onClose?: () => void;
 }) {
   const statusColorMap = {
@@ -98,7 +98,7 @@ export default function AffectedLocationsPanel({
           {/* reported by */}
           <div className="flex items-center gap-2 text-gray-600 text-sm">
             <span className="">Reported by:</span>
-            <span className="font-medium">{report?.name}</span>
+            <span className="font-medium">{report?.reporter?.name}</span>
           </div>
 
           <div

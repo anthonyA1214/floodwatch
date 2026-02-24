@@ -12,19 +12,19 @@ import {
 import { useNavigation } from '@/contexts/navigation-context';
 import { usePathname, useSearchParams } from 'next/navigation';
 
-type UserPaginationProps = {
+type PagePaginationProps = {
   currentPage: number;
   totalPages: number;
   hasNextPage: boolean;
   hasPrevPage: boolean;
 };
 
-export default function UserPagination({
+export default function PagePagination({
   currentPage: currentPageProp,
   totalPages,
   hasNextPage,
   hasPrevPage,
-}: UserPaginationProps) {
+}: PagePaginationProps) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentPage = Number(currentPageProp);
