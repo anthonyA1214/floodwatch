@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { IconMapPin, IconTriangle } from '@tabler/icons-react';
+import { IconMapPin } from '@tabler/icons-react';
 import {
   Avatar as UIAvatar,
   AvatarFallback,

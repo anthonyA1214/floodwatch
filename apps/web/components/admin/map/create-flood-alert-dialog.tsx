@@ -27,16 +27,48 @@ import { Field, FieldLabel } from '@/components/ui/field';
 import { IconCurrentLocation, IconMinus, IconPlus } from '@tabler/icons-react';
 import { useRef, useState } from 'react';
 import { Spinner } from '@/components/ui/spinner';
+import { toast } from 'sonner';
+import { floodAlertSchema } from '@repo/schemas';
+import { z } from 'zod';
+import { apiFetchClient } from '@/lib/api-fetch-client';
+import { useReports } from '@/hooks/use-reports';
 
 export default function CreateFloodAlertDialog() {
   const interactiveMapRef = useRef<InteractiveMapHandle>(null);
   const [loadingLocation, setLoadingLocation] = useState(false);
+  const [isPending, setIsPending] = useState(false);
+  const [open, setOpen] = useState(false);
+  const { mutateReports } = useReports();
 
   // form data
-  const [radius, setRadius] = useState<number | undefined>(undefined);
   const [severityValue, setSeverityValue] = useState<
     'low' | 'moderate' | 'high' | 'critical'
   >('low');
+  const [radius, setRadius] = useState<number | undefined>(undefined);
+  const [descriptionValue, setDescriptionValue] = useState<string>('');
+  const [image, setImage] = useState<File | null>(null);
+  const [location, setLocation] = useState<{
+    longitude: number;
+    latitude: number;
+  } | null>(null);
+
+  // errors
+  const [state, setState] = useState<{
+    status: 'error' | 'success' | null;
+    errors: Record<string, string[]> | null;
+  }>({
+    status: null,
+    errors: null,
+  });
+
+  const resetForm = () => {
+    setSeverityValue('low');
+    setRadius(undefined);
+    setDescriptionValue('');
+    setImage(null);
+    setLocation(null);
+    setState({ status: null, errors: null });
+  };
 
   const handleUseCurrentLocation = async () => {
     try {
@@ -49,8 +81,88 @@ export default function CreateFloodAlertDialog() {
     }
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (!file) {
+      setImage(null);
+      return;
+    }
+
+    // Validate type
+    if (!file.type.startsWith('image/')) {
+      toast.warning('Please select a valid image file.');
+      e.target.value = ''; // reset input
+      return;
+    }
+
+    // Validate size (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast.warning('File size must be less than 5MB.');
+      e.target.value = ''; // reset input
+      return;
+    }
+
+    setImage(file);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!location)
+      return toast.error('Location is required to create a flood alert.');
+
+    const parsedData = floodAlertSchema.safeParse({
+      latitude: location!.latitude,
+      longitude: location!.longitude,
+      range: radius,
+      description: descriptionValue,
+      severity: severityValue,
+    });
+
+    if (!parsedData.success) {
+      setState({
+        status: 'error',
+        errors: z.flattenError(parsedData.error).fieldErrors,
+      });
+      return;
+    }
+
+    const { latitude, longitude, range, description, severity } =
+      parsedData.data;
+
+    const formData = new FormData();
+    formData.append('latitude', latitude.toString());
+    formData.append('longitude', longitude.toString());
+    formData.append('severity', severity);
+    formData.append('range', range.toString());
+    if (description) formData.append('description', description);
+    if (image) formData.append('image', image);
+
+    try {
+      setIsPending(true);
+      await apiFetchClient('/reports/admin/create', {
+        method: 'POST',
+        body: formData,
+      });
+      setState({ status: 'success', errors: null });
+      toast.success('Flood alert created successfully!');
+      mutateReports(); // refresh reports list
+      setOpen(false);
+    } catch (err) {
+      console.error('Failed to submit report:', err);
+    } finally {
+      setIsPending(false);
+    }
+  };
+
+  const handleOpenChange = (isOpen: boolean) => {
+    setOpen(isOpen);
+    if (!isOpen) resetForm();
+  };
+
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={() => handleOpenChange(!open)}>
       <DialogTrigger asChild>
         <Button className="font-poppins py-6">CREATE FLOOD ALERT</Button>
       </DialogTrigger>
@@ -96,6 +208,7 @@ export default function CreateFloodAlertDialog() {
                     severity={severityValue}
                     range={radius}
                     mode="flood-alert"
+                    onLocationSelect={setLocation}
                   />
                   <div className="absolute flex flex-col top-4 left-4 z-1 w-fit gap-2 h-fit">
                     <div className="flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 text-xs">
@@ -162,6 +275,11 @@ export default function CreateFloodAlertDialog() {
                           </SelectGroup>
                         </SelectContent>
                       </Select>
+                      {state.errors?.severity && (
+                        <span className="text-sm text-red-600">
+                          {state.errors.severity[0]}
+                        </span>
+                      )}
                     </Field>
 
                     {/* range */}
@@ -184,6 +302,11 @@ export default function CreateFloodAlertDialog() {
                         defaultValue={radius}
                         onChange={(e) => setRadius(Number(e.target.value))}
                       />
+                      {state.errors?.range && (
+                        <span className="text-sm text-red-600">
+                          {state.errors.range[0]}
+                        </span>
+                      )}
                     </Field>
 
                     {/* Description */}
@@ -202,7 +325,14 @@ export default function CreateFloodAlertDialog() {
                         placeholder="Enter the description"
                         className="no-scrollbar min-h-[120px] max-h-[120px]"
                         style={{ wordBreak: 'break-word' }}
+                        defaultValue={descriptionValue}
+                        onChange={(e) => setDescriptionValue(e.target.value)}
                       />
+                      {state.errors?.description && (
+                        <span className="text-sm text-red-600">
+                          {state.errors.description[0]}
+                        </span>
+                      )}
                     </Field>
 
                     {/* Upload image */}
@@ -218,11 +348,28 @@ export default function CreateFloodAlertDialog() {
                         type="file"
                         accept="image/*"
                         name="image"
+                        onChange={handleImageChange}
                       />
+                      {state.errors?.image && (
+                        <span className="text-sm text-red-600">
+                          {state.errors.image[0]}
+                        </span>
+                      )}
                     </Field>
 
-                    <Button className="font-poppins py-6 mt-auto">
-                      CREATE FLOOD ALERT
+                    <Button
+                      className="font-poppins py-6 mt-auto"
+                      onClick={handleSubmit}
+                      disabled={isPending}
+                    >
+                      {isPending ? (
+                        <>
+                          <Spinner />
+                          <span>CREATING...</span>
+                        </>
+                      ) : (
+                        <span>CREATE FLOOD ALERT</span>
+                      )}
                     </Button>
                   </div>
                 </ScrollArea>

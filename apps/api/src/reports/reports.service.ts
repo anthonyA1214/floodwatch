@@ -1,5 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { ReportFloodAlertInput, ReportQueryInput } from '@repo/schemas';
+import { FloodAlertInput, ReportQueryInput } from '@repo/schemas';
 import { and, count, desc, eq, like, or, sql } from 'drizzle-orm';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { DRIZZLE } from 'src/drizzle/drizzle-connection';
@@ -148,11 +148,10 @@ export class ReportsService {
 
   async createReport(
     userId: number,
-    reportFloodAlertDto: ReportFloodAlertInput,
+    floodAlertDto: FloodAlertInput,
     image: Express.Multer.File,
   ) {
-    const { latitude, longitude, severity, description, range } =
-      reportFloodAlertDto;
+    const { latitude, longitude, severity, description, range } = floodAlertDto;
 
     let imageUrl: string | null = null;
     let imagePublicId: string | null = null;
@@ -196,6 +195,59 @@ export class ReportsService {
       image: imageUrl,
       imagePublicId,
       location: displayName,
+    });
+  }
+
+  async createReportAdmin(
+    userId: number,
+    floodAlertDto: FloodAlertInput,
+    image: Express.Multer.File,
+  ) {
+    const { latitude, longitude, severity, description, range } = floodAlertDto;
+
+    let imageUrl: string | null = null;
+    let imagePublicId: string | null = null;
+
+    if (image) {
+      const { buffer, mimetype } = await this.imagesService.normalizeImage(
+        image.buffer,
+      );
+
+      const normalizedFile: Express.Multer.File = {
+        ...image,
+        buffer,
+        mimetype,
+        originalname: image.originalname.replace(
+          /\.(jpe?g|png|jfif|webp)$/i,
+          '.webp',
+        ),
+      };
+
+      const uploaded = await this.cloudinaryService.uploadImage(
+        normalizedFile,
+        'reports',
+      );
+
+      imageUrl = uploaded.secure_url as string;
+      imagePublicId = uploaded.public_id as string;
+    }
+
+    const displayName = await this.geocoderService.reverseGeocode(
+      latitude,
+      longitude,
+    );
+
+    await this.db.insert(reports).values({
+      userId,
+      latitude,
+      longitude,
+      severity,
+      description,
+      range,
+      image: imageUrl,
+      imagePublicId,
+      location: displayName,
+      status: 'verified', // Admin-created reports are auto-verified
     });
   }
 

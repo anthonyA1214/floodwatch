@@ -26,7 +26,7 @@ import { useState } from 'react';
 import { getUserLocation } from '@/lib/utils/get-user-location';
 import { apiFetchClient } from '@/lib/api-fetch-client';
 import { Spinner } from '@/components/ui/spinner';
-import { reportFloodAlertSchema } from '@repo/schemas';
+import { floodAlertSchema } from '@repo/schemas';
 import { useUser } from '@/hooks/use-user';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -117,7 +117,7 @@ export default function ReportFloodAlertModal() {
     if (!location)
       return toast.error('Location is required to submit the report.');
 
-    const parsedData = reportFloodAlertSchema.safeParse({
+    const parsedData = floodAlertSchema.safeParse({
       latitude: location!.latitude,
       longitude: location!.longitude,
       range: radius,

@@ -18,6 +18,10 @@ type Props = {
   range?: number;
   type?: 'shelter' | 'hospital';
   mode: 'flood-alert' | 'safety-location';
+  onLocationSelect?: (location: {
+    longitude: number;
+    latitude: number;
+  }) => void;
 };
 
 export type InteractiveMapHandle = {
@@ -27,7 +31,7 @@ export type InteractiveMapHandle = {
 };
 
 const InteractiveMapLocation = forwardRef<InteractiveMapHandle, Props>(
-  ({ severity, range, type, mode }, ref) => {
+  ({ severity, range, type, mode, onLocationSelect }, ref) => {
     const mapRef = useRef<MapRef | null>(null);
     const { caloocanGeoJSON, caloocanOutlineGeoJSON } = useBoundary();
     const [location, setLocation] = useState<{
@@ -42,7 +46,9 @@ const InteractiveMapLocation = forwardRef<InteractiveMapHandle, Props>(
         getUserLocation().then((pos) => {
           if (pos && mapRef.current) {
             const { longitude, latitude } = pos;
-            setLocation({ longitude, latitude });
+            const newLocation = { longitude, latitude };
+            setLocation(newLocation);
+            onLocationSelect?.(newLocation);
 
             mapRef.current.flyTo({
               center: [longitude, latitude],
@@ -72,10 +78,13 @@ const InteractiveMapLocation = forwardRef<InteractiveMapHandle, Props>(
         return;
       }
 
-      setLocation({
+      const newLocation = {
         longitude: e.lngLat.lng,
         latitude: e.lngLat.lat,
-      });
+      };
+
+      setLocation(newLocation);
+      onLocationSelect?.(newLocation);
     };
 
     const handleMouseMove = (e: maplibregl.MapMouseEvent) => {
