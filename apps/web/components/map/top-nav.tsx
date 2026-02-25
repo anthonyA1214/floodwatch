@@ -20,6 +20,7 @@ import { useUser } from '@/hooks/use-user';
 import { Skeleton } from '@/components/ui/skeleton';
 import Clock from '@/components/map/clock';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { SidebarTrigger } from '../ui/sidebar';
 
 export default function TopNav() {
   const { toggle } = usePanel();
@@ -27,17 +28,21 @@ export default function TopNav() {
 
   return (
     <header className="w-full bg-[#0066CC] relative z-50">
-      <nav className="flex flex-wrap 2xl:flex-nowrap w-full justify-between px-3 md:px-4 py-2 mx-auto items-center gap-y-2">
-        {/* logo and time */}
-        <div className="flex items-center gap-3 sm:gap-6 shrink-0 order-first">
-          <Link href="/" className="flex items-center gap-2">
-            <Image src="/logo-white.svg" alt="Logo" width={32} height={32} />
-            <h1 className="hidden sm:block text-white font-bold text-lg md:text-xl">
-              FloodWatch
-            </h1>
-          </Link>
+      <nav className="flex flex-wrap 2xl:flex-nowrap w-full justify-between px-3 md:px-4 py-2 mx-auto items-center gap-2">
+        <div className="flex items-center gap-3 sm:gap-6 shrink-0 order-first 2xl:order-0">
+          <SidebarTrigger className="text-white" />
 
-          <Clock />
+          {/* logo and time */}
+          <div className="flex items-center gap-3 sm:gap-6 shrink-0">
+            <Link href="/" className="flex items-center gap-2">
+              <Image src="/logo-white.svg" alt="Logo" width={32} height={32} />
+              <h1 className="hidden sm:block text-white font-bold text-lg md:text-xl">
+                FloodWatch
+              </h1>
+            </Link>
+
+            <Clock />
+          </div>
         </div>
 
         {/* tabs and locations */}
