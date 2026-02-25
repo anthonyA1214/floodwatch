@@ -9,7 +9,6 @@ import {
 } from '@/components/ui/avatar';
 import Avatar from 'boring-avatars';
 import {
-  IconAlertTriangle,
   IconBell,
   IconMapPinExclamation,
   IconShieldPin,
@@ -20,6 +19,7 @@ import { useUser } from '@/hooks/use-user';
 import { Skeleton } from '@/components/ui/skeleton';
 import Clock from '@/components/map/clock';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import ReportFloodAlertModal from './report-flood-alert-modal';
 
 export default function TopNav() {
   const { toggle } = usePanel();
@@ -99,14 +99,7 @@ export default function TopNav() {
           </div>
         ) : user ? (
           <div className="flex items-center gap-3 sm:gap-6 shrink-0 ml-auto 2xl:ml-0 order-first 2xl:order-0">
-            <button
-              className="font-poppins flex justify-center items-center gap-2 bg-white 
-            text-[#FB2C36] hover:text-white hover:bg-[#FB2C36] border border-[#FB2C36] 
-              rounded-md transition-colors px-2 2xl:px-4 py-1.5 text-xs md:text-sm whitespace-nowrap"
-            >
-              <IconAlertTriangle className="w-[1.5em]! h-[1.5em]! shrink-0" />
-              <span className="hidden md:inline font-medium">REPORT FLOOD</span>
-            </button>
+            <ReportFloodAlertModal />
 
             <div className="flex items-center gap-4">
               {/* Notification button maybe dropdown */}

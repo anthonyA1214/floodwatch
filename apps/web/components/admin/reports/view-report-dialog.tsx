@@ -56,14 +56,10 @@ export default function ViewReportDialog() {
           <>
             {/* ── Blue Header ── */}
             <DialogHeader className="flex flex-row items-center gap-4 bg-[#0066CC] rounded-b-2xl px-5 py-4 shrink-0">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-500/50">
-                <IconTriangle className="h-5 w-5 text-white" />
-              </div>
-
               {/* Text */}
               <div className="flex flex-col space-y-0 text-white">
-                <DialogTitle className="text-base font-bold ">
-                  Flood Report
+                <DialogTitle className="font-poppins text-base font-semibold">
+                  FLOOD REPORT
                 </DialogTitle>
                 <DialogDescription className="text-sm text-blue-100">
                   {formattedDate} at {formattedTime}

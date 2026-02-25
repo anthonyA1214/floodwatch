@@ -11,13 +11,13 @@ import {
 import Map, { Layer, Marker, Source, type MapRef } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { ReportsDto } from '@repo/schemas';
-import { SEVERITY_COLOR_MAP } from '@/lib/utils/get-color-map';
 import RadiusCircle from '@/components/shared/radius-circle';
-import { useBoundary } from '@/contexts/boundary-context';
 import { FloodMarker } from '../markers/flood-marker';
 import { getUserLocation } from '@/lib/utils/get-user-location';
 import { UserLocationMarker } from '../markers/user-location-marker';
 import { SearchLocationMarker } from '../markers/search-location-marker';
+import { useReports } from '@/hooks/use-reports';
+import { useBoundary } from '@/hooks/use-boundary';
 
 type SelectedLocation = {
   longitude: number;
@@ -27,8 +27,7 @@ type SelectedLocation = {
 
 type Props = {
   selectedLocation?: SelectedLocation | null;
-  reports: ReportsDto[];
-  onSelectReport: (report: ReportsDto) => void;
+  onSelectReport?: (report: ReportsDto) => void;
 };
 
 export type InteractiveMapHandle = {
@@ -38,13 +37,14 @@ export type InteractiveMapHandle = {
 };
 
 const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
-  ({ selectedLocation, reports, onSelectReport }, ref) => {
+  ({ selectedLocation, onSelectReport }, ref) => {
     const mapRef = useRef<MapRef | null>(null);
     const { caloocanGeoJSON, caloocanOutlineGeoJSON } = useBoundary();
     const [userLocation, setUserLocation] = useState<{
       longitude: number;
       latitude: number;
     } | null>(null);
+    const { reports } = useReports();
 
     useImperativeHandle(ref, () => ({
       zoomIn: () => mapRef.current?.zoomIn(),
@@ -85,7 +85,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
         zoom: Math.max(mapRef?.current.getZoom(), 16),
         essential: true,
       });
-      onSelectReport(report);
+      onSelectReport?.(report);
     };
 
     return (
@@ -133,13 +133,12 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
         )}
 
         {/* Flood report pins */}
-        {reports.map((report) => (
+        {reports?.map((report) => (
           <Fragment key={report.id}>
             <Marker
               key={report.id}
               longitude={report.longitude}
               latitude={report.latitude}
-              color={SEVERITY_COLOR_MAP[report.severity]}
               anchor="bottom"
               onClick={() => handleSelectReport(report)}
             >

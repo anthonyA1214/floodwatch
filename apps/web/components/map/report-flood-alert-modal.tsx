@@ -1,3 +1,5 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -19,7 +21,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { IconWaterpolo } from '@tabler/icons-react';
+import { IconAlertTriangle } from '@tabler/icons-react';
 import { useState } from 'react';
 import { getUserLocation } from '@/lib/utils/get-user-location';
 import { apiFetchClient } from '@/lib/api-fetch-client';
@@ -28,13 +30,11 @@ import { reportFloodAlertSchema } from '@repo/schemas';
 import { useUser } from '@/hooks/use-user';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import { useReports } from '@/hooks/use-reports';
 
-export default function ReportFloodAlertModal({
-  onSuccess,
-}: {
-  onSuccess: () => void;
-}) {
+export default function ReportFloodAlertModal() {
   const { user } = useUser();
+  const { mutateReports } = useReports();
 
   const [radius, setRadius] = useState(0); // range
   const [severityValue, setSeverity] = useState<
@@ -152,7 +152,7 @@ export default function ReportFloodAlertModal({
       });
       setState({ status: 'success', errors: null });
       toast.success('Flood alert reported successfully!');
-      onSuccess?.();
+      mutateReports(); // Refresh reports list
       setOpen(false);
     } catch (err) {
       console.error('Failed to submit report:', err);
@@ -165,13 +165,14 @@ export default function ReportFloodAlertModal({
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <Button
-          variant="ghost"
-          className="flex items-center gap-2 justify-start"
+        <button
+          className="font-poppins flex justify-center items-center gap-2 bg-white 
+            text-[#FB2C36] hover:text-white hover:bg-[#FB2C36] border border-[#FB2C36] 
+              rounded-md transition-colors px-2 2xl:px-4 py-1.5 text-xs md:text-sm whitespace-nowrap"
         >
-          <IconWaterpolo className="w-[1.5em]! h-[1.5em]! text-[#3182FF]" />
-          <span>Report</span>
-        </Button>
+          <IconAlertTriangle className="w-[1.5em]! h-[1.5em]! shrink-0" />
+          <span className="hidden md:inline font-medium">REPORT FLOOD</span>
+        </button>
       </DialogTrigger>
       <DialogContent className="min-w-[50vw] sm:max-w-md md:max-w-lg lg:max-w-xl">
         <form onSubmit={handleSubmit}>
@@ -210,10 +211,10 @@ export default function ReportFloodAlertModal({
                       <SelectContent>
                         <SelectGroup>
                           <SelectLabel>Severity Level</SelectLabel>
+                          <SelectItem value="low">Low</SelectItem>
                           <SelectItem value="critical">Critical</SelectItem>
                           <SelectItem value="high">High</SelectItem>
                           <SelectItem value="moderate">Moderate</SelectItem>
-                          <SelectItem value="low">Low</SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>

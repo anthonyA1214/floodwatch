@@ -1,7 +1,8 @@
 import { apiFetchClient } from '@/lib/api-fetch-client';
+import { SWR_KEYS } from '@/lib/constants/swr-keys';
 
 export async function getMe() {
-  const res = await apiFetchClient('/users/me', {
+  const res = await apiFetchClient(SWR_KEYS.me, {
     method: 'GET',
   });
 

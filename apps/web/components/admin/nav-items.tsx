@@ -17,37 +17,37 @@ import { cn } from '@/lib/utils';
 export function NavItems() {
   const items = [
     {
-      title: 'Dashboard',
+      title: 'DASHBOARD',
       url: '/admin',
       icon: IconClipboard,
     },
     {
-      title: 'User Management',
+      title: 'USER MANAGEMENT',
       url: '/admin/users',
       icon: IconUserCog,
     },
     {
-      title: 'Interactive Map',
+      title: 'INTERACTIVE MAP',
       url: '/admin/map',
       icon: IconMap,
     },
     {
-      title: 'Flood Reports',
+      title: 'FLOOD REPORTS',
       url: '/admin/reports',
       icon: IconReportAnalytics,
     },
     {
-      title: 'Safety Locations',
+      title: 'SAFETY LOCATIONS',
       url: '/admin/safety',
       icon: IconShieldPin,
     },
     {
-      title: 'Community Feed',
+      title: 'COMMUNITY FEED',
       url: '/admin/feed',
       icon: IconUsers,
     },
     {
-      title: 'Settings',
+      title: 'SETTINGS',
       url: '/admin/settings',
       icon: IconSettings2,
     },
@@ -71,7 +71,7 @@ export function NavItems() {
                 )}
               >
                 <item.icon className="w-[1.5em]! h-[1.5em]!" aria-hidden />
-                <span className="text-lg">{item.title}</span>
+                <span className="font-poppins">{item.title}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

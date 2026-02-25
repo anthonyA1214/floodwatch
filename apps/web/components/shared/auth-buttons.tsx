@@ -6,6 +6,7 @@ export default function AuthButtons({ className }: { className?: string }) {
       <Link href="/auth/login" className="w-full sm:w-auto">
         <button
           className="
+            font-poppins
             w-full sm:w-auto
             flex items-center justify-center
             px-3 sm:px-5 md:px-6
@@ -21,13 +22,14 @@ export default function AuthButtons({ className }: { className?: string }) {
             shrink-0
           "
         >
-          Login
+          LOGIN
         </button>
       </Link>
 
       <Link href="/auth/sign-up" className="w-full sm:w-auto">
         <button
           className="
+          font-poppins
           w-full sm:w-auto
           flex items-center justify-center
           px-3 sm:px-5 md:px-6
@@ -43,7 +45,7 @@ export default function AuthButtons({ className }: { className?: string }) {
           shrink-0
         "
         >
-          Sign Up
+          SIGN UP
         </button>
       </Link>
     </div>
