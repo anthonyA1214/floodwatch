@@ -1,12 +1,10 @@
 import ReportStatCards from '@/components/admin/reports/report-stat-cards';
 import SearchBar from '@/components/shared/search-bar';
-import { Suspense } from 'react';
 import { DataTable } from './data-table';
 import { columns } from './columns';
 import { ReportQuery } from '@/lib/types/report-query';
 import { getReportsData } from '@/lib/actions/get-reports-data';
 import PagePagination from '@/components/shared/page-pagination';
-import ReportStatCardSkeleton from '@/components/admin/reports/skeleton/report-stat-card-skeleton';
 import FloodReportsDataTableWrapper from '@/components/admin/reports/flood-reports-data-table-wrapper';
 import FloodReportsClient from '@/components/admin/reports/flood-reports-client';
 
@@ -31,13 +29,11 @@ export default async function FloodReportsPage({
         </div>
 
         <div className="flex-1 flex flex-col min-h-0 gap-4">
-          <Suspense fallback={<ReportStatCardSkeleton />}>
-            <ReportStatCards
-              totalCount={data?.stats?.totalCount ?? 0}
-              verifiedCount={data?.stats?.verifiedCount ?? 0}
-              unverifiedCount={data?.stats?.unverifiedCount ?? 0}
-            />
-          </Suspense>
+          <ReportStatCards
+            totalCount={data?.stats?.totalCount ?? 0}
+            verifiedCount={data?.stats?.verifiedCount ?? 0}
+            unverifiedCount={data?.stats?.unverifiedCount ?? 0}
+          />
 
           <FloodReportsDataTableWrapper>
             <DataTable columns={columns} data={data?.data ?? []} />

@@ -56,7 +56,6 @@ export class SafetyService {
     );
 
     await this.db.insert(safety).values({
-      userId,
       latitude,
       longitude,
       type,
