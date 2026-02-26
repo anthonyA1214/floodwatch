@@ -173,4 +173,20 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
+
+  /* Width */
+  ::-webkit-scrollbar {
+    width: 5px;
+    height: 5px; /* for horizontal scrollbars */
+  }
+
+  /* Thumb (the draggable part) */
+  ::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+
+  /* Thumb on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/50;
+  }
 }
