@@ -20,7 +20,7 @@ export default function RadiusCircle({
 }: {
   longitude: number;
   latitude: number;
-  range: number;
+  range?: number;
   severity: 'critical' | 'high' | 'moderate' | 'low';
   id?: string;
 }) {
@@ -29,6 +29,8 @@ export default function RadiusCircle({
   useEffect(() => {
     if (!map) return;
     const nativeMap = map.getMap();
+
+    if (range === undefined) return;
 
     const circleGeoJSON = circle([longitude, latitude], range, {
       steps: 64,

@@ -8,6 +8,7 @@ export const safety = pgTable('safety', {
   latitude: doublePrecision('latitude').notNull(),
   longitude: doublePrecision('longitude').notNull(),
   location: text('location').notNull().default('Unknown location'),
+  address: text('address'),
   description: text('description'),
   image: text('image'),
   imagePublicId: text('image_public_id'),

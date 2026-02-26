@@ -1,33 +1,21 @@
-import { useState, useEffect, useCallback } from 'react';
-import { apiFetchClient } from '@/lib/api-fetch-client';
+'use client';
+
+import useSWR from 'swr';
+import { SWR_KEYS } from '@/lib/constants/swr-keys';
+import { getReports } from '@/lib/fetchers/get-reports';
 import { ReportsDto } from '@repo/schemas';
 
 export function useReports() {
-  const [reports, setReports] = useState<ReportsDto[]>([]);
+  const { data, error, isLoading, isValidating, mutate } = useSWR<ReportsDto[]>(
+    SWR_KEYS.reports,
+    getReports,
+  );
 
-  useEffect(() => {
-    const fetchReports = async () => {
-      try {
-        const res = await apiFetchClient('/reports', { method: 'GET' });
-        const data = await res.json();
-        setReports(data);
-      } catch (error) {
-        console.error('Error fetching reports:', error);
-      }
-    };
-
-    fetchReports();
-  }, []);
-
-  const refreshReports = useCallback(async () => {
-    try {
-      const res = await apiFetchClient('/reports', { method: 'GET' });
-      const data = await res.json();
-      setReports(data);
-    } catch (error) {
-      console.error('Error fetching reports:', error);
-    }
-  }, []);
-
-  return { reports, refreshReports };
+  return {
+    reports: data,
+    isLoading,
+    isValidating,
+    isError: error,
+    mutateReports: mutate,
+  };
 }

@@ -12,15 +12,15 @@ export default function MapRight() {
         <TabsList className="w-full bg-[#EFF6FF] py-7 px-1.5 space-x-1.5">
           <TabsTrigger
             value="affected"
-            className="data-[state=active]:bg-[#0066CC] data-[state=active]:text-white hover:bg-[#DBEAFE] py-5"
+            className="font-poppins data-[state=active]:bg-[#0066CC] data-[state=active]:text-white hover:bg-[#DBEAFE] py-5"
           >
-            Affected Locations
+            AFFECTED LOCATIONS
           </TabsTrigger>
           <TabsTrigger
             value="safe"
-            className="data-[state=active]:bg-[#0066CC] data-[state=active]:text-white hover:bg-[#DBEAFE] py-5"
+            className="font-poppins data-[state=active]:bg-[#0066CC] data-[state=active]:text-white hover:bg-[#DBEAFE] py-5"
           >
-            Safety Locations
+            SAFETY LOCATIONS
           </TabsTrigger>
         </TabsList>
 

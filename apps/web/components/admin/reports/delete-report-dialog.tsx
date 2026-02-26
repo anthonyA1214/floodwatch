@@ -12,18 +12,21 @@ import {
 } from '@/components/ui/dialog';
 import { Spinner } from '@/components/ui/spinner';
 import { useReportDialog } from '@/contexts/report-dialog-context';
+import { useReports } from '@/hooks/use-reports';
 import { deleteReport } from '@/lib/actions/report-actions';
 import { useState } from 'react';
 
 export default function DeleteReportDialog() {
   const { report, isOpen, closeDialog } = useReportDialog();
   const [isPending, setIsPending] = useState(false);
+  const { mutateReports } = useReports();
 
   const handleDelete = async () => {
     if (!report) return;
     setIsPending(true);
     try {
       await deleteReport(report.id);
+      mutateReports(); // refresh reports list
       closeDialog();
     } finally {
       setIsPending(false);

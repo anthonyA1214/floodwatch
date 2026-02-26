@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import Image from 'next/image';
 import { redirect } from 'next/navigation';
 import { decodeJwt } from '@/lib/jwt';
+import Link from 'next/link';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -56,13 +57,14 @@ export default async function AuthLayout({
               can also post reports and share updates, making it easier for
               everyone to stay informed and connected.
             </p>
-
-            <Button
-              variant="secondary"
-              className="rounded-full text-lg px-8 py-6"
-            >
-              Learn more...
-            </Button>
+            <Link href="/#about-us">
+              <Button
+                variant="secondary"
+                className="rounded-full text-lg px-8 py-6"
+              >
+                Learn more...
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

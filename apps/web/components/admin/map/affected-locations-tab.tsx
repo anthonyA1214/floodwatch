@@ -1,12 +1,12 @@
 import AffectedLocationsCard from '@/components/admin/map/affected-locations-card';
 import Pagination from '@/components/admin/map/map-pagination';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import CreateFloodAlertModal from './create-flood-alert-modal';
+import CreateFloodAlertDialog from './create-flood-alert-dialog';
 
 export default function AffectedLocationsTab() {
   return (
     <>
-      <CreateFloodAlertModal />
+      <CreateFloodAlertDialog />
       <div className="flex-1 flex flex-col rounded-2xl border min-h-0">
         <div className="flex-1 overflow-hidden min-h-0">
           <ScrollArea className="h-full ps-4 py-4">

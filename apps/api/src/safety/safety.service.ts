@@ -17,11 +17,11 @@ export class SafetyService {
   ) {}
 
   async createSafetyLocation(
-    userId: number,
-    createSafetyLocationDto: CreateSafetyLocationInput,
+    safetyLocationDto: CreateSafetyLocationInput,
     image: Express.Multer.File,
   ) {
-    const { latitude, longitude, type, description } = createSafetyLocationDto;
+    const { latitude, longitude, type, description, address, locationName } =
+      safetyLocationDto;
 
     let imageUrl: string | null = null;
     let imagePublicId: string | null = null;
@@ -50,11 +50,6 @@ export class SafetyService {
       imagePublicId = uploaded.public_id as string;
     }
 
-    const displayName = await this.geocoderService.reverseGeocode(
-      latitude,
-      longitude,
-    );
-
     await this.db.insert(safety).values({
       latitude,
       longitude,
@@ -62,7 +57,8 @@ export class SafetyService {
       description,
       image: imageUrl,
       imagePublicId,
-      location: displayName,
+      location: locationName,
+      address,
     });
   }
 }

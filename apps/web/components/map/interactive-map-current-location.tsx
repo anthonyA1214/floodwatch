@@ -4,8 +4,8 @@ import { Layer, Map, Marker, Source } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { Spinner } from '@/components/ui/spinner';
 import RadiusCircle from '@/components/shared/radius-circle';
-import { useBoundary } from '@/contexts/boundary-context';
-import { SEVERITY_COLOR_MAP } from '@/lib/utils/get-color-map';
+import { useBoundary } from '@/hooks/use-boundary';
+import { FloodMarker } from '../markers/flood-marker';
 
 export default function CurrentLocationInteractiveMap({
   longitude,
@@ -80,8 +80,10 @@ export default function CurrentLocationInteractiveMap({
         key={severity}
         longitude={longitude}
         latitude={latitude}
-        color={SEVERITY_COLOR_MAP[severity]}
-      />
+        anchor="bottom"
+      >
+        <FloodMarker severity={severity} />
+      </Marker>
     </Map>
   );
 }
