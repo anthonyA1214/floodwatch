@@ -9,6 +9,15 @@ export const floodAlertSchema = z.object({
   severity: z.enum(['low', 'moderate', 'high', 'critical']),
 });
 
+export const createFloodAlertSchema = z.object({
+  locationName: z.string(),
+  latitude: z.coerce.number(),
+  longitude: z.coerce.number(),
+  range: z.coerce.number(),
+  description: z.string().optional(),
+  severity: z.enum(['low', 'moderate', 'high', 'critical']),
+});
+
 export const reportsSchema = z.object({
   id: z.string(),
   reporter: z
@@ -38,9 +47,11 @@ export const reportQuerySchema = z.object({
 });
 
 export class FloodAlertDto extends createZodDto(floodAlertSchema) {}
+export class CreateFloodAlertDto extends createZodDto(createFloodAlertSchema) {}
 export class ReportsDto extends createZodDto(reportsSchema) {}
 export class ReportQueryDto extends createZodDto(reportQuerySchema) {}
 
-export type ReportsInput = z.infer<typeof reportsSchema>;
 export type FloodAlertInput = z.infer<typeof floodAlertSchema>;
+export type CreateFloodAlertInput = z.infer<typeof createFloodAlertSchema>;
+export type ReportsInput = z.infer<typeof reportsSchema>;
 export type ReportQueryInput = z.infer<typeof reportQuerySchema>;

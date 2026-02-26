@@ -1,5 +1,9 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { FloodAlertInput, ReportQueryInput } from '@repo/schemas';
+import {
+  CreateFloodAlertInput,
+  FloodAlertInput,
+  ReportQueryInput,
+} from '@repo/schemas';
 import { and, count, desc, eq, like, or, sql } from 'drizzle-orm';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { DRIZZLE } from 'src/drizzle/drizzle-connection';
@@ -180,7 +184,7 @@ export class ReportsService {
       imagePublicId = uploaded.public_id as string;
     }
 
-    const displayName = await this.geocoderService.reverseGeocode(
+    const { displayName } = await this.geocoderService.reverseGeocode(
       latitude,
       longitude,
     );
@@ -196,14 +200,17 @@ export class ReportsService {
       imagePublicId,
       location: displayName,
     });
+
+    return { message: 'Report created successfully' };
   }
 
   async createReportAdmin(
     userId: number,
-    floodAlertDto: FloodAlertInput,
+    floodAlertDto: CreateFloodAlertInput,
     image: Express.Multer.File,
   ) {
-    const { latitude, longitude, severity, description, range } = floodAlertDto;
+    const { latitude, longitude, locationName, severity, description, range } =
+      floodAlertDto;
 
     let imageUrl: string | null = null;
     let imagePublicId: string | null = null;
@@ -232,11 +239,6 @@ export class ReportsService {
       imagePublicId = uploaded.public_id as string;
     }
 
-    const displayName = await this.geocoderService.reverseGeocode(
-      latitude,
-      longitude,
-    );
-
     await this.db.insert(reports).values({
       userId,
       latitude,
@@ -246,9 +248,11 @@ export class ReportsService {
       range,
       image: imageUrl,
       imagePublicId,
-      location: displayName,
+      location: locationName,
       status: 'verified', // Admin-created reports are auto-verified
     });
+
+    return { message: 'Report created and verified successfully' };
   }
 
   async verifyReportStatus(id: string) {

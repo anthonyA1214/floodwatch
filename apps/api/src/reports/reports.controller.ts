@@ -19,6 +19,8 @@ import { ReportsService } from './reports.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 import { UserStatusGuard } from 'src/common/guards/user-status/user-status.guard';
 import {
+  type CreateFloodAlertInput,
+  createFloodAlertSchema,
   type FloodAlertInput,
   floodAlertSchema,
   ReportQueryDto,
@@ -72,10 +74,10 @@ export class ReportsController {
   @UseInterceptors(FileInterceptor('image'))
   async createReportAdmin(
     @Request() req: AuthRequest,
-    @Body() createFloodAlertDto: FloodAlertInput,
+    @Body() createFloodAlertDto: CreateFloodAlertInput,
     @UploadedFile() image: Express.Multer.File,
   ) {
-    const parsedData = floodAlertSchema.safeParse(createFloodAlertDto);
+    const parsedData = createFloodAlertSchema.safeParse(createFloodAlertDto);
     if (!parsedData.success) {
       throw new BadRequestException({
         message: 'Validation failed',
