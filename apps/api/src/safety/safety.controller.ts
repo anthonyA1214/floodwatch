@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import {
-  CreateSafetyLocationDto,
+  type CreateSafetyLocationInput,
   createSafetyLocationSchema,
 } from '@repo/schemas';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
@@ -30,12 +30,11 @@ export class SafetyController {
   @UseInterceptors(FileInterceptor('image'))
   async createSafetyLocation(
     @Request() req: AuthRequest,
-    @Body() createSafetyLocationDto: CreateSafetyLocationDto,
+    @Body() safetyLocationDto: CreateSafetyLocationInput,
     @UploadedFile() image: Express.Multer.File,
   ) {
-    const parsedData = createSafetyLocationSchema.safeParse(
-      createSafetyLocationDto,
-    );
+    const parsedData = createSafetyLocationSchema.safeParse(safetyLocationDto);
+
     if (!parsedData.success) {
       throw new BadRequestException({
         message: 'Validation failed',
@@ -44,8 +43,7 @@ export class SafetyController {
     }
 
     return await this.safetyService.createSafetyLocation(
-      req.user.id,
-      createSafetyLocationDto,
+      safetyLocationDto,
       image,
     );
   }

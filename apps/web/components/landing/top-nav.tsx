@@ -5,10 +5,10 @@ import CollapsibleMenu from '@/components/landing/collapsible-menu';
 import AuthButtons from '@/components/shared/auth-buttons';
 
 const navItems = [
-  { label: 'Features', url: '#features' },
-  { label: 'Safety Guides', url: '#safety-guides' },
-  { label: 'Latest News', url: '#latest-news' },
-  { label: 'About Us', url: '#about-us' },
+  { label: 'FEATURES', url: '#features' },
+  { label: 'SAFETY GUIDES', url: '#safety-guides' },
+  { label: 'LATEST NEWS', url: '#latest-news' },
+  { label: 'ABOUT US', url: '#about-us' },
 ];
 
 export default function TopNav() {
@@ -37,7 +37,7 @@ export default function TopNav() {
                 <Link
                   key={item.label}
                   href={item.url}
-                  className="text-lg text-white hover:text-[#F5F5F5] active:text-[#EAEAEA]"
+                  className="font-poppins text-lg text-white hover:text-[#F5F5F5] active:text-[#EAEAEA]"
                 >
                   {item.label}
                 </Link>
