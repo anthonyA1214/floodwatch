@@ -21,6 +21,7 @@ import {
   IconPlus,
   IconStack2,
 } from '@tabler/icons-react';
+import { useMapUI } from '@/contexts/map-ui-context';
 
 export type SelectedLocation = {
   longitude: number;
@@ -38,8 +39,9 @@ export default function InteractiveMapPage() {
   const { reports } = useReports();
   const interactiveMapRef = useRef<InteractiveMapHandle>(null);
 
+  const { showBarangayFlood } = useMapUI();
+
   return (
-    <BoundaryProvider>
       <MapProvider>
         <div className="relative w-full h-full">
           <InteractiveMap
@@ -122,6 +124,5 @@ export default function InteractiveMapPage() {
           </Suspense>
         </div>
       </MapProvider>
-    </BoundaryProvider>
   );
-}
+} 
