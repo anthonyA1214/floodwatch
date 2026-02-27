@@ -1,6 +1,5 @@
 'use client';
 
-import React from 'react';
 import {
   IconAlertTriangle,
   IconBellRinging,
@@ -11,7 +10,6 @@ import {
   IconHome,
   Icon,
 } from '@tabler/icons-react';
-import { ScrollArea } from '../ui/scroll-area';
 
 // Reusable interface for TypeScript to handle props safely
 interface NotificationItemProps {
