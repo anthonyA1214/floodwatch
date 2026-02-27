@@ -1,12 +1,12 @@
 import { ScrollArea } from '@/components/ui/scroll-area';
 import Pagination from '@/components/admin/map/map-pagination';
 import SafetyLocationsCard from '@/components/admin/map/safety-locations-card';
-import CreateSafetyLocationsModal from './create-safety-locations-modal';
+import CreateSafetyLocationsDialog from './create-safety-locations-dialog';
 
 export default function SafetyLocationsTab() {
   return (
     <>
-      <CreateSafetyLocationsModal />
+      <CreateSafetyLocationsDialog />
       <div className="flex-1 flex flex-col rounded-2xl border min-h-0">
         <div className="flex-1 overflow-hidden min-h-0">
           <ScrollArea className="h-full ps-4 py-4">

@@ -14,16 +14,21 @@ import { Spinner } from '@/components/ui/spinner';
 import { useReportDialog } from '@/contexts/report-dialog-context';
 import { deleteReport } from '@/lib/actions/report-actions';
 import { useState } from 'react';
+import { useSWRConfig } from 'swr';
+import { SWR_KEYS } from '@/lib/constants/swr-keys';
 
 export default function DeleteReportDialog() {
   const { report, isOpen, closeDialog } = useReportDialog();
   const [isPending, setIsPending] = useState(false);
+  const { mutate } = useSWRConfig();
 
   const handleDelete = async () => {
     if (!report) return;
     setIsPending(true);
     try {
       await deleteReport(report.id);
+      mutate(SWR_KEYS.reports);
+      mutate((key) => Array.isArray(key) && key[0] === SWR_KEYS.reportsAdmin);
       closeDialog();
     } finally {
       setIsPending(false);

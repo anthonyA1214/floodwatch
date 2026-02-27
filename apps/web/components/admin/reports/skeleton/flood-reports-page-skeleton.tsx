@@ -1,7 +1,7 @@
 import PaginationSkeleton from '@/components/admin/pagination-skeleton';
 import { Skeleton } from '@/components/ui/skeleton';
-import ReportStatCardSkeleton from './report-stat-card-skeleton';
 import { FloodReportsDataTableSkeleton } from './flood-reports-data-table-skeleton';
+import StatCardSkeleton from '@/components/shared/admin/skeleton/stat-card-skeleton';
 
 export default function FloodReportsPageSkeleton() {
   return (
@@ -17,7 +17,7 @@ export default function FloodReportsPageSkeleton() {
       <div className="flex-1 flex flex-col min-h-0 gap-4">
         <div className="grid grid-cols-3 gap-8">
           {Array.from({ length: 3 }).map((_, i) => (
-            <ReportStatCardSkeleton key={i} />
+            <StatCardSkeleton key={i} />
           ))}
         </div>
 

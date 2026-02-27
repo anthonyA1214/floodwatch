@@ -44,7 +44,7 @@ const NotificationItem = ({
 
 export default function NotificationPanel() {
   return (
-    <div className="flex flex-col bg-white ps-4 py-4 w-screen md:w-[400px] md:h-[80vh] rounded-xl shadow-md">
+    <div className="flex flex-col bg-white ps-4 py-4 w-screen md:w-[400px] md:h-[80vh] rounded-xl shadow-md pointer-events-auto">
       <h3 className="font-poppins font-semibold pb-4">Notifications</h3>
 
       <div className="flex-1 overflow-y-auto pr-4">

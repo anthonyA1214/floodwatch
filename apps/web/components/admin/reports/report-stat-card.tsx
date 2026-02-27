@@ -29,7 +29,7 @@ export default function ReportStatCard({
   const statusColorMap = {
     total: '#0066CC',
     verified: '#00D69B',
-    unverified: '#FF6900',
+    unverified: '#F0B204',
   };
 
   const statusTextMap = {

@@ -19,6 +19,8 @@ import { ReportsService } from './reports.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 import { UserStatusGuard } from 'src/common/guards/user-status/user-status.guard';
 import {
+  type CreateFloodAlertInput,
+  createFloodAlertSchema,
   type ReportFloodAlertInput,
   reportFloodAlertSchema,
   ReportQueryDto,
@@ -48,10 +50,10 @@ export class ReportsController {
   @UseInterceptors(FileInterceptor('image'))
   async createReport(
     @Request() req: AuthRequest,
-    @Body() createFloodReportDto: ReportFloodAlertInput,
+    @Body() createFloodAlertDto: ReportFloodAlertInput,
     @UploadedFile() image: Express.Multer.File,
   ) {
-    const parsedData = reportFloodAlertSchema.safeParse(createFloodReportDto);
+    const parsedData = reportFloodAlertSchema.safeParse(createFloodAlertDto);
     if (!parsedData.success) {
       throw new BadRequestException({
         message: 'Validation failed',
@@ -61,7 +63,31 @@ export class ReportsController {
 
     return await this.reportsService.createReport(
       req.user.id,
-      createFloodReportDto,
+      createFloodAlertDto,
+      image,
+    );
+  }
+
+  @Post('/admin/create')
+  @HttpCode(HttpStatus.CREATED)
+  @UseGuards(JwtAuthGuard, UserStatusGuard)
+  @UseInterceptors(FileInterceptor('image'))
+  async createReportAdmin(
+    @Request() req: AuthRequest,
+    @Body() createFloodAlertDto: CreateFloodAlertInput,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    const parsedData = createFloodAlertSchema.safeParse(createFloodAlertDto);
+    if (!parsedData.success) {
+      throw new BadRequestException({
+        message: 'Validation failed',
+        issues: parsedData.error.issues,
+      });
+    }
+
+    return await this.reportsService.createReportAdmin(
+      req.user.id,
+      createFloodAlertDto,
       image,
     );
   }

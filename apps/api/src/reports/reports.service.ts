@@ -1,5 +1,9 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { ReportFloodAlertInput, ReportQueryInput } from '@repo/schemas';
+import {
+  CreateFloodAlertInput,
+  ReportFloodAlertInput,
+  ReportQueryInput,
+} from '@repo/schemas';
 import { and, count, desc, eq, like, or, sql } from 'drizzle-orm';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { DRIZZLE } from 'src/drizzle/drizzle-connection';
@@ -148,11 +152,10 @@ export class ReportsService {
 
   async createReport(
     userId: number,
-    reportFloodAlertDto: ReportFloodAlertInput,
+    floodAlertDto: ReportFloodAlertInput,
     image: Express.Multer.File,
   ) {
-    const { latitude, longitude, severity, description, range } =
-      reportFloodAlertDto;
+    const { latitude, longitude, severity, description, range } = floodAlertDto;
 
     let imageUrl: string | null = null;
     let imagePublicId: string | null = null;
@@ -181,7 +184,7 @@ export class ReportsService {
       imagePublicId = uploaded.public_id as string;
     }
 
-    const displayName = await this.geocoderService.reverseGeocode(
+    const { displayName } = await this.geocoderService.reverseGeocode(
       latitude,
       longitude,
     );
@@ -197,6 +200,59 @@ export class ReportsService {
       imagePublicId,
       location: displayName,
     });
+
+    return { message: 'Report created successfully' };
+  }
+
+  async createReportAdmin(
+    userId: number,
+    floodAlertDto: CreateFloodAlertInput,
+    image: Express.Multer.File,
+  ) {
+    const { latitude, longitude, locationName, severity, description, range } =
+      floodAlertDto;
+
+    let imageUrl: string | null = null;
+    let imagePublicId: string | null = null;
+
+    if (image) {
+      const { buffer, mimetype } = await this.imagesService.normalizeImage(
+        image.buffer,
+      );
+
+      const normalizedFile: Express.Multer.File = {
+        ...image,
+        buffer,
+        mimetype,
+        originalname: image.originalname.replace(
+          /\.(jpe?g|png|jfif|webp)$/i,
+          '.webp',
+        ),
+      };
+
+      const uploaded = await this.cloudinaryService.uploadImage(
+        normalizedFile,
+        'reports',
+      );
+
+      imageUrl = uploaded.secure_url as string;
+      imagePublicId = uploaded.public_id as string;
+    }
+
+    await this.db.insert(reports).values({
+      userId,
+      latitude,
+      longitude,
+      severity,
+      description,
+      range,
+      image: imageUrl,
+      imagePublicId,
+      location: locationName,
+      status: 'verified', // Admin-created reports are auto-verified
+    });
+
+    return { message: 'Report created and verified successfully' };
   }
 
   async verifyReportStatus(id: string) {

@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { logout } from '@/lib/services/auth/logout';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/hooks/use-user';
+import { Spinner } from '@/components/ui/spinner';
 
 export default function LogoutButton() {
   const { mutateUser } = useUser();
@@ -35,11 +36,18 @@ export default function LogoutButton() {
         disabled={isPending}
         onClick={handleLogout}
       >
-        <div className="flex items-center gap-4 py-6 pl-4 border-l-4 border-transparent text-base">
-          <IconLogout className="w-[1.5em]! h-[1.5em]!" aria-hidden />
-          <span className="text-lg">
-            {isPending ? <>Signing out...</> : 'Sign out'}
-          </span>
+        <div className="flex items-center gap-4 py-6 pl-4 border-l-4 border-transparent text-base font-poppins">
+          {isPending ? (
+            <>
+              <Spinner />
+              <span>SIGNING OUT...</span>
+            </>
+          ) : (
+            <>
+              <IconLogout className="w-[1.5em]! h-[1.5em]!" aria-hidden />
+              <span>SIGN OUT</span>
+            </>
+          )}
         </div>
       </SidebarMenuButton>
     </SidebarMenuItem>

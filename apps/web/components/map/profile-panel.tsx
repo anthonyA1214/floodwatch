@@ -9,7 +9,7 @@ export default function ProfilePanel() {
     //   className="flex flex-col bg-white rounded-xl shadow-md ps-4 py-4
     //   w-screen h-screen md:w-[400px] md:h-fit"
     // >
-    <div className="flex flex-col bg-white ps-4 py-4 w-screen md:w-[400px] md:h-[80vh] rounded-xl shadow-md">
+    <div className="flex flex-col bg-white ps-4 py-4 w-screen md:w-[400px] md:h-[80vh] rounded-xl shadow-md pointer-events-auto">
       <Tabs defaultValue="account" className="flex-1 flex flex-col min-h-0">
         <div className="w-full border-b">
           <TabsList variant="line" className="font-poppins w-full">

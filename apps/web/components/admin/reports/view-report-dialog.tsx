@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { IconMapPin, IconTriangle } from '@tabler/icons-react';
+import { IconMapPin } from '@tabler/icons-react';
 import {
   Avatar as UIAvatar,
   AvatarFallback,
@@ -29,16 +29,21 @@ import { format, parseISO } from 'date-fns';
 import { useState } from 'react';
 import { Spinner } from '@/components/ui/spinner';
 import { verifyReport } from '@/lib/actions/report-actions';
+import { useSWRConfig } from 'swr';
+import { SWR_KEYS } from '@/lib/constants/swr-keys';
 
 export default function ViewReportDialog() {
   const { report, isOpen, closeDialog } = useReportDialog();
   const [isPending, setIsPending] = useState(false);
+  const { mutate } = useSWRConfig();
 
   const handleVerify = async () => {
     if (!report) return;
     setIsPending(true);
     try {
       await verifyReport(report.id);
+      mutate(SWR_KEYS.reports);
+      mutate((key) => Array.isArray(key) && key[0] === SWR_KEYS.reportsAdmin);
       closeDialog();
     } finally {
       setIsPending(false);
@@ -56,14 +61,10 @@ export default function ViewReportDialog() {
           <>
             {/* ── Blue Header ── */}
             <DialogHeader className="flex flex-row items-center gap-4 bg-[#0066CC] rounded-b-2xl px-5 py-4 shrink-0">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-500/50">
-                <IconTriangle className="h-5 w-5 text-white" />
-              </div>
-
               {/* Text */}
               <div className="flex flex-col space-y-0 text-white">
-                <DialogTitle className="text-base font-bold ">
-                  Flood Report
+                <DialogTitle className="font-poppins text-base font-semibold">
+                  FLOOD REPORT
                 </DialogTitle>
                 <DialogDescription className="text-sm text-blue-100">
                   {formattedDate} at {formattedTime}
