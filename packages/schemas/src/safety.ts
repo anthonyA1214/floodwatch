@@ -22,12 +22,25 @@ export const safetyLocationsSchema = z.object({
   createdAt: z.string(),
 });
 
+export const safetyLocationQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(10),
+  type: z.enum(['shelter', 'hospital']).optional(),
+  q: z.string().optional(),
+});
+
 export class CreateSafetyLocationDto extends createZodDto(
   createSafetyLocationSchema,
 ) {}
 export class SafetyLocationsDto extends createZodDto(safetyLocationsSchema) {}
+export class SafetyLocationQueryDto extends createZodDto(
+  safetyLocationQuerySchema,
+) {}
 
 export type CreateSafetyLocationInput = z.infer<
   typeof createSafetyLocationSchema
 >;
 export type SafetyLocationsInput = z.infer<typeof safetyLocationsSchema>;
+export type SafetyLocationQueryInput = z.infer<
+  typeof safetyLocationQuerySchema
+>;
