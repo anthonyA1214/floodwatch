@@ -1,47 +1,42 @@
-import Image from 'next/image';
+import { ReactNode } from 'react';
 
-export default function SafetyGuideCard({
-  src,
-  alt,
+export default function SafetyGuideInfoCard({
+  icon,
   title,
-  href,
+  bullets,
 }: {
-  src: string;
-  alt: string;
+  icon: ReactNode;
   title: string;
-  href: string;
+  bullets: string[];
 }) {
   return (
-    <div className="relative rounded-2xl aspect-square overflow-hidden">
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        className="object-cover"
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-      />
-
-      <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-white text-center px-4 sm:px-6 md:px-10">
-        <div className="space-y-6">
-          <h3 className="font-poppins font-semibold text-2xl md:text-3xl">
-            {title}
-          </h3>
-
-          <a
-            className="block mt-auto"
-            href={href}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <button
-              className="px-8 py-3 border border-white rounded-full text-sm sm:text-base md:text-lg
-             hover:bg-white hover:text-black hover:scale-105 active:scale-95 transition"
-            >
-              Click here
-            </button>
-          </a>
+    <div className="flex flex-col gap-4 bg-white border border-gray-100 rounded-3xl p-6 shadow-sm hover:shadow-md transition-shadow">
+      <div className="flex items-center gap-3">
+        {/* Navy Icon Container */}
+        <div className="w-10 h-10 rounded-xl bg-[#2F327D] flex items-center justify-center text-white shrink-0 shadow-md shadow-[#2F327D]/20">
+          {icon}
         </div>
+        <h4 className="font-poppins font-bold text-[#2F327D] text-base leading-tight">
+          {title}
+        </h4>
       </div>
+      
+      <ul className="space-y-3">
+        {bullets.map((bullet, i) => (
+          <li key={i} className="flex items-start gap-2 text-sm leading-relaxed text-gray-600">
+            <svg
+              className="w-4 h-4 mt-0.5 text-[#2F327D] shrink-0 opacity-80"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2.5}
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+            </svg>
+            <span>{bullet}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
