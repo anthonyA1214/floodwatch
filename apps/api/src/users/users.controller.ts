@@ -76,7 +76,7 @@ export class UsersController {
     return await this.usersService.deleteAvatar(req.user.id);
   }
 
-  @Post('/admin/create')
+  @Post('admin/create')
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ZodValidationPipe(createAdminSchema))
@@ -87,13 +87,13 @@ export class UsersController {
     return await this.usersService.createAdmin(createAdminDto);
   }
 
-  @Patch('/:id/block')
+  @Patch(':id/block')
   @UseGuards(JwtAuthGuard)
   async blockUser(@Param('id') id: number) {
     return await this.usersService.blockUser(id);
   }
 
-  @Patch('/:id/unblock')
+  @Patch(':id/unblock')
   @UseGuards(JwtAuthGuard)
   async unblockUser(@Param('id') id: number) {
     return await this.usersService.unblockUser(id);

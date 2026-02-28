@@ -5,9 +5,16 @@ import { DrizzleModule } from 'src/drizzle/drizzle.module';
 import { ImagesModule } from 'src/images/images.module';
 import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 import { GeocoderModule } from 'src/geocoder/geocoder.module';
+import { CommentsModule } from 'src/comments/comments.module';
 
 @Module({
-  imports: [DrizzleModule, ImagesModule, CloudinaryModule, GeocoderModule],
+  imports: [
+    DrizzleModule,
+    ImagesModule,
+    CloudinaryModule,
+    GeocoderModule,
+    CommentsModule,
+  ],
   providers: [ReportsService],
   controllers: [ReportsController],
 })

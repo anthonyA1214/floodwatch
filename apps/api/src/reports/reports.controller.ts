@@ -19,18 +19,24 @@ import { ReportsService } from './reports.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 import { UserStatusGuard } from 'src/common/guards/user-status/user-status.guard';
 import {
-  type CreateFloodAlertInput,
+  CreateCommentDto,
+  createCommentSchema,
+  CreateFloodAlertDto,
   createFloodAlertSchema,
-  type ReportFloodAlertInput,
+  ReportFloodAlertDto,
   reportFloodAlertSchema,
   ReportQueryDto,
 } from '@repo/schemas';
 import { type AuthRequest } from 'src/auth/types/auth-request.type';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { CommentsService } from 'src/comments/comments.service';
 
 @Controller('reports')
 export class ReportsController {
-  constructor(private reportsService: ReportsService) {}
+  constructor(
+    private reportsService: ReportsService,
+    private commentsService: CommentsService,
+  ) {}
 
   @Get()
   @HttpCode(HttpStatus.OK)
@@ -50,14 +56,14 @@ export class ReportsController {
   @UseInterceptors(FileInterceptor('image'))
   async createReport(
     @Request() req: AuthRequest,
-    @Body() createFloodAlertDto: ReportFloodAlertInput,
+    @Body() createFloodAlertDto: ReportFloodAlertDto,
     @UploadedFile() image: Express.Multer.File,
   ) {
-    const parsedData = reportFloodAlertSchema.safeParse(createFloodAlertDto);
-    if (!parsedData.success) {
+    const parsed = reportFloodAlertSchema.safeParse(createFloodAlertDto);
+    if (!parsed.success) {
       throw new BadRequestException({
         message: 'Validation failed',
-        issues: parsedData.error.issues,
+        issues: parsed.error.issues,
       });
     }
 
@@ -68,20 +74,20 @@ export class ReportsController {
     );
   }
 
-  @Post('/admin/create')
+  @Post('admin/create')
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(JwtAuthGuard, UserStatusGuard)
   @UseInterceptors(FileInterceptor('image'))
   async createReportAdmin(
     @Request() req: AuthRequest,
-    @Body() createFloodAlertDto: CreateFloodAlertInput,
+    @Body() createFloodAlertDto: CreateFloodAlertDto,
     @UploadedFile() image: Express.Multer.File,
   ) {
-    const parsedData = createFloodAlertSchema.safeParse(createFloodAlertDto);
-    if (!parsedData.success) {
+    const parsed = createFloodAlertSchema.safeParse(createFloodAlertDto);
+    if (!parsed.success) {
       throw new BadRequestException({
         message: 'Validation failed',
-        issues: parsedData.error.issues,
+        issues: parsed.error.issues,
       });
     }
 
@@ -104,5 +110,37 @@ export class ReportsController {
   @UseGuards(JwtAuthGuard, UserStatusGuard)
   async deleteReport(@Param('id') id: string) {
     return await this.reportsService.deleteReport(id);
+  }
+
+  @Get(':id/comments')
+  @HttpCode(HttpStatus.OK)
+  async getComments(@Param('id') id: string) {
+    return await this.commentsService.getComments(id);
+  }
+
+  @Post(':id/comments')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard, UserStatusGuard)
+  @UseInterceptors(FileInterceptor('image'))
+  async addComment(
+    @Param('id') id: string,
+    @Body() createCommentDto: CreateCommentDto,
+    @Request() req: AuthRequest,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    const parsed = createCommentSchema.safeParse(createCommentDto);
+    if (!parsed.success) {
+      throw new BadRequestException({
+        message: 'Validation failed',
+        issues: parsed.error.issues,
+      });
+    }
+
+    return await this.commentsService.addComment(
+      id,
+      createCommentDto,
+      req.user.id,
+      image,
+    );
   }
 }

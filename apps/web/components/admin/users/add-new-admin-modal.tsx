@@ -15,11 +15,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import createAdmin from '@/lib/actions/create-admin';
+import { SWR_KEYS } from '@/lib/constants/swr-keys';
 import { ActionState } from '@/lib/types/action-state';
 import { useActionState, useEffect, useState } from 'react';
+import { useSWRConfig } from 'swr';
 
 export function AddNewAdminModal() {
   const [open, setOpen] = useState(false);
+  const { mutate } = useSWRConfig();
 
   const initialState: ActionState = {
     errors: null,
@@ -34,11 +37,12 @@ export function AddNewAdminModal() {
   useEffect(() => {
     function handleSuccess() {
       if (state.status === 'success') {
+        mutate((key) => Array.isArray(key) && key[0] === SWR_KEYS.users);
         setOpen(false);
       }
     }
     handleSuccess();
-  }, [state]);
+  }, [state, mutate]);
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

@@ -41,7 +41,7 @@ export default function TopNav() {
         </div>
 
         {/* tabs and locations */}
-        <div className="no-scrollbar basis-full 2xl:basis-auto flex items-center gap-4 overflow-x-auto order-last 2xl:order-0">
+        <div className="no-scrollbar basis-full 2xl:basis-auto flex items-center gap-4 overflow-x-auto overflow-y-hidden order-last 2xl:order-0">
           <Tabs className="shrink-0" defaultValue="all">
             <TabsList className="grid grid-cols-3 w-full font-poppins">
               <TabsTrigger
