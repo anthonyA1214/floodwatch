@@ -8,7 +8,6 @@ import { RedisModule } from './redis/redis.module';
 import { LoggerModule } from 'nestjs-pino';
 import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ImagesModule } from './images/images.module';
-import { AdminModule } from './admin/admin.module';
 import { ReportsModule } from './reports/reports.module';
 import { GeocoderModule } from './geocoder/geocoder.module';
 import { SafetyModule } from './safety/safety.module';
@@ -39,7 +38,6 @@ import { SafetyModule } from './safety/safety.module';
     RedisModule,
     CloudinaryModule,
     ImagesModule,
-    AdminModule,
     ReportsModule,
     GeocoderModule,
     SafetyModule,

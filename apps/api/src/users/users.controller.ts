@@ -13,6 +13,7 @@ import {
   UsePipes,
   Body,
   Query,
+  Param,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
@@ -21,6 +22,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { type AuthRequest } from 'src/auth/types/auth-request.type';
 import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
 import {
+  CreateAdminDto,
+  createAdminSchema,
   type UpdateProfileDto,
   updateProfileSchema,
   UserQueryDto,
@@ -71,5 +74,28 @@ export class UsersController {
   @HttpCode(HttpStatus.OK)
   async deleteAvatar(@Request() req: AuthRequest) {
     return await this.usersService.deleteAvatar(req.user.id);
+  }
+
+  @Post('/admin/create')
+  @HttpCode(HttpStatus.CREATED)
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(new ZodValidationPipe(createAdminSchema))
+  async createAdmin(
+    @Request() req: AuthRequest,
+    @Body() createAdminDto: CreateAdminDto,
+  ) {
+    return await this.usersService.createAdmin(createAdminDto);
+  }
+
+  @Patch('/:id/block')
+  @UseGuards(JwtAuthGuard)
+  async blockUser(@Param('id') id: number) {
+    return await this.usersService.blockUser(id);
+  }
+
+  @Patch('/:id/unblock')
+  @UseGuards(JwtAuthGuard)
+  async unblockUser(@Param('id') id: number) {
+    return await this.usersService.unblockUser(id);
   }
 }

@@ -14,7 +14,11 @@ import * as bcrypt from 'bcrypt';
 import { profileInfo } from 'src/drizzle/schemas';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { ImagesService } from 'src/images/images.service';
-import { UpdateProfileInput, UserQueryInput } from '@repo/schemas';
+import {
+  CreateAdminInput,
+  UpdateProfileInput,
+  UserQueryInput,
+} from '@repo/schemas';
 
 @Injectable()
 export class UsersService {
@@ -420,5 +424,42 @@ export class UsersService {
         totalCount,
       },
     };
+  }
+
+  async createAdmin(createAdminDto: CreateAdminInput) {
+    const { email, password, first_name, last_name, home_address } =
+      createAdminDto;
+
+    const user = await this.findByEmail(email);
+    if (user) throw new ConflictException('Email already in use');
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    const newAdmin = await this.createUser(email, 'admin');
+    await this.createAuthAccount(newAdmin.id, 'local', email, hashedPassword);
+    await this.createUserProfile(
+      newAdmin.id,
+      first_name,
+      last_name,
+      home_address,
+    );
+
+    return { message: 'Admin created successfully' };
+  }
+
+  async blockUser(id: number) {
+    const user = await this.findById(id);
+    if (!user) throw new NotFoundException('User not found');
+
+    await this.updateUserStatus(id, 'blocked');
+    return { message: 'User blocked successfully' };
+  }
+
+  async unblockUser(id: number) {
+    const user = await this.findById(id);
+    if (!user) throw new NotFoundException('User not found');
+
+    await this.updateUserStatus(id, 'active');
+    return { message: 'User unblocked successfully' };
   }
 }
