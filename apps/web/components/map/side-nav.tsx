@@ -1,5 +1,16 @@
 'use client';
 
+/**
+ * SideNav
+ * - Uses BoundaryContext (Option B: precomputed barangay flood)
+ * - Shows loading/error state from:
+ *    - isLoadingGeoJSON
+ *    - geoJSONError
+ * - Controls:
+ *    - showBarangayFlood toggle
+ *    - selectedBarangay select + Apply
+ */
+
 import * as React from 'react';
 import {
   Sidebar,
@@ -47,8 +58,8 @@ export function SideNav() {
     apply,
   } = useMapUI();
 
-  const { barangayGeoJSON, isComputingBarangayFlood, barangayFloodError } =
-    useBoundary();
+  // ✅ Option B context fields
+  const { barangayGeoJSON, isLoadingGeoJSON, geoJSONError } = useBoundary();
 
   const barangayNames = React.useMemo(
     () => getBarangayNames(barangayGeoJSON),
@@ -70,6 +81,7 @@ export function SideNav() {
 
       <SidebarContent className="p-0">
         <SidebarGroup className="px-4 py-4 space-y-4">
+          {/* CITY */}
           <div className="space-y-2">
             <p className="text-xs font-semibold tracking-wide text-muted-foreground">
               CITY
@@ -86,6 +98,7 @@ export function SideNav() {
             </div>
           </div>
 
+          {/* FLOOD TOGGLE */}
           <div className="rounded-2xl border bg-background p-3 space-y-2">
             <div className="flex items-center justify-between gap-3">
               <Label className="text-sm font-semibold text-foreground">
@@ -97,19 +110,22 @@ export function SideNav() {
               />
             </div>
 
-            {showBarangayFlood && isComputingBarangayFlood && (
+            {/* ✅ Option B: just show loading when GeoJSON is fetching */}
+            {showBarangayFlood && isLoadingGeoJSON && (
               <p className="text-xs text-muted-foreground">
-                Computing flood stats… (first time only)
+                Loading map data…
               </p>
             )}
 
-            {showBarangayFlood && barangayFloodError && (
+            {/* ✅ Option B: show fetch error if any */}
+            {showBarangayFlood && geoJSONError && (
               <p className="text-xs text-destructive">
-                {barangayFloodError}
+                {geoJSONError}
               </p>
             )}
           </div>
 
+          {/* SELECT BARANGAY */}
           <div className="space-y-2">
             <p className="text-xs font-semibold tracking-wide text-muted-foreground">
               SELECT BARANGAY
@@ -124,7 +140,9 @@ export function SideNav() {
                   placeholder={
                     barangayNames.length
                       ? 'Choose a barangay...'
-                      : 'Loading barangays...'
+                      : isLoadingGeoJSON
+                        ? 'Loading barangays...'
+                        : 'No barangays loaded'
                   }
                 />
               </SelectTrigger>
@@ -139,6 +157,7 @@ export function SideNav() {
             </Select>
           </div>
 
+          {/* APPLY */}
           <Button
             className="h-12 w-full rounded-xl"
             onClick={apply}
@@ -149,6 +168,7 @@ export function SideNav() {
 
           <Separator />
 
+          {/* LEGEND */}
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <span className="h-5 w-1 rounded-full bg-primary" />

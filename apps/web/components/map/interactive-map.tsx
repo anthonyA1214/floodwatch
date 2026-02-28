@@ -1,11 +1,19 @@
-// ✅ FILE: apps/web/src/components/map/interactive-map.tsx
-// Changes:
-// 1) Remove showBarangayFlood prop (use context instead)
-// 2) Remove duplicate Layer id
-// 3) Fix step baseline colors (0% is neutral, not red)
-// 4) (Optional) add a text label layer for debugging barangay names
-
 'use client';
+
+/**
+ * InteractiveMap
+ *
+ * Flood-per-barangay layer (Option B precomputed):
+ * - Source: barangayFloodGeoJSON (already enriched)
+ * - Color: based on properties.flood_max_var (recommended for your legend)
+ *
+ * flood_max_var meaning (typical):
+ * - 3: Very High
+ * - 2: High
+ * - 1: Moderate
+ * - 0: Low
+ * - missing / null: No data -> neutral gray
+ */
 
 import {
   forwardRef,
@@ -18,6 +26,7 @@ import {
 } from 'react';
 import MapGL, { Layer, Marker, Source, type MapRef } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
+
 import { ReportsDto } from '@repo/schemas';
 import { SEVERITY_COLOR_MAP } from '@/lib/utils/get-color-map';
 import RadiusCircle from '@/components/shared/radius-circle';
@@ -65,7 +74,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
       barangayGeoJSON,
     } = useBoundary();
 
-    // ✅ single source of truth from context
+    // UI state from MapUIContext
     const { selectedBarangay, applyNonce, showBarangayFlood } = useMapUI();
 
     const [userLocation, setUserLocation] = useState<{
@@ -124,6 +133,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
       const map = mapRef.current?.getMap();
       if (!map) return;
 
+      // applyNonce changes when the user clicks Apply
       if (!applyNonce) return;
       if (!selectedBarangay) return;
 
@@ -179,7 +189,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
           </Source>
         )}
 
-        {/* ✅ Barangay flood choropleth (only ONE fill layer, fixed step colors) */}
+        {/* ✅ Barangay flood choropleth (precomputed) */}
         {showBarangayFlood && barangayFloodGeoJSON && (
           <Source id="barangay-flood" type="geojson" data={barangayFloodGeoJSON}>
             <Layer
@@ -187,15 +197,23 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
               type="fill"
               paint={{
                 'fill-opacity': 0.75,
+
+                /**
+                 * Color by flood_max_var:
+                 * - 3 -> very high (blue-900)
+                 * - 2 -> high      (blue-600)
+                 * - 1 -> moderate  (purple-500)
+                 * - 0 -> low       (slate-400)
+                 * - anything else / missing -> neutral baseline (slate-200)
+                 */
                 'fill-color': [
-                  'step',
-                  // ✅ always number: if null/missing -> 0
-                  ['coalesce', ['get', 'flood_pct'], 0],
-                  '#e2e8f0', // 0% baseline
-                  0.01, '#94a3b8', // low
-                  10, '#a855f7',   // moderate
-                  25, '#2563eb',   // high
-                  50, '#1e3a8a',   // very high
+                  'match',
+                  ['coalesce', ['get', 'flood_max_var'], -1],
+                  3, '#1e3a8a', // very high
+                  2, '#2563eb', // high
+                  1, '#a855f7', // moderate
+                  0, '#94a3b8', // low
+                  '#e2e8f0',    // baseline / no data
                 ],
               }}
             />
@@ -209,6 +227,23 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
                 'line-opacity': 0.9,
               }}
             />
+
+            {/* (Optional) Debug labels: show barangay names on the map */}
+            {/* 
+            <Layer
+              id="barangay-name-label"
+              type="symbol"
+              layout={{
+                'text-field': ['get', 'adm4_en'],
+                'text-size': 11,
+              }}
+              paint={{
+                'text-color': '#0f172a',
+                'text-halo-color': '#ffffff',
+                'text-halo-width': 1,
+              }}
+            />
+            */}
           </Source>
         )}
 
@@ -251,14 +286,22 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
 
         {/* User location */}
         {userLocation && (
-          <Marker longitude={userLocation.longitude} latitude={userLocation.latitude} anchor="bottom">
+          <Marker
+            longitude={userLocation.longitude}
+            latitude={userLocation.latitude}
+            anchor="bottom"
+          >
             <UserLocationMarker />
           </Marker>
         )}
 
         {/* Search-selected location */}
         {selectedLocation && (
-          <Marker longitude={selectedLocation.longitude} latitude={selectedLocation.latitude} anchor="bottom">
+          <Marker
+            longitude={selectedLocation.longitude}
+            latitude={selectedLocation.latitude}
+            anchor="bottom"
+          >
             <SearchLocationMarker />
           </Marker>
         )}
