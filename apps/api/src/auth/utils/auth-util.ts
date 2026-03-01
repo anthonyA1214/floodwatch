@@ -22,7 +22,6 @@ export const setAuthCookies = (
 
   res.cookie('refresh_token', refreshToken, {
     ...cookieOptions,
-    path: '/auth/refresh',
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
 
@@ -42,6 +41,6 @@ export const clearAuthCookies = (res: Response, isProduction: boolean) => {
   };
 
   res.clearCookie('access_token', cookieOptions);
-  res.clearCookie('refresh_token', { ...cookieOptions, path: '/auth/refresh' });
+  res.clearCookie('refresh_token', cookieOptions);
   res.clearCookie('device_id', cookieOptions);
 };

@@ -7,6 +7,7 @@ export const createCommentSchema = z.object({
 
 export const updateCommentSchema = z.object({
   content: z.string().trim().optional(),
+  removeImage: z.boolean().optional(),
 });
 
 export class CreateCommentDto extends createZodDto(createCommentSchema) {}

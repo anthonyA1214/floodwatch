@@ -1,10 +1,11 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateCommentInput } from '@repo/schemas';
+import { CreateCommentInput, UpdateCommentDto } from '@repo/schemas';
 import { desc, eq, sql } from 'drizzle-orm';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { DRIZZLE } from 'src/drizzle/drizzle-connection';
@@ -109,5 +110,104 @@ export class CommentsService {
       .returning();
 
     return comment;
+  }
+
+  async updateComment(
+    commentId: number,
+    updateCommentDto: UpdateCommentDto,
+    userId: number,
+    image: Express.Multer.File,
+  ) {
+    const [comment] = await this.db
+      .select()
+      .from(comments)
+      .where(eq(comments.id, commentId))
+      .limit(1);
+
+    if (!comment) throw new NotFoundException('Comment not found');
+
+    if (comment.userId !== userId) {
+      throw new ForbiddenException(
+        'You are not allowed to update this comment',
+      );
+    }
+
+    const { content, removeImage } = updateCommentDto;
+
+    let imageUrl = comment.image;
+    let imagePublicId = comment.imagePublicId;
+
+    if (removeImage && !image) {
+      // if the user wants to remove the image
+      if (imagePublicId) {
+        await this.cloudinaryService.deleteImage(imagePublicId);
+      }
+      imageUrl = null;
+      imagePublicId = null;
+    } else if (image) {
+      // if the user wants to update the image
+      if (imagePublicId) {
+        await this.cloudinaryService.deleteImage(imagePublicId);
+      }
+
+      const { buffer, mimetype } = await this.imagesService.normalizeImage(
+        image.buffer,
+      );
+
+      const normalizedFile: Express.Multer.File = {
+        ...image,
+        buffer,
+        mimetype,
+        originalname: image.originalname.replace(
+          /\.(jpe?g|png|jfif|webp)$/i,
+          '.webp',
+        ),
+      };
+
+      const uploaded = await this.cloudinaryService.uploadImage(
+        normalizedFile,
+        'reports',
+      );
+
+      imageUrl = uploaded.secure_url as string;
+      imagePublicId = uploaded.public_id as string;
+    }
+
+    const [updatedComment] = await this.db
+      .update(comments)
+      .set({
+        content,
+        image: imageUrl,
+        imagePublicId,
+        updatedAt: new Date(),
+      })
+      .where(eq(comments.id, commentId))
+      .returning();
+
+    return updatedComment;
+  }
+
+  async deleteComment(commentId: number, userId: number) {
+    const [comment] = await this.db
+      .select()
+      .from(comments)
+      .where(eq(comments.id, commentId))
+      .limit(1);
+
+    if (!comment) throw new NotFoundException('Comment not found');
+
+    if (comment.userId !== userId) {
+      throw new ForbiddenException(
+        'You are not allowed to delete this comment',
+      );
+    }
+
+    if (comment.imagePublicId) {
+      await this.cloudinaryService.deleteImage(comment.imagePublicId);
+    }
+
+    await this.db.delete(comments).where(eq(comments.id, commentId));
+
+    return { message: 'Comment deleted successfully' };
   }
 }
