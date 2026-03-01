@@ -1,18 +1,14 @@
 'use client';
 
 /**
- * InteractiveMap
+ * InteractiveMap (LiPAD-style Detailed Overlay)
  *
- * Flood-per-barangay layer (Option B precomputed):
- * - Source: barangayFloodGeoJSON (already enriched)
- * - Color: based on properties.flood_max_var (recommended for your legend)
+ * Layers:
+ * 1) Barangay summary (flood_max_var) at low opacity (optional)
+ * 2) Detailed LiPAD flood polygons (clipped) using Var classes (detailed patch look)
  *
- * flood_max_var meaning (typical):
- * - 3: Very High
- * - 2: High
- * - 1: Moderate
- * - 0: Low
- * - missing / null: No data -> neutral gray
+ * Key fix:
+ * - We color ALL Var values (including <=0) so the “branches” are not blank.
  */
 
 import {
@@ -72,10 +68,10 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
       caloocanOutlineGeoJSON,
       barangayFloodGeoJSON,
       barangayGeoJSON,
+      clippedFloodGeoJSON,
     } = useBoundary();
 
-    // UI state from MapUIContext
-    const { selectedBarangay, applyNonce, showBarangayFlood } = useMapUI();
+    const { appliedBarangay, applyNonce, showBarangayFlood } = useMapUI();
 
     const [userLocation, setUserLocation] = useState<{
       longitude: number;
@@ -115,7 +111,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
       });
     }, [selectedLocation]);
 
-    // Lookup barangay feature by name for Apply
+    // Lookup barangay feature by name for fitBounds
     const barangayByName = useMemo(() => {
       const lookup = new Map<string, any>();
       const features = (barangayGeoJSON?.features ?? []) as any[];
@@ -128,20 +124,18 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
       return lookup;
     }, [barangayGeoJSON]);
 
-    // Apply: fitBounds to selected barangay
+    // Apply → fitBounds
     useEffect(() => {
       const map = mapRef.current?.getMap();
       if (!map) return;
-
-      // applyNonce changes when the user clicks Apply
       if (!applyNonce) return;
-      if (!selectedBarangay) return;
+      if (!appliedBarangay) return;
 
-      const key = normalizeName(selectedBarangay);
+      const key = normalizeName(appliedBarangay);
       const feature = barangayByName.get(key);
 
       if (!feature) {
-        console.warn(`[Apply] Barangay not found: "${selectedBarangay}"`);
+        console.warn(`[Apply] Barangay not found: "${appliedBarangay}"`);
         return;
       }
 
@@ -153,7 +147,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
         ],
         { padding: 60, duration: 900 },
       );
-    }, [applyNonce, selectedBarangay, barangayByName]);
+    }, [applyNonce, appliedBarangay, barangayByName]);
 
     const handleSelectReport = (report: ReportsDto) => {
       mapRef.current?.flyTo({
@@ -163,6 +157,13 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
       });
       onSelectReport(report);
     };
+
+    // Only show overlays after Apply
+    const shouldShowFloodLayer = showBarangayFlood && !!appliedBarangay;
+
+    // Draw only the applied barangay for the summary layer
+    const barangayFilter =
+      appliedBarangay ? (['==', ['get', 'adm4_en'], appliedBarangay] as any) : null;
 
     return (
       <MapGL
@@ -189,65 +190,85 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
           </Source>
         )}
 
-        {/* ✅ Barangay flood choropleth (precomputed) */}
-        {showBarangayFlood && barangayFloodGeoJSON && (
+        {/* 1) Summary (optional) — keep low opacity so details show */}
+        {shouldShowFloodLayer && barangayFloodGeoJSON && (
           <Source id="barangay-flood" type="geojson" data={barangayFloodGeoJSON}>
             <Layer
-              id="barangay-flood-fill"
+              id="barangay-summary-fill"
               type="fill"
+              filter={barangayFilter ?? undefined}
               paint={{
-                'fill-opacity': 0.75,
-
-                /**
-                 * Color by flood_max_var:
-                 * - 3 -> very high (blue-900)
-                 * - 2 -> high      (blue-600)
-                 * - 1 -> moderate  (purple-500)
-                 * - 0 -> low       (slate-400)
-                 * - anything else / missing -> neutral baseline (slate-200)
-                 */
+                'fill-opacity': 0.12,
                 'fill-color': [
                   'match',
                   ['coalesce', ['get', 'flood_max_var'], -1],
-                  3, '#1e3a8a', // very high
-                  2, '#2563eb', // high
-                  1, '#a855f7', // moderate
-                  0, '#94a3b8', // low
-                  '#e2e8f0',    // baseline / no data
+                  3, '#991b1b', // deep red
+                  2, '#ea580c', // orange
+                  1, '#facc15', // yellow
+                  0, '#94a3b8', // low / none
+                  '#00000000',  // transparent for missing
                 ],
               }}
             />
-
             <Layer
-              id="barangay-flood-outline"
+              id="barangay-summary-outline"
               type="line"
+              filter={barangayFilter ?? undefined}
               paint={{
-                'line-color': '#334155',
-                'line-width': 0.8,
+                'line-color': '#0f172a',
+                'line-width': 1.2,
                 'line-opacity': 0.9,
               }}
             />
-
-            {/* (Optional) Debug labels: show barangay names on the map */}
-            {/* 
-            <Layer
-              id="barangay-name-label"
-              type="symbol"
-              layout={{
-                'text-field': ['get', 'adm4_en'],
-                'text-size': 11,
-              }}
-              paint={{
-                'text-color': '#0f172a',
-                'text-halo-color': '#ffffff',
-                'text-halo-width': 1,
-              }}
-            />
-            */}
           </Source>
         )}
 
-        {/* Caloocan outline on top */}
+        {/* 2) Detailed LiPAD overlay (CLIPPED polygons) */}
+        {shouldShowFloodLayer && clippedFloodGeoJSON && (
+          <Source id="lipad-flood" type="geojson" data={clippedFloodGeoJSON}>
+            <Layer
+              id="lipad-flood-fill"
+              type="fill"
+              // Tip: show detail a bit later like LiPAD (optional)
+              minzoom={13}
+              paint={{
+                // Convert Var to number safely (if it was string)
+                'fill-color': [
+                  'let',
+                  'v',
+                  ['coalesce', ['to-number', ['get', 'Var']], -999],
+                  [
+                    'match',
+                    ['var', 'v'],
+                    // Many datasets use <=0 / negatives for “very low / safe / tiny branches”
+                    -2, '#e2e8f0',
+                    -1, '#cbd5e1',
+                     0, '#fde047', // yellow (low)
+                     1, '#fb923c', // orange (med)
+                     2, '#ef4444', // red (high)
+                     3, '#991b1b', // dark red (very high)
+                    '#00000000'    // unknown/no-data -> transparent
+                  ],
+                ],
+                'fill-opacity': 0.5,
+              }}
+            />
+
+            {/* Patch outlines = “detailed” look */}
+            <Layer
+              id="lipad-flood-outline"
+              type="line"
+              minzoom={13}
+              paint={{
+                'line-color': '#ffffff',
+                'line-width': 0.8,
+                'line-opacity': 0.85,
+              }}
+            />
+          </Source>
+        )}
+
+        {/* Caloocan outline */}
         {caloocanOutlineGeoJSON && (
           <Source id="caloocan-outline" type="geojson" data={caloocanOutlineGeoJSON}>
             <Layer
@@ -286,22 +307,14 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
 
         {/* User location */}
         {userLocation && (
-          <Marker
-            longitude={userLocation.longitude}
-            latitude={userLocation.latitude}
-            anchor="bottom"
-          >
+          <Marker longitude={userLocation.longitude} latitude={userLocation.latitude} anchor="bottom">
             <UserLocationMarker />
           </Marker>
         )}
 
         {/* Search-selected location */}
         {selectedLocation && (
-          <Marker
-            longitude={selectedLocation.longitude}
-            latitude={selectedLocation.latitude}
-            anchor="bottom"
-          >
+          <Marker longitude={selectedLocation.longitude} latitude={selectedLocation.latitude} anchor="bottom">
             <SearchLocationMarker />
           </Marker>
         )}
