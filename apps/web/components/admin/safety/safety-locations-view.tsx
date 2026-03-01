@@ -47,7 +47,10 @@ export default function SafetyLocationsView() {
           <SearchBar
             placeholder="Search safety locations..."
             defaultValue={q}
-            onSearch={setQ}
+            onSearch={(value) => {
+              setQ(value);
+              setPage(1);
+            }}
           />
         </div>
       </div>
@@ -65,7 +68,10 @@ export default function SafetyLocationsView() {
             shelterCount={stats?.shelterCount ?? 0}
             hospitalCount={stats?.hospitalCount ?? 0}
             activeStatus={type}
-            onStatusChange={setType}
+            onStatusChange={(newType) => {
+              setType(newType);
+              setPage(1);
+            }}
           />
         )}
 

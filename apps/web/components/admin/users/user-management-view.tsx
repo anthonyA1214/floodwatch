@@ -47,7 +47,10 @@ export default function UserManagementView() {
         <div className="flex-1">
           <SearchBar
             placeholder="Search by name..."
-            onSearch={setQ}
+            onSearch={(value) => {
+              setQ(value);
+              setPage(1);
+            }}
             defaultValue={q}
           />
         </div>
@@ -69,7 +72,10 @@ export default function UserManagementView() {
             activeCount={stats?.activeCount ?? 0}
             blockedCount={stats?.blockedCount ?? 0}
             activeStatus={status}
-            onStatusChange={setStatus}
+            onStatusChange={(newStatus) => {
+              setStatus(newStatus);
+              setPage(1);
+            }}
           />
         )}
 
