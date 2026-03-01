@@ -6,15 +6,8 @@ import {
   Post,
   Request,
   UseGuards,
-  UsePipes,
 } from '@nestjs/common';
-import {
-  VerifyOtpSecureDto,
-  verifyOtpSecureSchema,
-  ChangePasswordDto,
-  changePasswordSchema,
-} from '@repo/schemas';
-import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
+import { VerifyOtpSecureDto, ChangePasswordDto } from '@repo/schemas';
 import { JwtAuthGuard } from '../guards/jwt-auth/jwt-auth.guard';
 import { ChangePasswordService } from './change-password.service';
 import { type AuthRequest } from '../types/auth-request.type';
@@ -32,7 +25,6 @@ export class ChangePasswordController {
 
   @Post('verify-otp')
   @HttpCode(HttpStatus.OK)
-  @UsePipes(new ZodValidationPipe(verifyOtpSecureSchema))
   async verifyOtp(
     @Request() req: AuthRequest,
     @Body() verifyOtpSecureDto: VerifyOtpSecureDto,
@@ -47,7 +39,6 @@ export class ChangePasswordController {
 
   @Post('')
   @HttpCode(HttpStatus.OK)
-  @UsePipes(new ZodValidationPipe(changePasswordSchema))
   async changePassword(@Body() changePasswordDto: ChangePasswordDto) {
     await this.changePasswordService.changePassword(changePasswordDto);
   }

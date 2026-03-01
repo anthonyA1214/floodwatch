@@ -251,7 +251,7 @@ export class UsersService {
     return updatedProfile;
   }
 
-  async uploadAvatar(id: number, file: Express.Multer.File) {
+  async uploadAvatar(id: number, image: Express.Multer.File) {
     try {
       const [profile] = await this.db
         .select()
@@ -269,15 +269,15 @@ export class UsersService {
         );
       }
 
-      await this.imagesService.detectMimeType(file.buffer);
+      await this.imagesService.detectMimeType(image.buffer);
       const { buffer, mimetype } =
-        await this.imagesService.normalizeAvatarImage(file.buffer);
+        await this.imagesService.normalizeAvatarImage(image.buffer);
 
       const normalizedFile: Express.Multer.File = {
-        ...file,
+        ...image,
         buffer,
         mimetype,
-        originalname: file.originalname.replace(
+        originalname: image.originalname.replace(
           /\.(jpe?g|png|jfif|webp)$/i,
           '.webp',
         ),
