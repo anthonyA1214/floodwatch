@@ -2,6 +2,7 @@ import SideNav from '@/components/admin/side-nav';
 import { SidebarProvider } from '@/components/ui/sidebar';
 
 export const dynamic = 'force-dynamic';
+export const revalidate = 0;
 
 export default function AdminLayout({
   children,

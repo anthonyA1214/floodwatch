@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import { Separator } from '@radix-ui/react-separator';
-import { FacebookIcon, GitHubIcon } from '@/components/icons';
+import { FacebookIcon, GitHubIcon } from '@/components/shared/icons';
 import Link from 'next/link';
 
 const quickLinks = [
@@ -36,14 +36,14 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-5 w-full gap-6 sm:gap-8 md:gap-12">
           {/* Logo, taglines and social */}
           <div className="flex flex-col gap-4 md:col-span-2">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
               <Image
                 src="/logo-white.svg"
                 alt="FloodWatch Logo"
                 width={48}
                 height={48}
               />
-              <h1 className="font-poppins font-medium text-lg text-white">
+              <h1 className="font-poppins font-medium text-2xl text-white">
                 FloodWatch
               </h1>
             </div>

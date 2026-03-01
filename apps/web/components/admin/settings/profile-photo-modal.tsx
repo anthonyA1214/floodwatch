@@ -38,7 +38,7 @@ interface FileWithPreview extends File {
 export function ProfilePhotoModal() {
   const { user, mutateUser } = useUser();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [file, setFile] = useState<FileWithPreview | null>(null);
+  const [image, setImage] = useState<FileWithPreview | null>(null);
   const [open, setOpen] = useState(false);
   const [isRemoving, setIsRemoving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
@@ -59,7 +59,7 @@ export function ProfilePhotoModal() {
 
       const preview = URL.createObjectURL(selectedFile);
       const fileWithPreview = Object.assign(selectedFile, { preview });
-      setFile(fileWithPreview);
+      setImage(fileWithPreview);
     }
   };
 
@@ -92,13 +92,13 @@ export function ProfilePhotoModal() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!file) return;
+    if (!image) return;
 
     setIsUploading(true);
     setError(null);
 
     const formData = new FormData();
-    formData.append('file', file);
+    formData.append('image', image);
 
     try {
       const result = await updateProfilePhoto(formData);
@@ -107,8 +107,8 @@ export function ProfilePhotoModal() {
         await mutateUser();
         setOpen(false);
 
-        URL.revokeObjectURL(file.preview);
-        setFile(null);
+        URL.revokeObjectURL(image.preview);
+        setImage(null);
         if (fileInputRef.current) {
           fileInputRef.current.value = '';
         }
@@ -128,12 +128,12 @@ export function ProfilePhotoModal() {
   const handleOpenChange = (newOpen: boolean) => {
     setOpen(newOpen);
 
-    if (!newOpen && file) {
+    if (!newOpen && image) {
       setTimeout(() => {
-        if (file?.preview) {
-          URL.revokeObjectURL(file.preview);
+        if (image?.preview) {
+          URL.revokeObjectURL(image.preview);
         }
-        setFile(null);
+        setImage(null);
         if (fileInputRef.current) {
           fileInputRef.current.value = '';
         }
@@ -159,10 +159,10 @@ export function ProfilePhotoModal() {
 
           <div className="flex flex-col items-center justify-center gap-6">
             <div className="flex flex-col items-center gap-8 w-full">
-              {/* Show preview if file is selected, otherwise show current photo */}
+              {/* Show preview if image is selected, otherwise show current photo */}
               <UIAvatar className="size-32">
                 <AvatarImage
-                  src={file?.preview || user?.profilePicture}
+                  src={image?.preview || user?.profilePicture}
                   className="object-cover"
                 />
                 <AvatarFallback>
@@ -218,10 +218,10 @@ export function ProfilePhotoModal() {
                   </Button>
                 </div>
 
-                {file && (
+                {image && (
                   <Button
                     type="submit"
-                    disabled={!file || isUploading || isRemoving}
+                    disabled={!image || isUploading || isRemoving}
                     className="flex gap-2 items-center w-full text-base py-5 disabled:opacity-50"
                   >
                     {isUploading ? (

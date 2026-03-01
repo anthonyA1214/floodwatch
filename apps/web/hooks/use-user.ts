@@ -1,7 +1,7 @@
 'use client';
 
 import useSWR from 'swr';
-import { getMe } from '@/lib/services/user/get-me';
+import { getMe } from '@/lib/fetchers/get-me';
 import { SWR_KEYS } from '@/lib/constants/swr-keys';
 
 export function useUser() {

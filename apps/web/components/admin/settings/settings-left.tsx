@@ -10,7 +10,7 @@ import { ProfilePhotoModal } from '@/components/admin/settings/profile-photo-mod
 import { Separator } from '@/components/ui/separator';
 import { format } from 'date-fns';
 import { useUser } from '@/hooks/use-user';
-import SettingsLeftSkeleton from './skeletons/settings-left-skeleton';
+import SettingsLeftSkeleton from './skeleton/settings-left-skeleton';
 
 export default function SettingsLeft() {
   const { user, isLoading } = useUser();

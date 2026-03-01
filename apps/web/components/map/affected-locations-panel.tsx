@@ -1,163 +1,157 @@
-import { FloodReportsDto } from '@repo/schemas';
+import { useEffect, useRef } from 'react';
+
+import { ReportsDto } from '@repo/schemas';
 import Image from 'next/image';
-import { Button } from '@/components/ui/button';
 import {
-  IconArrowBearRight2,
+  IconChevronLeft,
   IconCircleCheck,
   IconCircleDashed,
   IconClock,
-  IconUsers,
-  IconX,
+  IconMessageCircle,
 } from '@tabler/icons-react';
 import { formatDistanceToNow } from 'date-fns';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import CommunityTab from '@/components/map/community-tab';
-import DirectionTab from '@/components/map/direction-tab';
+
+import {
+  REPORT_STATUS_COLOR_MAP,
+  SEVERITY_COLOR_MAP,
+} from '@/lib/utils/get-color-map';
+import PostComposer from '@/components/shared/post-composer';
+import PostCard from '@/components/shared/post-card';
 
 export default function AffectedLocationsPanel({
   report,
   onClose,
 }: {
-  report: FloodReportsDto;
+  report: ReportsDto;
   onClose?: () => void;
 }) {
-  const statusColorMap = {
-    verified: '#00D69B',
-    unverified: '#FF6900',
-  };
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  const severityColorMap = {
-    critical: '#FB2C36',
-    high: '#FF6900',
-    moderate: '#F0B204',
-    low: '#2B7FFF',
-  };
+  // scroll to top when report changes
+  useEffect(() => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [report?.id]);
 
   return (
-    <div className="absolute top-0 left-0 w-full h-full bg-white z-49 min-h-0 flex flex-col">
-      <div className="aspect-video w-full relative bg-muted shrink-0">
-        {report?.image ? (
-          <Image
-            src={report.image}
-            alt="Affected location"
-            fill
-            className="object-cover"
-          />
-        ) : (
-          <Image
-            src="/no-data-rafiki.svg"
-            alt="No image available"
-            fill
-            className="object-cover opacity-40"
-          />
-        )}
-      </div>
-      <div
-        className="flex flex-col bg-accent p-4 gap-4 border-l-4 shrink-0"
-        style={{ borderLeftColor: severityColorMap[report?.severity] }}
+    <div className="relative w-full h-full bg-white z-50 min-h-0 flex flex-col max-w-lg pointer-events-auto">
+      <button
+        className="absolute bg-white top-1/2 translate-x-full right-0 h-16 -translate-y-1/2 
+        rounded-r-2xl ps-1 py-1 pr-1.5 text-xs z-30 shadow-[4px_0px_6px_-1px_rgba(0,0,0,0.1)]"
+        onClick={onClose}
       >
-        {/* row 1 */}
-        <div className="flex items-center justify-between gap-4">
-          <h3 className="font-poppins text-lg font-semibold whitespace-nowrap overflow-hidden text-ellipsis">
+        <IconChevronLeft className="w-[1.5em]! h-[1.5em]!" />
+      </button>
+      <div className="flex-1 min-h-0 overflow-y-auto">
+        <div className="aspect-video w-full relative bg-muted shrink-0 ">
+          {report?.image ? (
+            <Image
+              src={report.image}
+              alt="Affected location"
+              fill
+              className="object-cover"
+            />
+          ) : (
+            <Image
+              src="/no-data-rafiki.svg"
+              alt="No image available"
+              fill
+              className="object-cover opacity-40"
+            />
+          )}
+        </div>
+        <div
+          className="flex flex-col p-4 gap-4 border-l-4 shrink-0"
+          style={{ borderLeftColor: SEVERITY_COLOR_MAP[report?.severity] }}
+        >
+          {/* row 1 */}
+          <h3 className="font-poppins text-lg font-semibold">
             {report?.location}
           </h3>
-          <Button variant="ghost" size="icon" onClick={onClose}>
-            <IconX className="w-[1.5em]! h-[1.5em]!" />
-          </Button>
-        </div>
 
-        {/* row 3 */}
-        <div className="flex flex-row justify-between gap-4">
-          {/* reported at */}
-          <div className="flex items-center text-sm gap-2 text-gray-600">
-            <IconClock className="w-[1.5em]! h-[1.5em]!" />
-            {formatDistanceToNow(new Date(report?.reportedAt), {
-              addSuffix: true,
-            })}
+          {/* row 2 */}
+          <div className="flex flex-row justify-between gap-4">
+            {/* reported at */}
+            <div className="flex items-center text-sm gap-2 text-gray-600">
+              <IconClock className="w-[1.5em]! h-[1.5em]!" />
+              {formatDistanceToNow(new Date(report?.reportedAt), {
+                addSuffix: true,
+              })}
+            </div>
+
+            {/* severity level */}
+            <div className="flex items-center gap-2 text-gray-600">
+              <span className="font-poppins text-sm">SEVERITY LEVEL:</span>
+              <div
+                className="flex items-center rounded-full px-3 py-1"
+                style={{
+                  color: SEVERITY_COLOR_MAP[report?.severity],
+                  backgroundColor: `${SEVERITY_COLOR_MAP[report?.severity]}25`,
+                }}
+              >
+                <span className="text-xs font-medium">
+                  {report?.severity?.toUpperCase()}
+                </span>
+              </div>
+            </div>
           </div>
 
-          {/* severity level */}
-          <div className="flex items-center gap-2 text-gray-600">
-            <span className="text-sm">Severity Level:</span>
+          {/* row 3 */}
+          <div className="flex flex-row justify-between gap-4">
+            {/* reported by */}
+            <div className="flex flex-col text-gray-600 text-sm">
+              <span className="font-poppins font-medium">REPORTED BY:</span>
+              <span>{report?.reporter?.name}</span>
+            </div>
+
             <div
-              className="flex items-center rounded-full px-3 py-1"
+              className="flex items-center rounded-full px-3 py-1 w-fit h-fit"
               style={{
-                color: severityColorMap[report?.severity],
-                backgroundColor: `${severityColorMap[report?.severity]}25`,
+                color: REPORT_STATUS_COLOR_MAP[report?.status],
+                backgroundColor: `${REPORT_STATUS_COLOR_MAP[report?.status]}25`,
               }}
             >
-              <span className="text-xs font-medium">
-                {report?.severity?.toUpperCase()}
-              </span>
+              <div className="flex items-center gap-2 text-xs">
+                {report?.status === 'verified' ? (
+                  <IconCircleCheck className="w-[1.5em]! h-[1.5em]!" />
+                ) : (
+                  <IconCircleDashed className="w-[1.5em]! h-[1.5em]!" />
+                )}
+                <span className="flex items-center font-medium">
+                  {report?.status.toUpperCase()} REPORT
+                </span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* row 4 */}
-        <div className="flex flex-row justify-between gap-4">
-          {/* reported by */}
-          <div className="flex items-center gap-2 text-gray-600 text-sm">
-            <span className="">Reported by:</span>
-            <span className="font-medium">{report?.name}</span>
-          </div>
+        {/* label */}
+        <div className="flex items-center gap-2 p-4 border-y text-lg">
+          <IconMessageCircle className="w-[1.5em]! h-[1.5em]!" />
+          <span className="font-poppins font-medium">COMMUNITY UPDATES</span>
+        </div>
 
-          <div
-            className="flex items-center rounded-full px-3 py-1 w-fit"
-            style={{
-              color: statusColorMap[report?.status],
-              backgroundColor: `${statusColorMap[report?.status]}25`,
-            }}
-          >
-            <div className="flex items-center gap-2 text-xs">
-              {report?.status === 'verified' ? (
-                <IconCircleCheck className="w-[1.5em]! h-[1.5em]!" />
-              ) : (
-                <IconCircleDashed className="w-[1.5em]! h-[1.5em]!" />
-              )}
-              <span className="flex items-center font-medium">
-                {report?.status.toUpperCase()} REPORT
-              </span>
-            </div>
-          </div>
+        {/* comments */}
+        <div className="flex flex-col gap-6 p-4">
+          <PostComposer />
+
+          <PostCard
+            author={{ name: 'Pedro Santos' }}
+            content="Volunteers are needed to help with sandbagging efforts in flood-prone areas. Please contact the local barangay office if you can assist."
+            timestamp="1 day ago"
+            reportCount={2}
+          />
+
+          <PostCard
+            author={{ name: 'Juan Dela Cruz' }}
+            content="Heavy rainfall in Zapote area, its starting to accumulate water. Please be careful if you're heading this way! #Flood"
+            imageUrl="/images/before_flood_image.jpg"
+            timestamp="2 hrs ago"
+            reportCount={3}
+          />
         </div>
       </div>
-      <Tabs
-        defaultValue="direction"
-        className="flex-1 flex flex-col h-full min-h-0 pt-4"
-      >
-        <div className="w-full border-b shrink-0">
-          <TabsList variant="line" className="font-poppins w-full">
-            <TabsTrigger
-              value="direction"
-              className="data-[state=active]:text-[#0066CC] 
-                data-[state=active]:after:bg-[#0066CC] text-base"
-            >
-              <IconArrowBearRight2 />
-              Direction
-            </TabsTrigger>
-            <TabsTrigger
-              value="community"
-              className="data-[state=active]:text-[#0066CC] 
-                data-[state=active]:after:bg-[#0066CC] text-base"
-            >
-              <IconUsers />
-              Community
-            </TabsTrigger>
-          </TabsList>
-        </div>
-        <TabsContent
-          value="direction"
-          className="flex-1 flex flex-col min-h-0 p-4"
-        >
-          <DirectionTab report={report} />
-        </TabsContent>
-        <TabsContent
-          value="community"
-          className="flex-1 flex flex-col min-h-0 ps-4 py-4"
-        >
-          <CommunityTab />
-        </TabsContent>
-      </Tabs>
     </div>
   );
 }

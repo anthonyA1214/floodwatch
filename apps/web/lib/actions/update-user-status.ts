@@ -1,18 +1,11 @@
 'use server';
 
-import { cookies } from 'next/headers';
-import { getApiUrl } from '@/lib/utils/get-api-url';
+import { apiFetchServer } from '../api-fetch-server';
 
 export async function blockUser(userId: number) {
   try {
-    const cookieStore = await cookies();
-
-    await fetch(`${getApiUrl()}/admin/users/${userId}/block`, {
+    await apiFetchServer(`/users/${userId}/block`, {
       method: 'PATCH',
-      credentials: 'include',
-      headers: {
-        Cookie: cookieStore.toString(),
-      },
     });
 
     return { status: 'success' };
@@ -24,14 +17,8 @@ export async function blockUser(userId: number) {
 
 export async function unblockUser(userId: number) {
   try {
-    const cookieStore = await cookies();
-
-    await fetch(`${getApiUrl()}/admin/users/${userId}/unblock`, {
+    await apiFetchServer(`/users/${userId}/unblock`, {
       method: 'PATCH',
-      credentials: 'include',
-      headers: {
-        Cookie: cookieStore.toString(),
-      },
     });
 
     return { status: 'success' };

@@ -4,6 +4,7 @@ import ActiveFloodAlertsCard from '@/components/admin/dashboard/active-flood-ale
 import SafetyLocationsCard from '@/components/admin/dashboard/safety-locations-card';
 import StatCard from '@/components/admin/dashboard/stat-card';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { Skeleton } from '@/components/ui/skeleton';
 import { useUser } from '@/hooks/use-user';
 import {
   IconAlertTriangle,
@@ -13,18 +14,24 @@ import {
 } from '@tabler/icons-react';
 
 export default function DashboardPage() {
-  const { user } = useUser();
+  const { user, isLoading } = useUser();
 
   return (
-    <div className="flex-1 flex flex-col bg-white p-8 rounded-2xl gap-8 min-h-0">
+    <div className="flex-1 flex flex-col bg-white ps-8 py-8 rounded-2xl gap-8 min-h-0">
       {/* Header */}
       <div className="space-y-2">
-        <h1 className="font-poppins text-3xl font-bold">Hello, {user?.name}</h1>
+        <h1 className="font-poppins text-3xl font-bold">
+          {isLoading ? (
+            <Skeleton className="h-9 w-64" />
+          ) : (
+            `Hello, ${user?.name}`
+          )}
+        </h1>
         <p>Here&apos;s what is happening with FloodWatch today</p>
       </div>
 
       <ScrollArea className="flex-1 h-0">
-        <div className="space-y-8 pr-4">
+        <div className="space-y-8 pr-8">
           {/* Stat Card */}
           <div className="grid grid-cols-2 gap-8">
             <StatCard

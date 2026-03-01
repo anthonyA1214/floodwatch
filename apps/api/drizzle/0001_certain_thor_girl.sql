@@ -1,0 +1,1 @@
+ALTER TABLE "safety" ADD COLUMN "address" text;

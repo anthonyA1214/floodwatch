@@ -5,11 +5,12 @@ import SecurityTab from '@/components/map/security-tab';
 
 export default function ProfilePanel() {
   return (
-    <div className="flex flex-col bg-white rounded-xl shadow-md p-4 w-[20vw] gap-8 h-[80vh]">
-      <Tabs
-        defaultValue="account"
-        className="flex-1 flex flex-col h-full min-h-0"
-      >
+    // <div
+    //   className="flex flex-col bg-white rounded-xl shadow-md ps-4 py-4
+    //   w-screen h-screen md:w-[400px] md:h-fit"
+    // >
+    <div className="flex flex-col bg-white ps-4 py-4 w-screen md:w-[400px] md:h-[80vh] rounded-xl shadow-md pointer-events-auto">
+      <Tabs defaultValue="account" className="flex-1 flex flex-col min-h-0">
         <div className="w-full border-b">
           <TabsList variant="line" className="font-poppins w-full">
             <TabsTrigger
@@ -32,13 +33,14 @@ export default function ProfilePanel() {
         </div>
         <TabsContent
           value="account"
-          className="flex-1 flex flex-col min-h-0 mt-4"
+          className="flex-1 min-h-0 pt-4 overflow-y-auto pr-4" // ← overflow-y-auto directly
         >
-          <AccountTab />
+          <AccountTab /> {/* no ScrollArea wrapper */}
         </TabsContent>
+
         <TabsContent
           value="password"
-          className="flex-1 flex flex-col min-h-0 mt-4"
+          className="flex-1 min-h-0 pt-4 overflow-y-auto pr-4"
         >
           <SecurityTab />
         </TabsContent>

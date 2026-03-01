@@ -4,7 +4,6 @@ import { createAdminSchema } from '@repo/schemas';
 import { ActionState } from '@/lib/types/action-state';
 import { z } from 'zod';
 import { mapCreateAdminError } from '@/lib/services/user/create-admin-error';
-import { revalidatePath } from 'next/cache';
 import { apiFetchServer } from '../api-fetch-server';
 
 export default async function createAdmin(
@@ -37,7 +36,7 @@ export default async function createAdmin(
   } = parsedData.data;
 
   try {
-    const res: Response = await apiFetchServer('/admin/create', {
+    const res: Response = await apiFetchServer('/users/admin/create', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -58,8 +57,6 @@ export default async function createAdmin(
         status: 'error',
       };
     }
-
-    revalidatePath('/admin/users');
 
     return {
       errors: null,

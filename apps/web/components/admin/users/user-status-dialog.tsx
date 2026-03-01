@@ -13,13 +13,14 @@ import {
 import { Spinner } from '@/components/ui/spinner';
 import { useUserStatusDialog } from '@/contexts/user-status-dialog-context';
 import { blockUser, unblockUser } from '@/lib/actions/update-user-status';
-import { useRouter } from 'next/navigation';
+import { SWR_KEYS } from '@/lib/constants/swr-keys';
 import { useState } from 'react';
+import { useSWRConfig } from 'swr';
 
 export default function UserStatusDialog() {
   const { userId, action, open, closeDialog } = useUserStatusDialog();
   const [isPending, setIsPending] = useState(false);
-  const router = useRouter();
+  const { mutate } = useSWRConfig();
 
   const isBlocking = action === 'block';
 
@@ -32,8 +33,8 @@ export default function UserStatusDialog() {
       } else {
         await unblockUser(userId);
       }
+      mutate((key) => Array.isArray(key) && key[0] === SWR_KEYS.users);
       closeDialog();
-      router.refresh();
     } finally {
       setIsPending(false);
     }
