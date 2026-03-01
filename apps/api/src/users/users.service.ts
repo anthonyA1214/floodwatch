@@ -14,7 +14,11 @@ import * as bcrypt from 'bcrypt';
 import { profileInfo } from 'src/drizzle/schemas';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { ImagesService } from 'src/images/images.service';
-import { UpdateProfileInput, UserQueryInput } from '@repo/schemas';
+import {
+  CreateAdminInput,
+  UpdateProfileInput,
+  UserQueryInput,
+} from '@repo/schemas';
 
 @Injectable()
 export class UsersService {
@@ -247,7 +251,7 @@ export class UsersService {
     return updatedProfile;
   }
 
-  async uploadAvatar(id: number, file: Express.Multer.File) {
+  async uploadAvatar(id: number, image: Express.Multer.File) {
     try {
       const [profile] = await this.db
         .select()
@@ -265,15 +269,15 @@ export class UsersService {
         );
       }
 
-      await this.imagesService.detectMimeType(file.buffer);
+      await this.imagesService.detectMimeType(image.buffer);
       const { buffer, mimetype } =
-        await this.imagesService.normalizeAvatarImage(file.buffer);
+        await this.imagesService.normalizeAvatarImage(image.buffer);
 
       const normalizedFile: Express.Multer.File = {
-        ...file,
+        ...image,
         buffer,
         mimetype,
-        originalname: file.originalname.replace(
+        originalname: image.originalname.replace(
           /\.(jpe?g|png|jfif|webp)$/i,
           '.webp',
         ),
@@ -420,5 +424,42 @@ export class UsersService {
         totalCount,
       },
     };
+  }
+
+  async createAdmin(createAdminDto: CreateAdminInput) {
+    const { email, password, first_name, last_name, home_address } =
+      createAdminDto;
+
+    const user = await this.findByEmail(email);
+    if (user) throw new ConflictException('Email already in use');
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    const newAdmin = await this.createUser(email, 'admin');
+    await this.createAuthAccount(newAdmin.id, 'local', email, hashedPassword);
+    await this.createUserProfile(
+      newAdmin.id,
+      first_name,
+      last_name,
+      home_address,
+    );
+
+    return { message: 'Admin created successfully' };
+  }
+
+  async blockUser(id: number) {
+    const user = await this.findById(id);
+    if (!user) throw new NotFoundException('User not found');
+
+    await this.updateUserStatus(id, 'blocked');
+    return { message: 'User blocked successfully' };
+  }
+
+  async unblockUser(id: number) {
+    const user = await this.findById(id);
+    if (!user) throw new NotFoundException('User not found');
+
+    await this.updateUserStatus(id, 'active');
+    return { message: 'User unblocked successfully' };
   }
 }

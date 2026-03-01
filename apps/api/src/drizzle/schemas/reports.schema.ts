@@ -35,6 +35,8 @@ export const reports = pgTable('reports', {
   imagePublicId: text('image_public_id'),
   severity: severityEnum().notNull(),
   status: reportsStatusEnum().notNull().default('unverified'),
+  upvotes: integer('upvotes').notNull().default(0),
+  downvotes: integer('downvotes').notNull().default(0),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });

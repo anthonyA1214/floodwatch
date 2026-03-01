@@ -36,7 +36,7 @@ export const columns: ColumnDef<UsersDto>[] = [
       return (
         <div className="flex items-center gap-3 w-auto">
           <UIAvatar className="size-8">
-            <AvatarImage src={user.profilePicture} />
+            <AvatarImage src={user.profilePicture || undefined} />
             <AvatarFallback>
               <Avatar name={`${user.name} ${user.id}`} variant="beam" />
             </AvatarFallback>

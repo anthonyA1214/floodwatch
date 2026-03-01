@@ -4,14 +4,10 @@ import { IconLogout } from '@tabler/icons-react';
 import { SidebarMenuItem, SidebarMenuButton } from '@/components/ui/sidebar';
 import { useState } from 'react';
 import { logout } from '@/lib/services/auth/logout';
-import { useRouter } from 'next/navigation';
-import { useUser } from '@/hooks/use-user';
 import { Spinner } from '@/components/ui/spinner';
 
 export default function LogoutButton() {
-  const { mutateUser } = useUser();
   const [isPending, setIsPending] = useState(false);
-  const router = useRouter();
 
   async function handleLogout(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
@@ -19,8 +15,7 @@ export default function LogoutButton() {
 
     try {
       await logout();
-      mutateUser(null);
-      router.replace('/auth/login');
+      window.location.replace('/');
     } catch (err) {
       console.error('Logout failed', err);
     } finally {

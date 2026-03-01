@@ -17,7 +17,11 @@ export const comments = pgTable('comments', {
   reportId: uuid('report_id').references(() => reports.id, {
     onDelete: 'cascade',
   }),
-  content: text('content').notNull(),
+  content: text('content'),
+  image: text('image'),
+  imagePublicId: text('image_public_id'),
+  upvotes: integer('upvotes').notNull().default(0),
+  downvotes: integer('downvotes').notNull().default(0),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });

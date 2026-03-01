@@ -47,7 +47,10 @@ export default function FloodReportsView() {
         <div className="flex-1">
           <SearchBar
             placeholder="Search flood reports..."
-            onSearch={setQ}
+            onSearch={(value) => {
+              setQ(value);
+              setPage(1);
+            }}
             defaultValue={q}
           />
         </div>
@@ -66,7 +69,10 @@ export default function FloodReportsView() {
             verifiedCount={stats?.verifiedCount ?? 0}
             unverifiedCount={stats?.unverifiedCount ?? 0}
             activeStatus={status}
-            onStatusChange={setStatus}
+            onStatusChange={(newStatus) => {
+              setStatus(newStatus);
+              setPage(1);
+            }}
           />
         )}
 

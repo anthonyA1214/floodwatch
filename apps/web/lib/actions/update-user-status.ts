@@ -4,7 +4,7 @@ import { apiFetchServer } from '../api-fetch-server';
 
 export async function blockUser(userId: number) {
   try {
-    await apiFetchServer(`/admin/users/${userId}/block`, {
+    await apiFetchServer(`/users/${userId}/block`, {
       method: 'PATCH',
     });
 
@@ -17,7 +17,7 @@ export async function blockUser(userId: number) {
 
 export async function unblockUser(userId: number) {
   try {
-    await apiFetchServer(`/admin/users/${userId}/unblock`, {
+    await apiFetchServer(`/users/${userId}/unblock`, {
       method: 'PATCH',
     });
 

@@ -19,18 +19,28 @@ import { ReportsService } from './reports.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 import { UserStatusGuard } from 'src/common/guards/user-status/user-status.guard';
 import {
-  type CreateFloodAlertInput,
+  CreateCommentDto,
+  CreateFloodAlertDto,
   createFloodAlertSchema,
-  type ReportFloodAlertInput,
+  ReportFloodAlertDto,
   reportFloodAlertSchema,
   ReportQueryDto,
 } from '@repo/schemas';
 import { type AuthRequest } from 'src/auth/types/auth-request.type';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { CommentsService } from 'src/comments/comments.service';
+import { ApiBody, ApiConsumes } from '@nestjs/swagger';
+import {
+  CreateFloodAlertWithImageDto,
+  ReportFloodAlertWithImageDto,
+} from './dtos/reports.swagger.dto';
 
 @Controller('reports')
 export class ReportsController {
-  constructor(private reportsService: ReportsService) {}
+  constructor(
+    private reportsService: ReportsService,
+    private commentsService: CommentsService,
+  ) {}
 
   @Get()
   @HttpCode(HttpStatus.OK)
@@ -47,17 +57,32 @@ export class ReportsController {
   @Post('create')
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(JwtAuthGuard, UserStatusGuard)
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(
+    FileInterceptor('image', {
+      limits: { fileSize: 5 * 1024 * 1024 }, // 5MB file size limit
+      fileFilter(req, file, cb) {
+        if (!file.mimetype.startsWith('image/')) {
+          return cb(
+            new BadRequestException('Only image files are allowed'),
+            false,
+          );
+        }
+        cb(null, true);
+      },
+    }),
+  )
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: ReportFloodAlertWithImageDto })
   async createReport(
     @Request() req: AuthRequest,
-    @Body() createFloodAlertDto: ReportFloodAlertInput,
+    @Body() createFloodAlertDto: ReportFloodAlertDto,
     @UploadedFile() image: Express.Multer.File,
   ) {
-    const parsedData = reportFloodAlertSchema.safeParse(createFloodAlertDto);
-    if (!parsedData.success) {
+    const parsed = reportFloodAlertSchema.safeParse(createFloodAlertDto);
+    if (!parsed.success) {
       throw new BadRequestException({
         message: 'Validation failed',
-        issues: parsedData.error.issues,
+        issues: parsed.error.issues,
       });
     }
 
@@ -68,20 +93,35 @@ export class ReportsController {
     );
   }
 
-  @Post('/admin/create')
+  @Post('admin/create')
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(JwtAuthGuard, UserStatusGuard)
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(
+    FileInterceptor('image', {
+      limits: { fileSize: 5 * 1024 * 1024 }, // 5MB file size limit
+      fileFilter(req, file, cb) {
+        if (!file.mimetype.startsWith('image/')) {
+          return cb(
+            new BadRequestException('Only image files are allowed'),
+            false,
+          );
+        }
+        cb(null, true);
+      },
+    }),
+  )
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: CreateFloodAlertWithImageDto })
   async createReportAdmin(
     @Request() req: AuthRequest,
-    @Body() createFloodAlertDto: CreateFloodAlertInput,
+    @Body() createFloodAlertDto: CreateFloodAlertDto,
     @UploadedFile() image: Express.Multer.File,
   ) {
-    const parsedData = createFloodAlertSchema.safeParse(createFloodAlertDto);
-    if (!parsedData.success) {
+    const parsed = createFloodAlertSchema.safeParse(createFloodAlertDto);
+    if (!parsed.success) {
       throw new BadRequestException({
         message: 'Validation failed',
-        issues: parsedData.error.issues,
+        issues: parsed.error.issues,
       });
     }
 
@@ -92,17 +132,41 @@ export class ReportsController {
     );
   }
 
-  @Patch(':id')
+  @Patch(':id/verify')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard, UserStatusGuard)
   async verifyReportStatus(@Param('id') id: string) {
     return await this.reportsService.verifyReportStatus(id);
   }
 
-  @Delete(':id')
+  @Delete(':id/delete')
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(JwtAuthGuard, UserStatusGuard)
   async deleteReport(@Param('id') id: string) {
     return await this.reportsService.deleteReport(id);
+  }
+
+  @Get(':id/comments')
+  @HttpCode(HttpStatus.OK)
+  async getComments(@Param('id') id: string) {
+    return await this.commentsService.getComments(id);
+  }
+
+  @Post(':id/comments')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard, UserStatusGuard)
+  @UseInterceptors(FileInterceptor('image'))
+  async addComment(
+    @Param('id') id: string,
+    @Body() createCommentDto: CreateCommentDto,
+    @Request() req: AuthRequest,
+    @UploadedFile() image: Express.Multer.File,
+  ) {
+    return await this.commentsService.addComment(
+      id,
+      createCommentDto,
+      req.user.id,
+      image,
+    );
   }
 }
