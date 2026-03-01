@@ -38,6 +38,15 @@ export type InteractiveMapHandle = {
   geolocate: () => void;
 };
 
+// Helper — returns true only if the map instance is fully loaded
+function isMapReady(map: MapRef | null): boolean {
+  try {
+    return !!map && map.getMap()._loaded === true;
+  } catch {
+    return false;
+  }
+}
+
 const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
   ({ selectedLocation, onSelectReport }, ref) => {
     const mapRef = useRef<MapRef | null>(null);
@@ -50,15 +59,18 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
     const { safetyLocations } = useSafetyLocations();
 
     useImperativeHandle(ref, () => ({
-      zoomIn: () => mapRef.current?.zoomIn(),
-      zoomOut: () => mapRef.current?.zoomOut(),
+      zoomIn: () => {
+        if (isMapReady(mapRef.current)) mapRef.current!.zoomIn();
+      },
+      zoomOut: () => {
+        if (isMapReady(mapRef.current)) mapRef.current!.zoomOut();
+      },
       geolocate: () =>
         getUserLocation().then((pos) => {
-          if (pos && mapRef.current) {
+          if (pos && isMapReady(mapRef.current)) {
             const { longitude, latitude } = pos;
             setUserLocation({ longitude, latitude });
-
-            mapRef.current.flyTo({
+            mapRef.current!.flyTo({
               center: [longitude, latitude],
               zoom: 16,
               essential: true,
@@ -71,11 +83,11 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
     useEffect(() => {
       const loc = selectedLocation;
       const map = mapRef.current;
-      if (!loc || !map) return;
+      if (!loc || !isMapReady(map)) return;
 
-      const currentZoom = typeof map.getZoom === 'function' ? map.getZoom() : 0;
+      const currentZoom = map!.getZoom() ?? 0;
 
-      map.flyTo({
+      map!.flyTo({
         center: [loc.longitude, loc.latitude],
         zoom: Math.max(currentZoom, 16),
         essential: true,
@@ -83,9 +95,12 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
     }, [selectedLocation]);
 
     const handleSelectReport = (report: ReportsDto) => {
-      mapRef?.current?.flyTo({
+      const map = mapRef.current;
+      if (!isMapReady(map)) return;
+
+      map!.flyTo({
         center: [report.longitude, report.latitude],
-        zoom: Math.max(mapRef?.current.getZoom(), 16),
+        zoom: Math.max(map!.getZoom(), 16),
         essential: true,
       });
       onSelectReport?.(report);
@@ -96,7 +111,6 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
         id="interactive-map"
         ref={mapRef}
         initialViewState={{
-          // Center around Metro Manila area (so your sample pins are visible)
           latitude: 14.69906,
           longitude: 120.99772,
           zoom: 11.5,
@@ -181,7 +195,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
           </Marker>
         )}
 
-        {/* Search-selected location pin (red) */}
+        {/* Search-selected location pin */}
         {selectedLocation && (
           <Marker
             longitude={selectedLocation.longitude}

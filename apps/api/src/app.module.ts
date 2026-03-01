@@ -12,6 +12,7 @@ import { AdminModule } from './admin/admin.module';
 import { ReportsModule } from './reports/reports.module';
 import { GeocoderModule } from './geocoder/geocoder.module';
 import { SafetyModule } from './safety/safety.module';
+import { WeatherModule } from './weather/weather.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { SafetyModule } from './safety/safety.module';
     ReportsModule,
     GeocoderModule,
     SafetyModule,
+    WeatherModule,
   ],
 })
 export class AppModule {}

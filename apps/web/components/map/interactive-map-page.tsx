@@ -20,6 +20,7 @@ import {
   IconStack2,
 } from '@tabler/icons-react';
 import AffectedLocationsDrawer from '@/components/map/affected-locations-drawer';
+import WeatherCard from '@/components/map/weather-card';
 
 export type SelectedLocation = {
   longitude: number;
@@ -65,62 +66,75 @@ export default function InteractiveMapPage() {
                 </div>
               </>
             )}
-            <div className="flex-1 w-lg sm:flex-none max-w-sm ps-4 pt-4">
+            <div className="flex-1 w-lg sm:flex-none max-w-sm ps-4 pt-4 flex flex-col gap-2">
               <SearchBar onSelectLocation={setSelectedLocation} />
+              {/* Weather Card — mobile only, below search bar */}
+              <div className="pointer-events-auto md:hidden">
+                <WeatherCard compact />
+              </div>
             </div>
           </div>
 
-          {/* Map controls — fixed to right */}
-          <div className="pointer-events-none flex flex-col gap-2 h-fit pt-4 pe-4">
-            {/* zoom buttons */}
-            <div className="flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 pointer-events-auto">
-              <button
-                onClick={() => interactiveMapRef.current?.zoomIn()}
-                className="aspect-square hover:bg-gray-200 rounded-md p-1"
-                title="Zoom In"
-              >
-                <IconPlus className="w-[1.5em]! h-[1.5em]!" strokeWidth={1.5} />
-              </button>
-              <button
-                onClick={() => interactiveMapRef.current?.zoomOut()}
-                className="aspect-square hover:bg-gray-200 rounded-md p-1"
-                title="Zoom Out"
-              >
-                <IconMinus
-                  className="w-[1.5em]! h-[1.5em]!"
-                  strokeWidth={1.5}
-                />
-              </button>
+          {/* Right side: weather card (desktop only) + map controls */}
+          <div className="pointer-events-none flex flex-row items-start gap-2 h-fit pt-4 pe-4">
+
+            {/* Weather Card — hidden on mobile, visible on md+ */}
+            <div className="hidden md:block pointer-events-auto">
+              <WeatherCard />
             </div>
 
-            {/* geolocate */}
-            <div className="flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 pointer-events-auto">
-              <button
-                onClick={() => interactiveMapRef.current?.geolocate()}
-                className="aspect-square hover:bg-gray-200 rounded-md p-1"
-                title="Geolocate"
-              >
-                <IconCurrentLocation
-                  className="w-[1.5em]! h-[1.5em]!"
-                  strokeWidth={1.5}
-                />
-              </button>
-            </div>
+            {/* Map controls column */}
+            <div className="flex flex-col gap-2">
+              {/* zoom buttons */}
+              <div className="flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 pointer-events-auto">
+                <button
+                  onClick={() => interactiveMapRef.current?.zoomIn()}
+                  className="aspect-square hover:bg-gray-200 rounded-md p-1"
+                  title="Zoom In"
+                >
+                  <IconPlus className="w-[1.5em]! h-[1.5em]!" strokeWidth={1.5} />
+                </button>
+                <button
+                  onClick={() => interactiveMapRef.current?.zoomOut()}
+                  className="aspect-square hover:bg-gray-200 rounded-md p-1"
+                  title="Zoom Out"
+                >
+                  <IconMinus
+                    className="w-[1.5em]! h-[1.5em]!"
+                    strokeWidth={1.5}
+                  />
+                </button>
+              </div>
 
-            {/* toggle legend */}
-            <div className="relative flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 pointer-events-auto">
-              <button
-                onClick={() => setShowLegend(!showLegend)}
-                className="aspect-square hover:bg-gray-200 rounded-md p-1"
-                title="Toggle Legend"
-              >
-                <IconStack2
-                  className="w-[1.5em]! h-[1.5em]!"
-                  strokeWidth={1.5}
-                />
-              </button>
-              <div className="absolute top-full right-0 mt-2">
-                <MapLegend show={showLegend} />
+              {/* geolocate */}
+              <div className="flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 pointer-events-auto">
+                <button
+                  onClick={() => interactiveMapRef.current?.geolocate()}
+                  className="aspect-square hover:bg-gray-200 rounded-md p-1"
+                  title="Geolocate"
+                >
+                  <IconCurrentLocation
+                    className="w-[1.5em]! h-[1.5em]!"
+                    strokeWidth={1.5}
+                  />
+                </button>
+              </div>
+
+              {/* toggle legend */}
+              <div className="relative flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 pointer-events-auto">
+                <button
+                  onClick={() => setShowLegend(!showLegend)}
+                  className="aspect-square hover:bg-gray-200 rounded-md p-1"
+                  title="Toggle Legend"
+                >
+                  <IconStack2
+                    className="w-[1.5em]! h-[1.5em]!"
+                    strokeWidth={1.5}
+                  />
+                </button>
+                <div className="absolute top-full right-0 mt-2">
+                  <MapLegend show={showLegend} />
+                </div>
               </div>
             </div>
           </div>
