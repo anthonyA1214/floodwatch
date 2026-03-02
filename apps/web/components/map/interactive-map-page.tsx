@@ -20,6 +20,9 @@ import {
   IconStack2,
 } from '@tabler/icons-react';
 import AffectedLocationsDrawer from '@/components/map/affected-locations-drawer';
+import { useLocationsPanel } from '@/contexts/locations-panel-context';
+import AffectedLocationListPanel from './affected-location-list-panel';
+import SafetyLocationsListPanel from './safety-location-list-panel';
 
 export type SelectedLocation = {
   longitude: number;
@@ -35,7 +38,7 @@ export default function InteractiveMapPage() {
   const [showLegend, setShowLegend] = useState(false);
   const { activePanel } = usePanel();
   const interactiveMapRef = useRef<InteractiveMapHandle>(null);
-
+  const { locationsActivePanel } = useLocationsPanel();
   return (
     <MapProvider>
       <div className="relative w-full h-full">
@@ -65,6 +68,21 @@ export default function InteractiveMapPage() {
                 </div>
               </>
             )}
+
+            {locationsActivePanel && (
+              <div
+                className="absolute z-10 flex gap-4
+              inset-0 md:inset-auto md:top-0 md:right-0 md:p-4"
+              >
+                {locationsActivePanel === 'affected' && (
+                  <AffectedLocationListPanel />
+                )}
+                {locationsActivePanel === 'safety' && (
+                  <SafetyLocationsListPanel />
+                )}
+              </div>
+            )}
+
             <div className="flex-1 w-lg sm:flex-none max-w-sm ps-4 pt-4">
               <SearchBar onSelectLocation={setSelectedLocation} />
             </div>
