@@ -4,7 +4,7 @@ import {
   pgTable,
   timestamp,
   text,
-  uuid,
+  serial,
 } from 'drizzle-orm/pg-core';
 import { users } from './users.schema';
 import { doublePrecision } from 'drizzle-orm/pg-core';
@@ -22,7 +22,7 @@ export const reportsStatusEnum = pgEnum('report_status', [
 ]);
 
 export const reports = pgTable('reports', {
-  id: uuid('id').defaultRandom().primaryKey(),
+  id: serial('id').primaryKey(),
   userId: integer('user_id').references(() => users.id, {
     onDelete: 'cascade',
   }),

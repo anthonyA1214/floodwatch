@@ -1,12 +1,13 @@
-import { Injectable, Logger, Inject } from '@nestjs/common';
+import { Injectable, Inject, Logger } from '@nestjs/common';
 import { Cron } from '@nestjs/schedule';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { DRIZZLE } from '../drizzle/drizzle-connection';
-import { NodePgDatabase } from 'drizzle-orm/node-postgres';
-import * as schema from '../drizzle/schemas';
 import { news } from '../drizzle/schemas';
 import { desc } from 'drizzle-orm';
+import { type DrizzleDB } from 'src/drizzle/types/drizzle';
+import { GNewsResponse, gnewsResponseSchema } from '@repo/schemas';
+import { z } from 'zod';
 
 @Injectable()
 export class NewsService {
@@ -14,19 +15,24 @@ export class NewsService {
   private readonly GNEWS_URL = 'https://gnews.io/api/v4/search';
 
   constructor(
-    @Inject(DRIZZLE) private readonly db: NodePgDatabase<typeof schema>,
+    @Inject(DRIZZLE) private readonly db: DrizzleDB,
     private readonly httpService: HttpService,
   ) {}
 
-  @Cron('0 6 * * *')
-  async fetchAndStoreFloodNews() {
-    this.logger.log('Fetching flood-related news from GNews...');
+  async getNews() {
+    return this.db.select().from(news).orderBy(desc(news.publishedAt)).limit(4);
+  }
 
+  @Cron('0 0 * * *', {
+    name: 'fetchFloodNews',
+    timeZone: 'Asia/Manila',
+  })
+  async fetchAndStoreFloodNews() {
     try {
       const response = await firstValueFrom(
-        this.httpService.get<any>(this.GNEWS_URL, {
+        this.httpService.get<GNewsResponse>(this.GNEWS_URL, {
           params: {
-            q: 'flood disaster water Philippines',
+            q: 'flood philippines',
             lang: 'en',
             max: 4,
             apikey: process.env.GNEWS_API_KEY,
@@ -34,7 +40,17 @@ export class NewsService {
         }),
       );
 
-      const articles = response.data?.articles ?? [];
+      const parsed = gnewsResponseSchema.safeParse(response.data);
+
+      if (!parsed.success) {
+        this.logger.error('Invalid GNews response format', {
+          errors: z.flattenError(parsed.error).fieldErrors,
+          rawData: response.data,
+        });
+        return;
+      }
+
+      const { articles } = parsed.data;
 
       for (const article of articles) {
         await this.db
@@ -42,30 +58,16 @@ export class NewsService {
           .values({
             title: article.title,
             description: article.description ?? 'No description available.',
-            imageUrl: article.image ?? null,
-            source: article.source?.name ?? 'Unknown',
+            url: article.url,
+            image: article.image ?? null,
             publishedAt: new Date(article.publishedAt),
-            externalUrl: article.url,
           })
-          .onConflictDoNothing({ target: news.externalUrl });
+          .onConflictDoNothing({ target: news.url });
       }
 
-      this.logger.log(`Processed ${articles.length} flood news articles.`);
+      return { message: 'Flood news fetched and stored successfully.' };
     } catch (error) {
-      this.logger.error('Failed to fetch news from GNews:', error.message);
+      this.logger.error('Error fetching flood news:', error);
     }
-  }
-
-  async getLatestNews() {
-    return this.db
-      .select()
-      .from(news)
-      .orderBy(desc(news.publishedAt))
-      .limit(4);
-  }
-
-  async clearNews() {
-    await this.db.delete(news);
-    return { message: 'All news cleared.' };
   }
 }

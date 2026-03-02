@@ -38,7 +38,7 @@ export default function SecurityTab() {
   }
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 p-4">
       {/* google */}
       <div className="flex flex-col gap-3">
         <h3 className="font-poppins font-semibold">Connected Accounts</h3>

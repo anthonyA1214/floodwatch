@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Delete } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { NewsService } from './news.service';
 
 @Controller('news')
@@ -6,18 +6,12 @@ export class NewsController {
   constructor(private readonly newsService: NewsService) {}
 
   @Get()
-  async getLatestNews() {
-    return this.newsService.getLatestNews();
+  async getNews() {
+    return this.newsService.getNews();
   }
 
-  @Post('fetch')
-  async triggerFetch() {
-    await this.newsService.fetchAndStoreFloodNews();
-    return { message: 'News fetch triggered successfully.' };
-  }
-
-  @Delete()
-  async clearNews() {
-    return this.newsService.clearNews();
+  @Get('fetch')
+  async fetchNews() {
+    return await this.newsService.fetchAndStoreFloodNews();
   }
 }

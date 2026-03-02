@@ -1,10 +1,10 @@
-import { pgEnum, pgTable, timestamp, text, uuid } from 'drizzle-orm/pg-core';
+import { pgEnum, pgTable, timestamp, text, serial } from 'drizzle-orm/pg-core';
 import { doublePrecision } from 'drizzle-orm/pg-core';
 
 export const safetyTypeEnum = pgEnum('safety_type', ['shelter', 'hospital']);
 
 export const safety = pgTable('safety', {
-  id: uuid('id').defaultRandom().primaryKey(),
+  id: serial('id').primaryKey(),
   latitude: doublePrecision('latitude').notNull(),
   longitude: doublePrecision('longitude').notNull(),
   location: text('location').notNull().default('Unknown location'),

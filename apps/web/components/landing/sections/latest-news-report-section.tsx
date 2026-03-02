@@ -1,72 +1,72 @@
-import LatestNewsCard from '../latest-news-card';
+'use client';
 
-interface NewsArticle {
-  id: string;
-  title: string;
-  description: string;
-  imageUrl: string | null;
-  source: string;
-  publishedAt: string;
-  externalUrl: string;
-}
+import LatestNewsCard from '@/components/landing/latest-news-card';
+import { useNews } from '@/hooks/use-news';
+import LatestNewsCardSkeleton from '../skeletons/latest-news-card-skeleton';
+import { IconArticleOff } from '@tabler/icons-react';
 
-async function getFloodNews(): Promise<NewsArticle[]> {
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/news`, {
-      next: { revalidate: 86400 },
-    });
-    if (!res.ok) return [];
-    return res.json();
-  } catch {
-    return [];
-  }
-}
+export default function LatestNewsReportSection() {
+  const { news, isLoading } = useNews();
 
-const FALLBACK_IMAGE = '/images/chloe.jpg';
-
-export default async function LatestNewsReportSection() {
-  const news = await getFloodNews();
-  const [featured, ...rest] = news;
+  console.log('Latest news:', news);
 
   return (
     <section id="latest-news">
       <div className="flex flex-col gap-6 md:gap-10 py-20 max-w-7xl mx-auto px-4">
         <div className="space-y-2">
+          {/* Title */}
           <h2 className="font-poppins text-3xl sm:text-4xl md:text-5xl font-semibold text-center">
             Latest <span className="text-[#2F327D]">News Report</span>
           </h2>
+
+          {/* Subtitle */}
           <p className="text-lg sm:text-xl text-gray-600 text-center">
             Be updated on latest news for the whole week
           </p>
         </div>
 
-        {!featured ? (
-          <p className="text-center text-gray-400">
-            No flood news available yet. Check back soon.
-          </p>
-        ) : (
+        {/* News Cards */}
+        {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
             <div>
-              <a href={featured.externalUrl} target="_blank" rel="noopener noreferrer" className="block h-full">
-                <LatestNewsCard
-                  variant="featured"
-                  src={featured.imageUrl ?? FALLBACK_IMAGE}
-                  title={featured.title}
-                  description={featured.description}
-                />
-              </a>
+              <LatestNewsCardSkeleton variant="featured" />
             </div>
             <div className="flex flex-col gap-6">
-              {rest.slice(0, 3).map((article) => (
-                <a key={article.id} href={article.externalUrl} target="_blank" rel="noopener noreferrer">
-                  <LatestNewsCard
-                    src={article.imageUrl ?? FALLBACK_IMAGE}
-                    title={article.title}
-                    description={article.description}
-                  />
-                </a>
+              <LatestNewsCardSkeleton />
+              <LatestNewsCardSkeleton />
+              <LatestNewsCardSkeleton />
+            </div>
+          </div>
+        ) : news && news.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+            <div>
+              <LatestNewsCard
+                variant="featured"
+                src={news[0].image ?? undefined}
+                title={news[0].title}
+                description={news[0].description ?? undefined}
+                url={news[0].url}
+              />
+            </div>
+            <div className="flex flex-col gap-6">
+              {news.slice(1).map((article) => (
+                <LatestNewsCard
+                  key={article.id}
+                  src={article.image ?? undefined}
+                  title={article.title}
+                  description={article.description ?? undefined}
+                  url={article.url}
+                />
               ))}
             </div>
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-16 gap-3 text-gray-600">
+            <IconArticleOff className="w-[1.5em]! h-[1.5em]!" />
+            <p className="text-lg font-medium">
+              No news available at the moment
+            </p>
+            <p className="text-sm">Check back later for the latest updates</p>
           </div>
         )}
       </div>

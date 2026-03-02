@@ -6,11 +6,11 @@ import {
   AvatarImage,
 } from '@/components/ui/avatar';
 import Avatar from 'boring-avatars';
-import { ProfilePhotoModal } from '@/components/admin/settings/profile-photo-modal';
 import { Separator } from '@/components/ui/separator';
 import { format } from 'date-fns';
 import { useUser } from '@/hooks/use-user';
 import SettingsLeftSkeleton from './skeleton/settings-left-skeleton';
+import { ProfilePhotoDialog } from './profile-photo-dialog';
 
 export default function SettingsLeft() {
   const { user, isLoading } = useUser();
@@ -37,7 +37,7 @@ export default function SettingsLeft() {
         </UIAvatar>
 
         {/* Button */}
-        <ProfilePhotoModal />
+        <ProfilePhotoDialog />
       </div>
 
       <div className="flex flex-col text-center">

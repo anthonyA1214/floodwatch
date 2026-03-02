@@ -21,7 +21,7 @@ export class CommentsService {
     private cloudinaryService: CloudinaryService,
   ) {}
 
-  async getComments(reportId: string) {
+  async getComments(reportId: number) {
     const report = await this.db
       .select({ id: reports.id })
       .from(reports)
@@ -52,7 +52,7 @@ export class CommentsService {
   }
 
   async addComment(
-    reportId: string,
+    reportId: number,
     createCommentDto: CreateCommentInput,
     userId: number,
     image: Express.Multer.File,
