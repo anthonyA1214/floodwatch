@@ -70,7 +70,7 @@ export default function LatestNewsCard({
     >
       <div className="bg-white h-full flex rounded-2xl shadow-lg p-3 sm:p-4 gap-3 sm:gap-4">
         {/* Image */}
-        <div className="relative aspect-square w-20 sm:w-24 md:w-28 shrink-0">
+        <div className="relative flex h-full w-20 sm:w-24 md:w-28">
           {src ? (
             <Image
               src={src}

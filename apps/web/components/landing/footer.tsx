@@ -24,7 +24,6 @@ const resourcesLinks = [
 
 const contactUsLinks = [
   { label: '0969-512-6532' },
-  { label: 'floodwatch@gmail.com' },
   { label: 'University of Caloocan City, Congressional Road' },
 ];
 

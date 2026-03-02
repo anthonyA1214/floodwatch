@@ -7,7 +7,7 @@ export default function ProfilePanel() {
   return (
     <div className="flex flex-col bg-white w-screen md:w-[400px] md:h-[80vh] rounded-xl shadow-md pointer-events-auto">
       <Tabs defaultValue="account" className="flex-1 flex flex-col min-h-0">
-        <div className="w-full border-b p-4">
+        <div className="w-full border-b px-4 pt-4">
           <TabsList variant="line" className="font-poppins w-full">
             <TabsTrigger
               value="account"

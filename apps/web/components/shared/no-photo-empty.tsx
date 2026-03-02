@@ -1,21 +1,13 @@
-import {
-  Empty,
-  EmptyDescription,
-  EmptyHeader,
-  EmptyMedia,
-  EmptyTitle,
-} from '@/components/ui/empty';
+import { Empty, EmptyHeader, EmptyMedia } from '@/components/ui/empty';
 import { IconPhotoOff } from '@tabler/icons-react';
 
 export default function NoPhotoEmpty() {
   return (
-    <Empty>
+    <Empty className="h-full border">
       <EmptyHeader>
-        <EmptyMedia variant="icon">
+        <EmptyMedia>
           <IconPhotoOff />
         </EmptyMedia>
-        <EmptyTitle>No data</EmptyTitle>
-        <EmptyDescription>No data found</EmptyDescription>
       </EmptyHeader>
     </Empty>
   );
