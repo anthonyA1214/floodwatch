@@ -1,4 +1,5 @@
 CREATE TYPE "public"."provider" AS ENUM('local', 'google');--> statement-breakpoint
+CREATE TYPE "public"."vote_type" AS ENUM('up', 'down');--> statement-breakpoint
 CREATE TYPE "public"."report_status" AS ENUM('unverified', 'verified');--> statement-breakpoint
 CREATE TYPE "public"."severity" AS ENUM('low', 'moderate', 'high', 'critical');--> statement-breakpoint
 CREATE TYPE "public"."safety_type" AS ENUM('shelter', 'hospital');--> statement-breakpoint
@@ -15,13 +16,37 @@ CREATE TABLE "auth_accounts" (
 	CONSTRAINT "unique_provider_provider_id" UNIQUE("provider","provider_id")
 );
 --> statement-breakpoint
+CREATE TABLE "comment_votes" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"user_id" integer,
+	"comment_id" integer,
+	"vote_type" "vote_type" NOT NULL,
+	"created_at" timestamp DEFAULT now(),
+	CONSTRAINT "comment_votes_user_id_comment_id_unique" UNIQUE("user_id","comment_id")
+);
+--> statement-breakpoint
 CREATE TABLE "comments" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"user_id" integer,
-	"report_id" uuid,
-	"content" text NOT NULL,
+	"report_id" integer,
+	"content" text,
+	"image" text,
+	"image_public_id" text,
+	"upvotes" integer DEFAULT 0 NOT NULL,
+	"downvotes" integer DEFAULT 0 NOT NULL,
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now()
+);
+--> statement-breakpoint
+CREATE TABLE "news" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"title" text NOT NULL,
+	"description" text NOT NULL,
+	"url" text NOT NULL,
+	"image_url" text,
+	"published_at" timestamp NOT NULL,
+	"created_at" timestamp DEFAULT now(),
+	CONSTRAINT "news_url_unique" UNIQUE("url")
 );
 --> statement-breakpoint
 CREATE TABLE "profile_info" (
@@ -46,8 +71,17 @@ CREATE TABLE "refresh_tokens" (
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
+CREATE TABLE "report_votes" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"user_id" integer,
+	"report_id" integer,
+	"vote_type" "vote_type" NOT NULL,
+	"created_at" timestamp DEFAULT now(),
+	CONSTRAINT "report_votes_user_id_report_id_unique" UNIQUE("user_id","report_id")
+);
+--> statement-breakpoint
 CREATE TABLE "reports" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
+	"id" serial PRIMARY KEY NOT NULL,
 	"user_id" integer,
 	"latitude" double precision NOT NULL,
 	"longitude" double precision NOT NULL,
@@ -58,16 +92,18 @@ CREATE TABLE "reports" (
 	"image_public_id" text,
 	"severity" "severity" NOT NULL,
 	"status" "report_status" DEFAULT 'unverified' NOT NULL,
+	"upvotes" integer DEFAULT 0 NOT NULL,
+	"downvotes" integer DEFAULT 0 NOT NULL,
 	"created_at" timestamp DEFAULT now(),
 	"updated_at" timestamp DEFAULT now()
 );
 --> statement-breakpoint
 CREATE TABLE "safety" (
-	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
-	"user_id" integer,
+	"id" serial PRIMARY KEY NOT NULL,
 	"latitude" double precision NOT NULL,
 	"longitude" double precision NOT NULL,
 	"location" text DEFAULT 'Unknown location' NOT NULL,
+	"address" text,
 	"description" text,
 	"image" text,
 	"image_public_id" text,
@@ -87,12 +123,15 @@ CREATE TABLE "users" (
 );
 --> statement-breakpoint
 ALTER TABLE "auth_accounts" ADD CONSTRAINT "auth_accounts_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "comment_votes" ADD CONSTRAINT "comment_votes_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "comment_votes" ADD CONSTRAINT "comment_votes_comment_id_comments_id_fk" FOREIGN KEY ("comment_id") REFERENCES "public"."comments"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "comments" ADD CONSTRAINT "comments_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "comments" ADD CONSTRAINT "comments_report_id_reports_id_fk" FOREIGN KEY ("report_id") REFERENCES "public"."reports"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "profile_info" ADD CONSTRAINT "profile_info_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "refresh_tokens" ADD CONSTRAINT "refresh_tokens_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "report_votes" ADD CONSTRAINT "report_votes_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "report_votes" ADD CONSTRAINT "report_votes_report_id_reports_id_fk" FOREIGN KEY ("report_id") REFERENCES "public"."reports"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "reports" ADD CONSTRAINT "reports_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "safety" ADD CONSTRAINT "safety_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
 CREATE INDEX "first_name_idx" ON "profile_info" USING btree ("first_name");--> statement-breakpoint
 CREATE INDEX "last_name_idx" ON "profile_info" USING btree ("last_name");--> statement-breakpoint
 CREATE UNIQUE INDEX "refresh_tokens_user_id_device_id_index" ON "refresh_tokens" USING btree ("user_id","device_id");--> statement-breakpoint

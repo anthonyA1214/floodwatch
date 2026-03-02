@@ -8,9 +8,7 @@ import { useState } from 'react';
 import { useUser } from '@/hooks/use-user';
 import { format } from 'date-fns';
 import { Spinner } from '@/components/ui/spinner';
-
-// ✅ ADD THIS
-import { AccountProfilePhotoModal } from './account-photo-modal';
+import { ProfilePhotoDialog } from './profile-photo-dialog';
 
 export default function AccountTab() {
   const [isEditing, setIsEditing] = useState(false);
@@ -35,7 +33,7 @@ export default function AccountTab() {
   };
 
   return (
-    <div className="flex flex-col gap-8 md:gap-16 h-full">
+    <div className="flex flex-col gap-8 md:gap-16 h-full p-4">
       <div className="flex flex-col gap-8">
         <h3 className="font-poppins font-semibold">Profile Information</h3>
         <ProfileInformationForm
@@ -81,8 +79,7 @@ export default function AccountTab() {
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3 w-auto">
-            {/* ✅ REPLACED: avatar is now clickable + opens modal */}
-            <AccountProfilePhotoModal />
+            <ProfilePhotoDialog />
 
             <div className="flex flex-col">
               <span className="font-medium text-sm">{user?.name}</span>
@@ -92,6 +89,8 @@ export default function AccountTab() {
 
           <LogoutButton />
         </div>
+
+        <div className="md:hidden" />
       </div>
     </div>
   );

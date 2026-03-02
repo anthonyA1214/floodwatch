@@ -2,7 +2,6 @@ import {
   serial,
   pgTable,
   integer,
-  uuid,
   pgEnum,
   timestamp,
   unique,
@@ -19,7 +18,7 @@ export const reportVotes = pgTable(
     userId: integer('user_id').references(() => users.id, {
       onDelete: 'cascade',
     }),
-    reportId: uuid('report_id').references(() => reports.id, {
+    reportId: integer('report_id').references(() => reports.id, {
       onDelete: 'cascade',
     }),
     voteType: voteTypeEnum('vote_type').notNull(),

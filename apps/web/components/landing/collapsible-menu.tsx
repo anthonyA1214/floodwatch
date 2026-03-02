@@ -23,7 +23,7 @@ export default function CollapsibleMenu() {
     <Collapsible
       open={open}
       onOpenChange={setOpen}
-      className="flex items-center justify-center md:hidden"
+      className="flex items-center justify-center"
     >
       <CollapsibleTrigger className="text-white">
         {open ? <X /> : <Menu />}

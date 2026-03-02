@@ -5,4 +5,5 @@ export const SWR_KEYS = {
   reportsAdmin: '/admin/reports',
   safetyLocations: '/safety',
   safetyLocationsAdmin: '/safety/admin',
+  news: '/news',
 };

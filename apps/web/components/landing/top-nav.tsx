@@ -19,7 +19,7 @@ export default function TopNav() {
         id="top-nav"
       >
         <nav className="flex justify-between py-4 max-w-7xl w-full mx-auto px-4">
-          <div className="flex items-center gap-4 md:gap-10">
+          <div className="flex items-center gap-4 lg:gap-10">
             <Link href="/" className="flex items-center gap-x-2">
               <Image
                 src="/logo-white.svg"
@@ -27,12 +27,12 @@ export default function TopNav() {
                 width={32}
                 height={32}
               />
-              <h1 className="text-[#FFFFFF] font-medium text-xl">FloodWatch</h1>
+              <h1 className="text-white font-bold md:text-xl">FloodWatch</h1>
             </Link>
           </div>
 
           <div className="flex items-center gap-10">
-            <div className="hidden md:flex items-center gap-8">
+            <div className="hidden lg:flex items-center gap-8">
               {navItems.map((item) => (
                 <Link
                   key={item.label}
@@ -44,10 +44,10 @@ export default function TopNav() {
               ))}
             </div>
 
-            <AuthButtons className="hidden md:flex" />
+            <AuthButtons className="hidden lg:flex" />
 
             {/* Mobile Menu */}
-            <div className="md:hidden flex items-center">
+            <div className="lg:hidden flex items-center">
               <CollapsibleMenu />
             </div>
           </div>

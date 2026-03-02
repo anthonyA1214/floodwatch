@@ -10,12 +10,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 
-import {
-  IconCamera,
-  IconCheck,
-  IconTrash,
-  IconUpload,
-} from '@tabler/icons-react';
+import { IconCheck, IconTrash, IconUpload } from '@tabler/icons-react';
 import {
   Avatar as UIAvatar,
   AvatarFallback,
@@ -35,7 +30,7 @@ interface FileWithPreview extends File {
   preview: string;
 }
 
-export function ProfilePhotoModal() {
+export function ProfilePhotoDialog() {
   const { user, mutateUser } = useUser();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [image, setImage] = useState<FileWithPreview | null>(null);
@@ -144,8 +139,22 @@ export function ProfilePhotoModal() {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <button className="absolute bottom-1.5 right-1.5 bg-[#0066CC] text-white rounded-full p-2 hover:bg-[#0052A3] transition-colors">
-          <IconCamera />
+        <button
+          type="button"
+          className="group"
+          title="Click to change profile photo"
+          aria-label="Open change profile photo modal"
+        >
+          <UIAvatar className="size-8 border transition group-hover:opacity-90 group-hover:ring-2 group-hover:ring-[#0066CC]/40">
+            <AvatarImage src={user?.profilePicture ?? ''} />
+            <AvatarFallback>
+              <Avatar
+                name={`${user?.name ?? 'User'} ${user?.id ?? ''}`}
+                variant="beam"
+                className="size-8"
+              />
+            </AvatarFallback>
+          </UIAvatar>
         </button>
       </DialogTrigger>
       <DialogContent>

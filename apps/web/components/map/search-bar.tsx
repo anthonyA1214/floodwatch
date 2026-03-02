@@ -149,6 +149,7 @@ export default function SearchBar({
         setOpen(true);
         setActiveIndex(-1);
       } catch (err) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         if ((err as any)?.name !== 'AbortError') console.error(err);
       } finally {
         setLoading(false);

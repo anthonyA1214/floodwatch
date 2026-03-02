@@ -255,7 +255,7 @@ export class ReportsService {
     return { message: 'Report created and verified successfully' };
   }
 
-  async verifyReportStatus(id: string) {
+  async verifyReportStatus(id: number) {
     const report = await this.db
       .select()
       .from(reports)
@@ -274,7 +274,7 @@ export class ReportsService {
     return { message: 'Report verified successfully' };
   }
 
-  async deleteReport(id: string) {
+  async deleteReport(id: number) {
     const [report] = await this.db
       .select()
       .from(reports)

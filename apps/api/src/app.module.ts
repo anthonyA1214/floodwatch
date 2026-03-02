@@ -10,6 +10,7 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { ImagesModule } from './images/images.module';
 import { ReportsModule } from './reports/reports.module';
 import { GeocoderModule } from './geocoder/geocoder.module';
+import { NewsModule } from './news/news.module';
 import { SafetyModule } from './safety/safety.module';
 import { CommentsModule } from './comments/comments.module';
 import { VotesModule } from './votes/votes.module';
@@ -54,6 +55,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
     ImagesModule,
     ReportsModule,
     GeocoderModule,
+    NewsModule,
     SafetyModule,
     CommentsModule,
     VotesModule,
