@@ -135,20 +135,20 @@ export class ReportsController {
   @Patch(':id/verify')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard, UserStatusGuard)
-  async verifyReportStatus(@Param('id') id: string) {
+  async verifyReportStatus(@Param('id') id: number) {
     return await this.reportsService.verifyReportStatus(id);
   }
 
   @Delete(':id/delete')
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(JwtAuthGuard, UserStatusGuard)
-  async deleteReport(@Param('id') id: string) {
+  async deleteReport(@Param('id') id: number) {
     return await this.reportsService.deleteReport(id);
   }
 
   @Get(':id/comments')
   @HttpCode(HttpStatus.OK)
-  async getComments(@Param('id') id: string) {
+  async getComments(@Param('id') id: number) {
     return await this.commentsService.getComments(id);
   }
 
@@ -157,7 +157,7 @@ export class ReportsController {
   @UseGuards(JwtAuthGuard, UserStatusGuard)
   @UseInterceptors(FileInterceptor('image'))
   async addComment(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() createCommentDto: CreateCommentDto,
     @Request() req: AuthRequest,
     @UploadedFile() image: Express.Multer.File,
