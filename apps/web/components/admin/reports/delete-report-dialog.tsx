@@ -27,7 +27,8 @@ export default function DeleteReportDialog() {
     setIsPending(true);
     try {
       await deleteReport(report.id);
-      mutate(SWR_KEYS.reports);
+      mutate(SWR_KEYS.reportMapPins);
+      mutate(SWR_KEYS.reportDetail(report.id), null);
       mutate((key) => Array.isArray(key) && key[0] === SWR_KEYS.reportsAdmin);
       closeDialog();
     } finally {

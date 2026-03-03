@@ -11,15 +11,14 @@ import { usePanel } from '@/contexts/panel-context';
 import NotificationPanel from '@/components/map/notification-panel';
 import { GoogleLinkToastHandler } from '@/components/shared/google-link-toast-handler';
 import { MapProvider } from 'react-map-gl/maplibre';
-import AffectedLocationsPanel from '@/components/map/affected-locations-panel';
-import { ReportsDto } from '@repo/schemas';
 import {
   IconCurrentLocation,
   IconMinus,
   IconPlus,
   IconStack2,
 } from '@tabler/icons-react';
-import AffectedLocationsDrawer from '@/components/map/affected-locations-drawer';
+import ReportedLocationPanel from './reported-location-panel';
+import ReportedLocationDrawer from './reported-location-drawer';
 
 export type SelectedLocation = {
   longitude: number;
@@ -31,7 +30,7 @@ export type SelectedLocation = {
 export default function InteractiveMapPage() {
   const [selectedLocation, setSelectedLocation] =
     useState<SelectedLocation | null>(null);
-  const [selectedReport, setSelectedReport] = useState<ReportsDto | null>(null);
+  const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
   const [showLegend, setShowLegend] = useState(false);
   const { activePanel } = usePanel();
   const interactiveMapRef = useRef<InteractiveMapHandle>(null);
@@ -42,25 +41,25 @@ export default function InteractiveMapPage() {
         <InteractiveMap
           ref={interactiveMapRef}
           selectedLocation={selectedLocation}
-          onSelectReport={setSelectedReport}
+          onSelectReport={(report) => setSelectedReportId(report.id)}
         />
 
         {/* Top bar: search + controls in one row */}
         <div className="absolute top-0 left-0 right-0 flex items-start gap-4 pointer-events-none h-full">
           {/* Search bar + affected panel share the left flex slot */}
           <div className="pointer-events-none flex-1 min-w-0 flex items-start h-full">
-            {selectedReport && (
+            {selectedReportId && (
               <>
-                <div className="hidden lg:flex flex-col h-full">
-                  <AffectedLocationsPanel
-                    report={selectedReport}
-                    onClose={() => setSelectedReport(null)}
+                <div className="hidden lg:flex flex-col h-full w-full max-w-lg">
+                  <ReportedLocationPanel
+                    reportId={selectedReportId}
+                    onClose={() => setSelectedReportId(null)}
                   />
                 </div>
-                <div className="flex lg:hidden flex-col h-full">
-                  <AffectedLocationsDrawer
-                    report={selectedReport}
-                    onClose={() => setSelectedReport(null)}
+                <div className="flex lg:hidden flex-col h-full w-full">
+                  <ReportedLocationDrawer
+                    reportId={selectedReportId}
+                    onClose={() => setSelectedReportId(null)}
                   />
                 </div>
               </>

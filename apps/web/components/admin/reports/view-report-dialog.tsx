@@ -25,7 +25,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { useReportDialog } from '@/contexts/report-dialog-context';
-import { format, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 import { useState } from 'react';
 import { Spinner } from '@/components/ui/spinner';
 import { verifyReport } from '@/lib/actions/report-actions';
@@ -42,7 +42,8 @@ export default function ViewReportDialog() {
     setIsPending(true);
     try {
       await verifyReport(report.id);
-      mutate(SWR_KEYS.reports);
+      mutate(SWR_KEYS.reportMapPins);
+      mutate(SWR_KEYS.reportDetail(report.id));
       mutate((key) => Array.isArray(key) && key[0] === SWR_KEYS.reportsAdmin);
       closeDialog();
     } finally {
@@ -50,9 +51,10 @@ export default function ViewReportDialog() {
     }
   };
 
-  const parsedDate = report ? parseISO(report.reportedAt) : new Date();
-  const formattedTime = report ? format(parsedDate, 'hh:mm a') : '';
-  const formattedDate = report ? format(parsedDate, 'MMMM dd, yyyy') : '';
+  const formattedTime = report ? format(report.reportedAt, 'hh:mm a') : '';
+  const formattedDate = report
+    ? format(report.reportedAt, 'MMMM dd, yyyy')
+    : '';
 
   return (
     <Dialog open={isOpen('view')} onOpenChange={closeDialog}>

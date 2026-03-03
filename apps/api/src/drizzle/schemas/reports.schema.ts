@@ -26,6 +26,9 @@ export const reports = pgTable('reports', {
   userId: integer('user_id').references(() => users.id, {
     onDelete: 'cascade',
   }),
+  verifierId: integer('verifier_id').references(() => users.id, {
+    onDelete: 'cascade',
+  }),
   latitude: doublePrecision('latitude').notNull(),
   longitude: doublePrecision('longitude').notNull(),
   location: text('location').notNull().default('Unknown location'),

@@ -1,0 +1,2 @@
+ALTER TABLE "reports" ADD COLUMN "verifier_id" integer;--> statement-breakpoint
+ALTER TABLE "reports" ADD CONSTRAINT "reports_verifier_id_users_id_fk" FOREIGN KEY ("verifier_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;

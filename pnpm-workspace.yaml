@@ -12,3 +12,6 @@ onlyBuiltDependencies:
   - esbuild
   - sharp
   - unrs-resolver
+
+patchedDependencies:
+  lint-staged: patches/lint-staged.patch
