@@ -1,3 +1,4 @@
+// affected-location-list-panel.tsx
 'use client';
 
 import { useMemo, useState } from 'react';
@@ -11,7 +12,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
-import { IconAlertTriangle } from '@tabler/icons-react';
+import { IconAlertTriangle, IconChevronLeft } from '@tabler/icons-react';
 import AffectedLocationsCard from '@/components/map/affected-locations-card';
 
 type Severity = 'critical' | 'high' | 'moderate' | 'low';
@@ -26,15 +27,15 @@ type AffectedLocationItem = {
 type Props = {
   title?: string;
   items?: AffectedLocationItem[];
-
-  // optional: if you want this panel to be fixed on the left
   className?: string;
+  onClose?: () => void;
 };
 
 export default function AffectedLocationListPanel({
   title = 'Affected Locations',
   items,
   className = '',
+  onClose,
 }: Props) {
   const [level, setLevel] = useState<'all-levels' | Severity>('all-levels');
 
@@ -73,16 +74,41 @@ export default function AffectedLocationListPanel({
   return (
     <aside
       className={[
-        // left panel feel
-        'w-[340px] max-w-[92vw]',
-        'bg-white border shadow-lg rounded-xl',
-        'overflow-hidden',
-        'flex flex-col',
-        // height like screenshot panel
-        'max-h-[70vh] min-h-0',
+        'relative w-full h-full bg-white z-50 min-h-0 flex flex-col pointer-events-auto',
+        // ✅ must be visible so the handle can stick out
+        'border shadow-lg overflow-visible',
         className,
       ].join(' ')}
     >
+      {/* Side close handle */}
+      {onClose && (
+        <button
+          className="
+            absolute
+            -right-7
+            top-1/2
+            -translate-y-1/2
+            h-16
+            w-7
+            bg-white
+            border
+            border-l-0
+            rounded-r-xl
+            z-[60]
+            shadow-[4px_0px_6px_-1px_rgba(0,0,0,0.1)]
+            flex
+            items-center
+            justify-center
+            hover:bg-gray-50
+          "
+          onClick={onClose}
+          type="button"
+          aria-label="Close panel"
+        >
+          <IconChevronLeft className="w-4 h-4" />
+        </button>
+      )}
+
       {/* Header */}
       <div className="px-4 pt-4 pb-3">
         <div className="flex items-center gap-2">
@@ -113,7 +139,8 @@ export default function AffectedLocationListPanel({
       <Separator />
 
       {/* List */}
-      <ScrollArea className="flex-1 min-h-0">
+      {/* ✅ keep inner clipping here */}
+      <ScrollArea className="flex-1 min-h-0 overflow-hidden">
         <div className="p-4 space-y-3">
           {filtered.map((item, index) => (
             <AffectedLocationsCard

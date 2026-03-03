@@ -1,3 +1,4 @@
+// interactive-map-page.tsx
 'use client';
 
 import SearchBar from '@/components/map/search-bar';
@@ -38,59 +39,79 @@ export default function InteractiveMapPage() {
   const [showLegend, setShowLegend] = useState(false);
   const { activePanel } = usePanel();
   const interactiveMapRef = useRef<InteractiveMapHandle>(null);
-  const { locationsActivePanel } = useLocationsPanel();
+
+  const { locationsActivePanel, close: closeLocations } = useLocationsPanel();
+
+  const hasLeftPanel = Boolean(selectedReport || locationsActivePanel);
+
   return (
     <MapProvider>
       <div className="relative w-full h-full">
         <InteractiveMap
           ref={interactiveMapRef}
           selectedLocation={selectedLocation}
-          onSelectReport={setSelectedReport}
+          // ✅ marker click should close list panels and open details
+          onSelectReport={(report) => {
+            closeLocations();
+            setSelectedReport(report);
+          }}
         />
 
-        {/* Top bar: search + controls in one row */}
-        <div className="absolute top-0 left-0 right-0 flex items-start gap-4 pointer-events-none h-full">
-          {/* Search bar + affected panel share the left flex slot */}
-          <div className="pointer-events-none flex-1 min-w-0 flex items-start h-full">
-            {selectedReport && (
-              <>
-                <div className="hidden lg:flex flex-col h-full">
-                  <AffectedLocationsPanel
-                    report={selectedReport}
-                    onClose={() => setSelectedReport(null)}
-                  />
+        {/* Overlay layer (does not block map by default) */}
+        <div className="absolute inset-0 flex items-start gap-4 pointer-events-none">
+          {/* LEFT SLOT */}
+          <div className="flex-1 min-w-0 h-full relative pointer-events-none">
+            <div className="absolute inset-0 flex items-start gap-4 pointer-events-none">
+              {/* LEFT PANEL COLUMN */}
+              {hasLeftPanel ? (
+                <div className="h-full w-full max-w-lg p-0 pointer-events-auto min-h-0 flex flex-col">
+                  {/* If report selected: show details */}
+                  {selectedReport ? (
+                    <div className="h-full min-h-0 flex flex-col">
+                      <div className="hidden lg:flex h-full min-h-0">
+                        <AffectedLocationsPanel
+                          report={selectedReport}
+                          onClose={() => setSelectedReport(null)}
+                        />
+                      </div>
+                      <div className="flex lg:hidden h-full min-h-0">
+                        <AffectedLocationsDrawer
+                          report={selectedReport}
+                          onClose={() => setSelectedReport(null)}
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    // Else: show list panels
+                    <div className="h-full min-h-0 flex flex-col">
+                      {locationsActivePanel === 'affected' && (
+                        <AffectedLocationListPanel
+                          className="h-full"
+                          onClose={closeLocations}
+                        />
+                      )}
+                      {locationsActivePanel === 'safety' && (
+                        <SafetyLocationsListPanel
+                          className="h-full"
+                          onClose={closeLocations}
+                        />
+                      )}
+                    </div>
+                  )}
                 </div>
-                <div className="flex lg:hidden flex-col h-full">
-                  <AffectedLocationsDrawer
-                    report={selectedReport}
-                    onClose={() => setSelectedReport(null)}
-                  />
-                </div>
-              </>
-            )}
+              ) : null}
 
-            {locationsActivePanel && (
-              <div
-                className="absolute z-10 flex gap-4
-              inset-0 md:inset-auto md:top-0 md:right-0 md:p-4"
-              >
-                {locationsActivePanel === 'affected' && (
-                  <AffectedLocationListPanel />
-                )}
-                {locationsActivePanel === 'safety' && (
-                  <SafetyLocationsListPanel />
-                )}
+              {/* SEARCH COLUMN */}
+              <div className="pointer-events-auto pt-4 pl-4">
+                <div className="w-full max-w-sm">
+                  <SearchBar onSelectLocation={setSelectedLocation} />
+                </div>
               </div>
-            )}
-
-            <div className="flex-1 w-lg sm:flex-none max-w-sm ps-4 pt-4">
-              <SearchBar onSelectLocation={setSelectedLocation} />
             </div>
           </div>
 
-          {/* Map controls — fixed to right */}
+          {/* RIGHT CONTROLS */}
           <div className="pointer-events-none flex flex-col gap-2 h-fit pt-4 pe-4">
-            {/* zoom buttons */}
             <div className="flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 pointer-events-auto">
               <button
                 onClick={() => interactiveMapRef.current?.zoomIn()}
@@ -111,7 +132,6 @@ export default function InteractiveMapPage() {
               </button>
             </div>
 
-            {/* geolocate */}
             <div className="flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 pointer-events-auto">
               <button
                 onClick={() => interactiveMapRef.current?.geolocate()}
@@ -125,7 +145,6 @@ export default function InteractiveMapPage() {
               </button>
             </div>
 
-            {/* toggle legend */}
             <div className="relative flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 pointer-events-auto">
               <button
                 onClick={() => setShowLegend(!showLegend)}
@@ -143,13 +162,13 @@ export default function InteractiveMapPage() {
             </div>
           </div>
 
+          {/* TOP-RIGHT PANELS */}
           {activePanel && (
-            <div
-              className="absolute z-10 flex gap-4
-              inset-0 md:inset-auto md:top-0 md:right-0 md:p-4"
-            >
-              {activePanel === 'notification' && <NotificationPanel />}
-              {activePanel === 'profile' && <ProfilePanel />}
+            <div className="absolute z-20 flex gap-4 md:top-0 md:right-0 md:p-4 pointer-events-none">
+              <div className="pointer-events-auto">
+                {activePanel === 'notification' && <NotificationPanel />}
+                {activePanel === 'profile' && <ProfilePanel />}
+              </div>
             </div>
           )}
         </div>

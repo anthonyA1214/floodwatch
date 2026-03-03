@@ -1,3 +1,7 @@
+// safety-location-list-panel.tsx
+'use client';
+
+import { useState } from 'react';
 import {
   Select,
   SelectContent,
@@ -6,44 +10,98 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import SafetyLocationsCard from '@/components/map/safety-locations-card';
-import { IconShieldCheck } from '@tabler/icons-react';
+import { IconChevronLeft, IconShieldCheck } from '@tabler/icons-react';
 import { Separator } from '@/components/ui/separator';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
-export default function SafetyLocationsListPanel() {
+type Props = {
+  title?: string;
+  className?: string;
+  onClose?: () => void;
+};
+
+export default function SafetyLocationsListPanel({
+  title = 'Safety Locations',
+  className = '',
+  onClose,
+}: Props) {
+  const [level, setLevel] = useState<
+    'all-levels' | 'critical' | 'high' | 'moderate' | 'low'
+  >('all-levels');
+
   return (
-    <div
-      className="flex-1 flex flex-col bg-white rounded-xl shadow-lg
-      border max-w-sm p-4 gap-4 max-h-[60vh] overflow-hidden min-h-0"
+    <aside
+      className={[
+        'relative w-full h-full bg-white z-50 min-h-0 flex flex-col pointer-events-auto',
+        'border shadow-lg overflow-visible',
+        className,
+      ].join(' ')}
     >
+      {/* Side close handle */}
+      {onClose && (
+        <button
+          className="
+            absolute
+            -right-7
+            top-1/2
+            -translate-y-1/2
+            h-16
+            w-7
+            bg-white
+            border
+            border-l-0
+            rounded-r-xl
+            z-[60]
+            shadow-[4px_0px_6px_-1px_rgba(0,0,0,0.1)]
+            flex
+            items-center
+            justify-center
+            hover:bg-gray-50
+          "
+          onClick={onClose}
+          type="button"
+          aria-label="Close panel"
+        >
+          <IconChevronLeft className="w-4 h-4" />
+        </button>
+      )}
+
       {/* Header */}
-      <div className="flex items-center gap-2 font-semibold text-sm">
-        <IconShieldCheck className="w-[1.5em]! h-[1.5em]! text-[#0066CC]" />
-        <span>Safety Locations</span>
+      <div className="px-4 pt-4 pb-3">
+        <div className="flex items-center gap-2">
+          <IconShieldCheck className="w-5 h-5 text-[#0066CC]" />
+          <h3 className="text-base font-semibold text-[#1f1f1f]">{title}</h3>
+        </div>
+
+        <div className="mt-3">
+          <Select
+            value={level}
+            onValueChange={(val) =>
+              setLevel(
+                val as 'all-levels' | 'critical' | 'high' | 'moderate' | 'low',
+              )
+            }
+          >
+            <SelectTrigger className="w-full h-10 text-sm text-muted-foreground justify-between">
+              <SelectValue placeholder="All Levels" />
+            </SelectTrigger>
+
+            <SelectContent>
+              <SelectItem value="all-levels">All Levels</SelectItem>
+              <SelectItem value="critical">Critical</SelectItem>
+              <SelectItem value="high">High</SelectItem>
+              <SelectItem value="moderate">Moderate</SelectItem>
+              <SelectItem value="low">Low</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
       <Separator />
 
-      {/* Filter */}
-      <div>
-        <Select defaultValue="all-levels">
-          <SelectTrigger className="w-full text-sm text-gray-600 py-3 justify-between">
-            <SelectValue placeholder="All Levels" />
-          </SelectTrigger>
-
-          <SelectContent>
-            <SelectItem value="all-levels">All Levels</SelectItem>
-            <SelectItem value="critical">Critical</SelectItem>
-            <SelectItem value="high">High</SelectItem>
-            <SelectItem value="moderate">Moderate</SelectItem>
-            <SelectItem value="low">Low</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
-
       {/* Content */}
-      <ScrollArea className="flex-1 min-h-0">
-        <div className="space-y-4 pr-4">
+      <ScrollArea className="flex-1 min-h-0 overflow-hidden">
+        <div className="p-4 space-y-4">
           <SafetyLocationsCard
             type="shelter"
             name="Community Safe Haven"
@@ -82,6 +140,6 @@ export default function SafetyLocationsListPanel() {
           />
         </div>
       </ScrollArea>
-    </div>
+    </aside>
   );
 }
