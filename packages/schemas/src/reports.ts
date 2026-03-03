@@ -18,25 +18,42 @@ export const createFloodAlertSchema = z.object({
   severity: z.enum(['low', 'moderate', 'high', 'critical']),
 });
 
-export const reportsSchema = z.object({
-  id: z.string(),
+export const reportMapPinSchema = z.object({
+  id: z.number(),
+  latitude: z.number(),
+  longitude: z.number(),
+  range: z.number(),
+  severity: z.enum(['low', 'moderate', 'high', 'critical']),
+  status: z.enum(['verified', 'unverified']),
+});
+
+export const reportDetailSchema = z.object({
+  id: z.number(),
+  location: z.string(),
+  description: z.string().nullable(),
+  latitude: z.number(),
+  longitude: z.number(),
+  range: z.number(),
+  severity: z.enum(['low', 'moderate', 'high', 'critical']),
+  status: z.enum(['verified', 'unverified']),
+  image: z.string().nullable(),
+  reportedAt: z.date(),
   reporter: z
     .object({
       id: z.number(),
-      name: z.string(),
       email: z.string(),
-      profilePicture: z.string(),
+      name: z.string(),
+      profilePicture: z.string().nullable(),
     })
     .nullable(),
-  severity: z.enum(['low', 'moderate', 'high', 'critical']),
-  status: z.enum(['verified', 'unverified']),
-  description: z.string().nullable(),
-  range: z.number(),
-  longitude: z.number(),
-  latitude: z.number(),
-  location: z.string(),
-  image: z.string().nullable(),
-  reportedAt: z.string(),
+  verifier: z
+    .object({
+      id: z.number(),
+      email: z.string(),
+      name: z.string(),
+      profilePicture: z.string().nullable(),
+    })
+    .nullable(),
 });
 
 export const reportQuerySchema = z.object({
@@ -48,10 +65,12 @@ export const reportQuerySchema = z.object({
 
 export class ReportFloodAlertDto extends createZodDto(reportFloodAlertSchema) {}
 export class CreateFloodAlertDto extends createZodDto(createFloodAlertSchema) {}
-export class ReportsDto extends createZodDto(reportsSchema) {}
+export class ReportMapPinDto extends createZodDto(reportMapPinSchema) {}
+export class ReportDetailDto extends createZodDto(reportDetailSchema) {}
 export class ReportQueryDto extends createZodDto(reportQuerySchema) {}
 
 export type ReportFloodAlertInput = z.infer<typeof reportFloodAlertSchema>;
 export type CreateFloodAlertInput = z.infer<typeof createFloodAlertSchema>;
-export type ReportsInput = z.infer<typeof reportsSchema>;
+export type ReportMapPinInput = z.infer<typeof reportMapPinSchema>;
+export type ReportDetailInput = z.infer<typeof reportDetailSchema>;
 export type ReportQueryInput = z.infer<typeof reportQuerySchema>;

@@ -4,7 +4,6 @@ import {
   REPORT_STATUS_COLOR_MAP,
   SEVERITY_COLOR_MAP,
 } from '@/lib/utils/get-color-map';
-import { ReportsDto } from '@repo/schemas';
 import {
   IconArrowDown,
   IconArrowUp,
@@ -14,7 +13,7 @@ import {
   IconMessageCircle,
 } from '@tabler/icons-react';
 import { clsx } from 'clsx';
-import { formatDistanceToNow } from 'date-fns';
+import { format, formatDistanceToNow } from 'date-fns';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { Drawer } from 'vaul';
@@ -27,14 +26,15 @@ import {
 } from '@/components/ui/avatar';
 import Avatar from 'boring-avatars';
 import { Separator } from '@/components/ui/separator';
+import { useReportDetail } from '@/hooks/use-report-detail';
 
 const snapPoints = ['0px', '355px', 1];
 
 export default function ReportedLocationDrawer({
-  report,
+  reportId,
   onClose,
 }: {
-  report: ReportsDto;
+  reportId: number;
   onClose?: () => void;
 }) {
   const [snap, setSnap] = useState<number | string | null>(snapPoints[1]);
@@ -45,6 +45,8 @@ export default function ReportedLocationDrawer({
     if (!isOpen) onClose?.();
   };
 
+  const { reportDetail, isLoading } = useReportDetail(reportId);
+
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // scroll to top when report changes
@@ -52,7 +54,17 @@ export default function ReportedLocationDrawer({
     if (scrollRef.current) {
       scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [report?.id]);
+  }, [reportId]);
+
+  if (isLoading) return;
+  if (!reportDetail) return;
+
+  const formattedTime = reportDetail
+    ? format(reportDetail?.reportedAt, 'hh:mm a')
+    : '';
+  const formattedDate = reportDetail
+    ? format(reportDetail?.reportedAt, 'MMMM dd, yyyy')
+    : '';
 
   return (
     <Drawer.Root
@@ -80,6 +92,7 @@ export default function ReportedLocationDrawer({
         <Drawer.Handle className="w-16! my-3! h-3! rounded-full!" />
 
         <div
+          ref={scrollRef}
           className={clsx('flex flex-col max-w-md mx-auto w-full pt-5 gap-2', {
             'overflow-y-auto': snap === 1,
             'overflow-hidden': snap !== 1,
@@ -88,11 +101,13 @@ export default function ReportedLocationDrawer({
           {/* report details */}
           <div
             className="flex flex-col p-3 gap-3 border-l-4 shrink-0 bg-[#fafafa]"
-            style={{ borderLeftColor: SEVERITY_COLOR_MAP[report?.severity] }}
+            style={{
+              borderLeftColor: SEVERITY_COLOR_MAP[reportDetail?.severity],
+            }}
           >
             {/* row 1 */}
             <Drawer.Title className="font-poppins text-lg font-semibold">
-              {report?.location}
+              {reportDetail?.location}
             </Drawer.Title>
 
             {/* badges */}
@@ -100,18 +115,18 @@ export default function ReportedLocationDrawer({
               <div
                 className="flex items-center rounded-full px-3 py-1 w-fit h-fit"
                 style={{
-                  color: REPORT_STATUS_COLOR_MAP[report?.status],
-                  backgroundColor: `${REPORT_STATUS_COLOR_MAP[report?.status]}25`,
+                  color: REPORT_STATUS_COLOR_MAP[reportDetail?.status],
+                  backgroundColor: `${REPORT_STATUS_COLOR_MAP[reportDetail?.status]}25`,
                 }}
               >
                 <div className="flex items-center gap-2 text-xs">
-                  {report?.status === 'verified' ? (
+                  {reportDetail?.status === 'verified' ? (
                     <IconCheck className="w-[1.5em]! h-[1.5em]!" />
                   ) : (
                     <IconCircleDashed className="w-[1.5em]! h-[1.5em]!" />
                   )}
                   <span className="flex items-center font-medium">
-                    {report?.status.toUpperCase()} REPORT
+                    {reportDetail?.status.toUpperCase()} REPORT
                   </span>
                 </div>
               </div>
@@ -123,12 +138,12 @@ export default function ReportedLocationDrawer({
                 <div
                   className="flex items-center rounded-full px-3 py-1 w-fit"
                   style={{
-                    color: SEVERITY_COLOR_MAP[report?.severity],
-                    backgroundColor: `${SEVERITY_COLOR_MAP[report?.severity]}25`,
+                    color: SEVERITY_COLOR_MAP[reportDetail?.severity],
+                    backgroundColor: `${SEVERITY_COLOR_MAP[reportDetail?.severity]}25`,
                   }}
                 >
                   <span className="text-xs font-medium">
-                    {report?.severity?.toUpperCase()}
+                    {reportDetail?.severity?.toUpperCase()}
                   </span>
                 </div>
               </div>
@@ -137,7 +152,7 @@ export default function ReportedLocationDrawer({
             {/* reported at */}
             <div className="flex items-center text-xs gap-2 h-fit text-gray-600">
               <IconClock className="w-[1.5em]! h-[1.5em]!" />
-              {formatDistanceToNow(new Date(report?.reportedAt), {
+              {formatDistanceToNow(new Date(reportDetail?.reportedAt), {
                 addSuffix: true,
               })}
             </div>
@@ -149,15 +164,17 @@ export default function ReportedLocationDrawer({
                 <span className="font-poppins font-medium">REPORTED BY</span>
                 <div className="flex items-center gap-2">
                   <UIAvatar className="size-5">
-                    <AvatarImage src={report?.reporter?.profilePicture} />
+                    <AvatarImage
+                      src={reportDetail?.reporter?.profilePicture || undefined}
+                    />
                     <AvatarFallback>
                       <Avatar
-                        name={`${report?.reporter?.name} ${report?.reporter?.id}`}
+                        name={`${reportDetail?.reporter?.name} ${reportDetail?.reporter?.id}`}
                         variant="beam"
                       />
                     </AvatarFallback>
                   </UIAvatar>
-                  <span>{report?.reporter?.name}</span>
+                  <span>{reportDetail?.reporter?.name}</span>
                 </div>
               </div>
 
@@ -166,27 +183,29 @@ export default function ReportedLocationDrawer({
                 <span className="font-poppins font-medium">VERIFIED BY</span>
                 <div className="flex items-center gap-2">
                   <UIAvatar className="size-5">
-                    <AvatarImage src={report?.reporter?.profilePicture} />
+                    <AvatarImage
+                      src={reportDetail?.verifier?.profilePicture || undefined}
+                    />
                     <AvatarFallback>
                       <Avatar
-                        name={`${report?.reporter?.name} ${report?.reporter?.id}`}
+                        name={`${reportDetail?.verifier?.name} ${reportDetail?.verifier?.id}`}
                         variant="beam"
                       />
                     </AvatarFallback>
                   </UIAvatar>
-                  <span>{report?.reporter?.name}</span>
+                  <span>{reportDetail?.verifier?.name}</span>
                 </div>
               </div>
             </div>
 
             {/* description */}
-            {report?.description && (
+            {reportDetail?.description && (
               <>
                 <Separator />
 
                 <div className="flex flex-col gap-2 text-sm">
                   <span className="font-poppins font-medium">DESCRIPTION</span>
-                  <p>{report?.description}</p>
+                  <p>{reportDetail?.description}</p>
                 </div>
               </>
             )}
@@ -209,9 +228,9 @@ export default function ReportedLocationDrawer({
 
           {/* image */}
           <div className="aspect-video w-full relative bg-muted shrink-0 ">
-            {report?.image ? (
+            {reportDetail?.image ? (
               <Image
-                src={report.image}
+                src={reportDetail.image}
                 alt="Affected location"
                 fill
                 className="object-cover"

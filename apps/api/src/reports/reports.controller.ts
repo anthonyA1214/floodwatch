@@ -48,6 +48,12 @@ export class ReportsController {
     return await this.reportsService.findAllPublic();
   }
 
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  async findOnePublic(@Param('id') id: number) {
+    return await this.reportsService.findOnePublic(id);
+  }
+
   @Get('admin')
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() reportQuery: ReportQueryDto) {

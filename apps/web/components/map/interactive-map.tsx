@@ -10,13 +10,13 @@ import {
 } from 'react';
 import Map, { Layer, Marker, Source, type MapRef } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { ReportsDto } from '@repo/schemas';
+import { ReportMapPinInput } from '@repo/schemas';
 import RadiusCircle from '@/components/shared/radius-circle';
 import { FloodMarker } from '../markers/flood-marker';
 import { getUserLocation } from '@/lib/utils/get-user-location';
 import { UserLocationMarker } from '../markers/user-location-marker';
 import { SearchLocationMarker } from '../markers/search-location-marker';
-import { useReports } from '@/hooks/use-reports';
+import { useReportMapPins } from '@/hooks/use-report-map-pins';
 import { useBoundary } from '@/hooks/use-boundary';
 import { useSafetyLocations } from '@/hooks/use-safety';
 import { SafetyMarker } from '../markers/safety-marker';
@@ -29,7 +29,7 @@ type SelectedLocation = {
 
 type Props = {
   selectedLocation?: SelectedLocation | null;
-  onSelectReport?: (report: ReportsDto) => void;
+  onSelectReport?: (report: ReportMapPinInput) => void;
 };
 
 export type InteractiveMapHandle = {
@@ -46,7 +46,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
       longitude: number;
       latitude: number;
     } | null>(null);
-    const { reports } = useReports();
+    const { reportMapPins } = useReportMapPins();
     const { safetyLocations } = useSafetyLocations();
 
     useImperativeHandle(ref, () => ({
@@ -82,7 +82,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
       });
     }, [selectedLocation]);
 
-    const handleSelectReport = (report: ReportsDto) => {
+    const handleSelectReport = (report: ReportMapPinInput) => {
       mapRef?.current?.flyTo({
         center: [report.longitude, report.latitude],
         zoom: Math.max(mapRef?.current.getZoom(), 16),
@@ -138,7 +138,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
         )}
 
         {/* Flood report pins */}
-        {reports?.map((report) => (
+        {reportMapPins?.map((report) => (
           <Fragment key={report.id}>
             <Marker
               key={report.id}

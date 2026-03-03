@@ -181,7 +181,7 @@ export default function ReportFloodAlertDialog() {
         className="flex flex-col min-w-[750px] p-0 overflow-hidden gap-0 border-0 
       [&>button]:text-white [&>button]:hover:text-white [&>button]:opacity-70 [&>button]:hover:opacity-100"
         onCloseAutoFocus={() => {
-          mutate(SWR_KEYS.reports);
+          mutate(SWR_KEYS.reportMapPins);
           mutate(
             (key) => Array.isArray(key) && key[0] === SWR_KEYS.reportsAdmin,
           );

@@ -154,7 +154,7 @@ export default function CreateFloodAlertDialog() {
       setState({ status: 'success', errors: null });
       toast.success('Flood alert created successfully!');
       resetForm();
-      mutate(SWR_KEYS.reports);
+      mutate(SWR_KEYS.reportMapPins);
       mutate((key) => Array.isArray(key) && key[0] === SWR_KEYS.reportsAdmin);
       setOpen(false);
     } catch (err) {
