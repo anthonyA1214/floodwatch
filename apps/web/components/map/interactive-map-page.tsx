@@ -19,8 +19,6 @@ import {
 } from '@tabler/icons-react';
 import ReportedLocationPanel from './reported-location-panel';
 import ReportedLocationDrawer from './reported-location-drawer';
-import { useIsMobile } from '@/hooks/use-mobile';
-import { ReportedLocationPanelSkeleton } from './skeletons/reported-location-panel-skeleton';
 
 export type SelectedLocation = {
   longitude: number;
@@ -58,12 +56,12 @@ export default function InteractiveMapPage() {
                     onClose={() => setSelectedReportId(null)}
                   />
                 </div>
-                {/* <div className="flex lg:hidden flex-col h-full">
+                <div className="flex lg:hidden flex-col h-full w-full">
                   <ReportedLocationDrawer
                     reportId={selectedReportId}
                     onClose={() => setSelectedReportId(null)}
                   />
-                </div> */}
+                </div>
               </>
             )}
             <div className="flex-1 w-lg sm:flex-none max-w-sm ps-4 pt-4">

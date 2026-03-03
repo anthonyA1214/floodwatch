@@ -8,8 +8,6 @@ import { IconArticleOff } from '@tabler/icons-react';
 export default function LatestNewsReportSection() {
   const { news, isLoading } = useNews();
 
-  console.log('Latest news:', news);
-
   return (
     <section id="latest-news">
       <div className="flex flex-col gap-6 md:gap-10 py-20 max-w-7xl mx-auto px-4">

@@ -24,12 +24,7 @@ import {
 } from '@/components/ui/select';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Field, FieldLabel } from '@/components/ui/field';
-import {
-  IconAlertTriangle,
-  IconCurrentLocation,
-  IconMinus,
-  IconPlus,
-} from '@tabler/icons-react';
+import { IconCurrentLocation, IconMinus, IconPlus } from '@tabler/icons-react';
 import { useRef, useState } from 'react';
 import { Spinner } from '@/components/ui/spinner';
 import { useSWRConfig } from 'swr';
@@ -173,8 +168,7 @@ export default function ReportFloodAlertDialog() {
             text-[#FB2C36] hover:text-white hover:bg-[#FB2C36] border border-[#FB2C36] 
               rounded-md transition-colors px-2 2xl:px-4 py-1.5 text-xs md:text-sm whitespace-nowrap"
         >
-          <IconAlertTriangle className="w-[1.5em]! h-[1.5em]! shrink-0" />
-          <span className="hidden md:inline font-medium">REPORT FLOOD</span>
+          <span className="font-poppins font-medium">REPORT FLOOD</span>
         </button>
       </DialogTrigger>
       <DialogContent

@@ -15,13 +15,6 @@ const SEVERITY_CONFIG = {
   low: { icon: IconAlertCircleFilled },
 };
 
-// const SEVERITY_CONFIGs = {
-//   critical: { icon: <IconAlertOctagonFilled />, bg: '#FB2C36' },
-//   high: { icon: <IconAlertTriangleFilled />, bg: '#FF6900' },
-//   moderate: { icon: <IconAlertCircleFilled />, bg: '#F0B204' },
-//   low: { icon: <IconAlertCircleFilled />, bg: '#2B7FFF' },
-// };
-
 export const FloodMarker = ({
   severity,
   status,
