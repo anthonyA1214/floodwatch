@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  lint-staged:
+    hash: 12d71344112acb3743508e65ad0cd72b1bede1dbf03dc30fc7e3546e1817c2b9
+    path: patches/lint-staged.patch
+
 importers:
 
   .:
@@ -13,7 +18,7 @@ importers:
         version: 9.1.7
       lint-staged:
         specifier: ^16.3.0
-        version: 16.3.0
+        version: 16.3.0(patch_hash=12d71344112acb3743508e65ad0cd72b1bede1dbf03dc30fc7e3546e1817c2b9)
       prettier:
         specifier: ^3.6.2
         version: 3.6.2
@@ -14390,7 +14395,7 @@ snapshots:
       uc.micro: 2.1.0
     optional: true
 
-  lint-staged@16.3.0:
+  lint-staged@16.3.0(patch_hash=12d71344112acb3743508e65ad0cd72b1bede1dbf03dc30fc7e3546e1817c2b9):
     dependencies:
       commander: 14.0.3
       listr2: 9.0.5

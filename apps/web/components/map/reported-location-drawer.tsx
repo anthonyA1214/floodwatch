@@ -30,7 +30,7 @@ import { Separator } from '@/components/ui/separator';
 
 const snapPoints = ['0px', '355px', 1];
 
-export default function AffectedLocationsDrawer({
+export default function ReportedLocationDrawer({
   report,
   onClose,
 }: {

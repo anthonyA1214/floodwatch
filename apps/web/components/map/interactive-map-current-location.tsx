@@ -123,6 +123,8 @@ const InteractiveMapCurrentLocation = forwardRef<InteractiveMapHandle, Props>(
           }}
           mapStyle="https://tiles.openfreemap.org/styles/bright"
           onLoad={() => handleGeolocate()}
+          attributionControl={false}
+          dragRotate={false}
         >
           {/* boundary fill */}
           {caloocanGeoJSON && (

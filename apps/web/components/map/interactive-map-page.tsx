@@ -11,7 +11,6 @@ import { usePanel } from '@/contexts/panel-context';
 import NotificationPanel from '@/components/map/notification-panel';
 import { GoogleLinkToastHandler } from '@/components/shared/google-link-toast-handler';
 import { MapProvider } from 'react-map-gl/maplibre';
-import AffectedLocationsPanel from '@/components/map/affected-locations-panel';
 import { ReportsDto } from '@repo/schemas';
 import {
   IconCurrentLocation,
@@ -19,7 +18,8 @@ import {
   IconPlus,
   IconStack2,
 } from '@tabler/icons-react';
-import AffectedLocationsDrawer from '@/components/map/affected-locations-drawer';
+import ReportedLocationPanel from './reported-location-panel';
+import ReportedLocationDrawer from './reported-location-drawer';
 
 export type SelectedLocation = {
   longitude: number;
@@ -52,13 +52,13 @@ export default function InteractiveMapPage() {
             {selectedReport && (
               <>
                 <div className="hidden lg:flex flex-col h-full">
-                  <AffectedLocationsPanel
+                  <ReportedLocationPanel
                     report={selectedReport}
                     onClose={() => setSelectedReport(null)}
                   />
                 </div>
                 <div className="flex lg:hidden flex-col h-full">
-                  <AffectedLocationsDrawer
+                  <ReportedLocationDrawer
                     report={selectedReport}
                     onClose={() => setSelectedReport(null)}
                   />

@@ -103,6 +103,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
         }}
         mapStyle="https://tiles.openfreemap.org/styles/bright"
         attributionControl={false}
+        dragRotate={false}
       >
         {/* boundary fill */}
         {caloocanGeoJSON && (
@@ -146,7 +147,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
               anchor="bottom"
               onClick={() => handleSelectReport(report)}
             >
-              <FloodMarker severity={report.severity} />
+              <FloodMarker severity={report.severity} status={report.status} />
             </Marker>
             <RadiusCircle
               id={`${report.id}`}

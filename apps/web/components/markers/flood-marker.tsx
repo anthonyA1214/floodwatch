@@ -1,4 +1,7 @@
-import { SEVERITY_COLOR_MAP } from '@/lib/utils/get-color-map';
+import {
+  REPORT_STATUS_COLOR_MAP,
+  SEVERITY_COLOR_MAP,
+} from '@/lib/utils/get-color-map';
 import {
   IconAlertCircleFilled,
   IconAlertOctagonFilled,
@@ -21,11 +24,14 @@ const SEVERITY_CONFIG = {
 
 export const FloodMarker = ({
   severity,
+  status,
 }: {
   severity: 'critical' | 'high' | 'moderate' | 'low';
+  status?: 'verified' | 'unverified' | 'resolved';
 }) => {
   const { icon: Icon } = SEVERITY_CONFIG[severity] || SEVERITY_CONFIG.low;
   const color = SEVERITY_COLOR_MAP[severity] || SEVERITY_COLOR_MAP.low;
+  const statusColor = status ? REPORT_STATUS_COLOR_MAP[status] : undefined;
   const size = 32;
 
   return (
@@ -54,6 +60,23 @@ export const FloodMarker = ({
         }}
       >
         <Icon size={size * 0.55} stroke={1.8} />
+
+        {statusColor && (
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              right: 0,
+              width: 10,
+              height: 10,
+              borderRadius: '50%',
+              backgroundColor: statusColor,
+              border: '2px solid white',
+              boxShadow: `0 1px 4px ${statusColor}80`,
+              zIndex: 3,
+            }}
+          />
+        )}
       </div>
 
       {/* tail (THIS is now the true bottom) */}

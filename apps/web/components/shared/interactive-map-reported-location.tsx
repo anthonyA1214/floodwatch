@@ -36,6 +36,8 @@ export default function InteractiveMapReportedLocation({
         zoom: 13.5,
       }}
       mapStyle="https://tiles.openfreemap.org/styles/bright"
+      attributionControl={false}
+      dragRotate={false}
     >
       {/* boundary fill */}
       {caloocanGeoJSON && (

@@ -18,7 +18,7 @@ import {
 import PostComposer from '@/components/shared/post-composer';
 import PostCard from '@/components/shared/post-card';
 
-export default function AffectedLocationsPanel({
+export default function ReportedLocationPanel({
   report,
   onClose,
 }: {
