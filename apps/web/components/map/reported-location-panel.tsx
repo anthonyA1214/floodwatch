@@ -19,8 +19,7 @@ import {
   REPORT_STATUS_COLOR_MAP,
   SEVERITY_COLOR_MAP,
 } from '@/lib/utils/get-color-map';
-import PostComposer from '@/components/shared/post-composer';
-import PostCard from '@/components/shared/post-card';
+import PostComposer from '@/components/shared/comment-composer';
 import { useReportDetail } from '@/hooks/use-report-detail';
 import { Separator } from '../ui/separator';
 import {
@@ -32,6 +31,7 @@ import Avatar from 'boring-avatars';
 import { Button } from '../ui/button';
 import { ReportedLocationPanelSkeleton } from './skeletons/reported-location-panel-skeleton';
 import NoPhotoEmpty from '../shared/no-photo-empty';
+import CommentsList from '../shared/comments-list';
 
 export default function ReportedLocationPanel({
   reportId,
@@ -71,7 +71,11 @@ export default function ReportedLocationPanel({
       {isLoading || !reportDetail ? (
         <ReportedLocationPanelSkeleton />
       ) : (
-        <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto">
+        <div
+          ref={scrollRef}
+          id="report-panel-scroll"
+          className="flex-1 min-h-0 overflow-y-auto"
+        >
           {/* image */}
           <div className="aspect-video w-full relative bg-muted shrink-0 ">
             {reportDetail?.image ? (
@@ -293,22 +297,12 @@ export default function ReportedLocationPanel({
           </div>
 
           {/* comments */}
-          <div className="flex flex-col gap-6 p-3 lg:p-4">
+          <div className="flex flex-col gap-4 p-3 lg:p-4">
             <PostComposer />
 
-            <PostCard
-              author={{ name: 'Pedro Santos' }}
-              content="Volunteers are needed to help with sandbagging efforts in flood-prone areas. Please contact the local barangay office if you can assist."
-              timestamp="1 day ago"
-              reportCount={2}
-            />
-
-            <PostCard
-              author={{ name: 'Juan Dela Cruz' }}
-              content="Heavy rainfall in Zapote area, its starting to accumulate water. Please be careful if you're heading this way! #Flood"
-              imageUrl="/images/before_flood_image.jpg"
-              timestamp="2 hrs ago"
-              reportCount={3}
+            <CommentsList
+              reportId={reportId}
+              scrollContainerId="report-panel-scroll"
             />
           </div>
         </div>

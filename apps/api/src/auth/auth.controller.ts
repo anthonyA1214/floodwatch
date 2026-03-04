@@ -44,7 +44,7 @@ export class AuthController {
       this.configService.getOrThrow('NODE_ENV') === 'production';
     setAuthCookies(res, access_token, refresh_token, deviceId, isProduction);
 
-    return { user: req.user };
+    return { user: req.user, access_token, refresh_token, deviceId };
   }
 
   @Post('refresh')

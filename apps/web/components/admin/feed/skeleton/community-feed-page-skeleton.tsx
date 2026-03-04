@@ -1,5 +1,5 @@
+import CommentCardsSkeleton from '@/components/shared/skeletons/comment-cards-skeleton';
 import { Skeleton } from '@/components/ui/skeleton';
-import { PostCardSkeleton } from '@/components/admin/feed/skeleton/post-card-skeleton';
 
 export default function CommunityFeedPageSkeleton() {
   return (
@@ -40,9 +40,7 @@ export default function CommunityFeedPageSkeleton() {
             </div>
 
             {/* Post cards */}
-            <PostCardSkeleton hasImage={false} />
-            <PostCardSkeleton hasImage={true} />
-            <PostCardSkeleton hasImage={true} />
+            <CommentCardsSkeleton />
           </div>
         </div>
 

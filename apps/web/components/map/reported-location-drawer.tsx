@@ -21,8 +21,7 @@ import { format, formatDistanceToNow } from 'date-fns';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { Drawer } from 'vaul';
-import PostComposer from '@/components/shared/post-composer';
-import PostCard from '@/components/shared/post-card';
+import PostComposer from '@/components/shared/comment-composer';
 import {
   Avatar as UIAvatar,
   AvatarFallback,
@@ -34,6 +33,7 @@ import { useReportDetail } from '@/hooks/use-report-detail';
 import NoPhotoEmpty from '../shared/no-photo-empty';
 import { Button } from '../ui/button';
 import { ReportedLocationDrawerSkeleton } from './skeletons/reported-location-drawer-skeleton';
+import CommentsList from '../shared/comments-list';
 
 const snapPoints = ['0px', '355px', 1];
 
@@ -100,6 +100,7 @@ export default function ReportedLocationDrawer({
         ) : (
           <div
             ref={scrollRef}
+            id="report-drawer-scroll"
             className={clsx(
               'flex flex-col max-w-lg mx-auto w-full pt-5 gap-2',
               {
@@ -340,22 +341,12 @@ export default function ReportedLocationDrawer({
             </div>
 
             {/* comments */}
-            <div className="flex flex-col gap-6 p-3 lg:p-4">
+            <div className="flex flex-col gap-4 p-3 lg:p-4">
               <PostComposer />
 
-              <PostCard
-                author={{ name: 'Pedro Santos' }}
-                content="Volunteers are needed to help with sandbagging efforts in flood-prone areas. Please contact the local barangay office if you can assist."
-                timestamp="1 day ago"
-                reportCount={2}
-              />
-
-              <PostCard
-                author={{ name: 'Juan Dela Cruz' }}
-                content="Heavy rainfall in Zapote area, its starting to accumulate water. Please be careful if you're heading this way! #Flood"
-                imageUrl="/images/before_flood_image.jpg"
-                timestamp="2 hrs ago"
-                reportCount={3}
+              <CommentsList
+                reportId={reportId}
+                scrollContainerId="report-drawer-scroll"
               />
             </div>
           </div>

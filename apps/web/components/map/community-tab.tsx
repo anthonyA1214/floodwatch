@@ -1,5 +1,5 @@
-import PostComposer from '@/components/shared/post-composer';
-import PostCard from '@/components/shared/post-card';
+import PostComposer from '@/components/shared/comment-composer';
+import PostCard from '@/components/shared/comment-card';
 
 export default function CommunityTab() {
   return (
