@@ -2,6 +2,7 @@
 
 import { usePathname } from 'next/navigation';
 import {
+  IconArchive,
   IconClipboard,
   IconMap,
   IconReportAnalytics,
@@ -35,6 +36,11 @@ export function NavItems() {
       title: 'FLOOD REPORTS',
       url: '/admin/reports',
       icon: IconReportAnalytics,
+    },
+    {
+      title: 'ARCHIVE & RECORDS',
+      url: '/admin/archive',
+      icon: IconArchive,
     },
     {
       title: 'SAFETY LOCATIONS',
