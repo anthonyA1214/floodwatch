@@ -283,11 +283,11 @@ export class ReportsService {
     return { message: 'Report created and verified successfully' };
   }
 
-  async verifyReportStatus(id: number) {
+  async verifyReportStatus(reportId: number, userId: number) {
     const report = await this.db
       .select()
       .from(reports)
-      .where(eq(reports.id, id))
+      .where(eq(reports.id, reportId))
       .limit(1);
 
     if (!report.length) {
@@ -296,8 +296,8 @@ export class ReportsService {
 
     await this.db
       .update(reports)
-      .set({ status: 'verified', updatedAt: new Date() })
-      .where(eq(reports.id, id));
+      .set({ verifierId: userId, status: 'verified', updatedAt: new Date() })
+      .where(eq(reports.id, reportId));
 
     return { message: 'Report verified successfully' };
   }

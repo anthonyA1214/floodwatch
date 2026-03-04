@@ -145,8 +145,11 @@ export class ReportsController {
   @Patch(':id/verify')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard, UserStatusGuard)
-  async verifyReportStatus(@Param('id', ParseIntPipe) id: number) {
-    return await this.reportsService.verifyReportStatus(id);
+  async verifyReportStatus(
+    @Param('id', ParseIntPipe) id: number,
+    @Request() req: AuthRequest,
+  ) {
+    return await this.reportsService.verifyReportStatus(id, req.user.id);
   }
 
   @Delete(':id/delete')
