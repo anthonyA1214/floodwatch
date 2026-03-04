@@ -25,6 +25,9 @@ import { useLocationsPanel } from '@/contexts/locations-panel-context';
 import AffectedLocationListPanel from './affected-location-list-panel';
 import SafetyLocationsListPanel from './safety-location-list-panel';
 
+import AffectedLocationListDrawer from './affected-location-list-drawer';
+import SafetyLocationsListDrawer from './safety-location-list-drawer';
+
 export type SelectedLocation = {
   longitude: number;
   latitude: number;
@@ -42,7 +45,7 @@ export default function InteractiveMapPage() {
 
   const { locationsActivePanel, close: closeLocations } = useLocationsPanel();
 
-  const hasLeftPanel = Boolean(selectedReport || locationsActivePanel);
+  const hasDesktopLeftPanel = Boolean(selectedReport || locationsActivePanel);
 
   return (
     <MapProvider>
@@ -50,39 +53,50 @@ export default function InteractiveMapPage() {
         <InteractiveMap
           ref={interactiveMapRef}
           selectedLocation={selectedLocation}
-          // ✅ marker click should close list panels and open details
           onSelectReport={(report) => {
             closeLocations();
             setSelectedReport(report);
           }}
         />
 
-        {/* Overlay layer (does not block map by default) */}
+        {/* ✅ MOBILE DRAWERS (do NOT take horizontal space) */}
+        {selectedReport ? (
+          <div className="lg:hidden pointer-events-auto">
+            <AffectedLocationsDrawer
+              report={selectedReport}
+              onClose={() => setSelectedReport(null)}
+            />
+          </div>
+        ) : null}
+
+        {!selectedReport && locationsActivePanel === 'affected' ? (
+          <div className="lg:hidden pointer-events-auto">
+            <AffectedLocationListDrawer onClose={closeLocations} />
+          </div>
+        ) : null}
+
+        {!selectedReport && locationsActivePanel === 'safety' ? (
+          <div className="lg:hidden pointer-events-auto">
+            <SafetyLocationsListDrawer onClose={closeLocations} />
+          </div>
+        ) : null}
+
+        {/* Overlay layer */}
         <div className="absolute inset-0 flex items-start gap-4 pointer-events-none">
           {/* LEFT SLOT */}
           <div className="flex-1 min-w-0 h-full relative pointer-events-none">
             <div className="absolute inset-0 flex items-start gap-4 pointer-events-none">
-              {/* LEFT PANEL COLUMN */}
-              {hasLeftPanel ? (
-                <div className="h-full w-full max-w-lg p-0 pointer-events-auto min-h-0 flex flex-col">
-                  {/* If report selected: show details */}
+              {/* ✅ DESKTOP LEFT PANEL ONLY */}
+              {hasDesktopLeftPanel ? (
+                <div className="hidden lg:flex h-full w-full max-w-lg p-0 pointer-events-auto min-h-0 flex-col">
                   {selectedReport ? (
                     <div className="h-full min-h-0 flex flex-col">
-                      <div className="hidden lg:flex h-full min-h-0">
-                        <AffectedLocationsPanel
-                          report={selectedReport}
-                          onClose={() => setSelectedReport(null)}
-                        />
-                      </div>
-                      <div className="flex lg:hidden h-full min-h-0">
-                        <AffectedLocationsDrawer
-                          report={selectedReport}
-                          onClose={() => setSelectedReport(null)}
-                        />
-                      </div>
+                      <AffectedLocationsPanel
+                        report={selectedReport}
+                        onClose={() => setSelectedReport(null)}
+                      />
                     </div>
                   ) : (
-                    // Else: show list panels
                     <div className="h-full min-h-0 flex flex-col">
                       {locationsActivePanel === 'affected' && (
                         <AffectedLocationListPanel
@@ -101,9 +115,9 @@ export default function InteractiveMapPage() {
                 </div>
               ) : null}
 
-              {/* SEARCH COLUMN */}
-              <div className="pointer-events-auto pt-4 pl-4">
-                <div className="w-full max-w-sm">
+              {/* ✅ SEARCH (FULL WIDTH on mobile) */}
+              <div className="pointer-events-auto pt-4 px-4 w-full lg:w-auto lg:px-0 lg:pl-4">
+                <div className="w-full lg:max-w-sm">
                   <SearchBar onSelectLocation={setSelectedLocation} />
                 </div>
               </div>
