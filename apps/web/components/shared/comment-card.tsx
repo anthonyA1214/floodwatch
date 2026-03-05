@@ -5,32 +5,40 @@ import {
 } from '@/components/ui/avatar';
 import { IconClock, IconFlag, IconTrash } from '@tabler/icons-react';
 import Avatar from 'boring-avatars';
+import { format } from 'date-fns';
 import Image from 'next/image';
 
 interface PostCardProps {
   author: {
     name: string;
-    avatarUrl?: string;
+    profilePicture?: string;
   };
   content: string;
   imageUrl?: string;
-  timestamp: string;
+  timestamp: Date;
   reportCount: number;
+  isAdmin?: boolean;
+  isOwner?: boolean;
 }
 
-export default function PostCard({
+export default function CommentCard({
   author,
   content,
   imageUrl,
   timestamp,
   reportCount,
+  isAdmin = false,
+  isOwner = false,
 }: PostCardProps) {
+  const formattedTime = timestamp ? format(timestamp, 'hh:mm a') : '';
+  const formattedDate = timestamp ? format(timestamp, 'MMMM dd, yyyy') : '';
+
   return (
     <div className="flex flex-col rounded-2xl p-3 sm:p-4 border gap-3 sm:gap-4">
       {/* 1st */}
       <div className="flex gap-2 items-center">
         <UIAvatar className="size-8 sm:size-10 rounded-full shrink-0">
-          <AvatarImage src={author.avatarUrl} />
+          <AvatarImage src={author.profilePicture} />
           <AvatarFallback>
             <Avatar
               name={author.name}
@@ -54,14 +62,18 @@ export default function PostCard({
                 <span>{reportCount}</span>
               </div>
 
-              <button className="rounded-full hover:bg-gray-100 p-1.5 sm:p-2 transition">
-                <IconTrash className="w-[1.5em]! h-[1.5em]!" />
-              </button>
+              {(isAdmin || isOwner) && (
+                <button className="rounded-full hover:bg-gray-100 p-1.5 sm:p-2 transition">
+                  <IconTrash className="w-[1.5em]! h-[1.5em]!" />
+                </button>
+              )}
             </div>
           </div>
           <div className="flex items-center gap-1 text-xs text-gray-600">
             <IconClock className="w-[1.5em]! h-[1.5em]!" />
-            <span>{timestamp}</span>
+            <span>
+              {formattedDate}, {formattedTime}
+            </span>
           </div>
         </div>
       </div>

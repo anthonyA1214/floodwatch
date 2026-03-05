@@ -1,4 +1,3 @@
-// interactive-map-page.tsx
 'use client';
 
 import SearchBar from '@/components/map/search-bar';
@@ -12,21 +11,14 @@ import { usePanel } from '@/contexts/panel-context';
 import NotificationPanel from '@/components/map/notification-panel';
 import { GoogleLinkToastHandler } from '@/components/shared/google-link-toast-handler';
 import { MapProvider } from 'react-map-gl/maplibre';
-import AffectedLocationsPanel from '@/components/map/affected-locations-panel';
-import { ReportsDto } from '@repo/schemas';
 import {
   IconCurrentLocation,
   IconMinus,
   IconPlus,
   IconStack2,
 } from '@tabler/icons-react';
-import AffectedLocationsDrawer from '@/components/map/affected-locations-drawer';
-import { useLocationsPanel } from '@/contexts/locations-panel-context';
-import AffectedLocationListPanel from './affected-location-list-panel';
-import SafetyLocationsListPanel from './safety-location-list-panel';
-
-import AffectedLocationListDrawer from './affected-location-list-drawer';
-import SafetyLocationsListDrawer from './safety-location-list-drawer';
+import ReportedLocationPanel from './reported-location-panel';
+import ReportedLocationDrawer from './reported-location-drawer';
 
 export type SelectedLocation = {
   longitude: number;
@@ -38,14 +30,10 @@ export type SelectedLocation = {
 export default function InteractiveMapPage() {
   const [selectedLocation, setSelectedLocation] =
     useState<SelectedLocation | null>(null);
-  const [selectedReport, setSelectedReport] = useState<ReportsDto | null>(null);
+  const [selectedReportId, setSelectedReportId] = useState<number | null>(null);
   const [showLegend, setShowLegend] = useState(false);
   const { activePanel } = usePanel();
   const interactiveMapRef = useRef<InteractiveMapHandle>(null);
-
-  const { locationsActivePanel, close: closeLocations } = useLocationsPanel();
-
-  const hasDesktopLeftPanel = Boolean(selectedReport || locationsActivePanel);
 
   return (
     <MapProvider>
@@ -53,79 +41,37 @@ export default function InteractiveMapPage() {
         <InteractiveMap
           ref={interactiveMapRef}
           selectedLocation={selectedLocation}
-          onSelectReport={(report) => {
-            closeLocations();
-            setSelectedReport(report);
-          }}
+          onSelectReport={(report) => setSelectedReportId(report.id)}
         />
 
-        {/* ✅ MOBILE DRAWERS (do NOT take horizontal space) */}
-        {selectedReport ? (
-          <div className="lg:hidden pointer-events-auto">
-            <AffectedLocationsDrawer
-              report={selectedReport}
-              onClose={() => setSelectedReport(null)}
-            />
-          </div>
-        ) : null}
-
-        {!selectedReport && locationsActivePanel === 'affected' ? (
-          <div className="lg:hidden pointer-events-auto">
-            <AffectedLocationListDrawer onClose={closeLocations} />
-          </div>
-        ) : null}
-
-        {!selectedReport && locationsActivePanel === 'safety' ? (
-          <div className="lg:hidden pointer-events-auto">
-            <SafetyLocationsListDrawer onClose={closeLocations} />
-          </div>
-        ) : null}
-
-        {/* Overlay layer */}
-        <div className="absolute inset-0 flex items-start gap-4 pointer-events-none">
-          {/* LEFT SLOT */}
-          <div className="flex-1 min-w-0 h-full relative pointer-events-none">
-            <div className="absolute inset-0 flex items-start gap-4 pointer-events-none">
-              {/* ✅ DESKTOP LEFT PANEL ONLY */}
-              {hasDesktopLeftPanel ? (
-                <div className="hidden lg:flex h-full w-full max-w-lg p-0 pointer-events-auto min-h-0 flex-col">
-                  {selectedReport ? (
-                    <div className="h-full min-h-0 flex flex-col">
-                      <AffectedLocationsPanel
-                        report={selectedReport}
-                        onClose={() => setSelectedReport(null)}
-                      />
-                    </div>
-                  ) : (
-                    <div className="h-full min-h-0 flex flex-col">
-                      {locationsActivePanel === 'affected' && (
-                        <AffectedLocationListPanel
-                          className="h-full"
-                          onClose={closeLocations}
-                        />
-                      )}
-                      {locationsActivePanel === 'safety' && (
-                        <SafetyLocationsListPanel
-                          className="h-full"
-                          onClose={closeLocations}
-                        />
-                      )}
-                    </div>
-                  )}
+        {/* Top bar: search + controls in one row */}
+        <div className="absolute top-0 left-0 right-0 flex items-start gap-4 pointer-events-none h-full">
+          {/* Search bar + affected panel share the left flex slot */}
+          <div className="pointer-events-none flex-1 min-w-0 flex items-start h-full">
+            {selectedReportId && (
+              <>
+                <div className="hidden lg:flex flex-col h-full w-full max-w-lg">
+                  <ReportedLocationPanel
+                    reportId={selectedReportId}
+                    onClose={() => setSelectedReportId(null)}
+                  />
                 </div>
-              ) : null}
-
-              {/* ✅ SEARCH (FULL WIDTH on mobile) */}
-              <div className="pointer-events-auto pt-4 px-4 w-full lg:w-auto lg:px-0 lg:pl-4">
-                <div className="w-full lg:max-w-sm">
-                  <SearchBar onSelectLocation={setSelectedLocation} />
+                <div className="flex lg:hidden flex-col h-full w-full">
+                  <ReportedLocationDrawer
+                    reportId={selectedReportId}
+                    onClose={() => setSelectedReportId(null)}
+                  />
                 </div>
-              </div>
+              </>
+            )}
+            <div className="flex-1 w-lg sm:flex-none max-w-sm ps-4 pt-4">
+              <SearchBar onSelectLocation={setSelectedLocation} />
             </div>
           </div>
 
-          {/* RIGHT CONTROLS */}
+          {/* Map controls — fixed to right */}
           <div className="pointer-events-none flex flex-col gap-2 h-fit pt-4 pe-4">
+            {/* zoom buttons */}
             <div className="flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 pointer-events-auto">
               <button
                 onClick={() => interactiveMapRef.current?.zoomIn()}
@@ -146,6 +92,7 @@ export default function InteractiveMapPage() {
               </button>
             </div>
 
+            {/* geolocate */}
             <div className="flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 pointer-events-auto">
               <button
                 onClick={() => interactiveMapRef.current?.geolocate()}
@@ -159,6 +106,7 @@ export default function InteractiveMapPage() {
               </button>
             </div>
 
+            {/* toggle legend */}
             <div className="relative flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 pointer-events-auto">
               <button
                 onClick={() => setShowLegend(!showLegend)}
@@ -176,13 +124,13 @@ export default function InteractiveMapPage() {
             </div>
           </div>
 
-          {/* TOP-RIGHT PANELS */}
           {activePanel && (
-            <div className="absolute z-20 flex gap-4 md:top-0 md:right-0 md:p-4 pointer-events-none">
-              <div className="pointer-events-auto">
-                {activePanel === 'notification' && <NotificationPanel />}
-                {activePanel === 'profile' && <ProfilePanel />}
-              </div>
+            <div
+              className="absolute z-10 flex gap-4
+              inset-0 md:inset-auto md:top-0 md:right-0 md:p-4"
+            >
+              {activePanel === 'notification' && <NotificationPanel />}
+              {activePanel === 'profile' && <ProfilePanel />}
             </div>
           )}
         </div>

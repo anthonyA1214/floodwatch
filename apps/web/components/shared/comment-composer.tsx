@@ -13,7 +13,7 @@ import { useUser } from '@/hooks/use-user';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 
-export default function PostComposer() {
+export default function CommentComposer() {
   const { user, isLoading } = useUser();
 
   const isLoggedIn = !isLoading && !!user;

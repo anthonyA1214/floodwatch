@@ -4,6 +4,7 @@ import {
   ReportFloodAlertInput,
   ReportQueryInput,
 } from '@repo/schemas';
+import { aliasedTable } from 'drizzle-orm';
 import { and, count, desc, eq, like, or, sql } from 'drizzle-orm';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { DRIZZLE } from 'src/drizzle/drizzle-connection';
@@ -26,6 +27,23 @@ export class ReportsService {
     return await this.db
       .select({
         id: reports.id,
+        latitude: reports.latitude,
+        longitude: reports.longitude,
+        range: reports.range,
+        severity: reports.severity,
+        status: reports.status,
+      })
+      .from(reports)
+      .orderBy(desc(reports.createdAt));
+  }
+
+  async findOnePublic(reportId: number) {
+    const verifierUser = aliasedTable(users, 'verifier_user');
+    const verifierProfile = aliasedTable(profileInfo, 'verifier_profile');
+
+    const [data] = await this.db
+      .select({
+        id: reports.id,
         location: reports.location,
         description: reports.description,
         latitude: reports.latitude,
@@ -41,11 +59,21 @@ export class ReportsService {
           name: sql<string>`CONCAT(${profileInfo.firstName}, ' ', ${profileInfo.lastName})`,
           profilePicture: profileInfo.profilePicture,
         },
+        verifier: {
+          id: verifierUser.id,
+          email: verifierUser.email,
+          name: sql<string>`CONCAT(${verifierProfile.firstName}, ' ', ${verifierProfile.lastName})`,
+          profilePicture: verifierProfile.profilePicture,
+        },
       })
       .from(reports)
       .leftJoin(users, eq(reports.userId, users.id))
       .leftJoin(profileInfo, eq(users.id, profileInfo.userId))
-      .orderBy(desc(reports.createdAt));
+      .leftJoin(verifierUser, eq(reports.verifierId, verifierUser.id))
+      .leftJoin(verifierProfile, eq(reports.verifierId, verifierProfile.userId))
+      .where(eq(reports.id, reportId));
+
+    return data;
   }
 
   async findAll(reportQueryDto: ReportQueryInput) {
@@ -255,11 +283,11 @@ export class ReportsService {
     return { message: 'Report created and verified successfully' };
   }
 
-  async verifyReportStatus(id: number) {
+  async verifyReportStatus(reportId: number, userId: number) {
     const report = await this.db
       .select()
       .from(reports)
-      .where(eq(reports.id, id))
+      .where(eq(reports.id, reportId))
       .limit(1);
 
     if (!report.length) {
@@ -268,8 +296,8 @@ export class ReportsService {
 
     await this.db
       .update(reports)
-      .set({ status: 'verified', updatedAt: new Date() })
-      .where(eq(reports.id, id));
+      .set({ verifierId: userId, status: 'verified', updatedAt: new Date() })
+      .where(eq(reports.id, reportId));
 
     return { message: 'Report verified successfully' };
   }

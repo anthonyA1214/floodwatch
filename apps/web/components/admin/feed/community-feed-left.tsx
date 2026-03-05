@@ -1,6 +1,6 @@
 import { ScrollArea } from '@/components/ui/scroll-area';
-import PostComposer from '@/components/shared/post-composer';
-import PostCard from '@/components/shared/post-card';
+import PostComposer from '@/components/shared/comment-composer';
+import PostCard from '@/components/shared/comment-card';
 import { IconMapPin } from '@tabler/icons-react';
 
 export default function CommunityFeedLeft() {
@@ -21,7 +21,7 @@ export default function CommunityFeedLeft() {
           {/* post composer */}
           <PostComposer />
 
-          {/* feed items */}
+          {/* feed items
           <PostCard
             author={{ name: 'Pedro Santos' }}
             content="Volunteers are needed to help with sandbagging efforts in flood-prone areas. Please contact the local barangay office if you can assist."
@@ -43,7 +43,7 @@ export default function CommunityFeedLeft() {
             imageUrl="/images/after_flood_image.jpg"
             timestamp="24 hrs ago"
             reportCount={5}
-          />
+          /> */}
         </div>
       </ScrollArea>
     </div>

@@ -148,6 +148,8 @@ const InteractiveMapLocation = forwardRef<InteractiveMapHandle, Props>(
         onClick={handleMapClick}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
+        attributionControl={false}
+        dragRotate={false}
       >
         {/* boundary fill */}
         {caloocanGeoJSON && (
