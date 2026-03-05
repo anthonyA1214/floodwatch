@@ -1,5 +1,6 @@
 'use client';
 
+import '@/styles/maplibre-popup-overrides.css';
 import {
   forwardRef,
   Fragment,
@@ -8,7 +9,13 @@ import {
   useRef,
   useState,
 } from 'react';
-import Map, { Layer, Marker, Source, type MapRef } from 'react-map-gl/maplibre';
+import Map, {
+  Layer,
+  Marker,
+  Source,
+  type MapRef,
+  Popup,
+} from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { ReportMapPinInput } from '@repo/schemas';
 import RadiusCircle from '@/components/shared/radius-circle';
@@ -20,6 +27,8 @@ import { useReportMapPins } from '@/hooks/use-report-map-pins';
 import { useBoundary } from '@/hooks/use-boundary';
 import { useSafetyLocations } from '@/hooks/use-safety';
 import { SafetyMarker } from '../markers/safety-marker';
+import FloodReportPopup from './flood-report-popup';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 type SelectedLocation = {
   longitude: number;
@@ -48,6 +57,10 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
     } | null>(null);
     const { reportMapPins } = useReportMapPins();
     const { safetyLocations } = useSafetyLocations();
+    const isMobile = useIsMobile();
+
+    const [selectedReport, setSelectedReport] =
+      useState<ReportMapPinInput | null>(null);
 
     useImperativeHandle(ref, () => ({
       zoomIn: () => mapRef.current?.zoomIn(),
@@ -87,8 +100,11 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
         center: [report.longitude, report.latitude],
         zoom: Math.max(mapRef?.current.getZoom(), 16),
         essential: true,
+        padding: isMobile
+          ? { top: 0, bottom: 350, left: 0, right: 0 } // push pin upward, making room below
+          : { top: 100, bottom: 0, left: 0, right: 0 }, // center on pin
       });
-      onSelectReport?.(report);
+      setSelectedReport(report);
     };
 
     return (
@@ -191,6 +207,27 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
           >
             <SearchLocationMarker />
           </Marker>
+        )}
+
+        {selectedReport && (
+          <Popup
+            longitude={selectedReport.longitude}
+            latitude={selectedReport.latitude}
+            anchor={isMobile ? 'top' : 'bottom'}
+            offset={isMobile ? 10 : 50}
+            maxWidth="none"
+            onClose={() => setSelectedReport(null)}
+            closeOnClick={false}
+          >
+            <FloodReportPopup
+              onClose={() => setSelectedReport(null)}
+              reportId={selectedReport.id}
+              onSelectReport={() => {
+                onSelectReport?.(selectedReport);
+                setSelectedReport(null);
+              }}
+            />
+          </Popup>
         )}
       </Map>
     );

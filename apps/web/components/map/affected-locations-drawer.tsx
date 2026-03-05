@@ -13,6 +13,7 @@ import {
 } from '../ui/select';
 import { Separator } from '../ui/separator';
 import { IconAlertTriangle } from '@tabler/icons-react';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 const snapPoints = ['0px', '355px', 1];
 
@@ -53,6 +54,10 @@ export default function AffectedLocationsDrawer({
         className="z-1 absolute flex flex-col bg-white border border-gray-200 border-b-none rounded-t-[10px] bottom-0 left-0 right-0 h-full max-h-full -mx-px"
       >
         <Drawer.Handle className="w-16! my-3! rounded-full!" />
+
+        <VisuallyHidden>
+          <Drawer.Title>Affected Locations</Drawer.Title>
+        </VisuallyHidden>
 
         <div
           className={clsx('flex flex-col max-w-lg mx-auto w-full pt-5 gap-2', {

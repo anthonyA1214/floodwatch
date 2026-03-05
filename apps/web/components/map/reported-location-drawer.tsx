@@ -34,6 +34,7 @@ import NoPhotoEmpty from '../shared/no-photo-empty';
 import { Button } from '../ui/button';
 import { ReportedLocationDrawerSkeleton } from './skeletons/reported-location-drawer-skeleton';
 import CommentsList from '../shared/comments-list';
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 const snapPoints = ['0px', '355px', 1];
 
@@ -88,6 +89,10 @@ export default function ReportedLocationDrawer({
       onOpenChange={handleOpenChange}
     >
       <Drawer.Overlay className="absolute inset-0 bg-black/40 pointer-events-none" />
+
+      <VisuallyHidden>
+        <Drawer.Title>Reported Location</Drawer.Title>
+      </VisuallyHidden>
 
       <Drawer.Content
         data-testid="content"

@@ -32,7 +32,7 @@ export function MapOverlayProvider({
   };
 
   const openLocations = (type: 'affected' | 'safety') => {
-    setActiveOverlay({ type });
+    setActiveOverlay((current) => (current?.type === type ? null : { type }));
   };
 
   const toggle = (type: 'profile' | 'notification') => {

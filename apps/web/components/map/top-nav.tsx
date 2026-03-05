@@ -18,9 +18,10 @@ import { useUser } from '@/hooks/use-user';
 import { Skeleton } from '@/components/ui/skeleton';
 import ReportFloodAlertDialog from './report-flood-alert-dialog';
 import { useMapOverlay } from '@/contexts/map-overlay-context';
+import { cn } from '@/lib/utils';
 
 export default function TopNav() {
-  const { toggle, openLocations } = useMapOverlay();
+  const { toggle, openLocations, activeOverlay } = useMapOverlay();
   const { user, isLoading } = useUser();
 
   return (
@@ -36,15 +37,26 @@ export default function TopNav() {
           </Link>
         </div>
 
-        {/* tabs and locations */}
-        <div className="no-scrollbar basis-full 2xl:basis-auto flex items-center gap-4 order-last 2xl:order-0">
-          <button
-            className="flex items-center justify-center gap-2 text-white 
+        {/* "flex items-center justify-center gap-2 text-white 
           bg-white/10 border border-white/10 
             px-2 md:px-4 py-1.5 rounded-lg text-xs md:text-sm
             hover:bg-white/20 hover:border-white/20
           active:bg-white/30
-            transition-colors duration-200 shrink-0 whitespace-nowrap"
+            transition-colors duration-200 shrink-0 whitespace-nowrap" */}
+
+        {/* tabs and locations */}
+        <div className="no-scrollbar basis-full 2xl:basis-auto flex items-center gap-4 order-last 2xl:order-0">
+          <button
+            className={cn(
+              'flex items-center justify-center gap-2 text-white',
+              'bg-white/10 border border-white/10',
+              'px-2 md:px-4 py-1.5 rounded-lg text-xs md:text-sm',
+              'hover:bg-white/20 hover:border-white/20',
+              'active:bg-white/30',
+              'transition-colors duration-200 shrink-0 whitespace-nowrap',
+              activeOverlay?.type === 'affected' &&
+                'bg-white/30 border-white/30',
+            )}
             onClick={() => openLocations('affected')}
           >
             <IconMapPinExclamation className="w-[1.5em]! h-[1.5em]!" />
@@ -52,12 +64,15 @@ export default function TopNav() {
           </button>
 
           <button
-            className="flex items-center justify-center gap-2 text-white 
-          bg-white/10 border border-white/10 
-            px-2 md:px-4 py-1.5 rounded-lg text-xs md:text-sm
-          hover:bg-white/20 hover:border-white/20
-          active:bg-white/30
-            transition-colors duration-200 shrink-0 whitespace-nowrap"
+            className={cn(
+              'flex items-center justify-center gap-2 text-white',
+              'bg-white/10 border border-white/10',
+              'px-2 md:px-4 py-1.5 rounded-lg text-xs md:text-sm',
+              'hover:bg-white/20 hover:border-white/20',
+              'active:bg-white/30',
+              'transition-colors duration-200 shrink-0 whitespace-nowrap',
+              activeOverlay?.type === 'safety' && 'bg-white/30 border-white/30',
+            )}
             onClick={() => openLocations('safety')}
           >
             <IconShieldPin className="w-[1.5em]! h-[1.5em]!" />
