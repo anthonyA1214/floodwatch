@@ -13,14 +13,14 @@ import {
   IconMapPinExclamation,
   IconShieldPin,
 } from '@tabler/icons-react';
-import { usePanel } from '@/contexts/panel-context';
 import AuthButtons from '@/components/shared/auth-buttons';
 import { useUser } from '@/hooks/use-user';
 import { Skeleton } from '@/components/ui/skeleton';
 import ReportFloodAlertDialog from './report-flood-alert-dialog';
+import { useMapOverlay } from '@/contexts/map-overlay-context';
 
 export default function TopNav() {
-  const { toggle } = usePanel();
+  const { toggle, openLocations } = useMapOverlay();
   const { user, isLoading } = useUser();
 
   return (
@@ -45,9 +45,10 @@ export default function TopNav() {
             hover:bg-white/20 hover:border-white/20
           active:bg-white/30
             transition-colors duration-200 shrink-0 whitespace-nowrap"
+            onClick={() => openLocations('affected')}
           >
             <IconMapPinExclamation className="w-[1.5em]! h-[1.5em]!" />
-            <span className="font-medium">AFFECTED LOCATIONS</span>
+            <span className="font-medium"> AFFECTED LOCATIONS</span>
           </button>
 
           <button
@@ -57,6 +58,7 @@ export default function TopNav() {
           hover:bg-white/20 hover:border-white/20
           active:bg-white/30
             transition-colors duration-200 shrink-0 whitespace-nowrap"
+            onClick={() => openLocations('safety')}
           >
             <IconShieldPin className="w-[1.5em]! h-[1.5em]!" />
             <span className="font-medium">SAFETY LOCATIONS</span>

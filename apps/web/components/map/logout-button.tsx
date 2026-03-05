@@ -1,6 +1,6 @@
 'use client';
 
-import { usePanel } from '@/contexts/panel-context';
+import { useMapOverlay } from '@/contexts/map-overlay-context';
 import { useUser } from '@/hooks/use-user';
 import { logout } from '@/lib/services/auth/logout';
 import { IconLogout } from '@tabler/icons-react';
@@ -10,7 +10,7 @@ import { useState } from 'react';
 export default function LogoutButton() {
   const [isPending, setIsPending] = useState(false);
   const router = useRouter();
-  const { close } = usePanel();
+  const { close } = useMapOverlay();
   const { mutateUser } = useUser();
 
   async function handleLogout(e: React.MouseEvent<HTMLButtonElement>) {
