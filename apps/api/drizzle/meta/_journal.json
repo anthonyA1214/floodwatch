@@ -8,6 +8,13 @@
       "when": 1772375526201,
       "tag": "0000_parched_ben_parker",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1772535926712,
+      "tag": "0001_nappy_madelyne_pryor",
+      "breakpoints": true
     }
   ]
 }

@@ -1,14 +1,14 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { ReportsDto } from '@repo/schemas';
+import { ReportDetailInput } from '@repo/schemas';
 import {
   Avatar as UIAvatar,
   AvatarFallback,
   AvatarImage,
 } from '@/components/ui/avatar';
 import Avatar from 'boring-avatars';
-import { format, parseISO } from 'date-fns';
+import { format } from 'date-fns';
 import { IconArrowsUpDown, IconEye, IconTrash } from '@tabler/icons-react';
 import {
   Tooltip,
@@ -19,7 +19,7 @@ import { cn } from '@/lib/utils';
 import { REPORT_STATUS_COLOR_MAP } from '@/lib/utils/get-color-map';
 import { useReportDialog } from '@/contexts/report-dialog-context';
 
-export const columns: ColumnDef<ReportsDto>[] = [
+export const columns: ColumnDef<ReportDetailInput>[] = [
   {
     accessorKey: 'name',
     header: ({ column }) => {
@@ -64,7 +64,7 @@ export const columns: ColumnDef<ReportsDto>[] = [
 
       return (
         <span className="text-gray-600">
-          {format(parseISO(user.reportedAt), 'MMMM dd, yyyy')}
+          {format(user.reportedAt, 'MMMM dd, yyyy')}
         </span>
       );
     },
@@ -101,7 +101,7 @@ export const columns: ColumnDef<ReportsDto>[] = [
   },
 ];
 
-function ActionCell({ report }: { report: ReportsDto }) {
+function ActionCell({ report }: { report: ReportDetailInput }) {
   const { openDialog } = useReportDialog();
 
   return (

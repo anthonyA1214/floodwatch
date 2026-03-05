@@ -30,7 +30,7 @@ export default function SecurityTab() {
 
   if (passwordAction === 'set') {
     return (
-      <div className="flex flex-col gap-8 h-full">
+      <div className="flex flex-col gap-8 h-full p-4">
         <h3 className="font-poppins font-semibold">Set Password</h3>
         <SetPasswordForm onSuccess={() => setPasswordAction(null)} />
       </div>

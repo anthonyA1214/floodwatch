@@ -6,8 +6,6 @@ export async function getNews() {
     method: 'GET',
   });
 
-  console.log(res);
-
   if (res.status === 401) {
     return null;
   }

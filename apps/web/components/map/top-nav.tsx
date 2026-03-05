@@ -13,16 +13,14 @@ import {
   IconMapPinExclamation,
   IconShieldPin,
 } from '@tabler/icons-react';
-import { usePanel } from '@/contexts/panel-context';
 import AuthButtons from '@/components/shared/auth-buttons';
 import { useUser } from '@/hooks/use-user';
 import { Skeleton } from '@/components/ui/skeleton';
-import Clock from '@/components/map/clock';
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ReportFloodAlertDialog from './report-flood-alert-dialog';
+import { useMapOverlay } from '@/contexts/map-overlay-context';
 
 export default function TopNav() {
-  const { toggle } = usePanel();
+  const { toggle, openLocations } = useMapOverlay();
   const { user, isLoading } = useUser();
 
   return (
@@ -36,35 +34,10 @@ export default function TopNav() {
               FloodWatch
             </h1>
           </Link>
-
-          <Clock />
         </div>
 
         {/* tabs and locations */}
-        <div className="no-scrollbar basis-full 2xl:basis-auto flex items-center gap-4 overflow-x-auto overflow-y-hidden order-last 2xl:order-0">
-          <Tabs className="shrink-0" defaultValue="all">
-            <TabsList className="grid grid-cols-3 w-full font-poppins">
-              <TabsTrigger
-                value="all"
-                className="data-[state=active]:bg-[#0066CC] data-[state=active]:text-white hover:bg-[#DBEAFE] text-xs md:text-sm"
-              >
-                ALL
-              </TabsTrigger>
-              <TabsTrigger
-                value="verified"
-                className="data-[state=active]:bg-[#0066CC] data-[state=active]:text-white hover:bg-[#DBEAFE] text-xs md:text-sm"
-              >
-                VERIFIED
-              </TabsTrigger>
-              <TabsTrigger
-                value="unverified"
-                className="data-[state=active]:bg-[#0066CC] data-[state=active]:text-white hover:bg-[#DBEAFE] text-xs md:text-sm"
-              >
-                UNVERIFIED
-              </TabsTrigger>
-            </TabsList>
-          </Tabs>
-
+        <div className="no-scrollbar basis-full 2xl:basis-auto flex items-center gap-4 order-last 2xl:order-0">
           <button
             className="flex items-center justify-center gap-2 text-white 
           bg-white/10 border border-white/10 
@@ -72,9 +45,10 @@ export default function TopNav() {
             hover:bg-white/20 hover:border-white/20
           active:bg-white/30
             transition-colors duration-200 shrink-0 whitespace-nowrap"
+            onClick={() => openLocations('affected')}
           >
             <IconMapPinExclamation className="w-[1.5em]! h-[1.5em]!" />
-            <span className="font-medium">AFFECTED LOCATIONS</span>
+            <span className="font-medium"> AFFECTED LOCATIONS</span>
           </button>
 
           <button
@@ -84,6 +58,7 @@ export default function TopNav() {
           hover:bg-white/20 hover:border-white/20
           active:bg-white/30
             transition-colors duration-200 shrink-0 whitespace-nowrap"
+            onClick={() => openLocations('safety')}
           >
             <IconShieldPin className="w-[1.5em]! h-[1.5em]!" />
             <span className="font-medium">SAFETY LOCATIONS</span>

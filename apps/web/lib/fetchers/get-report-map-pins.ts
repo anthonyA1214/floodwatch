@@ -1,13 +1,13 @@
 import { apiFetchClient } from '@/lib/api-fetch-client';
 import { SWR_KEYS } from '@/lib/constants/swr-keys';
 
-export async function getReports() {
-  const res = await apiFetchClient(SWR_KEYS.reports, {
+export async function getReportMapPins() {
+  const res = await apiFetchClient(SWR_KEYS.reportMapPins, {
     method: 'GET',
   });
 
   if (!res.ok) {
-    console.error('REPORTS ERROR:', res.status);
+    console.error('REPORT MAP PINS ERROR:', res.status);
     return null;
   }
 

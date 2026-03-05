@@ -5,8 +5,12 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateCommentInput, UpdateCommentDto } from '@repo/schemas';
-import { desc, eq, sql } from 'drizzle-orm';
+import {
+  CommentQueryInput,
+  CreateCommentInput,
+  UpdateCommentDto,
+} from '@repo/schemas';
+import { and, desc, eq, lt, sql } from 'drizzle-orm';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { DRIZZLE } from 'src/drizzle/drizzle-connection';
 import { comments, profileInfo, reports, users } from 'src/drizzle/schemas';
@@ -21,16 +25,10 @@ export class CommentsService {
     private cloudinaryService: CloudinaryService,
   ) {}
 
-  async getComments(reportId: number) {
-    const report = await this.db
-      .select({ id: reports.id })
-      .from(reports)
-      .where(eq(reports.id, reportId))
-      .limit(1);
+  async getComments(reportId: number, commentQueryDto: CommentQueryInput) {
+    const { cursor, limit } = commentQueryDto;
 
-    if (!report.length) throw new NotFoundException('Report not found');
-
-    return await this.db
+    const commentsList = await this.db
       .select({
         id: comments.id,
         content: comments.content,
@@ -47,8 +45,25 @@ export class CommentsService {
       .from(comments)
       .leftJoin(users, eq(comments.userId, users.id))
       .leftJoin(profileInfo, eq(users.id, profileInfo.userId))
-      .where(eq(comments.reportId, reportId))
-      .orderBy(desc(comments.createdAt));
+      .where(
+        cursor
+          ? and(
+              eq(comments.reportId, reportId),
+              lt(comments.createdAt, new Date(cursor)),
+            )
+          : eq(comments.reportId, reportId),
+      )
+      .orderBy(desc(comments.createdAt))
+      .limit(limit + 1);
+
+    const hasMore = commentsList.length > limit;
+    const data = hasMore ? commentsList.slice(0, limit) : commentsList;
+    const nextCursor =
+      hasMore && data.length > 0
+        ? (data[data.length - 1].createdAt?.toISOString() ?? null)
+        : null;
+
+    return { data, meta: { hasMore, nextCursor } };
   }
 
   async addComment(

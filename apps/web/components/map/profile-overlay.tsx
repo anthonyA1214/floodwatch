@@ -3,7 +3,7 @@ import { IconLock, IconUser } from '@tabler/icons-react';
 import AccountTab from '@/components/map/account-tab';
 import SecurityTab from '@/components/map/security-tab';
 
-export default function ProfilePanel() {
+export default function ProfileOverlay() {
   return (
     <div className="flex flex-col bg-white w-screen md:w-[400px] md:h-[80vh] rounded-xl shadow-md pointer-events-auto">
       <Tabs defaultValue="account" className="flex-1 flex flex-col min-h-0">

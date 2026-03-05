@@ -22,14 +22,18 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    ThrottlerModule.forRoot({
-      throttlers: [
-        {
-          ttl: 60000,
-          limit: 10,
-        },
-      ],
-    }),
+    ThrottlerModule.forRoot([
+      {
+        name: 'global',
+        ttl: 60000,
+        limit: 10,
+      },
+      {
+        name: 'getComments',
+        ttl: 60000,
+        limit: 30,
+      },
+    ]),
     LoggerModule.forRoot({
       pinoHttp: {
         customProps: (_req, _res) => ({

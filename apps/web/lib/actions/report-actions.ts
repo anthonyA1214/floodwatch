@@ -2,7 +2,7 @@
 
 import { apiFetchServer } from '../api-fetch-server';
 
-export async function verifyReport(reportId: string) {
+export async function verifyReport(reportId: number) {
   try {
     await apiFetchServer(`/reports/${reportId}/verify`, {
       method: 'PATCH',
@@ -15,7 +15,7 @@ export async function verifyReport(reportId: string) {
   }
 }
 
-export async function deleteReport(reportId: string) {
+export async function deleteReport(reportId: number) {
   try {
     await apiFetchServer(`/reports/${reportId}/delete`, {
       method: 'DELETE',
