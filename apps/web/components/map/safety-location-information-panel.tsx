@@ -13,6 +13,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { IconChevronLeft, IconSend } from '@tabler/icons-react';
 
 const NEARBY_PLACES = [
   { id: 'nearby-01', name: 'Camarin Healthcare and Emergency Clinic' },
@@ -20,12 +21,22 @@ const NEARBY_PLACES = [
   { id: 'nearby-03', name: 'Caloocan City Medical Center' },
 ];
 
-export default function SafetyLocationPanel() {
+export default function SafetyLocationInformationPanel({
+  onClose,
+}: {
+  onClose: () => void;
+}) {
   return (
-    <div className="fixed top-[64px] left-0 w-[480px] h-[calc(100vh-64px)] bg-white border-r border-slate-200 shadow-lg flex flex-col z-40">
+    <div className="fixed top-[50px] left-0 w-[480px] h-full bg-white border-r border-slate-200 shadow-lg flex flex-col z-40">
+      <button
+        className="absolute bg-white top-1/2 translate-x-full right-0 h-16 -translate-y-1/2 
+        rounded-r-2xl ps-1 py-1 pr-1.5 text-xs z-30 shadow-[4px_0px_6px_-1px_rgba(0,0,0,0.1)]"
+        onClick={onClose}
+      >
+        <IconChevronLeft className="w-[1.5em]! h-[1.5em]!" />
+      </button>
       {/* IMAGE */}
       <div className="h-[240px] bg-linear-to-b from-slate-200 to-slate-300 shrink-0" />
-
       {/* CONTENT */}
       <div className="flex-1 flex flex-col px-6 pt-5 pb-4 min-h-0">
         {/* HEADER */}
@@ -46,19 +57,18 @@ export default function SafetyLocationPanel() {
           </div>
         </div>
 
+        <Button className="rounded-lg h-12">
+          <IconSend className="w-[1.5em]! h-[1.5em]!" />
+          <span className="font-poppins font-medium">GET DIRECTIONS</span>
+        </Button>
+
         {/* TABS */}
         <Tabs defaultValue="overview" className="mt-4 flex flex-col min-h-0">
-          <TabsList className="h-12 w-full bg-transparent p-0 rounded-none grid grid-cols-2 border-b border-slate-200">
-            <TabsTrigger value="overview" className="">
-              <BookOpen className="w-4 h-4" />
-              Overview
-            </TabsTrigger>
-
-            <TabsTrigger value="direction" className="">
-              <ArrowRight className="w-4 h-4" />
-              Direction
-            </TabsTrigger>
-          </TabsList>
+          <div className="flex gap-4 text-xs items-center px-2 lg:px-0">
+            <div className="h-px flex-1 bg-gray-200" />
+            <span className="font-poppins font-bold opacity-50">Overview</span>
+            <div className="h-px flex-1 bg-gray-200" />
+          </div>
 
           {/* OVERVIEW */}
           <TabsContent

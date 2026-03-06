@@ -20,6 +20,7 @@ import ProfileOverlay from '@/components/map/profile-overlay';
 import ReportedLocationOverlay from './reported-location-overlay';
 import AffectedLocationsOverlay from './affected-locations-overlay';
 import SafetyLocationsOverlay from './safety-locations-overlay';
+import SafetyLocationInformationPanel from './safety-location-information-panel';
 
 export type SelectedLocation = {
   longitude: number;
@@ -131,6 +132,8 @@ export default function InteractiveMapPage() {
             </div>
           )}
         </div>
+
+        <SafetyLocationInformationPanel onClose={() => close()} />
 
         <Suspense fallback={null}>
           <GoogleLinkToastHandler />
