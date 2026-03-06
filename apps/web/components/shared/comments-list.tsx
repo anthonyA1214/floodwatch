@@ -46,7 +46,7 @@ export default function CommentsList({
   const isAdmin = user?.role === 'admin';
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className='flex flex-col gap-4'>
       {comments.map((comment) => (
         <CommentCard
           key={comment.id}
@@ -57,6 +57,7 @@ export default function CommentsList({
           content={comment.content}
           timestamp={comment.createdAt}
           reportCount={0}
+          image={comment.image ?? undefined}
           isAdmin={isAdmin}
           isOwner={comment.author?.id === user?.id}
         />
@@ -67,12 +68,12 @@ export default function CommentsList({
       {isFetchingMore && <CommentCardsSkeleton />}
 
       {!hasMore && !isValidating && (
-        <div className="flex gap-4 text-xs items-center px-2 lg:px-0">
-          <div className="h-px flex-1 bg-gray-200" />
-          <span className="font-poppins font-bold opacity-50">
+        <div className='flex gap-4 text-xs items-center px-2 lg:px-0'>
+          <div className='h-px flex-1 bg-gray-200' />
+          <span className='font-poppins font-bold opacity-50'>
             YOU&apos;RE ALL CAUGHT UP
           </span>
-          <div className="h-px flex-1 bg-gray-200" />
+          <div className='h-px flex-1 bg-gray-200' />
         </div>
       )}
     </div>

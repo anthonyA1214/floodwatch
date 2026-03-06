@@ -109,7 +109,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
 
     return (
       <Map
-        id="interactive-map"
+        id='interactive-map'
         ref={mapRef}
         initialViewState={{
           // Center around Metro Manila area (so your sample pins are visible)
@@ -117,16 +117,16 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
           longitude: 120.99772,
           zoom: 11.5,
         }}
-        mapStyle="https://tiles.openfreemap.org/styles/bright"
+        mapStyle='https://tiles.openfreemap.org/styles/bright'
         attributionControl={false}
         dragRotate={false}
       >
         {/* boundary fill */}
         {caloocanGeoJSON && (
-          <Source id="caloocan" type="geojson" data={caloocanGeoJSON}>
+          <Source id='caloocan' type='geojson' data={caloocanGeoJSON}>
             <Layer
-              id="caloocan-fill"
-              type="fill"
+              id='caloocan-fill'
+              type='fill'
               paint={{
                 'fill-color': '#0066CC',
                 'fill-opacity': 0.05,
@@ -138,13 +138,13 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
         {/* boundary outline */}
         {caloocanOutlineGeoJSON && (
           <Source
-            id="caloocan-outline"
-            type="geojson"
+            id='caloocan-outline'
+            type='geojson'
             data={caloocanOutlineGeoJSON}
           >
             <Layer
-              id="caloocan-outline-line"
-              type="line"
+              id='caloocan-outline-line'
+              type='line'
               paint={{
                 'line-color': '#0066CC',
                 'line-width': 2,
@@ -160,7 +160,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
               key={report.id}
               longitude={report.longitude}
               latitude={report.latitude}
-              anchor="bottom"
+              anchor='bottom'
               onClick={() => handleSelectReport(report)}
             >
               <FloodMarker severity={report.severity} status={report.status} />
@@ -181,7 +181,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
             key={location.id}
             longitude={location.longitude}
             latitude={location.latitude}
-            anchor="bottom"
+            anchor='bottom'
           >
             <SafetyMarker type={location.type} />
           </Marker>
@@ -192,7 +192,8 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
           <Marker
             longitude={userLocation.longitude}
             latitude={userLocation.latitude}
-            anchor="bottom"
+            anchor='bottom'
+            style={{ pointerEvents: 'none', opacity: 0.8 }} // allow clicks to pass through to the map
           >
             <UserLocationMarker />
           </Marker>
@@ -203,7 +204,8 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
           <Marker
             longitude={selectedLocation.longitude}
             latitude={selectedLocation.latitude}
-            anchor="bottom"
+            anchor='bottom'
+            style={{ pointerEvents: 'none', opacity: 0.8 }} // allow clicks to pass through to the map
           >
             <SearchLocationMarker />
           </Marker>
@@ -215,7 +217,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
             latitude={selectedReport.latitude}
             anchor={isMobile ? 'top' : 'bottom'}
             offset={isMobile ? 10 : 50}
-            maxWidth="none"
+            maxWidth='none'
             onClose={() => setSelectedReport(null)}
             closeOnClick={false}
           >

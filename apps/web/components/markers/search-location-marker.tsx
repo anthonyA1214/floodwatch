@@ -5,7 +5,13 @@ export const SearchLocationMarker = () => {
 
   return (
     <div
-      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        pointerEvents: 'none',
+        opacity: 0.8,
+      }}
     >
       {/* Pin head */}
       <div
@@ -20,7 +26,6 @@ export const SearchLocationMarker = () => {
           justifyContent: 'center',
           border: '3px solid white',
           boxShadow: '0 3px 14px #8b5cf666, 0 2px 6px rgba(0,0,0,0.3)',
-          cursor: 'pointer',
           position: 'relative',
           zIndex: 1,
         }}

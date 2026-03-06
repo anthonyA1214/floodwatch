@@ -10,29 +10,10 @@ export const UserLocationMarker = () => {
         flexDirection: 'column',
         alignItems: 'center',
         position: 'relative',
+        pointerEvents: 'none',
+        opacity: 0.8,
       }}
     >
-      {/* GPS pulse rings */}
-      {[0, 0.9, 1.8].map((delay, i) => (
-        <div
-          key={i}
-          style={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: size,
-            height: size,
-            borderRadius: '50%',
-            border: '2px solid #06b6d4',
-            opacity: 0,
-            animation: 'ringPulse 2.7s ease-out infinite',
-            animationDelay: `${delay}s`,
-            pointerEvents: 'none',
-          }}
-        />
-      ))}
-
       {/* Gradient circle head */}
       <div
         style={{
@@ -46,7 +27,6 @@ export const UserLocationMarker = () => {
           justifyContent: 'center',
           border: '3px solid white',
           boxShadow: '0 3px 14px #06b6d466, 0 2px 6px rgba(0,0,0,0.3)',
-          cursor: 'pointer',
           position: 'relative',
           zIndex: 1,
         }}
