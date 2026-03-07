@@ -31,9 +31,9 @@ export default function SafetyLocationInformationPopup({
   const formattedDate = format(parsedDate, 'MMMM dd, yyyy');
 
   return (
-    <div className="flex flex-col justify-center rounded-2xl overflow-hidden w-[300px] max-h-[70vh] overflow-y-auto shadow-lg">
+    <div className="flex flex-col rounded-2xl overflow-hidden w-[300px] max-h-[70vh] bg-white">
       <div className="flex items-center justify-between bg-[#0066CC] p-3 text-white">
-        <span className="font-poppins text-semibold text-sm">
+        <span className="font-poppins font-semibold text-sm">
           SAFETY LOCATION
         </span>
 
@@ -43,30 +43,26 @@ export default function SafetyLocationInformationPopup({
       </div>
 
       <div className="flex flex-col bg-white">
-        <div className="flex flex-row justify-between gap-4 p-3">
-          <div className="flex items-center rounded-full px-3 py-1 w-fit h-fit text-[#16a34a] bg-[#16a34a]/10">
-            <div className="flex items-center gap-1.5 text-xs">
-              <IconShield className="w-[1.5em]! h-[1.5em]!" />
-              <span className="font-poppins font-medium uppercase">{type}</span>
-            </div>
-          </div>
-        </div>
-
-        <Separator />
-
         <div className="flex flex-col gap-2 p-3">
-          <div className="flex justify-between gap-2">
+          <div className="flex justify-between gap-3">
             <div className="flex items-center gap-1.5 opacity-50 shrink-0">
               <IconHome className="w-[1.5em]! h-[1.5em]!" />
               <span className="font-poppins font-medium">TYPE</span>
             </div>
 
-            <span className="text-right capitalize">{type}</span>
+            <div className="inline-flex items-center rounded-full px-3 py-1 text-[#16a34a] bg-[#16a34a]/10">
+              <div className="flex items-center gap-1.5 text-xs">
+                <IconShield className="w-[1.5em]! h-[1.5em]!" />
+                <span className="font-poppins font-medium uppercase">
+                  {type}
+                </span>
+              </div>
+            </div>
           </div>
 
           <Separator />
 
-          <div className="flex justify-between items-start gap-2">
+          <div className="flex justify-between items-start gap-3">
             <div className="flex items-center gap-1.5 opacity-50 shrink-0">
               <IconClock className="w-[1.5em]! h-[1.5em]!" />
               <span className="font-poppins font-medium">DATE & TIME</span>
@@ -80,30 +76,32 @@ export default function SafetyLocationInformationPopup({
 
           <Separator />
 
-          <div className="flex justify-between gap-2">
+          <div className="flex justify-between gap-3">
             <div className="flex items-center gap-1.5 opacity-50 h-fit shrink-0">
               <IconMapPin className="w-[1.5em]! h-[1.5em]!" />
               <span className="font-poppins font-medium">LOCATION</span>
             </div>
 
-            <span className="text-right line-clamp-2">{locationName}</span>
+            <span className="text-right max-w-[155px] wrap-break-word">
+              {locationName}
+            </span>
           </div>
         </div>
 
         <Separator />
 
-        <div className="flex justify-between items-center p-3 gap-2">
+        <div className="grid grid-cols-2 gap-2 p-3">
           <button
-            className="flex items-center gap-1.5 w-full bg-primary text-primary-foreground hover:bg-primary/90 duration-200 px-4 py-2.5 rounded-lg justify-center"
+            className="flex min-w-0 items-center justify-center gap-1.5 rounded-lg bg-primary px-3 py-3 text-sm font-medium text-primary-foreground transition-colors duration-200 hover:bg-primary/90"
             onClick={onSelectOverview}
           >
-            <IconShield className="w-[1.5em]! h-[1.5em]!" />
-            <span className="font-poppins font-medium">OVERVIEW</span>
+            <IconShield className="h-[1.25em]! w-[1.25em]!" />
+            <span className="truncate font-poppins">OVERVIEW</span>
           </button>
 
-          <button className="flex items-center gap-1.5 w-full bg-secondary text-secondary-foreground hover:bg-secondary/80 duration-200 px-4 py-2.5 rounded-lg justify-center">
-            <IconSend className="w-[1.5em]! h-[1.5em]!" />
-            <span className="font-poppins font-medium">DIRECTIONS</span>
+          <button className="flex min-w-0 items-center justify-center gap-1.5 rounded-lg bg-secondary px-3 py-3 text-sm font-medium text-secondary-foreground transition-colors duration-200 hover:bg-secondary/80">
+            <IconSend className="h-[1.25em]! w-[1.25em]!" />
+            <span className="truncate font-poppins">DIRECTIONS</span>
           </button>
         </div>
       </div>

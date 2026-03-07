@@ -4,7 +4,6 @@ import SearchBar from '@/components/map/search-bar';
 import MapLegend from '@/components/map/map-legend';
 import InteractiveMap, {
   InteractiveMapHandle,
-  SelectedSafetyLocation,
 } from '@/components/map/interactive-map';
 import { Suspense, useRef, useState } from 'react';
 import { useMapOverlay } from '@/contexts/map-overlay-context';
@@ -22,7 +21,8 @@ import ReportedLocationOverlay from './reported-location-overlay';
 import AffectedLocationsOverlay from './affected-locations-overlay';
 import SafetyLocationsOverlay from './safety-locations-overlay';
 import SafetyLocationInformationOverlay from './safety-location-information-overlay';
-import SafetyLocationInformationPopup from './safety-location-information-popup';
+import FilterReportsToggle from './filter-reports-toggle';
+import clsx from 'clsx';
 
 export type SelectedLocation = {
   longitude: number;
@@ -31,17 +31,41 @@ export type SelectedLocation = {
   source?: 'nominatim' | 'custom';
 };
 
+type VerificationFilter = 'all' | 'verified' | 'unverified';
+
 export default function InteractiveMapPage() {
   const [selectedLocation, setSelectedLocation] =
     useState<SelectedLocation | null>(null);
   const [showLegend, setShowLegend] = useState(false);
+  const [showFilter, setShowFilter] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<VerificationFilter>('all');
   const [showSafetyInformationPanel, setShowSafetyInformationPanel] =
     useState(false);
-  const [selectedSafetyLocation, setSelectedSafetyLocation] =
-    useState<SelectedSafetyLocation | null>(null);
 
   const { activeOverlay, openReport, close } = useMapOverlay();
   const interactiveMapRef = useRef<InteractiveMapHandle>(null);
+
+  const filterOptions: {
+    value: VerificationFilter;
+    label: string;
+    textClass: string;
+  }[] = [
+    {
+      value: 'all',
+      label: 'All',
+      textClass: 'text-blue-500',
+    },
+    {
+      value: 'verified',
+      label: 'Verified',
+      textClass: 'text-green-500',
+    },
+    {
+      value: 'unverified',
+      label: 'Unverified',
+      textClass: 'text-orange-500',
+    },
+  ];
 
   return (
     <MapProvider>
@@ -50,31 +74,14 @@ export default function InteractiveMapPage() {
           ref={interactiveMapRef}
           selectedLocation={selectedLocation}
           onSelectReport={(report) => {
-            setSelectedSafetyLocation(null);
             setShowSafetyInformationPanel(false);
             openReport(report.id);
           }}
-          onSelectSafetyLocation={(location) => {
+          onOpenSafetyOverview={() => {
             close();
-            setShowSafetyInformationPanel(false);
-            setSelectedSafetyLocation(location);
+            setShowSafetyInformationPanel(true);
           }}
         />
-
-        {selectedSafetyLocation && (
-          <div className="absolute z-20 bottom-4 left-4 pointer-events-auto">
-            <SafetyLocationInformationPopup
-              onClose={() => setSelectedSafetyLocation(null)}
-              onSelectOverview={() => {
-                setSelectedSafetyLocation(null);
-                setShowSafetyInformationPanel(true);
-              }}
-              locationName="Dr. Jose Rodriguez Memorial Hospital"
-              type="hospital"
-              createdAt={new Date()}
-            />
-          </div>
-        )}
 
         <div className="absolute top-0 left-0 right-0 flex items-start gap-4 pointer-events-none h-full">
           <div className="pointer-events-none flex-1 min-w-0 flex items-start h-full">
@@ -108,7 +115,8 @@ export default function InteractiveMapPage() {
             </div>
           </div>
 
-          <div className="pointer-events-none flex flex-col gap-2 h-fit pt-4 pe-4">
+          {/* Map Buttons? */}
+          <div className="pointer-events-none flex flex-col items-end gap-2 h-fit pt-4 pe-4">
             <div className="flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 pointer-events-auto">
               <button
                 onClick={() => interactiveMapRef.current?.zoomIn()}
@@ -142,9 +150,9 @@ export default function InteractiveMapPage() {
               </button>
             </div>
 
-            <div className="relative flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 pointer-events-auto">
+            <div className="flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 pointer-events-auto">
               <button
-                onClick={() => setShowLegend(!showLegend)}
+                onClick={() => setShowLegend((prev) => !prev)}
                 className="aspect-square hover:bg-gray-200 rounded-md p-1"
                 title="Toggle Legend"
               >
@@ -153,10 +161,41 @@ export default function InteractiveMapPage() {
                   strokeWidth={1.5}
                 />
               </button>
-              <div className="absolute top-full right-0 mt-2">
+            </div>
+
+            <div className="pointer-events-auto">
+              <FilterReportsToggle
+                isOpen={showFilter}
+                onClick={() => setShowFilter((prev) => !prev)}
+              />
+            </div>
+
+            {showLegend && (
+              <div className="pointer-events-auto self-end">
                 <MapLegend show={showLegend} />
               </div>
-            </div>
+            )}
+
+            {showFilter && (
+              <div className="pointer-events-auto self-end w-[172px] rounded-xl border border-slate-300 bg-white/95 p-1.5 shadow-lg backdrop-blur-sm">
+                <div className="flex flex-col gap-1.5">
+                  {filterOptions.map((option) => (
+                    <button
+                      key={option.value}
+                      type="button"
+                      onClick={() => setActiveFilter(option.value)}
+                      className={clsx(
+                        'h-10 rounded-lg border border-slate-300 bg-white text-sm font-medium shadow-sm transition hover:bg-slate-50',
+                        option.textClass,
+                        activeFilter === option.value && 'bg-slate-50',
+                      )}
+                    >
+                      {option.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {(activeOverlay?.type === 'notification' ||

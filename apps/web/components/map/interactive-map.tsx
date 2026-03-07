@@ -28,6 +28,7 @@ import { useBoundary } from '@/hooks/use-boundary';
 import { useSafetyLocations } from '@/hooks/use-safety';
 import { SafetyMarker } from '../markers/safety-marker';
 import FloodReportPopup from './flood-report-popup';
+import SafetyLocationInformationPopup from './safety-location-information-popup';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 type SelectedLocation = {
@@ -36,7 +37,7 @@ type SelectedLocation = {
   label: string;
 };
 
-export type SelectedSafetyLocation = {
+type StaticSafetyPopupLocation = {
   id: number;
   longitude: number;
   latitude: number;
@@ -45,7 +46,7 @@ export type SelectedSafetyLocation = {
 type Props = {
   selectedLocation?: SelectedLocation | null;
   onSelectReport?: (report: ReportMapPinInput) => void;
-  onSelectSafetyLocation?: (location: SelectedSafetyLocation) => void;
+  onOpenSafetyOverview?: () => void;
 };
 
 export type InteractiveMapHandle = {
@@ -55,7 +56,7 @@ export type InteractiveMapHandle = {
 };
 
 const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
-  ({ selectedLocation, onSelectReport, onSelectSafetyLocation }, ref) => {
+  ({ selectedLocation, onSelectReport, onOpenSafetyOverview }, ref) => {
     const mapRef = useRef<MapRef | null>(null);
     const { caloocanGeoJSON, caloocanOutlineGeoJSON } = useBoundary();
     const [userLocation, setUserLocation] = useState<{
@@ -68,6 +69,8 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
 
     const [selectedReport, setSelectedReport] =
       useState<ReportMapPinInput | null>(null);
+    const [selectedSafetyLocation, setSelectedSafetyLocation] =
+      useState<StaticSafetyPopupLocation | null>(null);
 
     useImperativeHandle(ref, () => ({
       zoomIn: () => mapRef.current?.zoomIn(),
@@ -102,6 +105,8 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
     }, [selectedLocation]);
 
     const handleSelectReport = (report: ReportMapPinInput) => {
+      setSelectedSafetyLocation(null);
+
       mapRef.current?.flyTo({
         center: [report.longitude, report.latitude],
         zoom: Math.max(mapRef.current?.getZoom() ?? 0, 16),
@@ -112,6 +117,29 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
       });
 
       setSelectedReport(report);
+    };
+
+    const handleSelectSafetyLocation = (
+      longitude: number,
+      latitude: number,
+      id: number,
+    ) => {
+      setSelectedReport(null);
+
+      mapRef.current?.flyTo({
+        center: [longitude, latitude],
+        zoom: Math.max(mapRef.current?.getZoom() ?? 0, 16),
+        essential: true,
+        padding: isMobile
+          ? { top: 0, bottom: 350, left: 0, right: 0 }
+          : { top: 100, bottom: 0, left: 0, right: 0 },
+      });
+
+      setSelectedSafetyLocation({
+        id,
+        longitude,
+        latitude,
+      });
     };
 
     return (
@@ -187,21 +215,11 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
             anchor="bottom"
             onClick={(e) => {
               e.originalEvent.stopPropagation();
-
-              mapRef.current?.flyTo({
-                center: [location.longitude, location.latitude],
-                zoom: Math.max(mapRef.current?.getZoom() ?? 0, 16),
-                essential: true,
-                padding: isMobile
-                  ? { top: 0, bottom: 350, left: 0, right: 0 }
-                  : { top: 100, bottom: 0, left: 0, right: 0 },
-              });
-
-              onSelectSafetyLocation?.({
-                id: Number(location.id),
-                longitude: location.longitude,
-                latitude: location.latitude,
-              });
+              handleSelectSafetyLocation(
+                location.longitude,
+                location.latitude,
+                Number(location.id),
+              );
             }}
           >
             <SafetyMarker type={location.type} />
@@ -245,6 +263,29 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
                 onSelectReport?.(selectedReport);
                 setSelectedReport(null);
               }}
+            />
+          </Popup>
+        )}
+
+        {selectedSafetyLocation && (
+          <Popup
+            longitude={selectedSafetyLocation.longitude}
+            latitude={selectedSafetyLocation.latitude}
+            anchor={isMobile ? 'top' : 'bottom'}
+            offset={isMobile ? 10 : 50}
+            maxWidth="none"
+            onClose={() => setSelectedSafetyLocation(null)}
+            closeOnClick={false}
+          >
+            <SafetyLocationInformationPopup
+              onClose={() => setSelectedSafetyLocation(null)}
+              onSelectOverview={() => {
+                setSelectedSafetyLocation(null);
+                onOpenSafetyOverview?.();
+              }}
+              locationName="Dr. Jose Rodriguez Memorial Hospital"
+              type="hospital"
+              createdAt={new Date()}
             />
           </Popup>
         )}
