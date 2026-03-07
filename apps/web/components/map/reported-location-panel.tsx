@@ -9,9 +9,7 @@ import {
   IconSend,
   IconShield,
   IconShieldCheck,
-  IconThumbUp,
   IconUser,
-  IconX,
 } from '@tabler/icons-react';
 import { format, formatDistanceToNow } from 'date-fns';
 
@@ -32,6 +30,7 @@ import { Button } from '../ui/button';
 import { ReportedLocationPanelSkeleton } from './skeletons/reported-location-panel-skeleton';
 import NoPhotoEmpty from '../shared/no-photo-empty';
 import CommentsList from '../shared/comments-list';
+import VoteButtons from './vote-buttons';
 
 export default function ReportedLocationPanel({
   reportId,
@@ -57,6 +56,14 @@ export default function ReportedLocationPanel({
   const formattedDate = reportDetail
     ? format(reportDetail?.reportedAt, 'MMMM dd, yyyy')
     : '';
+
+  const confirms = reportDetail?.confirms;
+  const denies = reportDetail?.denies;
+
+  const credibility =
+    confirms !== undefined && denies !== undefined
+      ? Math.round((confirms / (confirms + denies)) * 100)
+      : 0;
 
   return (
     <div className='relative w-full h-full bg-white z-50 min-h-0 flex flex-col pointer-events-auto'>
@@ -246,39 +253,12 @@ export default function ReportedLocationPanel({
                 </div>
 
                 <div className='flex items-center gap-2'>
-                  <span className='font-poppins font-bold'>0%</span>
+                  <span className='font-poppins font-bold'>{credibility}%</span>
                 </div>
               </div>
 
-              <div className='flex justify-between'>
-                {/* confirm */}
-                <button
-                  className='w-full text-[#15803D] bg-[#f0fdf4] hover:bg-[#d1fae5] group
-                transition-colors duration-200'
-                >
-                  <div
-                    className='flex items-center justify-center gap-1.5 lg:gap-2 p-3 lg:p-4 
-                  group-hover:-translate-y-0.5 transition-transform duration-200'
-                  >
-                    <IconThumbUp className='w-[1.5em]! h-[1.5em]!' />
-                    <span className='font-poppins font-medium'>CONFIRM</span>
-                  </div>
-                </button>
-
-                {/* deny */}
-                <button
-                  className='w-full text-[#dc2626] bg-[#fef2f2] hover:bg-[#fee2e2] group
-                transition-colors duration-200'
-                >
-                  <div
-                    className='flex items-center justify-center gap-1.5 lg:gap-2 p-3 lg:p-4 
-                  group-hover:-translate-y-0.5 transition-transform duration-200'
-                  >
-                    <IconX className='w-[1.5em]! h-[1.5em]!' />
-                    <span className='font-poppins font-medium'>DENY</span>
-                  </div>
-                </button>
-              </div>
+              {/* vote buttons */}
+              <VoteButtons reportId={reportId} />
             </div>
 
             <Button className='rounded-lg h-12'>

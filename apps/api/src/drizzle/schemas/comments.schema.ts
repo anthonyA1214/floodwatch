@@ -13,8 +13,7 @@ export const comments = pgTable('comments', {
   content: text('content'),
   image: text('image'),
   imagePublicId: text('image_public_id'),
-  upvotes: integer('upvotes').notNull().default(0),
-  downvotes: integer('downvotes').notNull().default(0),
+  reportsCount: integer('reports_count').notNull().default(0),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });

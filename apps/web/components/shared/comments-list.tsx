@@ -51,6 +51,7 @@ export default function CommentsList({
         <CommentCard
           key={comment.id}
           author={{
+            id: comment?.author?.id,
             name: comment?.author?.name ?? 'Unknown User',
             profilePicture: comment?.author?.profilePicture ?? undefined,
           }}

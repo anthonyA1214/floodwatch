@@ -10,6 +10,7 @@ import Image from 'next/image';
 
 interface PostCardProps {
   author: {
+    id: number | undefined;
     name: string;
     profilePicture?: string;
   };
@@ -41,7 +42,7 @@ export default function CommentCard({
           <AvatarImage src={author.profilePicture} />
           <AvatarFallback>
             <Avatar
-              name={author.name}
+              name={`${author.name} ${author.id}`}
               variant='beam'
               className='size-8 sm:size-10'
             />

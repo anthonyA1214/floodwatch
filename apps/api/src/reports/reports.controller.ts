@@ -27,6 +27,7 @@ import {
   ReportFloodAlertDto,
   reportFloodAlertSchema,
   ReportQueryDto,
+  VoteDto,
 } from '@repo/schemas';
 import { type AuthRequest } from 'src/auth/types/auth-request.type';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -201,5 +202,30 @@ export class ReportsController {
       req.user.id,
       image,
     );
+  }
+
+  @Post(':id/vote')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard, UserStatusGuard)
+  async confirmReport(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() voteDto: VoteDto,
+    @Request() req: AuthRequest,
+  ) {
+    return await this.reportsService.voteReport(
+      id,
+      req.user.id,
+      voteDto.action,
+    );
+  }
+
+  @Get(':id/my-vote')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard, UserStatusGuard)
+  async getMyVote(
+    @Param('id', ParseIntPipe) id: number,
+    @Request() req: AuthRequest,
+  ) {
+    return await this.reportsService.getMyVote(id, req.user.id);
   }
 }

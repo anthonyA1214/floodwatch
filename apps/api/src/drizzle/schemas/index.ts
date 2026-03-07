@@ -6,3 +6,5 @@ export * from './reports.schema';
 export * from './comments.schema';
 export * from './news.schema';
 export * from './safety.schema';
+export * from './comment-reports.schema';
+export * from './report-confirmations.schema';

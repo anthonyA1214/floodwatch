@@ -33,8 +33,7 @@ export class CommentsService {
         id: comments.id,
         content: comments.content,
         image: comments.image,
-        upvotes: comments.upvotes,
-        downvotes: comments.downvotes,
+        reportsCount: comments.reportsCount,
         createdAt: comments.createdAt,
         author: {
           id: users.id,

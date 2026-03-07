@@ -5,3 +5,4 @@ export * from './reports';
 export * from './safety';
 export * from './comments';
 export * from './gnews';
+export * from './votes';
