@@ -1,7 +1,7 @@
 'use client';
 
-import { useReportMapPins } from '@/hooks/use-report-map-pins';
-import React, { createContext, useContext, useRef, useState } from 'react';
+import { useReportOverlayNavigation } from '@/hooks/use-report-overlay-navigation';
+import React, { createContext, useContext, useState } from 'react';
 
 type MapActiveOverlay =
   | { type: 'report'; reportId: number }
@@ -23,9 +23,6 @@ interface MapOverlayContextType {
   openLocations: (type: 'affected' | 'safety') => void;
   toggle: (type: 'profile' | 'notification') => void;
   close: () => void;
-  registerFlyTo: (
-    fn: (pin: { longitude: number; latitude: number }) => void,
-  ) => void;
 }
 
 const MapOverlayContext = createContext<MapOverlayContextType | null>(null);
@@ -36,46 +33,9 @@ export function MapOverlayProvider({
   children: React.ReactNode;
 }) {
   const [activeOverlay, setActiveOverlay] = useState<MapActiveOverlay>(null);
-  const { reportMapPins } = useReportMapPins();
-  const flyToRef = useRef<
-    ((pin: { longitude: number; latitude: number }) => void) | null
-  >(null);
-
-  const registerFlyTo = (
-    fn: (pin: { longitude: number; latitude: number }) => void,
-  ) => {
-    flyToRef.current = fn;
-  };
 
   const openReport = (reportId: number) => {
     setActiveOverlay({ type: 'report', reportId });
-  };
-
-  const currentIndex =
-    activeOverlay?.type === 'report'
-      ? (reportMapPins?.findIndex((pin) => pin.id === activeOverlay.reportId) ??
-        -1)
-      : -1;
-
-  const totalReports = reportMapPins?.length ?? 0;
-  const currentReportIndex = currentIndex + 1;
-  const hasNext = currentIndex >= 0 && currentIndex < totalReports - 1;
-  const hasPrev = currentIndex > 0;
-
-  const nextReport = () => {
-    if (hasNext && reportMapPins) {
-      const nextPin = reportMapPins[currentIndex + 1];
-      setActiveOverlay({ type: 'report', reportId: nextPin.id });
-      flyToRef.current?.(nextPin);
-    }
-  };
-
-  const prevReport = () => {
-    if (hasPrev && reportMapPins) {
-      const prevPin = reportMapPins[currentIndex - 1];
-      setActiveOverlay({ type: 'report', reportId: prevPin.id });
-      flyToRef.current?.(prevPin);
-    }
   };
 
   const openLocations = (type: 'affected' | 'safety') => {
@@ -90,21 +50,33 @@ export function MapOverlayProvider({
     setActiveOverlay(null);
   };
 
+  const activeReportId =
+    activeOverlay?.type === 'report' ? activeOverlay.reportId : null;
+  const {
+    nextReport,
+    prevReport,
+    hasNext,
+    hasPrev,
+    currentReportIndex,
+    totalReports,
+  } = useReportOverlayNavigation(activeReportId, (id) =>
+    setActiveOverlay({ type: 'report', reportId: id }),
+  );
+
   return (
     <MapOverlayContext.Provider
       value={{
         activeOverlay,
         openReport,
+        openLocations,
+        toggle,
+        close,
         nextReport,
         prevReport,
         hasNext,
         hasPrev,
-        openLocations,
-        toggle,
-        close,
         currentReportIndex,
         totalReports,
-        registerFlyTo,
       }}
     >
       {children}

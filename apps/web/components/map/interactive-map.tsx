@@ -30,6 +30,7 @@ import { SafetyMarker } from '../markers/safety-marker';
 import FloodReportPopup from './flood-report-popup';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useMapOverlay } from '@/contexts/map-overlay-context';
+import { useReportPopup } from '@/hooks/use-report-popup';
 
 type SelectedLocation = {
   longitude: number;
@@ -58,22 +59,47 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
     } | null>(null);
     const { reportMapPins } = useReportMapPins();
     const { safetyLocations } = useSafetyLocations();
+    const { activeOverlay, openReport } = useMapOverlay();
     const isMobile = useIsMobile();
-    const { registerFlyTo } = useMapOverlay();
 
-    const [selectedReport, setSelectedReport] =
-      useState<ReportMapPinInput | null>(null);
+    const flyTo = (report: { longitude: number; latitude: number }) => {
+      mapRef.current?.flyTo({
+        center: [report.longitude, report.latitude],
+        zoom: Math.max(mapRef.current.getZoom(), 16),
+        essential: true,
+        padding: isMobile
+          ? { top: 0, bottom: 350, left: 0, right: 0 }
+          : { top: 250, bottom: 0, left: 0, right: 0 },
+      });
+    };
+
+    const {
+      popupReport,
+      openPopup,
+      closePopup,
+      nextReport,
+      prevReport,
+      hasNext,
+      hasPrev,
+      currentReportIndex,
+      total,
+    } = useReportPopup(reportMapPins, flyTo);
 
     useEffect(() => {
-      registerFlyTo((pin) => {
-        mapRef.current?.flyTo({
-          center: [pin.longitude, pin.latitude],
-          zoom: Math.max(mapRef.current.getZoom(), 16),
-          essential: true,
-          padding: { top: 0, bottom: 0, left: 0, right: 0 },
-        });
+      if (activeOverlay?.type !== 'report') return;
+
+      const report = reportMapPins?.find(
+        (r) => r.id === activeOverlay.reportId,
+      );
+      if (!report) return;
+
+      mapRef.current?.flyTo({
+        center: [report.longitude, report.latitude],
+        zoom: Math.max(mapRef.current.getZoom(), 16),
+        essential: true,
+        padding: { top: 0, bottom: 0, left: 0, right: 0 },
       });
-    }, [registerFlyTo]);
+    }, [activeOverlay, reportMapPins]);
 
     useImperativeHandle(ref, () => ({
       zoomIn: () => mapRef.current?.zoomIn(),
@@ -109,18 +135,6 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
         padding: { top: 0, bottom: 0, left: 0, right: 0 },
       });
     }, [selectedLocation]);
-
-    const handleSelectReport = (report: ReportMapPinInput) => {
-      mapRef?.current?.flyTo({
-        center: [report.longitude, report.latitude],
-        zoom: Math.max(mapRef?.current.getZoom(), 16),
-        essential: true,
-        padding: isMobile
-          ? { top: 0, bottom: 350, left: 0, right: 0 } // push pin upward, making room below
-          : { top: 100, bottom: 0, left: 0, right: 0 }, // center on pin
-      });
-      setSelectedReport(report);
-    };
 
     return (
       <Map
@@ -176,7 +190,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
               longitude={report.longitude}
               latitude={report.latitude}
               anchor='bottom'
-              onClick={() => handleSelectReport(report)}
+              onClick={() => openPopup(report)}
             >
               <FloodMarker severity={report.severity} status={report.status} />
             </Marker>
@@ -226,23 +240,30 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
           </Marker>
         )}
 
-        {selectedReport && (
+        {popupReport && (
           <Popup
-            longitude={selectedReport.longitude}
-            latitude={selectedReport.latitude}
+            longitude={popupReport.longitude}
+            latitude={popupReport.latitude}
             anchor={isMobile ? 'top' : 'bottom'}
             offset={isMobile ? 10 : 50}
             maxWidth='none'
-            onClose={() => setSelectedReport(null)}
+            onClose={closePopup}
             closeOnClick={false}
           >
             <FloodReportPopup
-              onClose={() => setSelectedReport(null)}
-              reportId={selectedReport.id}
+              onClose={closePopup}
+              reportId={popupReport.id}
               onSelectReport={() => {
-                onSelectReport?.(selectedReport);
-                setSelectedReport(null);
+                onSelectReport?.(popupReport);
+                openReport(popupReport.id);
+                closePopup();
               }}
+              nextReport={nextReport}
+              prevReport={prevReport}
+              hasNext={hasNext}
+              hasPrev={hasPrev}
+              currentReportIndex={currentReportIndex}
+              total={total}
             />
           </Popup>
         )}
