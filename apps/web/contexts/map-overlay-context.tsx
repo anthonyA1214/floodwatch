@@ -1,5 +1,6 @@
 'use client';
 
+import { useReportOverlayNavigation } from '@/hooks/use-report-overlay-navigation';
 import React, { createContext, useContext, useState } from 'react';
 
 type MapActiveOverlay =
@@ -13,6 +14,12 @@ type MapActiveOverlay =
 interface MapOverlayContextType {
   activeOverlay: MapActiveOverlay;
   openReport: (reportId: number) => void;
+  nextReport: () => void;
+  prevReport: () => void;
+  hasNext: boolean;
+  hasPrev: boolean;
+  currentReportIndex: number;
+  totalReports: number;
   openLocations: (type: 'affected' | 'safety') => void;
   toggle: (type: 'profile' | 'notification') => void;
   close: () => void;
@@ -43,6 +50,19 @@ export function MapOverlayProvider({
     setActiveOverlay(null);
   };
 
+  const activeReportId =
+    activeOverlay?.type === 'report' ? activeOverlay.reportId : null;
+  const {
+    nextReport,
+    prevReport,
+    hasNext,
+    hasPrev,
+    currentReportIndex,
+    totalReports,
+  } = useReportOverlayNavigation(activeReportId, (id) =>
+    setActiveOverlay({ type: 'report', reportId: id }),
+  );
+
   return (
     <MapOverlayContext.Provider
       value={{
@@ -51,6 +71,12 @@ export function MapOverlayProvider({
         openLocations,
         toggle,
         close,
+        nextReport,
+        prevReport,
+        hasNext,
+        hasPrev,
+        currentReportIndex,
+        totalReports,
       }}
     >
       {children}

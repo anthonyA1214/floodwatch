@@ -31,6 +31,7 @@ import { ReportedLocationPanelSkeleton } from './skeletons/reported-location-pan
 import NoPhotoEmpty from '../shared/no-photo-empty';
 import CommentsList from '../shared/comments-list';
 import VoteButtons from './vote-buttons';
+import ReportPaginationOverlay from './report-pagination-overlay';
 
 export default function ReportedLocationPanel({
   reportId,
@@ -62,7 +63,9 @@ export default function ReportedLocationPanel({
 
   const credibility =
     confirms !== undefined && denies !== undefined
-      ? Math.round((confirms / (confirms + denies)) * 100)
+      ? confirms + denies === 0
+        ? 0
+        : Math.round((confirms / (confirms + denies)) * 100)
       : 0;
 
   return (
@@ -265,6 +268,10 @@ export default function ReportedLocationPanel({
               <IconSend className='w-[1.5em]! h-[1.5em]!' />
               <span className='font-poppins font-medium'>GET DIRECTIONS</span>
             </Button>
+
+            <Separator />
+
+            <ReportPaginationOverlay />
           </div>
 
           {/*  */}
