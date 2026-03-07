@@ -41,7 +41,8 @@ export type InteractiveMapHandle = {
 // Helper — returns true only if the map instance is fully loaded
 function isMapReady(map: MapRef | null): boolean {
   try {
-    return !!map && map.getMap()._loaded === true;
+    const raw = map?.getMap();
+    return !!raw && raw.loaded() === true;
   } catch {
     return false;
   }
