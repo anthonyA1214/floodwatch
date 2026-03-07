@@ -31,8 +31,7 @@ export default function SafetyLocationInformationPopup({
   const formattedDate = format(parsedDate, 'MMMM dd, yyyy');
 
   return (
-    <div className="flex flex-col justify-center rounded-2xl overflow-hidden w-[300px] max-h-[70vh] overflow-y-auto">
-      {/* header */}
+    <div className="flex flex-col justify-center rounded-2xl overflow-hidden w-[300px] max-h-[70vh] overflow-y-auto shadow-lg">
       <div className="flex items-center justify-between bg-[#0066CC] p-3 text-white">
         <span className="font-poppins text-semibold text-sm">
           SAFETY LOCATION
@@ -44,7 +43,6 @@ export default function SafetyLocationInformationPopup({
       </div>
 
       <div className="flex flex-col bg-white">
-        {/* type */}
         <div className="flex flex-row justify-between gap-4 p-3">
           <div className="flex items-center rounded-full px-3 py-1 w-fit h-fit text-[#16a34a] bg-[#16a34a]/10">
             <div className="flex items-center gap-1.5 text-xs">
@@ -56,9 +54,7 @@ export default function SafetyLocationInformationPopup({
 
         <Separator />
 
-        {/* location details */}
         <div className="flex flex-col gap-2 p-3">
-          {/* type */}
           <div className="flex justify-between gap-2">
             <div className="flex items-center gap-1.5 opacity-50 shrink-0">
               <IconHome className="w-[1.5em]! h-[1.5em]!" />
@@ -70,7 +66,6 @@ export default function SafetyLocationInformationPopup({
 
           <Separator />
 
-          {/* date & time */}
           <div className="flex justify-between items-start gap-2">
             <div className="flex items-center gap-1.5 opacity-50 shrink-0">
               <IconClock className="w-[1.5em]! h-[1.5em]!" />
@@ -85,7 +80,6 @@ export default function SafetyLocationInformationPopup({
 
           <Separator />
 
-          {/* location */}
           <div className="flex justify-between gap-2">
             <div className="flex items-center gap-1.5 opacity-50 h-fit shrink-0">
               <IconMapPin className="w-[1.5em]! h-[1.5em]!" />

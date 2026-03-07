@@ -36,10 +36,16 @@ type SelectedLocation = {
   label: string;
 };
 
+export type SelectedSafetyLocation = {
+  id: number;
+  longitude: number;
+  latitude: number;
+};
+
 type Props = {
   selectedLocation?: SelectedLocation | null;
   onSelectReport?: (report: ReportMapPinInput) => void;
-  onSelectSafetyLocation?: () => void;
+  onSelectSafetyLocation?: (location: SelectedSafetyLocation) => void;
 };
 
 export type InteractiveMapHandle = {
@@ -81,7 +87,6 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
         }),
     }));
 
-    // When user searches a location, fly to it
     useEffect(() => {
       const loc = selectedLocation;
       const map = mapRef.current;
@@ -109,22 +114,6 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
       setSelectedReport(report);
     };
 
-    const handleSelectSafetyLocation = (
-      longitude: number,
-      latitude: number,
-    ) => {
-      mapRef.current?.flyTo({
-        center: [longitude, latitude],
-        zoom: Math.max(mapRef.current?.getZoom() ?? 0, 16),
-        essential: true,
-        padding: isMobile
-          ? { top: 0, bottom: 350, left: 0, right: 0 }
-          : { top: 100, bottom: 0, left: 500, right: 0 },
-      });
-
-      onSelectSafetyLocation?.();
-    };
-
     return (
       <Map
         id="interactive-map"
@@ -138,7 +127,6 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
         attributionControl={false}
         dragRotate={false}
       >
-        {/* boundary fill */}
         {caloocanGeoJSON && (
           <Source id="caloocan" type="geojson" data={caloocanGeoJSON}>
             <Layer
@@ -152,7 +140,6 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
           </Source>
         )}
 
-        {/* boundary outline */}
         {caloocanOutlineGeoJSON && (
           <Source
             id="caloocan-outline"
@@ -170,7 +157,6 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
           </Source>
         )}
 
-        {/* Flood report pins */}
         {reportMapPins?.map((report) => (
           <Fragment key={report.id}>
             <Marker
@@ -193,7 +179,6 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
           </Fragment>
         ))}
 
-        {/* safety locations pin */}
         {safetyLocations?.map((location) => (
           <Marker
             key={location.id}
@@ -202,14 +187,27 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
             anchor="bottom"
             onClick={(e) => {
               e.originalEvent.stopPropagation();
-              handleSelectSafetyLocation(location.longitude, location.latitude);
+
+              mapRef.current?.flyTo({
+                center: [location.longitude, location.latitude],
+                zoom: Math.max(mapRef.current?.getZoom() ?? 0, 16),
+                essential: true,
+                padding: isMobile
+                  ? { top: 0, bottom: 350, left: 0, right: 0 }
+                  : { top: 100, bottom: 0, left: 0, right: 0 },
+              });
+
+              onSelectSafetyLocation?.({
+                id: Number(location.id),
+                longitude: location.longitude,
+                latitude: location.latitude,
+              });
             }}
           >
             <SafetyMarker type={location.type} />
           </Marker>
         ))}
 
-        {/* user location pin */}
         {userLocation && (
           <Marker
             longitude={userLocation.longitude}
@@ -220,7 +218,6 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
           </Marker>
         )}
 
-        {/* Search-selected location pin */}
         {selectedLocation && (
           <Marker
             longitude={selectedLocation.longitude}

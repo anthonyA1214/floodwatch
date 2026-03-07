@@ -4,6 +4,7 @@ import SearchBar from '@/components/map/search-bar';
 import MapLegend from '@/components/map/map-legend';
 import InteractiveMap, {
   InteractiveMapHandle,
+  SelectedSafetyLocation,
 } from '@/components/map/interactive-map';
 import { Suspense, useRef, useState } from 'react';
 import { useMapOverlay } from '@/contexts/map-overlay-context';
@@ -21,6 +22,7 @@ import ReportedLocationOverlay from './reported-location-overlay';
 import AffectedLocationsOverlay from './affected-locations-overlay';
 import SafetyLocationsOverlay from './safety-locations-overlay';
 import SafetyLocationInformationOverlay from './safety-location-information-overlay';
+import SafetyLocationInformationPopup from './safety-location-information-popup';
 
 export type SelectedLocation = {
   longitude: number;
@@ -35,6 +37,8 @@ export default function InteractiveMapPage() {
   const [showLegend, setShowLegend] = useState(false);
   const [showSafetyInformationPanel, setShowSafetyInformationPanel] =
     useState(false);
+  const [selectedSafetyLocation, setSelectedSafetyLocation] =
+    useState<SelectedSafetyLocation | null>(null);
 
   const { activeOverlay, openReport, close } = useMapOverlay();
   const interactiveMapRef = useRef<InteractiveMapHandle>(null);
@@ -46,14 +50,31 @@ export default function InteractiveMapPage() {
           ref={interactiveMapRef}
           selectedLocation={selectedLocation}
           onSelectReport={(report) => {
+            setSelectedSafetyLocation(null);
             setShowSafetyInformationPanel(false);
             openReport(report.id);
           }}
-          onSelectSafetyLocation={() => {
+          onSelectSafetyLocation={(location) => {
             close();
-            setShowSafetyInformationPanel(true);
+            setShowSafetyInformationPanel(false);
+            setSelectedSafetyLocation(location);
           }}
         />
+
+        {selectedSafetyLocation && (
+          <div className="absolute z-20 bottom-4 left-4 pointer-events-auto">
+            <SafetyLocationInformationPopup
+              onClose={() => setSelectedSafetyLocation(null)}
+              onSelectOverview={() => {
+                setSelectedSafetyLocation(null);
+                setShowSafetyInformationPanel(true);
+              }}
+              locationName="Dr. Jose Rodriguez Memorial Hospital"
+              type="hospital"
+              createdAt={new Date()}
+            />
+          </div>
+        )}
 
         <div className="absolute top-0 left-0 right-0 flex items-start gap-4 pointer-events-none h-full">
           <div className="pointer-events-none flex-1 min-w-0 flex items-start h-full">
