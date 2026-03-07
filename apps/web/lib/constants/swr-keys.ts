@@ -7,4 +7,6 @@ export const SWR_KEYS = {
   safetyLocations: '/safety',
   safetyLocationsAdmin: '/safety/admin',
   news: '/news',
+  reportComments: (reportId: number) => `/reports/${reportId}/comments`,
+  myVote: (reportId: number) => `/reports/${reportId}/my-vote`,
 };

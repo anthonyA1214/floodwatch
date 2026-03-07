@@ -7,6 +7,7 @@ import {
   HttpCode,
   HttpStatus,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -19,12 +20,14 @@ import { ReportsService } from './reports.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth/jwt-auth.guard';
 import { UserStatusGuard } from 'src/common/guards/user-status/user-status.guard';
 import {
+  CommentQueryDto,
   CreateCommentDto,
   CreateFloodAlertDto,
   createFloodAlertSchema,
   ReportFloodAlertDto,
   reportFloodAlertSchema,
   ReportQueryDto,
+  VoteDto,
 } from '@repo/schemas';
 import { type AuthRequest } from 'src/auth/types/auth-request.type';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -34,6 +37,8 @@ import {
   CreateFloodAlertWithImageDto,
   ReportFloodAlertWithImageDto,
 } from './dtos/reports.swagger.dto';
+import { CreateCommentWithImageDto } from 'src/comments/dtos/comments.swagger.dto';
+import { SkipThrottle, Throttle } from '@nestjs/throttler';
 
 @Controller('reports')
 export class ReportsController {
@@ -48,16 +53,16 @@ export class ReportsController {
     return await this.reportsService.findAllPublic();
   }
 
-  @Get(':id')
-  @HttpCode(HttpStatus.OK)
-  async findOnePublic(@Param('id') id: number) {
-    return await this.reportsService.findOnePublic(id);
-  }
-
   @Get('admin')
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() reportQuery: ReportQueryDto) {
     return await this.reportsService.findAll(reportQuery);
+  }
+
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  async findOnePublic(@Param('id', ParseIntPipe) id: number) {
+    return await this.reportsService.findOnePublic(id);
   }
 
   @Post('create')
@@ -141,29 +146,52 @@ export class ReportsController {
   @Patch(':id/verify')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard, UserStatusGuard)
-  async verifyReportStatus(@Param('id') id: number) {
-    return await this.reportsService.verifyReportStatus(id);
+  async verifyReportStatus(
+    @Param('id', ParseIntPipe) id: number,
+    @Request() req: AuthRequest,
+  ) {
+    return await this.reportsService.verifyReportStatus(id, req.user.id);
   }
 
   @Delete(':id/delete')
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(JwtAuthGuard, UserStatusGuard)
-  async deleteReport(@Param('id') id: number) {
+  async deleteReport(@Param('id', ParseIntPipe) id: number) {
     return await this.reportsService.deleteReport(id);
   }
 
   @Get(':id/comments')
   @HttpCode(HttpStatus.OK)
-  async getComments(@Param('id') id: number) {
-    return await this.commentsService.getComments(id);
+  @SkipThrottle({ global: true }) // bypass the 10/min global
+  @Throttle({ getComments: { ttl: 60000, limit: 30 } }) // apply 30/min instead
+  async getComments(
+    @Param('id', ParseIntPipe) id: number,
+    @Query() commentQueryDto: CommentQueryDto,
+  ) {
+    return await this.commentsService.getComments(id, commentQueryDto);
   }
 
   @Post(':id/comments')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard, UserStatusGuard)
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(
+    FileInterceptor('image', {
+      limits: { fileSize: 5 * 1024 * 1024 }, // 5MB file size limit
+      fileFilter(req, file, cb) {
+        if (!file.mimetype.startsWith('image/')) {
+          return cb(
+            new BadRequestException('Only image files are allowed'),
+            false,
+          );
+        }
+        cb(null, true);
+      },
+    }),
+  )
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({ type: CreateCommentWithImageDto })
   async addComment(
-    @Param('id') id: number,
+    @Param('id', ParseIntPipe) id: number,
     @Body() createCommentDto: CreateCommentDto,
     @Request() req: AuthRequest,
     @UploadedFile() image: Express.Multer.File,
@@ -174,5 +202,30 @@ export class ReportsController {
       req.user.id,
       image,
     );
+  }
+
+  @Post(':id/vote')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard, UserStatusGuard)
+  async confirmReport(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() voteDto: VoteDto,
+    @Request() req: AuthRequest,
+  ) {
+    return await this.reportsService.voteReport(
+      id,
+      req.user.id,
+      voteDto.action,
+    );
+  }
+
+  @Get(':id/my-vote')
+  @HttpCode(HttpStatus.OK)
+  @UseGuards(JwtAuthGuard, UserStatusGuard)
+  async getMyVote(
+    @Param('id', ParseIntPipe) id: number,
+    @Request() req: AuthRequest,
+  ) {
+    return await this.reportsService.getMyVote(id, req.user.id);
   }
 }

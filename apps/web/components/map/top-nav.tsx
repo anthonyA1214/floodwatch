@@ -13,112 +13,136 @@ import {
   IconMapPinExclamation,
   IconShieldPin,
 } from '@tabler/icons-react';
-import { usePanel } from '@/contexts/panel-context';
 import AuthButtons from '@/components/shared/auth-buttons';
 import { useUser } from '@/hooks/use-user';
 import { Skeleton } from '@/components/ui/skeleton';
 import ReportFloodAlertDialog from './report-flood-alert-dialog';
+import { useMapOverlay } from '@/contexts/map-overlay-context';
+import { cn } from '@/lib/utils';
 
 export default function TopNav() {
-  const { toggle } = usePanel();
+  const { toggle, openLocations, activeOverlay } = useMapOverlay();
   const { user, isLoading } = useUser();
 
   return (
-    <header className="w-full bg-[#0066CC] relative z-50">
-      <nav className="flex flex-wrap w-full justify-between px-3 md:px-4 py-2 mx-auto items-center gap-y-2">
-        {/* logo */}
-        <div className="flex items-center gap-3 shrink-0">
-          <Link href="/" className="flex items-center gap-2">
-            <Image src="/logo-white.svg" alt="Logo" width={32} height={32} />
-            <h1 className="hidden sm:block text-white font-bold text-lg">
+    <header className='w-full bg-[#0066CC] relative z-50'>
+      <nav className='flex flex-wrap lg:flex-nowrap w-full justify-between px-3 md:px-4 py-2 mx-auto items-center gap-y-2'>
+        {/* logo and time */}
+        <div className='flex items-center gap-3 sm:gap-6 shrink-0 order-first'>
+          <Link href='/' className='flex items-center gap-2'>
+            <Image src='/logo-white.svg' alt='Logo' width={32} height={32} />
+            <h1 className='hidden sm:block text-white font-bold text-lg md:text-xl'>
               FloodWatch
             </h1>
           </Link>
         </div>
 
-        {/* mobile row buttons */}
-        <div className="flex basis-full gap-3 order-last 2xl:hidden px-2 min-w-0">
+        {/* mobile row buttons — full-width second row */}
+        <div className='flex basis-full gap-2 order-last lg:hidden'>
           <button
-            className="flex-1 min-w-0 flex items-center justify-center gap-2 text-white
-            bg-white/10 border border-white/10
-            px-3 py-2 rounded-lg text-xs
-            hover:bg-white/20 active:bg-white/30
-            transition-colors"
+            className={cn(
+              'flex flex-1 w-0 items-center justify-center gap-2 text-white min-w-0',
+              'bg-white/10 border border-white/10',
+              'px-2 py-1.5 rounded-lg text-xs',
+              'hover:bg-white/20 hover:border-white/20',
+              'active:bg-white/30',
+              'transition-colors duration-200',
+              activeOverlay?.type === 'affected' &&
+                'bg-white/30 border-white/30',
+            )}
+            onClick={() => openLocations('affected')}
           >
-            <IconMapPinExclamation className="w-[1.5em] h-[1.5em] shrink-0" />
-            <span className="font-medium leading-tight text-center">
-              AFFECTED LOCATIONS
-            </span>
+            <IconMapPinExclamation className='w-[1.5em]! h-[1.5em]! shrink-0' />
+            <span className='font-medium truncate'>AFFECTED LOCATIONS</span>
           </button>
 
           <button
-            className="flex-1 min-w-0 flex items-center justify-center gap-2 text-white 
-            bg-white/10 border border-white/10 
-            px-3 py-2 rounded-lg text-xs
-            hover:bg-white/20 active:bg-white/30
-            transition-colors"
+            className={cn(
+              'flex flex-1 w-0 items-center justify-center gap-2 text-white min-w-0',
+              'bg-white/10 border border-white/10',
+              'px-2 py-1.5 rounded-lg text-xs',
+              'hover:bg-white/20 hover:border-white/20',
+              'active:bg-white/30',
+              'transition-colors duration-200',
+              activeOverlay?.type === 'safety' && 'bg-white/30 border-white/30',
+            )}
+            onClick={() => openLocations('safety')}
           >
-            <IconShieldPin className="w-[1.5em] h-[1.5em] shrink-0" />
-            <span className="leading-tight text-center">SAFETY LOCATIONS</span>
+            <IconShieldPin className='w-[1.5em]! h-[1.5em]! shrink-0' />
+            <span className='font-medium truncate'>SAFETY LOCATIONS</span>
           </button>
         </div>
 
         {/* user actions */}
         {isLoading ? (
-          <div className="flex items-center gap-2 ml-auto">
-            <Skeleton className="w-24 h-9 rounded-md bg-white/20" />
-            <Skeleton className="w-6 h-6 rounded-md bg-white/20" />
-            <Skeleton className="size-8 rounded-full bg-white/20" />
+          <div className='flex items-center gap-2 ml-auto'>
+            <Skeleton className='w-24 h-9 rounded-md bg-white/20' />
+            <Skeleton className='w-6 h-6 rounded-md bg-white/20' />
+            <Skeleton className='size-8 rounded-full bg-white/20' />
           </div>
         ) : user ? (
-          <div className="flex items-center gap-3 sm:gap-6 ml-auto">
+          <div className='flex items-center gap-3 sm:gap-6 ml-auto'>
             {/* desktop tabs beside report */}
-            <div className="hidden 2xl:flex items-center gap-4">
+            <div className='hidden lg:flex items-center gap-4'>
               <button
-                className="flex items-center justify-center gap-2 text-white 
-                bg-white/10 border border-white/10 
-                px-4 py-1.5 rounded-lg text-sm
-                hover:bg-white/20"
+                className={cn(
+                  'flex items-center justify-center gap-2 text-white',
+                  'bg-white/10 border border-white/10',
+                  'px-2 md:px-4 py-1.5 rounded-lg text-xs md:text-sm',
+                  'hover:bg-white/20 hover:border-white/20',
+                  'active:bg-white/30',
+                  'transition-colors duration-200 shrink-0 whitespace-nowrap',
+                  activeOverlay?.type === 'affected' &&
+                    'bg-white/30 border-white/30',
+                )}
+                onClick={() => openLocations('affected')}
               >
-                <IconMapPinExclamation className="w-[1.5em] h-[1.5em]" />
-                <span>AFFECTED LOCATIONS</span>
+                <IconMapPinExclamation className='w-[1.5em]! h-[1.5em]!' />
+                <span className='font-medium'> AFFECTED LOCATIONS</span>
               </button>
 
               <button
-                className="flex items-center justify-center gap-2 text-white 
-                bg-white/10 border border-white/10 
-                px-4 py-1.5 rounded-lg text-sm
-                hover:bg-white/20"
+                className={cn(
+                  'flex items-center justify-center gap-2 text-white',
+                  'bg-white/10 border border-white/10',
+                  'px-2 md:px-4 py-1.5 rounded-lg text-xs md:text-sm',
+                  'hover:bg-white/20 hover:border-white/20',
+                  'active:bg-white/30',
+                  'transition-colors duration-200 shrink-0 whitespace-nowrap',
+                  activeOverlay?.type === 'safety' &&
+                    'bg-white/30 border-white/30',
+                )}
+                onClick={() => openLocations('safety')}
               >
-                <IconShieldPin className="w-[1.5em] h-[1.5em]" />
-                <span>SAFETY LOCATIONS</span>
+                <IconShieldPin className='w-[1.5em]! h-[1.5em]!' />
+                <span className='font-medium'>SAFETY LOCATIONS</span>
               </button>
             </div>
 
             <ReportFloodAlertDialog />
 
             <button
-              className="text-white hover:text-gray-200"
+              className='text-base text-white hover:text-[#F5F5F5] active:text-[#EAEAEA] transition-colors shrink-0'
               onClick={() => toggle('notification')}
             >
-              <IconBell className="w-[1.5em] h-[1.5em]" />
+              <IconBell className='w-[1.5em]! h-[1.5em]!' />
             </button>
 
             <button onClick={() => toggle('profile')}>
-              <UIAvatar className="size-8 border">
+              <UIAvatar className='size-8 border'>
                 <AvatarImage src={user?.profilePicture} />
                 <AvatarFallback>
                   <Avatar
                     name={`${user?.name} ${user?.id}`}
-                    variant="beam"
-                    className="size-8"
+                    variant='beam'
+                    className='size-8'
                   />
                 </AvatarFallback>
               </UIAvatar>
             </button>
           </div>
         ) : (
-          <div className="ml-auto">
+          <div className='ml-auto'>
             <AuthButtons />
           </div>
         )}

@@ -25,6 +25,7 @@
     "db:studio": "drizzle-kit studio"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^1.0.2",
     "@nestjs-modules/mailer": "^2.0.2",
     "@nestjs/axios": "^4.0.1",
     "@nestjs/common": "^11.0.1",
@@ -52,6 +53,7 @@
     "nestjs-pino": "^4.5.0",
     "nestjs-zod": "^5.1.1",
     "nodemailer": "^7.0.12",
+    "nodemailer-brevo-transport": "^2.2.1",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.1",
