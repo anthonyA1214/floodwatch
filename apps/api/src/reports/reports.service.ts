@@ -9,7 +9,8 @@ import { and, count, desc, eq, like, or, sql } from 'drizzle-orm';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { DRIZZLE } from 'src/drizzle/drizzle-connection';
 import { profileInfo, users } from 'src/drizzle/schemas';
-import { reports } from 'src/drizzle/schemas/reports.schema';
+import { reports } from 'src/drizzle/schemas';
+import { reportConfirmations } from 'src/drizzle/schemas/report-confirmations.schema';
 import type { DrizzleDB } from 'src/drizzle/types/drizzle';
 import { GeocoderService } from 'src/geocoder/geocoder.service';
 import { ImagesService } from 'src/images/images.service';
@@ -52,6 +53,8 @@ export class ReportsService {
         severity: reports.severity,
         status: reports.status,
         image: reports.image,
+        confirms: reports.confirms,
+        denies: reports.denies,
         reportedAt: reports.createdAt,
         reporter: {
           id: users.id,
@@ -321,5 +324,112 @@ export class ReportsService {
     await this.db.delete(reports).where(eq(reports.id, id));
 
     return { message: 'Report deleted successfully' };
+  }
+
+  async voteReport(
+    reportId: number,
+    userId: number,
+    action: 'confirm' | 'deny',
+  ) {
+    const [report] = await this.db
+      .select()
+      .from(reports)
+      .where(eq(reports.id, reportId))
+      .limit(1);
+
+    if (!report) {
+      throw new NotFoundException('Report not found');
+    }
+
+    const existing = await this.db.query.reportConfirmations.findFirst({
+      where: and(
+        eq(reportConfirmations.reportId, reportId),
+        eq(reportConfirmations.userId, userId),
+      ),
+    });
+
+    return await this.db.transaction(async (tx) => {
+      if (existing) {
+        if (existing.action === action) {
+          // toggle off
+          await tx
+            .delete(reportConfirmations)
+            .where(eq(reportConfirmations.id, existing.id));
+
+          await tx
+            .update(reports)
+            .set({
+              confirms:
+                action === 'confirm'
+                  ? sql`${reports.confirms} - 1`
+                  : reports.confirms,
+              denies:
+                action === 'deny' ? sql`${reports.denies} - 1` : reports.denies,
+              updatedAt: new Date(),
+            })
+            .where(eq(reports.id, reportId));
+
+          return { message: 'Vote removed successfully' };
+        }
+
+        // flip vote
+        await tx
+          .update(reportConfirmations)
+          .set({
+            action,
+          })
+          .where(eq(reportConfirmations.id, existing.id));
+
+        await tx
+          .update(reports)
+          .set({
+            confirms:
+              existing.action === 'confirm'
+                ? sql`${reports.confirms} - 1`
+                : sql`${reports.confirms} + 1`,
+            denies:
+              existing.action === 'deny'
+                ? sql`${reports.denies} - 1`
+                : sql`${reports.denies} + 1`,
+            updatedAt: new Date(),
+          })
+          .where(eq(reports.id, reportId));
+
+        return { message: 'Vote updated successfully' };
+      }
+
+      // insert new
+      await tx.insert(reportConfirmations).values({
+        action,
+        userId,
+        reportId,
+      });
+
+      await tx
+        .update(reports)
+        .set({
+          confirms:
+            action === 'confirm'
+              ? sql`${reports.confirms} + 1`
+              : reports.confirms,
+          denies:
+            action === 'deny' ? sql`${reports.denies} + 1` : reports.denies,
+          updatedAt: new Date(),
+        })
+        .where(eq(reports.id, reportId));
+
+      return { message: 'Vote added successfully' };
+    });
+  }
+
+  async getMyVote(reportId: number, userId: number) {
+    const vote = await this.db.query.reportConfirmations.findFirst({
+      where: and(
+        eq(reportConfirmations.reportId, reportId),
+        eq(reportConfirmations.userId, userId),
+      ),
+    });
+
+    return { action: vote?.action ?? null };
   }
 }

@@ -13,7 +13,6 @@ import { GeocoderModule } from './geocoder/geocoder.module';
 import { NewsModule } from './news/news.module';
 import { SafetyModule } from './safety/safety.module';
 import { CommentsModule } from './comments/comments.module';
-import { VotesModule } from './votes/votes.module';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ZodSerializerInterceptor, ZodValidationPipe } from 'nestjs-zod';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
@@ -62,7 +61,6 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
     NewsModule,
     SafetyModule,
     CommentsModule,
-    VotesModule,
   ],
   providers: [
     {

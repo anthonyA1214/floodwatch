@@ -4,13 +4,13 @@ import {
   integer,
   timestamp,
   unique,
+  text,
 } from 'drizzle-orm/pg-core';
 import { users } from './users.schema';
 import { comments } from './comments.schema';
-import { voteTypeEnum } from './report_votes.schema';
 
-export const commentVotes = pgTable(
-  'comment_votes',
+export const commentReports = pgTable(
+  'comment_reports',
   {
     id: serial('id').primaryKey(),
     userId: integer('user_id').references(() => users.id, {
@@ -19,7 +19,7 @@ export const commentVotes = pgTable(
     commentId: integer('comment_id').references(() => comments.id, {
       onDelete: 'cascade',
     }),
-    voteType: voteTypeEnum('vote_type').notNull(),
+    reason: text('reason'),
     createdAt: timestamp('created_at').defaultNow(),
   },
   (t) => [unique().on(t.userId, t.commentId)],

@@ -9,10 +9,13 @@ import {
 import { users } from './users.schema';
 import { reports } from './reports.schema';
 
-export const voteTypeEnum = pgEnum('vote_type', ['up', 'down']);
+export const reportConfirmationActionEnum = pgEnum('vote_type', [
+  'confirm',
+  'deny',
+]);
 
-export const reportVotes = pgTable(
-  'report_votes',
+export const reportConfirmations = pgTable(
+  'report_confirmations',
   {
     id: serial('id').primaryKey(),
     userId: integer('user_id').references(() => users.id, {
@@ -21,7 +24,7 @@ export const reportVotes = pgTable(
     reportId: integer('report_id').references(() => reports.id, {
       onDelete: 'cascade',
     }),
-    voteType: voteTypeEnum('vote_type').notNull(),
+    action: reportConfirmationActionEnum().notNull(),
     createdAt: timestamp('created_at').defaultNow(),
   },
   (t) => [unique().on(t.userId, t.reportId)],

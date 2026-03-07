@@ -5,6 +5,7 @@ import {
   timestamp,
   text,
   serial,
+  boolean,
 } from 'drizzle-orm/pg-core';
 import { users } from './users.schema';
 import { doublePrecision } from 'drizzle-orm/pg-core';
@@ -38,8 +39,9 @@ export const reports = pgTable('reports', {
   imagePublicId: text('image_public_id'),
   severity: severityEnum().notNull(),
   status: reportsStatusEnum().notNull().default('unverified'),
-  upvotes: integer('upvotes').notNull().default(0),
-  downvotes: integer('downvotes').notNull().default(0),
+  confirms: integer('confirms').notNull().default(0),
+  denies: integer('denies').notNull().default(0),
+  reportedByAdmin: boolean('reported_by_admin').notNull().default(false),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });

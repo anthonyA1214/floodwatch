@@ -16,7 +16,7 @@ export const commentQuerySchema = z.object({
 });
 
 const CommentSchema = z.object({
-  id: z.string(),
+  id: z.number(),
   content: z.string(),
   image: z.string().nullable(),
   upvotes: z.number().int(),
@@ -24,7 +24,7 @@ const CommentSchema = z.object({
   createdAt: z.date(),
   author: z
     .object({
-      id: z.string(),
+      id: z.number(),
       name: z.string(),
       profilePicture: z.string().nullable(),
     })

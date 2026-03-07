@@ -47,7 +47,7 @@ const InteractiveMapCurrentLocation = forwardRef<InteractiveMapHandle, Props>(
       latitude: number;
     } | null>(null);
     const [isOutside, setIsOutside] = useState(false);
-    const [isLocating, setIsLocating] = useState(true);
+    const [isLocating, setIsLocating] = useState(false);
 
     const handleGeolocate = useCallback(() => {
       setIsLocating(true);
@@ -104,34 +104,37 @@ const InteractiveMapCurrentLocation = forwardRef<InteractiveMapHandle, Props>(
     }));
 
     return (
-      <div className="relative flex-1">
+      <div className='relative flex-1'>
         {isLocating && (
-          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 backdrop-blur rounded-2xl">
-            <Spinner className="size-16 text-gray-600" />
-            <span className="text-lg font-medium text-gray-600">
+          <div className='absolute inset-0 z-10 flex flex-col items-center justify-center gap-2 bg-white/70 rounded-2xl pointer-events-none'>
+            <Spinner className='size-16 text-gray-600' />
+            <span className='text-lg font-medium text-gray-600'>
               Getting your location...
             </span>
           </div>
         )}
         <Map
-          id="interactive-map-location"
+          id='interactive-map-location'
           ref={mapRef}
           initialViewState={{
             latitude: 14.69906,
             longitude: 120.99772,
             zoom: 11.5,
           }}
-          mapStyle="https://tiles.openfreemap.org/styles/bright"
-          onLoad={() => handleGeolocate()}
+          mapStyle='https://tiles.openfreemap.org/styles/bright'
+          onLoad={() => {
+            setIsLocating(true);
+            handleGeolocate();
+          }}
           attributionControl={false}
           dragRotate={false}
         >
           {/* boundary fill */}
           {caloocanGeoJSON && (
-            <Source id="caloocan" type="geojson" data={caloocanGeoJSON}>
+            <Source id='caloocan' type='geojson' data={caloocanGeoJSON}>
               <Layer
-                id="caloocan-fill"
-                type="fill"
+                id='caloocan-fill'
+                type='fill'
                 paint={{
                   'fill-color': '#0066CC',
                   'fill-opacity': 0.05,
@@ -143,13 +146,13 @@ const InteractiveMapCurrentLocation = forwardRef<InteractiveMapHandle, Props>(
           {/* boundary outline */}
           {caloocanOutlineGeoJSON && (
             <Source
-              id="caloocan-outline"
-              type="geojson"
+              id='caloocan-outline'
+              type='geojson'
               data={caloocanOutlineGeoJSON}
             >
               <Layer
-                id="caloocan-outline-line"
-                type="line"
+                id='caloocan-outline-line'
+                type='line'
                 paint={{
                   'line-color': '#0066CC',
                   'line-width': 2,
@@ -163,7 +166,7 @@ const InteractiveMapCurrentLocation = forwardRef<InteractiveMapHandle, Props>(
             <Marker
               longitude={location.longitude}
               latitude={location.latitude}
-              anchor="bottom"
+              anchor='bottom'
             >
               {isOutside ? (
                 <UserLocationMarker />
