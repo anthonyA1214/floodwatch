@@ -42,7 +42,9 @@ export default function FloodReportPopup({
 
   const credibility =
     confirms !== undefined && denies !== undefined
-      ? Math.round((confirms / (confirms + denies)) * 100)
+      ? confirms + denies === 0
+        ? 0
+        : Math.round((confirms / (confirms + denies)) * 100)
       : 0;
 
   if (isLoading || !reportDetail) return <FloodReportPopupSkeleton />;

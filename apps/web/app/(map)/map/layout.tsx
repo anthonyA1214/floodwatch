@@ -6,9 +6,9 @@ export default function MapLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <MapOverlayProvider>
-      <div className="flex flex-col h-dvh overscroll-none overflow-hidden">
+      <div className='flex flex-col h-dvh overscroll-none overflow-hidden'>
         <TopNav />
-        <main className="flex-1 overflow-hidden">{children}</main>
+        <main className='flex-1 overflow-hidden'>{children}</main>
       </div>
     </MapOverlayProvider>
   );

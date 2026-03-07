@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import Image from 'next/image';
 import {
   IconChevronLeft,
+  IconChevronRight,
   IconCircleCheck,
   IconClock,
   IconExclamationCircle,
@@ -31,6 +32,7 @@ import { ReportedLocationPanelSkeleton } from './skeletons/reported-location-pan
 import NoPhotoEmpty from '../shared/no-photo-empty';
 import CommentsList from '../shared/comments-list';
 import VoteButtons from './vote-buttons';
+import { useMapOverlay } from '@/contexts/map-overlay-context';
 
 export default function ReportedLocationPanel({
   reportId,
@@ -40,6 +42,14 @@ export default function ReportedLocationPanel({
   onClose?: () => void;
 }) {
   const { reportDetail, isLoading } = useReportDetail(reportId);
+  const {
+    prevReport,
+    nextReport,
+    hasNext,
+    hasPrev,
+    currentReportIndex,
+    totalReports,
+  } = useMapOverlay();
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -62,7 +72,9 @@ export default function ReportedLocationPanel({
 
   const credibility =
     confirms !== undefined && denies !== undefined
-      ? Math.round((confirms / (confirms + denies)) * 100)
+      ? confirms + denies === 0
+        ? 0
+        : Math.round((confirms / (confirms + denies)) * 100)
       : 0;
 
   return (
@@ -265,6 +277,42 @@ export default function ReportedLocationPanel({
               <IconSend className='w-[1.5em]! h-[1.5em]!' />
               <span className='font-poppins font-medium'>GET DIRECTIONS</span>
             </Button>
+
+            <Separator />
+
+            <div className='flex items-center gap-6 justify-between'>
+              <button
+                onClick={prevReport}
+                disabled={!hasPrev}
+                className='flex gap-2 w-full transition-colors duration-200 disabled:cursor-not-allowed justify-center
+              text-gray-600 hover:text-gray-900 active:text-gray-700
+                bg-transparent hover:bg-gray-100 active:bg-gray-200
+                border border-gray-300 hover:border-gray-400 active:border-gray-500
+                rounded-md px-4 py-2
+                disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:border-gray-300 disabled:hover:text-gray-600'
+              >
+                <IconChevronLeft className='w-[1.5em]! h-[1.5em]!' />
+                <span className='font-medium font-poppins'>BACK</span>
+              </button>
+
+              <span className='font-poppins font-bold text-xs opacity-50 shrink-0'>
+                {currentReportIndex} / {totalReports}
+              </span>
+
+              <button
+                onClick={nextReport}
+                disabled={!hasNext}
+                className='flex gap-2 w-full transition-colors duration-200 disabled:cursor-not-allowed justify-center
+              text-gray-600 hover:text-gray-900 active:text-gray-700
+                bg-transparent hover:bg-gray-100 active:bg-gray-200
+                border border-gray-300 hover:border-gray-400 active:border-gray-500
+                rounded-md px-4 py-2
+                disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:border-gray-300 disabled:hover:text-gray-600'
+              >
+                <IconChevronRight className='w-[1.5em]! h-[1.5em]!' />
+                <span className='font-medium font-poppins'>NEXT</span>
+              </button>
+            </div>
           </div>
 
           {/*  */}

@@ -5,6 +5,8 @@ import {
   SEVERITY_COLOR_MAP,
 } from '@/lib/utils/get-color-map';
 import {
+  IconChevronLeft,
+  IconChevronRight,
   IconCircleCheck,
   IconClock,
   IconExclamationCircle,
@@ -35,6 +37,7 @@ import { Button } from '../ui/button';
 import { ReportedLocationDrawerSkeleton } from './skeletons/reported-location-drawer-skeleton';
 import CommentsList from '../shared/comments-list';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import { useMapOverlay } from '@/contexts/map-overlay-context';
 
 const snapPoints = ['0px', '355px', 1];
 
@@ -47,6 +50,14 @@ export default function ReportedLocationDrawer({
 }) {
   const [snap, setSnap] = useState<number | string | null>(snapPoints[1]);
   const [open, setOpen] = useState(true);
+  const {
+    prevReport,
+    nextReport,
+    hasNext,
+    hasPrev,
+    currentReportIndex,
+    totalReports,
+  } = useMapOverlay();
 
   const handleOpenChange = (isOpen: boolean) => {
     setOpen(isOpen);
@@ -334,6 +345,42 @@ export default function ReportedLocationDrawer({
                 <IconSend className='w-[1.5em]! h-[1.5em]!' />
                 <span className='font-poppins font-medium'>GET DIRECTIONS</span>
               </Button>
+
+              <Separator />
+
+              <div className='flex items-center gap-6 justify-between'>
+                <button
+                  onClick={prevReport}
+                  disabled={!hasPrev}
+                  className='flex gap-2 w-full transition-colors duration-200 disabled:cursor-not-allowed justify-center
+              text-gray-600 hover:text-gray-900 active:text-gray-700
+                bg-transparent hover:bg-gray-100 active:bg-gray-200
+                border border-gray-300 hover:border-gray-400 active:border-gray-500
+                rounded-md px-4 py-2
+                disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:border-gray-300 disabled:hover:text-gray-600'
+                >
+                  <IconChevronLeft className='w-[1.5em]! h-[1.5em]!' />
+                  <span className='font-medium font-poppins'>BACK</span>
+                </button>
+
+                <span className='font-poppins font-bold text-xs opacity-50 shrink-0'>
+                  {currentReportIndex} / {totalReports}
+                </span>
+
+                <button
+                  onClick={nextReport}
+                  disabled={!hasNext}
+                  className='flex gap-2 w-full transition-colors duration-200 disabled:cursor-not-allowed justify-center
+              text-gray-600 hover:text-gray-900 active:text-gray-700
+                bg-transparent hover:bg-gray-100 active:bg-gray-200
+                border border-gray-300 hover:border-gray-400 active:border-gray-500
+                rounded-md px-4 py-2
+                disabled:opacity-50 disabled:hover:bg-transparent disabled:hover:border-gray-300 disabled:hover:text-gray-600'
+                >
+                  <IconChevronRight className='w-[1.5em]! h-[1.5em]!' />
+                  <span className='font-medium font-poppins'>NEXT</span>
+                </button>
+              </div>
             </div>
 
             {/*  */}

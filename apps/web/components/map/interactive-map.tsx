@@ -29,6 +29,7 @@ import { useSafetyLocations } from '@/hooks/use-safety';
 import { SafetyMarker } from '../markers/safety-marker';
 import FloodReportPopup from './flood-report-popup';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useMapOverlay } from '@/contexts/map-overlay-context';
 
 type SelectedLocation = {
   longitude: number;
@@ -58,9 +59,21 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
     const { reportMapPins } = useReportMapPins();
     const { safetyLocations } = useSafetyLocations();
     const isMobile = useIsMobile();
+    const { registerFlyTo } = useMapOverlay();
 
     const [selectedReport, setSelectedReport] =
       useState<ReportMapPinInput | null>(null);
+
+    useEffect(() => {
+      registerFlyTo((pin) => {
+        mapRef.current?.flyTo({
+          center: [pin.longitude, pin.latitude],
+          zoom: Math.max(mapRef.current.getZoom(), 16),
+          essential: true,
+          padding: { top: 0, bottom: 0, left: 0, right: 0 },
+        });
+      });
+    }, [registerFlyTo]);
 
     useImperativeHandle(ref, () => ({
       zoomIn: () => mapRef.current?.zoomIn(),
@@ -75,6 +88,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
               center: [longitude, latitude],
               zoom: 16,
               essential: true,
+              padding: { top: 0, bottom: 0, left: 0, right: 0 },
             });
           }
         }),
@@ -92,6 +106,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
         center: [loc.longitude, loc.latitude],
         zoom: Math.max(currentZoom, 16),
         essential: true,
+        padding: { top: 0, bottom: 0, left: 0, right: 0 },
       });
     }, [selectedLocation]);
 
