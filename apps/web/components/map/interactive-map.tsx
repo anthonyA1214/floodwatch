@@ -39,6 +39,7 @@ type SelectedLocation = {
 type Props = {
   selectedLocation?: SelectedLocation | null;
   onSelectReport?: (report: ReportMapPinInput) => void;
+  onSelectSafetyLocation?: () => void;
 };
 
 export type InteractiveMapHandle = {
@@ -48,7 +49,7 @@ export type InteractiveMapHandle = {
 };
 
 const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
-  ({ selectedLocation, onSelectReport }, ref) => {
+  ({ selectedLocation, onSelectReport, onSelectSafetyLocation }, ref) => {
     const mapRef = useRef<MapRef | null>(null);
     const { caloocanGeoJSON, caloocanOutlineGeoJSON } = useBoundary();
     const [userLocation, setUserLocation] = useState<{
@@ -96,15 +97,32 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
     }, [selectedLocation]);
 
     const handleSelectReport = (report: ReportMapPinInput) => {
-      mapRef?.current?.flyTo({
+      mapRef.current?.flyTo({
         center: [report.longitude, report.latitude],
-        zoom: Math.max(mapRef?.current.getZoom(), 16),
+        zoom: Math.max(mapRef.current?.getZoom() ?? 0, 16),
         essential: true,
         padding: isMobile
-          ? { top: 0, bottom: 350, left: 0, right: 0 } // push pin upward, making room below
-          : { top: 100, bottom: 0, left: 0, right: 0 }, // center on pin
+          ? { top: 0, bottom: 350, left: 0, right: 0 }
+          : { top: 100, bottom: 0, left: 0, right: 0 },
       });
+
       setSelectedReport(report);
+    };
+
+    const handleSelectSafetyLocation = (
+      longitude: number,
+      latitude: number,
+    ) => {
+      mapRef.current?.flyTo({
+        center: [longitude, latitude],
+        zoom: Math.max(mapRef.current?.getZoom() ?? 0, 16),
+        essential: true,
+        padding: isMobile
+          ? { top: 0, bottom: 350, left: 0, right: 0 }
+          : { top: 100, bottom: 0, left: 500, right: 0 },
+      });
+
+      onSelectSafetyLocation?.();
     };
 
     return (
@@ -112,7 +130,6 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
         id="interactive-map"
         ref={mapRef}
         initialViewState={{
-          // Center around Metro Manila area (so your sample pins are visible)
           latitude: 14.69906,
           longitude: 120.99772,
           zoom: 11.5,
@@ -165,6 +182,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
             >
               <FloodMarker severity={report.severity} status={report.status} />
             </Marker>
+
             <RadiusCircle
               id={`${report.id}`}
               longitude={report.longitude}
@@ -182,6 +200,10 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
             longitude={location.longitude}
             latitude={location.latitude}
             anchor="bottom"
+            onClick={(e) => {
+              e.originalEvent.stopPropagation();
+              handleSelectSafetyLocation(location.longitude, location.latitude);
+            }}
           >
             <SafetyMarker type={location.type} />
           </Marker>
@@ -198,7 +220,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
           </Marker>
         )}
 
-        {/* Search-selected location pin (red) */}
+        {/* Search-selected location pin */}
         {selectedLocation && (
           <Marker
             longitude={selectedLocation.longitude}

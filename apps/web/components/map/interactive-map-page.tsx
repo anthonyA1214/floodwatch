@@ -20,7 +20,7 @@ import ProfileOverlay from '@/components/map/profile-overlay';
 import ReportedLocationOverlay from './reported-location-overlay';
 import AffectedLocationsOverlay from './affected-locations-overlay';
 import SafetyLocationsOverlay from './safety-locations-overlay';
-import SafetyLocationInformationPanel from './safety-location-information-panel';
+import SafetyLocationInformationOverlay from './safety-location-information-overlay';
 
 export type SelectedLocation = {
   longitude: number;
@@ -33,6 +33,9 @@ export default function InteractiveMapPage() {
   const [selectedLocation, setSelectedLocation] =
     useState<SelectedLocation | null>(null);
   const [showLegend, setShowLegend] = useState(false);
+  const [showSafetyInformationPanel, setShowSafetyInformationPanel] =
+    useState(false);
+
   const { activeOverlay, openReport, close } = useMapOverlay();
   const interactiveMapRef = useRef<InteractiveMapHandle>(null);
 
@@ -42,17 +45,22 @@ export default function InteractiveMapPage() {
         <InteractiveMap
           ref={interactiveMapRef}
           selectedLocation={selectedLocation}
-          onSelectReport={(report) => openReport(report.id)}
+          onSelectReport={(report) => {
+            setShowSafetyInformationPanel(false);
+            openReport(report.id);
+          }}
+          onSelectSafetyLocation={() => {
+            close();
+            setShowSafetyInformationPanel(true);
+          }}
         />
 
-        {/* Top bar: search + controls in one row */}
         <div className="absolute top-0 left-0 right-0 flex items-start gap-4 pointer-events-none h-full">
-          {/* Search bar + affected panel share the left flex slot */}
           <div className="pointer-events-none flex-1 min-w-0 flex items-start h-full">
             {activeOverlay?.type === 'report' && (
               <ReportedLocationOverlay
                 reportId={activeOverlay.reportId}
-                onClose={close}
+                onClose={() => close()}
               />
             )}
 
@@ -64,14 +72,22 @@ export default function InteractiveMapPage() {
               <SafetyLocationsOverlay onClose={() => close()} />
             )}
 
-            <div className="flex-1 w-lg sm:flex-none max-w-sm ps-4 pt-4">
-              <SearchBar onSelectLocation={setSelectedLocation} />
+            {showSafetyInformationPanel && (
+              <div className="pointer-events-auto h-full shrink-0">
+                <SafetyLocationInformationOverlay
+                  onClose={() => setShowSafetyInformationPanel(false)}
+                />
+              </div>
+            )}
+
+            <div className="pointer-events-none flex-1 min-w-0 pt-4 ps-4">
+              <div className="pointer-events-auto w-full max-w-sm">
+                <SearchBar onSelectLocation={setSelectedLocation} />
+              </div>
             </div>
           </div>
 
-          {/* Map controls — fixed to right */}
           <div className="pointer-events-none flex flex-col gap-2 h-fit pt-4 pe-4">
-            {/* zoom buttons */}
             <div className="flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 pointer-events-auto">
               <button
                 onClick={() => interactiveMapRef.current?.zoomIn()}
@@ -92,7 +108,6 @@ export default function InteractiveMapPage() {
               </button>
             </div>
 
-            {/* geolocate */}
             <div className="flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 pointer-events-auto">
               <button
                 onClick={() => interactiveMapRef.current?.geolocate()}
@@ -106,7 +121,6 @@ export default function InteractiveMapPage() {
               </button>
             </div>
 
-            {/* toggle legend */}
             <div className="relative flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 pointer-events-auto">
               <button
                 onClick={() => setShowLegend(!showLegend)}
@@ -132,8 +146,6 @@ export default function InteractiveMapPage() {
             </div>
           )}
         </div>
-
-        <SafetyLocationInformationPanel onClose={() => close()} />
 
         <Suspense fallback={null}>
           <GoogleLinkToastHandler />

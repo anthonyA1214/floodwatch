@@ -1,15 +1,7 @@
 'use client';
 
-import {
-  MapPin,
-  Clock,
-  ArrowRight,
-  Navigation,
-  Crosshair,
-  BookOpen,
-  Phone,
-} from 'lucide-react';
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { MapPin, Clock, Phone, Crosshair } from 'lucide-react';
+import { Tabs, TabsContent } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,7 +19,7 @@ export default function SafetyLocationInformationPanel({
   onClose: () => void;
 }) {
   return (
-    <div className="fixed top-[50px] left-0 w-[480px] h-full bg-white border-r border-slate-200 shadow-lg flex flex-col z-40">
+    <div className="relative w-full h-full bg-white z-50 min-h-0 flex flex-col pointer-events-auto">
       <button
         className="absolute bg-white top-1/2 translate-x-full right-0 h-16 -translate-y-1/2 
         rounded-r-2xl ps-1 py-1 pr-1.5 text-xs z-30 shadow-[4px_0px_6px_-1px_rgba(0,0,0,0.1)]"
@@ -35,8 +27,10 @@ export default function SafetyLocationInformationPanel({
       >
         <IconChevronLeft className="w-[1.5em]! h-[1.5em]!" />
       </button>
+
       {/* IMAGE */}
       <div className="h-[240px] bg-linear-to-b from-slate-200 to-slate-300 shrink-0" />
+
       {/* CONTENT */}
       <div className="flex-1 flex flex-col px-6 pt-5 pb-4 min-h-0">
         {/* HEADER */}
@@ -62,7 +56,6 @@ export default function SafetyLocationInformationPanel({
           <span className="font-poppins font-medium">GET DIRECTIONS</span>
         </Button>
 
-        {/* TABS */}
         <Tabs defaultValue="overview" className="mt-4 flex flex-col min-h-0">
           <div className="flex gap-4 text-xs items-center px-2 lg:px-0">
             <div className="h-px flex-1 bg-gray-200" />
@@ -70,7 +63,6 @@ export default function SafetyLocationInformationPanel({
             <div className="h-px flex-1 bg-gray-200" />
           </div>
 
-          {/* OVERVIEW */}
           <TabsContent
             value="overview"
             className="flex-1 min-h-0 overflow-y-auto pt-5 pr-2 space-y-6"
@@ -136,21 +128,18 @@ export default function SafetyLocationInformationPanel({
             </div>
           </TabsContent>
 
-          {/* DIRECTION */}
           <TabsContent
             value="direction"
             className="flex-1 min-h-0 overflow-y-auto pt-5 pr-2"
           >
             <div className="space-y-5">
               <div className="flex gap-4 items-start">
-                {/* TIMELINE */}
                 <div className="flex flex-col items-center gap-3">
                   <div className="w-2.5 h-2.5 mt-4 rounded-full border border-slate-300" />
                   <div className="w-px h-6 bg-slate-200" />
                   <MapPin className="w-4 h-4 text-red-500" />
                 </div>
 
-                {/* INPUTS */}
                 <div className="flex-1 space-y-3">
                   <div className="relative">
                     <Input
@@ -191,29 +180,16 @@ export default function SafetyLocationInformationPanel({
                   Nearby Places
                 </p>
 
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start gap-3 py-6 text-slate-600"
-                >
-                  <MapPin className="w-4 h-4 text-slate-300" />
-                  Camarin Healthcare and Emergency Clinic
-                </Button>
-
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start gap-3 py-6 text-slate-600"
-                >
-                  <MapPin className="w-4 h-4 text-slate-300" />
-                  Brgy 174 Covered Court
-                </Button>
-
-                <Button
-                  variant="ghost"
-                  className="w-full justify-start gap-3 py-6 text-slate-600"
-                >
-                  <MapPin className="w-4 h-4 text-slate-300" />
-                  Caloocan City Medical Center
-                </Button>
+                {NEARBY_PLACES.map((place) => (
+                  <Button
+                    key={place.id}
+                    variant="ghost"
+                    className="w-full justify-start gap-3 py-6 text-slate-600"
+                  >
+                    <MapPin className="w-4 h-4 text-slate-300" />
+                    {place.name}
+                  </Button>
+                ))}
               </div>
             </div>
           </TabsContent>
