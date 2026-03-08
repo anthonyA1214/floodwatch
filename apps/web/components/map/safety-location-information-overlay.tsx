@@ -1,4 +1,5 @@
 import { useIsMobile } from '@/hooks/use-mobile';
+import SafetyLocationInformationDrawer from './safety-location-information-drawer';
 import SafetyLocationInformationPanel from './safety-location-information-panel';
 
 export default function SafetyLocationInformationOverlay({
@@ -11,7 +12,7 @@ export default function SafetyLocationInformationOverlay({
   if (isMobile) {
     return (
       <div className="absolute flex lg:hidden flex-col h-full w-full">
-        <SafetyLocationInformationPanel onClose={onClose ?? (() => {})} />
+        <SafetyLocationInformationDrawer onClose={onClose ?? (() => {})} />
       </div>
     );
   }
