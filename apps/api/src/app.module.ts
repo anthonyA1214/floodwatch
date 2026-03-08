@@ -17,6 +17,8 @@ import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ZodSerializerInterceptor, ZodValidationPipe } from 'nestjs-zod';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { JwtAuthGuard } from './auth/guards/jwt-auth/jwt-auth.guard';
+import { RolesGuard } from './common/guards/roles/roles.guard';
 
 @Module({
   imports: [
@@ -63,6 +65,14 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
     CommentsModule,
   ],
   providers: [
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,

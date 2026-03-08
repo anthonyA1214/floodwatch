@@ -36,6 +36,7 @@ import { ReportedLocationDrawerSkeleton } from './skeletons/reported-location-dr
 import CommentsList from '../shared/comments-list';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import ReportPaginationOverlay from './report-pagination-overlay';
+import { useMyVote } from '@/hooks/use-my-vote';
 
 const snapPoints = ['0px', '355px', 1];
 
@@ -55,6 +56,7 @@ export default function ReportedLocationDrawer({
   };
 
   const { reportDetail, isLoading } = useReportDetail(reportId);
+  const { isLoading: isMyVoteLoading } = useMyVote(reportId);
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -101,7 +103,7 @@ export default function ReportedLocationDrawer({
       >
         <Drawer.Handle className='w-16! my-3! rounded-full!' />
 
-        {isLoading || !reportDetail ? (
+        {isLoading || isMyVoteLoading || !reportDetail ? (
           <ReportedLocationDrawerSkeleton />
         ) : (
           <div

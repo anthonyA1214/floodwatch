@@ -15,12 +15,13 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang='en'>
       <body
         className={`${inter.className} ${poppins.variable} bg-[#EAEAEA] antialiased min-h-screen`}
+        suppressHydrationWarning
       >
         <SWRProvider fallback={{}}>{children}</SWRProvider>
-        <Toaster richColors theme="light" position="top-center" />
+        <Toaster richColors theme='light' position='top-center' />
       </body>
     </html>
   );

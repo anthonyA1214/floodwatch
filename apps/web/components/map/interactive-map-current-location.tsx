@@ -11,14 +11,14 @@ import Map, { Layer, Marker, Source, type MapRef } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { getUserLocation } from '@/lib/utils/get-user-location';
 import { useBoundary } from '@/hooks/use-boundary';
-import { FloodMarker } from '@/components/markers/flood-marker';
+import { FloodMarker } from '@/components/shared/markers/flood-marker';
 import RadiusCircle from '@/components/shared/radius-circle';
 import booleanPointInPolygon from '@turf/boolean-point-in-polygon';
 import { point } from '@turf/helpers';
 import type { Feature, Polygon, MultiPolygon } from 'geojson';
 import { toast } from 'sonner';
-import { SafetyMarker } from '@/components/markers/safety-marker';
-import { UserLocationMarker } from '@/components/markers/user-location-marker';
+import { SafetyMarker } from '@/components/shared/markers/safety-marker';
+import { UserLocationMarker } from '@/components/shared/markers/user-location-marker';
 import { Spinner } from '../ui/spinner';
 
 type Props = {

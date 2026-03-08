@@ -39,8 +39,6 @@ export const reports = pgTable('reports', {
   imagePublicId: text('image_public_id'),
   severity: severityEnum().notNull(),
   status: reportsStatusEnum().notNull().default('unverified'),
-  confirms: integer('confirms').notNull().default(0),
-  denies: integer('denies').notNull().default(0),
   isAdmin: boolean('is_admin').notNull().default(false),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),

@@ -32,6 +32,7 @@ import NoPhotoEmpty from '../shared/no-photo-empty';
 import CommentsList from '../shared/comments-list';
 import VoteButtons from './vote-buttons';
 import ReportPaginationOverlay from './report-pagination-overlay';
+import { useMyVote } from '@/hooks/use-my-vote';
 
 export default function ReportedLocationPanel({
   reportId,
@@ -40,6 +41,7 @@ export default function ReportedLocationPanel({
   reportId: number;
   onClose?: () => void;
 }) {
+  const { isLoading: isMyVoteLoading } = useMyVote(reportId);
   const { reportDetail, isLoading } = useReportDetail(reportId);
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -78,7 +80,7 @@ export default function ReportedLocationPanel({
         <IconChevronLeft className='w-[1.5em]! h-[1.5em]!' />
       </button>
 
-      {isLoading || !reportDetail ? (
+      {isLoading || isMyVoteLoading || !reportDetail ? (
         <ReportedLocationPanelSkeleton />
       ) : (
         <div

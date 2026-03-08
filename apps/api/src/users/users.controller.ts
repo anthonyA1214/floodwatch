@@ -23,12 +23,14 @@ import { type AuthRequest } from 'src/auth/types/auth-request.type';
 import { CreateAdminDto, UpdateProfileDto, UserQueryDto } from '@repo/schemas';
 import { UserStatusGuard } from 'src/common/guards/user-status/user-status.guard';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
+import { Roles } from 'src/common/decorators/roles.decorator';
 
 @Controller('users')
 @UseGuards(JwtAuthGuard, UserStatusGuard)
 export class UsersController {
   constructor(private usersService: UsersService) {}
 
+  @Roles('admin')
   @Get()
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() userQueryDto: UserQueryDto) {
@@ -95,6 +97,7 @@ export class UsersController {
     return await this.usersService.deleteAvatar(req.user.id);
   }
 
+  @Roles('admin')
   @Post('admin/create')
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(JwtAuthGuard)
@@ -105,12 +108,14 @@ export class UsersController {
     return await this.usersService.createAdmin(createAdminDto);
   }
 
+  @Roles('admin')
   @Patch(':id/block')
   @UseGuards(JwtAuthGuard)
   async blockUser(@Param('id') id: number) {
     return await this.usersService.blockUser(id);
   }
 
+  @Roles('admin')
   @Patch(':id/unblock')
   @UseGuards(JwtAuthGuard)
   async unblockUser(@Param('id') id: number) {

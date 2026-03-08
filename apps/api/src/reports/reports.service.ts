@@ -53,8 +53,20 @@ export class ReportsService {
         severity: reports.severity,
         status: reports.status,
         image: reports.image,
-        confirms: reports.confirms,
-        denies: reports.denies,
+        confirms: this.db.$count(
+          reportConfirmations,
+          and(
+            eq(reportConfirmations.action, 'confirm'),
+            eq(reportConfirmations.reportId, reports.id),
+          ),
+        ),
+        denies: this.db.$count(
+          reportConfirmations,
+          and(
+            eq(reportConfirmations.action, 'deny'),
+            eq(reportConfirmations.reportId, reports.id),
+          ),
+        ),
         reportedAt: reports.createdAt,
         reporter: {
           id: users.id,
@@ -348,78 +360,35 @@ export class ReportsService {
       ),
     });
 
-    return await this.db.transaction(async (tx) => {
-      if (existing) {
-        if (existing.action === action) {
-          // toggle off
-          await tx
-            .delete(reportConfirmations)
-            .where(eq(reportConfirmations.id, existing.id));
-
-          await tx
-            .update(reports)
-            .set({
-              confirms:
-                action === 'confirm'
-                  ? sql`${reports.confirms} - 1`
-                  : reports.confirms,
-              denies:
-                action === 'deny' ? sql`${reports.denies} - 1` : reports.denies,
-              updatedAt: new Date(),
-            })
-            .where(eq(reports.id, reportId));
-
-          return { message: 'Vote removed successfully' };
-        }
-
-        // flip vote
-        await tx
-          .update(reportConfirmations)
-          .set({
-            action,
-          })
+    if (existing) {
+      if (existing.action === action) {
+        // toggle off
+        await this.db
+          .delete(reportConfirmations)
           .where(eq(reportConfirmations.id, existing.id));
 
-        await tx
-          .update(reports)
-          .set({
-            confirms:
-              existing.action === 'confirm'
-                ? sql`${reports.confirms} - 1`
-                : sql`${reports.confirms} + 1`,
-            denies:
-              existing.action === 'deny'
-                ? sql`${reports.denies} - 1`
-                : sql`${reports.denies} + 1`,
-            updatedAt: new Date(),
-          })
-          .where(eq(reports.id, reportId));
-
-        return { message: 'Vote updated successfully' };
+        return { message: 'Vote removed successfully' };
       }
 
-      // insert new
-      await tx.insert(reportConfirmations).values({
-        action,
-        userId,
-        reportId,
-      });
-
-      await tx
-        .update(reports)
+      // flip vote
+      await this.db
+        .update(reportConfirmations)
         .set({
-          confirms:
-            action === 'confirm'
-              ? sql`${reports.confirms} + 1`
-              : reports.confirms,
-          denies:
-            action === 'deny' ? sql`${reports.denies} + 1` : reports.denies,
-          updatedAt: new Date(),
+          action,
         })
-        .where(eq(reports.id, reportId));
+        .where(eq(reportConfirmations.id, existing.id));
 
-      return { message: 'Vote added successfully' };
+      return { message: 'Vote updated successfully' };
+    }
+
+    // insert new
+    await this.db.insert(reportConfirmations).values({
+      action,
+      userId,
+      reportId,
     });
+
+    return { message: 'Vote added successfully' };
   }
 
   async getMyVote(reportId: number, userId: number) {
