@@ -28,20 +28,10 @@ export default function CommentComposer({ reportId }: { reportId: number }) {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isPending, setIsPending] = useState(false);
 
-  // errors
-  const [state, setState] = useState<{
-    status: 'error' | 'success' | null;
-    errors: Record<string, string[]> | null;
-  }>({
-    status: null,
-    errors: null,
-  });
-
   const resetForm = () => {
     setImage(null);
     setPreview(null);
     setContentValue('');
-    setState({ status: null, errors: null });
   };
 
   const isLoggedIn = !isLoading && !!user;
@@ -89,6 +79,11 @@ export default function CommentComposer({ reportId }: { reportId: number }) {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (!contentValue && !image) {
+      toast.error('Please enter content or add an image.');
+      return;
+    }
+
     const parsed = createCommentSchema.safeParse({
       content: contentValue?.trim(),
     });
@@ -111,9 +106,9 @@ export default function CommentComposer({ reportId }: { reportId: number }) {
         body: formData,
       });
       mutateComments();
-      setState({ status: 'success', errors: null });
     } catch (err) {
       console.error('Error submitting comment:', err);
+      toast.error('Failed to post comment. Please try again.');
     } finally {
       resetForm();
       setIsPending(false);
@@ -169,23 +164,16 @@ export default function CommentComposer({ reportId }: { reportId: number }) {
       </div>
 
       {/* textarea */}
-      <div>
-        <Textarea
-          id='content'
-          name='content'
-          placeholder='Share an update with the community...'
-          className='min-h-[100px] sm:min-h-[130px] md:min-h-[150px] max-h-[150px] sm:max-h-[180px] bg-gray-100 text-sm'
-          style={{ wordBreak: 'break-word' }}
-          disabled={isLoading || !isLoggedIn}
-          value={contentValue}
-          onChange={(e) => setContentValue(e.target.value)}
-        />
-        {state.errors?.content && (
-          <span className='text-sm text-red-600'>
-            {state.errors.content[0]}
-          </span>
-        )}
-      </div>
+      <Textarea
+        id='content'
+        name='content'
+        placeholder='Share an update with the community...'
+        className='min-h-[100px] sm:min-h-[130px] md:min-h-[150px] max-h-[150px] sm:max-h-[180px] bg-gray-100 text-sm'
+        style={{ wordBreak: 'break-word' }}
+        disabled={isLoading || !isLoggedIn}
+        value={contentValue}
+        onChange={(e) => setContentValue(e.target.value)}
+      />
 
       {preview && (
         <div className='relative w-fit'>
@@ -231,10 +219,6 @@ export default function CommentComposer({ reportId }: { reportId: number }) {
         onChange={handleImageChange}
         className='hidden'
       />
-
-      {state.errors?.image && (
-        <span className='text-sm text-red-600'>{state.errors.image[0]}</span>
-      )}
 
       {/* buttons */}
       <div className='flex justify-end gap-4'>

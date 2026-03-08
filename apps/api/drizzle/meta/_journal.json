@@ -8,6 +8,13 @@
       "when": 1772846304297,
       "tag": "0000_wakeful_starjammers",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1772934670541,
+      "tag": "0001_slippery_black_knight",
+      "breakpoints": true
     }
   ]
 }

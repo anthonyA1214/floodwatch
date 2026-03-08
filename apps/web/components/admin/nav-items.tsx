@@ -38,15 +38,15 @@ export function NavItems() {
       icon: IconReportAnalytics,
     },
     {
-      title: 'ARCHIVE & RECORDS',
-      url: '/admin/archive',
-      icon: IconArchive,
-    },
-    {
       title: 'SAFETY LOCATIONS',
       url: '/admin/safety',
       icon: IconShieldPin,
     },
+    // {
+    //   title: 'ARCHIVE & RECORDS',
+    //   url: '/admin/archive',
+    //   icon: IconArchive,
+    // },
     {
       title: 'COMMUNITY FEED',
       url: '/admin/feed',
@@ -67,7 +67,7 @@ export function NavItems() {
         const isActive = pathname === item.url;
         return (
           <SidebarMenuItem key={item.title}>
-            <SidebarMenuButton asChild className="text-base">
+            <SidebarMenuButton asChild className='text-base'>
               <Link
                 href={item.url}
                 className={cn(
@@ -76,8 +76,8 @@ export function NavItems() {
                     'border-[#0066CC] text-[#0066CC] hover:text-[#0066CC]! hover:bg-transparent',
                 )}
               >
-                <item.icon className="w-[1.5em]! h-[1.5em]!" aria-hidden />
-                <span className="font-poppins">{item.title}</span>
+                <item.icon className='w-[1.5em]! h-[1.5em]!' aria-hidden />
+                <span className='font-poppins'>{item.title}</span>
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

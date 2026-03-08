@@ -3,12 +3,26 @@ import {
   AvatarFallback,
   AvatarImage,
 } from '@/components/ui/avatar';
-import { IconClock, IconFlag, IconTrash } from '@tabler/icons-react';
+import {
+  IconClock,
+  IconDots,
+  IconEdit,
+  IconFlag,
+  IconTrash,
+} from '@tabler/icons-react';
 import Avatar from 'boring-avatars';
 import { format } from 'date-fns';
 import Image from 'next/image';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
-interface PostCardProps {
+interface CommentCardProps {
   author: {
     id: number | undefined;
     name: string;
@@ -20,6 +34,9 @@ interface PostCardProps {
   reportCount: number;
   isAdmin?: boolean;
   isOwner?: boolean;
+  onEditClick?: () => void;
+  onDeleteClick?: () => void;
+  onReportClick?: () => void;
 }
 
 export default function CommentCard({
@@ -30,7 +47,10 @@ export default function CommentCard({
   reportCount,
   isAdmin = false,
   isOwner = false,
-}: PostCardProps) {
+  onEditClick,
+  onDeleteClick,
+  onReportClick,
+}: CommentCardProps) {
   const formattedTime = timestamp ? format(timestamp, 'hh:mm a') : '';
   const formattedDate = timestamp ? format(timestamp, 'MMMM dd, yyyy') : '';
 
@@ -55,7 +75,7 @@ export default function CommentCard({
               {author.name}
             </span>
 
-            <div className='flex items-center gap-2 sm:gap-4 text-xs text-gray-600'>
+            {/* <div className='flex items-center gap-2 sm:gap-4 text-xs text-gray-600'>
               <div className='flex items-center gap-1'>
                 <button className='rounded-full hover:bg-gray-100 p-1.5 sm:p-2 transition'>
                   <IconFlag className='w-[1.5em]! h-[1.5em]!' />
@@ -68,7 +88,40 @@ export default function CommentCard({
                   <IconTrash className='w-[1.5em]! h-[1.5em]!' />
                 </button>
               )}
-            </div>
+            </div> */}
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className='rounded-full hover:bg-gray-100 data-[state=open]:bg-gray-100 p-1.5 sm:p-2 transition text-xs'>
+                  <IconDots className='w-[1.5em]! h-[1.5em]!' />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                {isOwner && (
+                  <DropdownMenuItem onClick={onEditClick}>
+                    <IconEdit className='w-[1.5em]! h-[1.5em]!' />
+                    <span className='font-poppins'>Edit Comment</span>
+                  </DropdownMenuItem>
+                )}
+                <DropdownMenuItem onClick={onReportClick}>
+                  <IconFlag className='w-[1.5em]! h-[1.5em]!' />
+                  <span className='font-poppins'>Report Comment</span>
+                </DropdownMenuItem>
+
+                {(isAdmin || isOwner) && (
+                  <DropdownMenuGroup>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      variant='destructive'
+                      onClick={onDeleteClick}
+                    >
+                      <IconTrash className='w-[1.5em]! h-[1.5em]!' />
+                      <span className='font-poppins'>Delete Comment</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <div className='flex items-center gap-1 text-xs text-gray-600'>
             <IconClock className='w-[1.5em]! h-[1.5em]!' />
