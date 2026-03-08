@@ -172,7 +172,7 @@ export default function ReportFloodAlertDialog() {
         </button>
       </DialogTrigger>
       <DialogContent
-        className='flex flex-col min-w-[750px] p-0 overflow-hidden gap-0 border-0 
+        className='flex flex-col min-w-[750px] max-md:min-w-0 max-md:w-[calc(100vw-1rem)] max-md:max-w-[calc(100vw-1rem)] max-md:h-[90vh] p-0 overflow-hidden gap-0 border-0 
       [&>button]:text-white [&>button]:hover:text-white [&>button]:opacity-70 [&>button]:hover:opacity-100'
         onCloseAutoFocus={() => {
           mutate(SWR_KEYS.reportMapPins);
@@ -186,25 +186,26 @@ export default function ReportFloodAlertDialog() {
         }}
       >
         {/* ── Blue Header ── */}
-        <DialogHeader className='flex flex-row items-center gap-4 bg-[#0066CC] rounded-b-2xl px-5 py-4 shrink-0'>
+        <DialogHeader className='flex flex-row items-center gap-4 bg-[#0066CC] rounded-b-2xl px-5 py-4 shrink-0 max-md:px-4 max-md:py-3'>
           {/* Text */}
-          <DialogTitle className='font-poppins text-base font-semibold text-white'>
+          <DialogTitle className='font-poppins text-base font-semibold text-white max-md:text-sm'>
             REPORT FLOOD ALERT
           </DialogTitle>
         </DialogHeader>
 
         {/* ── Content Area ── */}
         <ScrollArea className='flex-1 min-h-0'>
-          <div className='flex flex-col ps-4 py-4'>
-            <div className='flex-1 flex'>
+          <div className='flex flex-col ps-4 py-4 max-md:px-4 max-md:py-4'>
+            <div className='flex-1 flex max-md:flex-col max-md:gap-4'>
               {/* left column */}
               <div className='flex-2 flex flex-col gap-4 h-fit'>
-                <div className='flex items-center justify-between'>
+                <div className='flex items-center justify-between max-md:flex-col max-md:items-start max-md:gap-3'>
                   <span className='font-poppins text-sm font-medium text-gray-600'>
                     LOCATION
                   </span>
                   <button
-                    className='font-poppins text-xs flex gap-2 border px-3 py-1.5 rounded-lg items-center text-gray-600 hover:bg-gray-100'
+                    type='button'
+                    className='font-poppins text-xs flex gap-2 border px-3 py-1.5 rounded-lg items-center text-gray-600 hover:bg-gray-100 max-md:w-full max-md:justify-center'
                     onClick={handleUseCurrentLocation}
                   >
                     {loadingLocation ? (
@@ -220,7 +221,7 @@ export default function ReportFloodAlertDialog() {
                     )}
                   </button>
                 </div>
-                <div className='relative flex-1 flex aspect-square rounded-2xl overflow-hidden border h-fit'>
+                <div className='relative flex-1 flex aspect-square rounded-2xl overflow-hidden border h-fit max-md:w-full'>
                   <InteractiveMap
                     ref={interactiveMapRef}
                     severity={severityValue}
@@ -231,6 +232,7 @@ export default function ReportFloodAlertDialog() {
                   <div className='absolute flex flex-col top-4 left-4 z-1 w-fit gap-2 h-fit'>
                     <div className='flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 text-xs'>
                       <button
+                        type='button'
                         onClick={() => interactiveMapRef.current?.zoomIn()}
                         className='aspect-square hover:bg-gray-200 rounded-md p-1'
                         title='Zoom In'
@@ -241,6 +243,7 @@ export default function ReportFloodAlertDialog() {
                         />
                       </button>
                       <button
+                        type='button'
                         onClick={() => interactiveMapRef.current?.zoomOut()}
                         className='aspect-square hover:bg-gray-200 rounded-md p-1'
                         title='Zoom Out'
@@ -258,12 +261,12 @@ export default function ReportFloodAlertDialog() {
 
               {/* right column */}
               <div
-                className='no-scrollbar flex-[1.5] flex flex-col overflow-y-auto'
+                className='no-scrollbar flex-[1.5] flex flex-col overflow-y-auto max-md:overflow-visible max-md:w-full'
                 style={{ aspectRatio: '1 / 1' }}
               >
-                <div className='flex flex-col gap-4 px-4'>
+                <div className='flex flex-col gap-4 px-4 max-md:px-0'>
                   {/* Severity Level */}
-                  <Field className='flex items-center'>
+                  <Field className='flex items-center max-md:flex-col max-md:items-start max-md:gap-2'>
                     <FieldLabel
                       htmlFor='severity'
                       className='font-poppins text-sm font-medium'
@@ -300,7 +303,7 @@ export default function ReportFloodAlertDialog() {
                   </Field>
 
                   {/* range */}
-                  <Field className='flex items-center'>
+                  <Field className='flex items-center max-md:flex-col max-md:items-start max-md:gap-2'>
                     <FieldLabel
                       htmlFor='range'
                       className='font-poppins text-sm font-medium'
@@ -327,7 +330,7 @@ export default function ReportFloodAlertDialog() {
                   </Field>
 
                   {/* Description */}
-                  <Field className='flex items-center'>
+                  <Field className='flex items-center max-md:flex-col max-md:items-start max-md:gap-2'>
                     <FieldLabel
                       htmlFor='description'
                       className='font-poppins text-sm font-medium'
@@ -352,7 +355,7 @@ export default function ReportFloodAlertDialog() {
                   </Field>
 
                   {/* Upload image */}
-                  <Field className='flex items-center'>
+                  <Field className='flex items-center max-md:flex-col max-md:items-start max-md:gap-2'>
                     <FieldLabel className='font-poppins text-sm font-medium'>
                       UPLOAD IMAGE
                       <span className='font-inter text-gray-600 text-xs'>
@@ -374,7 +377,7 @@ export default function ReportFloodAlertDialog() {
                   </Field>
 
                   <Button
-                    className='font-poppins py-6 mt-auto'
+                    className='font-poppins py-6 mt-auto max-md:w-full'
                     onClick={handleSubmit}
                     disabled={isPending}
                   >
