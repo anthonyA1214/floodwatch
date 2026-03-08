@@ -13,14 +13,14 @@ export default function ReportedLocationOverlay({
 
   if (isMobile) {
     return (
-      <div className="absolute flex lg:hidden flex-col h-full w-full">
+      <div className='absolute flex flex-col h-full w-full'>
         <ReportedLocationDrawer reportId={reportId} onClose={onClose} />
       </div>
     );
   }
 
   return (
-    <div className="hidden lg:flex flex-col h-full w-full max-w-lg">
+    <div className='flex flex-col h-full w-full max-w-lg'>
       <ReportedLocationPanel reportId={reportId} onClose={onClose} />
     </div>
   );

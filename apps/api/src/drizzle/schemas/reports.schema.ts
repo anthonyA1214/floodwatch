@@ -41,7 +41,7 @@ export const reports = pgTable('reports', {
   status: reportsStatusEnum().notNull().default('unverified'),
   confirms: integer('confirms').notNull().default(0),
   denies: integer('denies').notNull().default(0),
-  reportedByAdmin: boolean('reported_by_admin').notNull().default(false),
+  isAdmin: boolean('is_admin').notNull().default(false),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });

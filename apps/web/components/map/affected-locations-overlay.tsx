@@ -11,14 +11,14 @@ export default function AffectedLocationsOverlay({
 
   if (isMobile) {
     return (
-      <div className="flex lg:hidden flex-col h-full w-full">
+      <div className='flex flex-col h-full w-full'>
         <AffectedLocationsDrawer onClose={onClose} />
       </div>
     );
   }
 
   return (
-    <div className="hidden lg:flex flex-col h-full w-full max-w-lg">
+    <div className='flex flex-col h-full w-full max-w-lg'>
       <AffectedLocationsPanel onClose={onClose} />
     </div>
   );
