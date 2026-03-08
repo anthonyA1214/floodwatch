@@ -6,7 +6,9 @@ import {
   ResendOtpDto,
 } from '@repo/schemas';
 import { ForgotPasswordService } from './forgot-password.service';
+import { Public } from 'src/common/decorators/public.decorator';
 
+@Public()
 @Controller('auth/forgot-password')
 export class ForgotPasswordController {
   constructor(private forgotPasswordService: ForgotPasswordService) {}

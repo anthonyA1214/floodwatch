@@ -19,6 +19,7 @@ import { format, formatDistanceToNow } from 'date-fns';
 import FloodReportPopupSkeleton from './skeletons/flood-report-popup-skeleton';
 import VoteButtons from './vote-buttons';
 import ReportPaginationPopup from './report-pagination-popup';
+import { useMyVote } from '@/hooks/use-my-vote';
 
 export default function FloodReportPopup({
   onClose,
@@ -42,6 +43,7 @@ export default function FloodReportPopup({
   total: number;
 }) {
   const { reportDetail, isLoading } = useReportDetail(reportId);
+  const { isLoading: isMyVoteLoading } = useMyVote(reportId);
 
   const formattedTime = reportDetail
     ? format(reportDetail?.reportedAt, 'hh:mm a')
@@ -60,7 +62,8 @@ export default function FloodReportPopup({
         : Math.round((confirms / (confirms + denies)) * 100)
       : 0;
 
-  if (isLoading || !reportDetail) return <FloodReportPopupSkeleton />;
+  if (isLoading || isMyVoteLoading || !reportDetail)
+    return <FloodReportPopupSkeleton />;
 
   return (
     <div className='flex flex-col justify-center rounded-2xl overflow-hidden w-[300px] max-h-[70vh] overflow-y-auto'>

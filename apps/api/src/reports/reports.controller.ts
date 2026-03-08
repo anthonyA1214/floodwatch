@@ -39,6 +39,8 @@ import {
 } from './dtos/reports.swagger.dto';
 import { CreateCommentWithImageDto } from 'src/comments/dtos/comments.swagger.dto';
 import { SkipThrottle, Throttle } from '@nestjs/throttler';
+import { Roles } from 'src/common/decorators/roles.decorator';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @Controller('reports')
 export class ReportsController {
@@ -47,18 +49,21 @@ export class ReportsController {
     private commentsService: CommentsService,
   ) {}
 
+  @Public()
   @Get()
   @HttpCode(HttpStatus.OK)
   async findAllPublic() {
     return await this.reportsService.findAllPublic();
   }
 
+  @Roles('admin')
   @Get('admin')
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() reportQuery: ReportQueryDto) {
     return await this.reportsService.findAll(reportQuery);
   }
 
+  @Public()
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   async findOnePublic(@Param('id', ParseIntPipe) id: number) {
@@ -104,6 +109,7 @@ export class ReportsController {
     );
   }
 
+  @Roles('admin')
   @Post('admin/create')
   @HttpCode(HttpStatus.CREATED)
   @UseGuards(JwtAuthGuard, UserStatusGuard)
@@ -143,6 +149,7 @@ export class ReportsController {
     );
   }
 
+  @Roles('admin')
   @Patch(':id/verify')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard, UserStatusGuard)
@@ -153,6 +160,7 @@ export class ReportsController {
     return await this.reportsService.verifyReportStatus(id, req.user.id);
   }
 
+  @Roles('admin')
   @Delete(':id/delete')
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(JwtAuthGuard, UserStatusGuard)
@@ -160,6 +168,7 @@ export class ReportsController {
     return await this.reportsService.deleteReport(id);
   }
 
+  @Public()
   @Get(':id/comments')
   @HttpCode(HttpStatus.OK)
   @SkipThrottle({ global: true }) // bypass the 10/min global
@@ -207,7 +216,7 @@ export class ReportsController {
   @Post(':id/vote')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard, UserStatusGuard)
-  async confirmReport(
+  async voteReport(
     @Param('id', ParseIntPipe) id: number,
     @Body() voteDto: VoteDto,
     @Request() req: AuthRequest,

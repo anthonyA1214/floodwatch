@@ -21,6 +21,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useUser } from '@/hooks/use-user';
 
 interface CommentCardProps {
   author: {
@@ -54,6 +55,8 @@ export default function CommentCard({
   const formattedTime = timestamp ? format(timestamp, 'hh:mm a') : '';
   const formattedDate = timestamp ? format(timestamp, 'MMMM dd, yyyy') : '';
 
+  const { user } = useUser();
+
   return (
     <div className='flex flex-col rounded-2xl p-3 sm:p-4 border gap-3 sm:gap-4'>
       {/* 1st */}
@@ -75,53 +78,40 @@ export default function CommentCard({
               {author.name}
             </span>
 
-            {/* <div className='flex items-center gap-2 sm:gap-4 text-xs text-gray-600'>
-              <div className='flex items-center gap-1'>
-                <button className='rounded-full hover:bg-gray-100 p-1.5 sm:p-2 transition'>
-                  <IconFlag className='w-[1.5em]! h-[1.5em]!' />
-                </button>
-                <span>{reportCount}</span>
-              </div>
-
-              {(isAdmin || isOwner) && (
-                <button className='rounded-full hover:bg-gray-100 p-1.5 sm:p-2 transition'>
-                  <IconTrash className='w-[1.5em]! h-[1.5em]!' />
-                </button>
-              )}
-            </div> */}
-
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className='rounded-full hover:bg-gray-100 data-[state=open]:bg-gray-100 p-1.5 sm:p-2 transition text-xs'>
-                  <IconDots className='w-[1.5em]! h-[1.5em]!' />
-                </button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                {isOwner && (
-                  <DropdownMenuItem onClick={onEditClick}>
-                    <IconEdit className='w-[1.5em]! h-[1.5em]!' />
-                    <span className='font-poppins'>Edit Comment</span>
-                  </DropdownMenuItem>
-                )}
-                <DropdownMenuItem onClick={onReportClick}>
-                  <IconFlag className='w-[1.5em]! h-[1.5em]!' />
-                  <span className='font-poppins'>Report Comment</span>
-                </DropdownMenuItem>
-
-                {(isAdmin || isOwner) && (
-                  <DropdownMenuGroup>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem
-                      variant='destructive'
-                      onClick={onDeleteClick}
-                    >
-                      <IconTrash className='w-[1.5em]! h-[1.5em]!' />
-                      <span className='font-poppins'>Delete Comment</span>
+            {user && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className='rounded-full hover:bg-gray-100 data-[state=open]:bg-gray-100 p-1.5 sm:p-2 transition text-xs'>
+                    <IconDots className='w-[1.5em]! h-[1.5em]!' />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  {isOwner && (
+                    <DropdownMenuItem onClick={onEditClick}>
+                      <IconEdit className='w-[1.5em]! h-[1.5em]!' />
+                      <span className='font-poppins'>Edit Comment</span>
                     </DropdownMenuItem>
-                  </DropdownMenuGroup>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
+                  )}
+                  <DropdownMenuItem onClick={onReportClick}>
+                    <IconFlag className='w-[1.5em]! h-[1.5em]!' />
+                    <span className='font-poppins'>Report Comment</span>
+                  </DropdownMenuItem>
+
+                  {(isAdmin || isOwner) && (
+                    <DropdownMenuGroup>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        variant='destructive'
+                        onClick={onDeleteClick}
+                      >
+                        <IconTrash className='w-[1.5em]! h-[1.5em]!' />
+                        <span className='font-poppins'>Delete Comment</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
           <div className='flex items-center gap-1 text-xs text-gray-600'>
             <IconClock className='w-[1.5em]! h-[1.5em]!' />
