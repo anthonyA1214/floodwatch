@@ -18,15 +18,28 @@ import {
 import { format, formatDistanceToNow } from 'date-fns';
 import FloodReportPopupSkeleton from './skeletons/flood-report-popup-skeleton';
 import VoteButtons from './vote-buttons';
+import ReportPaginationPopup from './report-pagination-popup';
 
 export default function FloodReportPopup({
   onClose,
   reportId,
   onSelectReport,
+  nextReport,
+  prevReport,
+  hasNext,
+  hasPrev,
+  currentReportIndex,
+  total,
 }: {
   onClose: () => void;
   reportId: number;
   onSelectReport?: () => void;
+  nextReport: () => void;
+  prevReport: () => void;
+  hasNext: boolean;
+  hasPrev: boolean;
+  currentReportIndex: number;
+  total: number;
 }) {
   const { reportDetail, isLoading } = useReportDetail(reportId);
 
@@ -42,7 +55,9 @@ export default function FloodReportPopup({
 
   const credibility =
     confirms !== undefined && denies !== undefined
-      ? Math.round((confirms / (confirms + denies)) * 100)
+      ? confirms + denies === 0
+        ? 0
+        : Math.round((confirms / (confirms + denies)) * 100)
       : 0;
 
   if (isLoading || !reportDetail) return <FloodReportPopupSkeleton />;
@@ -175,6 +190,19 @@ export default function FloodReportPopup({
             <IconSend className='w-[1.5em]! h-[1.5em]!' />
             <span className='font-poppins font-medium'>DIRECTIONS</span>
           </button>
+        </div>
+
+        <Separator />
+
+        <div className='p-3'>
+          <ReportPaginationPopup
+            nextReport={nextReport}
+            prevReport={prevReport}
+            hasNext={hasNext}
+            hasPrev={hasPrev}
+            currentReportIndex={currentReportIndex}
+            total={total}
+          />
         </div>
       </div>
     </div>
