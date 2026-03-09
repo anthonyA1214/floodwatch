@@ -5,7 +5,9 @@ import {
   IconExclamationCircle,
   IconHelpCircle,
   IconMapPin,
+  IconPoint,
   IconSend,
+  IconShield,
   IconShieldCheck,
   IconUsers,
   IconX,
@@ -20,6 +22,7 @@ import FloodReportPopupSkeleton from './skeletons/flood-report-popup-skeleton';
 import VoteButtons from './vote-buttons';
 import ReportPaginationPopup from './report-pagination-popup';
 import { useMyVote } from '@/hooks/use-my-vote';
+import { cn } from '@/lib/utils';
 
 export default function FloodReportPopup({
   onClose,
@@ -66,17 +69,25 @@ export default function FloodReportPopup({
     return <FloodReportPopupSkeleton />;
 
   return (
-    <div className='flex flex-col justify-center rounded-2xl overflow-hidden w-[300px] max-h-[70vh] overflow-y-auto'>
+    <div className='flex flex-col justify-center rounded-lg overflow-hidden w-[300px] max-h-[70vh] overflow-y-auto bg-white'>
       {/* header */}
-      <div className='flex items-center justify-between bg-[#0066CC] p-3 text-white'>
-        <span className='font-poppins text-semibold text-sm'>FLOOD REPORT</span>
+      <div className='flex items-center justify-between bg-[#0066CC] p-3 text-white rounded-b-2xl'>
+        <span className='font-poppins font-medium text-sm'>FLOOD REPORT</span>
         <button onClick={onClose} className='text-[10px]'>
           <IconX className='opacity-70 hover:opacity-100 w-[1.5em]! h-[1.5em]! duration-200' />
         </button>
       </div>
-      <div className='flex flex-col bg-white'>
+      <div className='flex flex-col'>
         {/* badge and distance to now */}
         <div className='flex flex-row justify-between gap-4 p-3'>
+          {/* reported at */}
+          <div className='flex items-center text-xs gap-1.5 tabular-nums opacity-50'>
+            <IconClock className='w-[1.5em]! h-[1.5em]!' />
+            {formatDistanceToNow(reportDetail?.reportedAt, {
+              addSuffix: true,
+            })}
+          </div>
+
           {/* report status */}
           <div
             className='flex items-center rounded-full px-3 py-1 w-fit h-fit'
@@ -96,17 +107,20 @@ export default function FloodReportPopup({
               </span>
             </div>
           </div>
-
-          {/* reported at */}
-          <div className='flex items-center text-xs gap-1.5 tabular-nums opacity-50'>
-            <IconClock className='w-[1.5em]! h-[1.5em]!' />
-            {formatDistanceToNow(reportDetail?.reportedAt, {
-              addSuffix: true,
-            })}
-          </div>
         </div>
 
-        <Separator />
+        {reportDetail?.isAdmin && (
+          <div className='flex w-full gap-1.5 p-3 bg-[#9B32E4]/10 text-[#9B32E4] text-xs items-center'>
+            <IconShield className='w-[1.5em]! h-[1.5em]!' />
+            <span className='font-poppins font-medium'>OFFICIAL REPORT</span>
+            <IconPoint className='w-[1em]! h-[1em]!' />
+            <span className='font-poppins'>POSTED BY ADMIN</span>
+          </div>
+        )}
+
+        <Separator
+          className={cn(reportDetail?.isAdmin ? 'bg-[#9B32E4]/30' : '')}
+        />
 
         {/* report details */}
         <div className='flex flex-col gap-2 p-3'>
@@ -163,22 +177,24 @@ export default function FloodReportPopup({
         <Separator />
 
         {/* credibility and confirm and deny */}
-        <div className='flex flex-col text-xs'>
-          {/* credibility */}
-          <div className='flex justify-between items-center p-3'>
-            <div className='flex items-center gap-1.5 lg:gap-2 opacity-50'>
-              <IconShieldCheck className='w-[1.5em]! h-[1.5em]!' />
-              <span className='font-poppins font-medium'>CREDIBILITY</span>
+        {!reportDetail?.isAdmin && (
+          <div className='flex flex-col text-xs'>
+            {/* credibility */}
+            <div className='flex justify-between items-center p-3'>
+              <div className='flex items-center gap-1.5 lg:gap-2 opacity-50'>
+                <IconShieldCheck className='w-[1.5em]! h-[1.5em]!' />
+                <span className='font-poppins font-medium'>CREDIBILITY</span>
+              </div>
+
+              <div className='flex items-center gap-2'>
+                <span className='font-poppins font-bold'>{credibility}%</span>
+              </div>
             </div>
 
-            <div className='flex items-center gap-2'>
-              <span className='font-poppins font-bold'>{credibility}%</span>
-            </div>
+            {/* vote buttons */}
+            <VoteButtons reportId={reportId} />
           </div>
-
-          {/* vote buttons */}
-          <VoteButtons reportId={reportId} />
-        </div>
+        )}
 
         <div className='flex justify-between items-center p-3 gap-2'>
           <button

@@ -40,6 +40,7 @@ export const reportDetailSchema = z.object({
   confirms: z.number(),
   denies: z.number(),
   reportedAt: z.date(),
+  isAdmin: z.boolean(),
   reporter: z
     .object({
       id: z.number(),

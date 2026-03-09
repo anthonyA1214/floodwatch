@@ -6,6 +6,7 @@ import {
   IconClock,
   IconExclamationCircle,
   IconHelpCircle,
+  IconPoint,
   IconSend,
   IconShield,
   IconShieldCheck,
@@ -119,6 +120,14 @@ export default function ReportedLocationPanel({
 
             {/* badge and distance to now */}
             <div className='flex flex-row justify-between gap-4'>
+              {/* reported at */}
+              <div className='flex items-center text-xs lg:text-sm gap-1.5 lg:gap-2 tabular-nums opacity-50'>
+                <IconClock className='w-[1.5em]! h-[1.5em]!' />
+                {formatDistanceToNow(reportDetail?.reportedAt, {
+                  addSuffix: true,
+                })}
+              </div>
+
               {/* report status */}
               <div
                 className='flex items-center rounded-full px-3 py-1 w-fit h-fit'
@@ -138,18 +147,26 @@ export default function ReportedLocationPanel({
                   </span>
                 </div>
               </div>
-
-              {/* reported at */}
-              <div className='flex items-center text-xs lg:text-sm gap-1.5 lg:gap-2 tabular-nums opacity-50'>
-                <IconClock className='w-[1.5em]! h-[1.5em]!' />
-                {formatDistanceToNow(reportDetail?.reportedAt, {
-                  addSuffix: true,
-                })}
-              </div>
             </div>
 
             {/* details */}
             <div className='flex flex-col border rounded-lg text-xs lg:text-sm'>
+              {reportDetail?.isAdmin && (
+                <>
+                  {/* reported by */}
+                  <div className='flex items-center gap-1.5 lg:gap-2 p-3 lg:p-4 bg-[#9B32E4]/10 text-[#9B32E4]'>
+                    <IconShield className='w-[1.5em]! h-[1.5em]!' />
+                    <span className='font-poppins font-medium'>
+                      OFFICIAL REPORT
+                    </span>
+                    <IconPoint className='w-[1em]! h-[1em]!' />
+                    <span className='font-poppins'>POSTED BY ADMIN</span>
+                  </div>
+
+                  <Separator className='bg-[#9B32E4]/30' />
+                </>
+              )}
+
               {/* reported by */}
               <div className='flex justify-between items-center p-3 lg:p-4'>
                 <div className='flex items-center gap-1.5 lg:gap-2 opacity-50'>
@@ -176,37 +193,44 @@ export default function ReportedLocationPanel({
               <Separator />
 
               {/* verified by */}
-              <div className='flex justify-between items-center p-3 lg:p-4'>
-                <div className='flex items-center gap-1.5 lg:gap-2 opacity-50'>
-                  <IconShield className='w-[1.5em]! h-[1.5em]!' />
-                  <span className='font-poppins font-medium'>VERIFIED BY</span>
-                </div>
+              {!reportDetail?.isAdmin && (
+                <>
+                  <div className='flex justify-between items-center p-3 lg:p-4'>
+                    <div className='flex items-center gap-1.5 lg:gap-2 opacity-50'>
+                      <IconShield className='w-[1.5em]! h-[1.5em]!' />
+                      <span className='font-poppins font-medium'>
+                        VERIFIED BY
+                      </span>
+                    </div>
 
-                {reportDetail?.status === 'verified' ? (
-                  <div className='flex items-center gap-2'>
-                    <UIAvatar className='size-5'>
-                      <AvatarImage
-                        src={
-                          reportDetail?.verifier?.profilePicture || undefined
-                        }
-                      />
-                      <AvatarFallback>
-                        <Avatar
-                          name={`${reportDetail?.verifier?.name} ${reportDetail?.verifier?.id}`}
-                          variant='beam'
-                        />
-                      </AvatarFallback>
-                    </UIAvatar>
-                    <span>{reportDetail?.verifier?.name}</span>
+                    {reportDetail?.status === 'verified' ? (
+                      <div className='flex items-center gap-2'>
+                        <UIAvatar className='size-5'>
+                          <AvatarImage
+                            src={
+                              reportDetail?.verifier?.profilePicture ||
+                              undefined
+                            }
+                          />
+                          <AvatarFallback>
+                            <Avatar
+                              name={`${reportDetail?.verifier?.name} ${reportDetail?.verifier?.id}`}
+                              variant='beam'
+                            />
+                          </AvatarFallback>
+                        </UIAvatar>
+                        <span>{reportDetail?.verifier?.name}</span>
+                      </div>
+                    ) : (
+                      <span className='font-poppins opacity-50 italic font-medium'>
+                        PENDING
+                      </span>
+                    )}
                   </div>
-                ) : (
-                  <span className='font-poppins opacity-50 italic font-medium'>
-                    PENDING
-                  </span>
-                )}
-              </div>
 
-              <Separator />
+                  <Separator />
+                </>
+              )}
 
               {/* date & time */}
               <div className='flex justify-between items-start p-3 lg:p-4'>
@@ -249,22 +273,24 @@ export default function ReportedLocationPanel({
             </div>
 
             {/* credibility and confirm and deny */}
-            <div className='flex flex-col border rounded-lg text-xs lg:text-sm'>
-              {/* credibility */}
-              <div className='flex justify-between items-center p-3 lg:p-4'>
-                <div className='flex items-center gap-1.5 lg:gap-2 opacity-50'>
-                  <IconShieldCheck className='w-[1.5em]! h-[1.5em]!' />
-                  <span className='font-poppins font-medium'>CREDIBILITY</span>
-                </div>
+            {!reportDetail?.isAdmin && (
+              <div className='flex flex-col border rounded-lg text-xs lg:text-sm'>
+                {/* credibility */}
+                <div className='flex justify-between items-center p-3 lg:p-4'>
+                  <div className='flex items-center gap-1.5 lg:gap-2 opacity-50'>
+                    <IconShieldCheck className='w-[1.5em]! h-[1.5em]!' />
+                    <span className='font-poppins font-medium'>
+                      CREDIBILITY
+                    </span>
+                  </div>
 
-                <div className='flex items-center gap-2'>
                   <span className='font-poppins font-bold'>{credibility}%</span>
                 </div>
-              </div>
 
-              {/* vote buttons */}
-              <VoteButtons reportId={reportId} />
-            </div>
+                {/* vote buttons */}
+                <VoteButtons reportId={reportId} />
+              </div>
+            )}
 
             <Button className='rounded-lg h-12'>
               <IconSend className='w-[1.5em]! h-[1.5em]!' />
