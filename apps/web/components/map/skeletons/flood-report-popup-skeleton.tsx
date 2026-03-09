@@ -7,14 +7,14 @@ export default function FloodReportPopupSkeleton() {
       {/* header */}
       <div className='flex items-center justify-between bg-[#0066CC] p-3 text-white'>
         <Skeleton className='h-4 w-24 bg-white/30' />
-        <Skeleton className='h-4 w-4 rounded-full bg-white/30' />
+        <Skeleton className='size-4 rounded-full bg-white/30' />
       </div>
 
       <div className='flex flex-col bg-white'>
-        {/* badge and distance to now */}
+        {/* time + status badge */}
         <div className='flex flex-row justify-between gap-4 p-3'>
+          <Skeleton className='h-4 w-28' />
           <Skeleton className='h-6 w-24 rounded-full' />
-          <Skeleton className='h-4 w-20' />
         </div>
 
         <Separator />
@@ -52,26 +52,35 @@ export default function FloodReportPopupSkeleton() {
 
         <Separator />
 
-        {/* credibility and confirm/deny */}
+        {/* credibility + vote buttons */}
         <div className='flex flex-col text-xs'>
-          {/* credibility */}
           <div className='flex justify-between items-center p-3'>
             <Skeleton className='h-4 w-24' />
             <Skeleton className='h-4 w-8' />
           </div>
 
-          {/* confirm / deny buttons */}
-          <div className='flex justify-between'>
-            <Skeleton className='h-10 w-full rounded-none' />
+          <div className='flex'>
+            <Skeleton className='h-12 flex-1 rounded-none' />
             <div className='w-px bg-border' />
-            <Skeleton className='h-10 w-full rounded-none' />
+            <Skeleton className='h-12 flex-1 rounded-none' />
           </div>
         </div>
 
         {/* community / directions buttons */}
         <div className='flex justify-between items-center p-3 gap-2'>
-          <Skeleton className='h-9 w-full rounded-lg' />
-          <Skeleton className='h-9 w-full rounded-lg' />
+          <Skeleton className='h-10 w-full rounded-lg' />
+          <Skeleton className='h-10 w-full rounded-lg' />
+        </div>
+
+        <Separator />
+
+        {/* pagination */}
+        <div className='p-3'>
+          <div className='flex items-center gap-3 justify-between'>
+            <Skeleton className='h-8 w-full rounded-md' />
+            <Skeleton className='h-4 w-8 shrink-0' />
+            <Skeleton className='h-8 w-full rounded-md' />
+          </div>
         </div>
       </div>
     </div>

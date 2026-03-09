@@ -92,10 +92,12 @@ export default function CommentCard({
                       <span className='font-poppins'>Edit Comment</span>
                     </DropdownMenuItem>
                   )}
-                  <DropdownMenuItem onClick={onReportClick}>
-                    <IconFlag className='w-[1.5em]! h-[1.5em]!' />
-                    <span className='font-poppins'>Report Comment</span>
-                  </DropdownMenuItem>
+                  {!isOwner && (
+                    <DropdownMenuItem onClick={onReportClick}>
+                      <IconFlag className='w-[1.5em]! h-[1.5em]!' />
+                      <span className='font-poppins'>Report Comment</span>
+                    </DropdownMenuItem>
+                  )}
 
                   {(isAdmin || isOwner) && (
                     <DropdownMenuGroup>

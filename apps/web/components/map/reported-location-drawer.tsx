@@ -9,12 +9,11 @@ import {
   IconClock,
   IconExclamationCircle,
   IconHelpCircle,
+  IconPoint,
   IconSend,
   IconShield,
   IconShieldCheck,
-  IconThumbUp,
   IconUser,
-  IconX,
 } from '@tabler/icons-react';
 import { clsx } from 'clsx';
 import { format, formatDistanceToNow } from 'date-fns';
@@ -37,6 +36,7 @@ import CommentsList from '../shared/comments-list';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import ReportPaginationOverlay from './report-pagination-overlay';
 import { useMyVote } from '@/hooks/use-my-vote';
+import VoteButtons from './vote-buttons';
 
 const snapPoints = ['0px', '355px', 1];
 
@@ -73,6 +73,16 @@ export default function ReportedLocationDrawer({
   const formattedDate = reportDetail
     ? format(reportDetail?.reportedAt, 'MMMM dd, yyyy')
     : '';
+
+  const confirms = reportDetail?.confirms;
+  const denies = reportDetail?.denies;
+
+  const credibility =
+    confirms !== undefined && denies !== undefined
+      ? confirms + denies === 0
+        ? 0
+        : Math.round((confirms / (confirms + denies)) * 100)
+      : 0;
 
   return (
     <Drawer.Root
@@ -133,6 +143,14 @@ export default function ReportedLocationDrawer({
 
               {/* badge and distance to now */}
               <div className='flex flex-row justify-between gap-4'>
+                {/* reported at */}
+                <div className='flex items-center text-xs lg:text-sm gap-1.5 lg:gap-2 tabular-nums opacity-50'>
+                  <IconClock className='w-[1.5em]! h-[1.5em]!' />
+                  {formatDistanceToNow(reportDetail?.reportedAt, {
+                    addSuffix: true,
+                  })}
+                </div>
+
                 {/* report status */}
                 <div
                   className='flex items-center rounded-full px-3 py-1 w-fit h-fit'
@@ -152,18 +170,26 @@ export default function ReportedLocationDrawer({
                     </span>
                   </div>
                 </div>
-
-                {/* reported at */}
-                <div className='flex items-center text-xs lg:text-sm gap-1.5 lg:gap-2 tabular-nums opacity-50'>
-                  <IconClock className='w-[1.5em]! h-[1.5em]!' />
-                  {formatDistanceToNow(reportDetail?.reportedAt, {
-                    addSuffix: true,
-                  })}
-                </div>
               </div>
 
               {/* details */}
               <div className='flex flex-col border rounded-lg text-xs lg:text-sm'>
+                {reportDetail?.isAdmin && (
+                  <>
+                    {/* reported by */}
+                    <div className='flex items-center gap-1.5 lg:gap-2 p-3 lg:p-4 bg-[#9B32E4]/10 text-[#9B32E4]'>
+                      <IconShield className='w-[1.5em]! h-[1.5em]!' />
+                      <span className='font-poppins font-medium'>
+                        OFFICIAL REPORT
+                      </span>
+                      <IconPoint className='w-[1em]! h-[1em]!' />
+                      <span className='font-poppins'>POSTED BY ADMIN</span>
+                    </div>
+
+                    <Separator className='bg-[#9B32E4]/30' />
+                  </>
+                )}
+
                 {/* reported by */}
                 <div className='flex justify-between items-center p-3 lg:p-4'>
                   <div className='flex items-center gap-1.5 lg:gap-2 opacity-50'>
@@ -287,51 +313,25 @@ export default function ReportedLocationDrawer({
               </div>
 
               {/* credibility and confirm and deny */}
-              <div className='flex flex-col border rounded-lg text-xs lg:text-sm'>
-                {/* credibility */}
-                <div className='flex justify-between items-center p-3 lg:p-4'>
-                  <div className='flex items-center gap-1.5 lg:gap-2 opacity-50'>
-                    <IconShieldCheck className='w-[1.5em]! h-[1.5em]!' />
-                    <span className='font-poppins font-medium'>
-                      CREDIBILITY
+              {!reportDetail?.isAdmin && (
+                <div className='flex flex-col border rounded-lg text-xs lg:text-sm'>
+                  {/* credibility */}
+                  <div className='flex justify-between items-center p-3 lg:p-4'>
+                    <div className='flex items-center gap-1.5 lg:gap-2 opacity-50'>
+                      <IconShieldCheck className='w-[1.5em]! h-[1.5em]!' />
+                      <span className='font-poppins font-medium'>
+                        CREDIBILITY
+                      </span>
+                    </div>
+
+                    <span className='font-poppins font-bold'>
+                      {credibility}%
                     </span>
                   </div>
 
-                  <div className='flex items-center gap-2'>
-                    <span className='font-poppins font-bold'>0%</span>
-                  </div>
+                  <VoteButtons reportId={reportId} />
                 </div>
-
-                <div className='flex justify-between'>
-                  {/* confirm */}
-                  <button
-                    className='w-full text-[#15803D] bg-[#f0fdf4] hover:bg-[#d1fae5] group
-                transition-colors duration-200'
-                  >
-                    <div
-                      className='flex items-center justify-center gap-1.5 lg:gap-2 p-3 lg:p-4 
-                  group-hover:-translate-y-0.5 transition-transform duration-200'
-                    >
-                      <IconThumbUp className='w-[1.5em]! h-[1.5em]!' />
-                      <span className='font-poppins font-medium'>CONFIRM</span>
-                    </div>
-                  </button>
-
-                  {/* deny */}
-                  <button
-                    className='w-full text-[#dc2626] bg-[#fef2f2] hover:bg-[#fee2e2] group
-                transition-colors duration-200'
-                  >
-                    <div
-                      className='flex items-center justify-center gap-1.5 lg:gap-2 p-3 lg:p-4 
-                  group-hover:-translate-y-0.5 transition-transform duration-200'
-                    >
-                      <IconX className='w-[1.5em]! h-[1.5em]!' />
-                      <span className='font-poppins font-medium'>DENY</span>
-                    </div>
-                  </button>
-                </div>
-              </div>
+              )}
 
               <Button className='rounded-lg h-12'>
                 <IconSend className='w-[1.5em]! h-[1.5em]!' />

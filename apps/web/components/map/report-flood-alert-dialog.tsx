@@ -188,7 +188,7 @@ export default function ReportFloodAlertDialog() {
         {/* ── Blue Header ── */}
         <DialogHeader className='flex flex-row items-center gap-4 bg-[#0066CC] rounded-b-2xl px-5 py-4 shrink-0'>
           {/* Text */}
-          <DialogTitle className='font-poppins text-base font-semibold text-white'>
+          <DialogTitle className='font-poppins text-base font-medium text-white'>
             REPORT FLOOD ALERT
           </DialogTitle>
         </DialogHeader>

@@ -68,6 +68,7 @@ export class ReportsService {
           ),
         ),
         reportedAt: reports.createdAt,
+        isAdmin: reports.isAdmin,
         reporter: {
           id: users.id,
           email: users.email,
@@ -293,6 +294,8 @@ export class ReportsService {
       imagePublicId,
       location: locationName,
       status: 'verified', // Admin-created reports are auto-verified
+      isAdmin: true,
+      verifierId: userId, // Set the admin as the verifier
     });
 
     return { message: 'Report created and verified successfully' };

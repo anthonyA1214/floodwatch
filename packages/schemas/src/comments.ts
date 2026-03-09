@@ -22,8 +22,7 @@ const CommentSchema = z.object({
   id: z.number(),
   content: z.string(),
   image: z.string().nullable(),
-  upvotes: z.number().int(),
-  downvotes: z.number().int(),
+  reportCount: z.number(),
   createdAt: z.date(),
   author: z
     .object({

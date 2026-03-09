@@ -9,6 +9,8 @@ import { useEffect, useState } from 'react';
 import { useUser } from '@/hooks/use-user';
 import CommentEditForm from '../map/forms/comment-edit-form';
 import { apiFetchClient } from '@/lib/api-fetch-client';
+import ReportCommentDialog from './report-comment-dialog';
+import DeleteCommentDialog from './delete-comment-dialog';
 
 export default function CommentsList({
   reportId,
@@ -19,6 +21,8 @@ export default function CommentsList({
 }) {
   const { user } = useUser();
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [reportingId, setReportingId] = useState<number | null>(null);
+  const [deletingId, setDeletingId] = useState<number | null>(null);
 
   const {
     comments,
@@ -48,6 +52,7 @@ export default function CommentsList({
   if (!isLoading && comments.length === 0) return <NoUpdatesYetEmpty />;
 
   const isAdmin = user?.role === 'admin';
+  const deletingComment = comments.find((c) => c.id === deletingId) ?? null;
 
   const handleSave = async (
     commentId: number,
@@ -107,6 +112,8 @@ export default function CommentsList({
             isAdmin={isAdmin}
             isOwner={comment.author?.id === user?.id}
             onEditClick={() => setEditingId(comment.id)}
+            onReportClick={() => setReportingId(comment.id)}
+            onDeleteClick={() => setDeletingId(comment.id)}
           />
         );
       })}
@@ -124,6 +131,17 @@ export default function CommentsList({
           <div className='h-px flex-1 bg-gray-200' />
         </div>
       )}
+
+      <ReportCommentDialog
+        open={reportingId !== null}
+        onClose={() => setReportingId(null)}
+      />
+
+      <DeleteCommentDialog
+        open={deletingId !== null}
+        comment={deletingComment}
+        onClose={() => setDeletingId(null)}
+      />
     </div>
   );
 }
