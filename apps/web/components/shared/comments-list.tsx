@@ -11,6 +11,7 @@ import CommentEditForm from '../map/forms/comment-edit-form';
 import { apiFetchClient } from '@/lib/api-fetch-client';
 import ReportCommentDialog from './report-comment-dialog';
 import DeleteCommentDialog from './delete-comment-dialog';
+import { CommentInput } from '@repo/schemas';
 
 export default function CommentsList({
   reportId,
@@ -22,7 +23,9 @@ export default function CommentsList({
   const { user } = useUser();
   const [editingId, setEditingId] = useState<number | null>(null);
   const [reportingId, setReportingId] = useState<number | null>(null);
-  const [deletingId, setDeletingId] = useState<number | null>(null);
+  const [deletingComment, setDeletingComment] = useState<CommentInput | null>(
+    null,
+  );
 
   const {
     comments,
@@ -52,7 +55,6 @@ export default function CommentsList({
   if (!isLoading && comments.length === 0) return <NoUpdatesYetEmpty />;
 
   const isAdmin = user?.role === 'admin';
-  const deletingComment = comments.find((c) => c.id === deletingId) ?? null;
 
   const handleSave = async (
     commentId: number,
@@ -113,7 +115,7 @@ export default function CommentsList({
             isOwner={comment.author?.id === user?.id}
             onEditClick={() => setEditingId(comment.id)}
             onReportClick={() => setReportingId(comment.id)}
-            onDeleteClick={() => setDeletingId(comment.id)}
+            onDeleteClick={() => setDeletingComment(comment)}
           />
         );
       })}
@@ -138,9 +140,9 @@ export default function CommentsList({
       />
 
       <DeleteCommentDialog
-        open={deletingId !== null}
+        open={deletingComment !== null}
         comment={deletingComment}
-        onClose={() => setDeletingId(null)}
+        onClose={() => setDeletingComment(null)}
       />
     </div>
   );

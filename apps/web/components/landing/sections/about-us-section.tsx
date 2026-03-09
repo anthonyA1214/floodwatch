@@ -27,45 +27,45 @@ const visionText = `
 
 export default function AboutUsSection() {
   return (
-    <section className="bg-white mt-auto" id="about-us">
-      <div className="flex flex-col gap-6 md:gap-10 py-20 max-w-7xl mx-auto px-4 md:0">
+    <section className='bg-white mt-auto' id='about-us'>
+      <div className='flex flex-col gap-6 md:gap-10 py-20 max-w-7xl mx-auto px-4 md:0'>
         {/* Title */}
-        <h2 className="font-poppins text-3xl sm:text-4xl md:text-5xl font-semibold text-center">
-          About <span className="text-[#2F327D]">FloodWatch</span>
+        <h2 className='font-poppins text-3xl sm:text-4xl md:text-5xl font-semibold text-center'>
+          About <span className='text-[#2F327D]'>FloodWatch</span>
         </h2>
 
-        <div className="flex flex-col gap-6 md:gap-10 w-full mx-auto">
+        <div className='flex flex-col gap-6 md:gap-10 w-full mx-auto'>
           {/* Our Story */}
-          <div className="shadow-lg rounded-2xl px-6 sm:px-8 py-5 sm:py-6 space-y-4 sm:space-y-5">
-            <h3 className="font-poppins text-2xl sm:text-3xl font-semibold">
-              Our <span className="text-[#2F327D]">Story</span>
+          <div className='shadow-lg rounded-2xl px-6 sm:px-8 py-5 sm:py-6 space-y-4 sm:space-y-5'>
+            <h3 className='font-poppins text-2xl sm:text-3xl font-semibold'>
+              Our <span className='text-[#2F327D]'>Story</span>
             </h3>
 
-            <div className="text-base sm:text-lg text-gray-600 space-y-4">
+            <div className='text-base sm:text-lg text-gray-600 space-y-4'>
               <p>{ourStoryText1}</p>
               <p>{ourStoryText2}</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10">
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10'>
             {/* Mission */}
-            <div className="shadow-lg rounded-2xl px-6 sm:px-8 py-5 sm:py-6 space-y-4 sm:space-y-5">
-              <h3 className="font-poppins text-2xl sm:text-3xl font-semibold">
-                Our <span className="text-[#2F327D]">Mission</span>
+            <div className='shadow-lg rounded-2xl px-6 sm:px-8 py-5 sm:py-6 space-y-4 sm:space-y-5'>
+              <h3 className='font-poppins text-2xl sm:text-3xl font-semibold'>
+                Our <span className='text-[#2F327D]'>Mission</span>
               </h3>
 
-              <p className="text-base sm:text-lg text-gray-600">
+              <p className='text-base sm:text-lg text-gray-600'>
                 {missionText}
               </p>
             </div>
 
             {/* Vision */}
-            <div className="shadow-lg rounded-2xl px-6 sm:px-8 py-5 sm:py-6 space-y-4 sm:space-y-5">
-              <h3 className="font-poppins text-2xl sm:text-3xl font-semibold">
-                Our <span className="text-[#2F327D]">Vision</span>
+            <div className='shadow-lg rounded-2xl px-6 sm:px-8 py-5 sm:py-6 space-y-4 sm:space-y-5'>
+              <h3 className='font-poppins text-2xl sm:text-3xl font-semibold'>
+                Our <span className='text-[#2F327D]'>Vision</span>
               </h3>
 
-              <p className="text-base sm:text-lg text-gray-600">{visionText}</p>
+              <p className='text-base sm:text-lg text-gray-600'>{visionText}</p>
             </div>
           </div>
         </div>

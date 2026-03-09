@@ -2,7 +2,7 @@ import UserStatCardSkeleton from '@/components/shared/admin/skeleton/stat-card-s
 
 export default function StatCardsSkeleton() {
   return (
-    <div className="grid grid-cols-3 gap-8">
+    <div className='grid grid-cols-3 gap-8'>
       <UserStatCardSkeleton />
       <UserStatCardSkeleton />
       <UserStatCardSkeleton />

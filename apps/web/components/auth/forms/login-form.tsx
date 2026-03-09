@@ -81,47 +81,47 @@ export default function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+    <form onSubmit={handleSubmit} className='space-y-6'>
+      <div className='space-y-2'>
+        <Label htmlFor='email'>Email</Label>
         <Input
-          id="email"
-          name="email"
-          type="email"
-          placeholder="Enter your email"
-          className="rounded-full"
+          id='email'
+          name='email'
+          type='email'
+          placeholder='Enter your email'
+          className='rounded-full'
         />
         {state?.errors && 'email' in state.errors && state.errors.email && (
-          <p className="text-red-500 text-sm">{state.errors.email}</p>
+          <p className='text-red-500 text-sm'>{state.errors.email}</p>
         )}
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
+      <div className='space-y-2'>
+        <Label htmlFor='password'>Password</Label>
         <Input
-          id="password"
-          name="password"
-          type="password"
-          placeholder="Enter your password"
-          className="rounded-full"
+          id='password'
+          name='password'
+          type='password'
+          placeholder='Enter your password'
+          className='rounded-full'
         />
         {state?.errors &&
           'password' in state.errors &&
           state.errors.password && (
-            <p className="text-red-500 text-sm">{state.errors.password}</p>
+            <p className='text-red-500 text-sm'>{state.errors.password}</p>
           )}
         {state?.errors && '_form' in state.errors && state.errors._form && (
-          <p className="text-red-500 text-sm">{state.errors._form}</p>
+          <p className='text-red-500 text-sm'>{state.errors._form}</p>
         )}
-        <div className="text-right text-sm text-gray-500 hover:underline cursor-pointer">
-          <Link href="/auth/forgot-password"> Forgot password? </Link>
+        <div className='text-right text-sm text-gray-500 hover:underline cursor-pointer'>
+          <Link href='/auth/forgot-password'> Forgot password? </Link>
         </div>
       </div>
 
       <Button
         disabled={isPending}
-        type="submit"
-        className="w-full rounded-full"
+        type='submit'
+        className='w-full rounded-full'
       >
         {isPending ? (
           <>

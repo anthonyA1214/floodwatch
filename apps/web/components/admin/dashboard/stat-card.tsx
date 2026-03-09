@@ -12,16 +12,16 @@ export default function StatCard({
   count: number;
 }) {
   return (
-    <div className="flex items-center rounded-2xl border shadow-md p-6 gap-6">
+    <div className='flex items-center rounded-2xl border shadow-md p-6 gap-6'>
       <div
         className={`rounded-full p-4 text-2xl`}
         style={{ color: color, backgroundColor: `${color}25` }}
       >
-        <Icon className="w-[1.5em]! h-[1.5em]!" />
+        <Icon className='w-[1.5em]! h-[1.5em]!' />
       </div>
-      <div className="grid space-y-2">
-        <span className="font-semibold text-xl">{label}</span>
-        <h3 className="text-4xl font-bold">{count}</h3>
+      <div className='grid space-y-2'>
+        <span className='font-semibold text-xl'>{label}</span>
+        <h3 className='text-4xl font-bold'>{count}</h3>
       </div>
     </div>
   );

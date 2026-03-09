@@ -89,18 +89,18 @@ export default function VerifyOtpModal({
       <DialogContent>
         <DialogHeader>
           <DialogTitle>
-            Verify <span className="text-[#0066CC] font-bold">code!</span>
+            Verify <span className='text-[#0066CC] font-bold'>code!</span>
           </DialogTitle>
           <DialogDescription>
             We have sent the 6-digit code to your email address
           </DialogDescription>
         </DialogHeader>
-        <form action={verifyFormAction} ref={formRef} className="space-y-6">
-          <div className="flex flex-col items-center gap-y-4">
+        <form action={verifyFormAction} ref={formRef} className='space-y-6'>
+          <div className='flex flex-col items-center gap-y-4'>
             <InputOTP
               maxLength={6}
-              id="otp"
-              name="otp"
+              id='otp'
+              name='otp'
               value={otp}
               onChange={setOtp}
               onComplete={() => {
@@ -110,12 +110,12 @@ export default function VerifyOtpModal({
               }}
               disabled={isVerifying || isResending}
             >
-              <InputOTPGroup className="grid grid-cols-6 gap-2">
+              <InputOTPGroup className='grid grid-cols-6 gap-2'>
                 {Array.from({ length: 6 }).map((_, i) => (
                   <InputOTPSlot
                     key={i}
                     index={i}
-                    className="w-12 h-12 text-xl rounded-md border"
+                    className='w-12 h-12 text-xl rounded-md border'
                   />
                 ))}
               </InputOTPGroup>
@@ -124,14 +124,14 @@ export default function VerifyOtpModal({
             {verifyState?.errors &&
               'otp' in verifyState.errors &&
               verifyState.errors.otp && (
-                <p className="text-red-500 text-sm">{verifyState.errors.otp}</p>
+                <p className='text-red-500 text-sm'>{verifyState.errors.otp}</p>
               )}
           </div>
 
-          <div className="flex flex-col gap-y-4">
+          <div className='flex flex-col gap-y-4'>
             <Button
               disabled={isVerifying || isResending}
-              className="w-full rounded-full bg-[#0066CC] hover:bg-[#005BB5]"
+              className='w-full rounded-full bg-[#0066CC] hover:bg-[#005BB5]'
             >
               {isVerifying ? (
                 <>
@@ -143,11 +143,11 @@ export default function VerifyOtpModal({
             </Button>
 
             <Button
-              type="button"
+              type='button'
               onClick={handleResendClick}
               disabled={isVerifying || isResending || cooldown > 0}
-              variant="secondary"
-              className="w-full rounded-full"
+              variant='secondary'
+              className='w-full rounded-full'
             >
               {isResending ? (
                 <>

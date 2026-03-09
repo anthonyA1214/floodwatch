@@ -18,25 +18,25 @@ export default function SafetyStatCards({
   onStatusChange,
 }: SafetyStatCardsProps) {
   return (
-    <div className="grid grid-cols-3 gap-8">
+    <div className='grid grid-cols-3 gap-8'>
       <SafetyStatCard
-        label="Total Safety Locations"
+        label='Total Safety Locations'
         count={totalCount}
-        status="total"
+        status='total'
         isActive={activeStatus === 'total'}
         onClick={() => onStatusChange('total')}
       />
       <SafetyStatCard
-        label="Shelter Locations"
+        label='Shelter Locations'
         count={shelterCount}
-        status="shelter"
+        status='shelter'
         isActive={activeStatus === 'shelter'}
         onClick={() => onStatusChange('shelter')}
       />
       <SafetyStatCard
-        label="Hospital Locations"
+        label='Hospital Locations'
         count={hospitalCount}
-        status="hospital"
+        status='hospital'
         isActive={activeStatus === 'hospital'}
         onClick={() => onStatusChange('hospital')}
       />
