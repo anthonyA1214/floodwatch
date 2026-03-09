@@ -24,26 +24,26 @@ export const columns: ColumnDef<UsersDto>[] = [
     header: ({ column }) => {
       return (
         <button
-          className="inline-flex gap-2 items-center"
+          className='inline-flex gap-2 items-center'
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
         >
-          USER <IconArrowsUpDown className="w-[1em]! h-[1em]!" />
+          USER <IconArrowsUpDown className='w-[1em]! h-[1em]!' />
         </button>
       );
     },
     cell: ({ row }) => {
       const user = row.original;
       return (
-        <div className="flex items-center gap-3 w-auto">
-          <UIAvatar className="size-8">
-            <AvatarImage src={user.profilePicture} />
+        <div className='flex items-center gap-3 w-auto'>
+          <UIAvatar className='size-8'>
+            <AvatarImage src={user.profilePicture || undefined} />
             <AvatarFallback>
-              <Avatar name={`${user.name} ${user.id}`} variant="beam" />
+              <Avatar name={`${user.name} ${user.id}`} variant='beam' />
             </AvatarFallback>
           </UIAvatar>
-          <div className="flex flex-col">
-            <span className="font-medium">{user.name}</span>
-            <span className="text-sm text-gray-600">{user.email}</span>
+          <div className='flex flex-col'>
+            <span className='font-medium'>{user.name}</span>
+            <span className='text-sm text-gray-600'>{user.email}</span>
           </div>
         </div>
       );
@@ -62,7 +62,7 @@ export const columns: ColumnDef<UsersDto>[] = [
       const color = roleColorMap[user.role];
 
       return (
-        <span className="font-semibold" style={{ color }}>
+        <span className='font-semibold' style={{ color }}>
           {user.role.toUpperCase()}
         </span>
       );
@@ -75,7 +75,7 @@ export const columns: ColumnDef<UsersDto>[] = [
       const user = row.original;
 
       return (
-        <span className="text-gray-600">
+        <span className='text-gray-600'>
           {format(parseISO(user.joinDate), 'MMMM dd, yyyy')}
         </span>
       );
@@ -83,7 +83,7 @@ export const columns: ColumnDef<UsersDto>[] = [
   },
   {
     accessorKey: 'status',
-    header: () => <span className="flex justify-center">STATUS</span>,
+    header: () => <span className='flex justify-center'>STATUS</span>,
     cell: ({ row }) => {
       const user = row.original;
       const statusColorMap = {
@@ -94,12 +94,12 @@ export const columns: ColumnDef<UsersDto>[] = [
       const color = statusColorMap[user.status];
 
       return (
-        <div className="flex justify-center w-full">
+        <div className='flex justify-center w-full'>
           <div
-            className="inline-flex items-center rounded-full px-4 py-1.5"
+            className='inline-flex items-center rounded-full px-4 py-1.5'
             style={{ backgroundColor: `${color}25`, color }}
           >
-            <span className="text-sm font-medium capitalize">
+            <span className='text-sm font-medium capitalize'>
               {user.status.toUpperCase()}
             </span>
           </div>
@@ -109,7 +109,7 @@ export const columns: ColumnDef<UsersDto>[] = [
   },
   {
     accessorKey: 'actions',
-    header: () => <span className="flex justify-center">ACTIONS</span>,
+    header: () => <span className='flex justify-center'>ACTIONS</span>,
     cell: ({ row }) => {
       const user = row.original;
       return <ActionCell user={user} />;
@@ -128,10 +128,10 @@ function ActionCell({ user }: { user: UsersDto }) {
   const color = buttonColorMap[user.status];
 
   return (
-    <div className="flex justify-center gap-2">
+    <div className='flex justify-center gap-2'>
       <Tooltip>
-        <TooltipTrigger className="text-[#0066CC] bg-[#0066CC]/10 rounded-lg p-1.5 hover:bg-[#0066CC]/20 transition">
-          <IconEye className="w-[1.5em]! h-[1.5em]!" />
+        <TooltipTrigger className='text-[#0066CC] bg-[#0066CC]/10 rounded-lg p-1.5 hover:bg-[#0066CC]/20 transition'>
+          <IconEye className='w-[1.5em]! h-[1.5em]!' />
         </TooltipTrigger>
         <TooltipContent>
           <p>View reports</p>
@@ -145,7 +145,7 @@ function ActionCell({ user }: { user: UsersDto }) {
             openDialog(user.id, user.status === 'active' ? 'block' : 'unblock')
           }
         >
-          <IconBan className="w-[1.5em]! h-[1.5em]!" />
+          <IconBan className='w-[1.5em]! h-[1.5em]!' />
         </TooltipTrigger>
         <TooltipContent>
           <p>{user.status === 'active' ? 'Block user' : 'Unblock user'}</p>

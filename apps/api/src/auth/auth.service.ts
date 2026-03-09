@@ -154,6 +154,12 @@ export class AuthService {
     const user = await this.usersService.findById(userId);
     if (!user) throw new NotFoundException('User not found');
 
+    const existingAuth = await this.usersService.findAuthAccount(
+      userId,
+      'local',
+    );
+    if (existingAuth) throw new ConflictException('Password already set');
+
     const hashedPassword = await bcrypt.hash(new_password, 12);
 
     await this.usersService.createAuthAccount(
@@ -162,5 +168,7 @@ export class AuthService {
       user.email,
       hashedPassword,
     );
+
+    return { message: 'Password set successfully' };
   }
 }

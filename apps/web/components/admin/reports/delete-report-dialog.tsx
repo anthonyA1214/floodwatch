@@ -27,7 +27,8 @@ export default function DeleteReportDialog() {
     setIsPending(true);
     try {
       await deleteReport(report.id);
-      mutate(SWR_KEYS.reports);
+      mutate(SWR_KEYS.reportMapPins);
+      mutate(SWR_KEYS.reportDetail(report.id), null);
       mutate((key) => Array.isArray(key) && key[0] === SWR_KEYS.reportsAdmin);
       closeDialog();
     } finally {
@@ -47,13 +48,13 @@ export default function DeleteReportDialog() {
         </DialogHeader>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant='outline'>Cancel</Button>
           </DialogClose>
           <Button
-            type="submit"
+            type='submit'
             disabled={isPending}
             onClick={handleDelete}
-            className="flex items-center gap-2"
+            className='flex items-center gap-2'
           >
             {isPending ? (
               <>

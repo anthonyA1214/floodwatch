@@ -14,9 +14,12 @@
     "db:reset": "pnpm --filter api run db:reset",
     "db:generate": "pnpm --filter api run db:generate",
     "db:migrate": "pnpm --filter api run db:migrate",
-    "db:studio": "pnpm --filter api run db:studio"
+    "db:studio": "pnpm --filter api run db:studio",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.3.0",
     "prettier": "^3.6.2",
     "turbo": "^2.8.9",
     "typescript": "5.9.2"
@@ -24,5 +27,15 @@
   "packageManager": "pnpm@10.30.0",
   "engines": {
     "node": ">=18"
+  },
+  "lint-staged": {
+    "apps/web/**/*.{ts,tsx}": [
+      "pnpm --filter web exec eslint --fix",
+      "pnpm --filter web exec prettier --write"
+    ],
+    "apps/api/**/*.ts": [
+      "pnpm --filter api exec eslint --fix",
+      "pnpm --filter api exec prettier --write"
+    ]
   }
 }

@@ -21,5 +21,5 @@ export const refreshTokens = pgTable(
     createdAt: timestamp('created_at').defaultNow(),
     updatedAt: timestamp('updated_at').defaultNow(),
   },
-  (table) => [uniqueIndex().on(table.userId, table.deviceId)],
+  (t) => [uniqueIndex().on(t.userId, t.deviceId)],
 );

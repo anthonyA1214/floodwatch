@@ -5,7 +5,7 @@ import 'maplibre-gl/dist/maplibre-gl.css';
 import RadiusCircle from '@/components/shared/radius-circle';
 import { Spinner } from '@/components/ui/spinner';
 import { useBoundary } from '@/hooks/use-boundary';
-import { FloodMarker } from '../markers/flood-marker';
+import { FloodMarker } from './markers/flood-marker';
 
 export default function InteractiveMapReportedLocation({
   longitude,
@@ -22,8 +22,8 @@ export default function InteractiveMapReportedLocation({
 
   if (longitude === null || latitude === null) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center gap-2">
-        <Spinner className="size-16 text-[#0066CC]" />
+      <div className='flex-1 flex flex-col items-center justify-center gap-2'>
+        <Spinner className='size-16 text-[#0066CC]' />
       </div>
     );
   }
@@ -35,14 +35,16 @@ export default function InteractiveMapReportedLocation({
         latitude: latitude,
         zoom: 13.5,
       }}
-      mapStyle="https://tiles.openfreemap.org/styles/bright"
+      mapStyle='https://tiles.openfreemap.org/styles/bright'
+      attributionControl={false}
+      dragRotate={false}
     >
       {/* boundary fill */}
       {caloocanGeoJSON && (
-        <Source id="caloocan" type="geojson" data={caloocanGeoJSON}>
+        <Source id='caloocan' type='geojson' data={caloocanGeoJSON}>
           <Layer
-            id="caloocan-fill"
-            type="fill"
+            id='caloocan-fill'
+            type='fill'
             paint={{
               'fill-color': '#0066CC',
               'fill-opacity': 0.05,
@@ -54,13 +56,13 @@ export default function InteractiveMapReportedLocation({
       {/* boundary outline */}
       {caloocanOutlineGeoJSON && (
         <Source
-          id="caloocan-outline"
-          type="geojson"
+          id='caloocan-outline'
+          type='geojson'
           data={caloocanOutlineGeoJSON}
         >
           <Layer
-            id="caloocan-outline-line"
-            type="line"
+            id='caloocan-outline-line'
+            type='line'
             paint={{
               'line-color': '#0066CC',
               'line-width': 2,
@@ -79,7 +81,7 @@ export default function InteractiveMapReportedLocation({
         key={severity}
         longitude={longitude}
         latitude={latitude}
-        anchor="bottom"
+        anchor='bottom'
       >
         <FloodMarker severity={severity} />
       </Marker>

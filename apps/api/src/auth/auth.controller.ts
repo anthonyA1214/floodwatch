@@ -5,19 +5,11 @@ import {
   HttpStatus,
   Post,
   UseGuards,
-  UsePipes,
   Request,
   Res,
   Delete,
 } from '@nestjs/common';
-import { ZodValidationPipe } from 'src/common/pipes/zod-validation.pipe';
-import {
-  logInSchema,
-  SetPasswordDto,
-  setPasswordSchema,
-  SignUpDto,
-  signUpSchema,
-} from '@repo/schemas';
+import { LogInDto, SetPasswordDto, SignUpDto } from '@repo/schemas';
 import { type AuthRequest } from './types/auth-request.type';
 import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth/local-auth.guard';
@@ -28,6 +20,8 @@ import { clearAuthCookies, setAuthCookies } from 'src/auth/utils/auth-util';
 import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 import { type RefreshTokenRequest } from './types/refresh-token-request.type';
 import { type LogoutRequest } from './types/logout-request.type';
+import { ApiBody } from '@nestjs/swagger';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -36,10 +30,11 @@ export class AuthController {
     private configService: ConfigService,
   ) {}
 
+  @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
-  @UsePipes(new ZodValidationPipe(logInSchema))
+  @ApiBody({ type: LogInDto })
   async login(
     @Request() req: AuthRequest,
     @Res({ passthrough: true }) res: Response,
@@ -51,9 +46,10 @@ export class AuthController {
       this.configService.getOrThrow('NODE_ENV') === 'production';
     setAuthCookies(res, access_token, refresh_token, deviceId, isProduction);
 
-    return { user: req.user };
+    return { user: req.user, access_token, refresh_token, deviceId };
   }
 
+  @Public()
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtRefreshAuthGuard)
@@ -82,9 +78,9 @@ export class AuthController {
     return { success: true };
   }
 
+  @Public()
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
-  @UsePipes(new ZodValidationPipe(signUpSchema))
   async signup(
     @Body() signUpDto: SignUpDto,
     @Res({ passthrough: true }) res: Response,
@@ -128,7 +124,6 @@ export class AuthController {
   @Post('set-password')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtAuthGuard)
-  @UsePipes(new ZodValidationPipe(setPasswordSchema))
   async setPassword(
     @Body() setPasswordDto: SetPasswordDto,
     @Request() req: AuthRequest,

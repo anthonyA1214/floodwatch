@@ -4,11 +4,13 @@ import {
   ReportFloodAlertInput,
   ReportQueryInput,
 } from '@repo/schemas';
+import { aliasedTable } from 'drizzle-orm';
 import { and, count, desc, eq, like, or, sql } from 'drizzle-orm';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { DRIZZLE } from 'src/drizzle/drizzle-connection';
 import { profileInfo, users } from 'src/drizzle/schemas';
-import { reports } from 'src/drizzle/schemas/reports.schema';
+import { reports } from 'src/drizzle/schemas';
+import { reportConfirmations } from 'src/drizzle/schemas/report-confirmations.schema';
 import type { DrizzleDB } from 'src/drizzle/types/drizzle';
 import { GeocoderService } from 'src/geocoder/geocoder.service';
 import { ImagesService } from 'src/images/images.service';
@@ -26,6 +28,23 @@ export class ReportsService {
     return await this.db
       .select({
         id: reports.id,
+        latitude: reports.latitude,
+        longitude: reports.longitude,
+        range: reports.range,
+        severity: reports.severity,
+        status: reports.status,
+      })
+      .from(reports)
+      .orderBy(desc(reports.createdAt));
+  }
+
+  async findOnePublic(reportId: number) {
+    const verifierUser = aliasedTable(users, 'verifier_user');
+    const verifierProfile = aliasedTable(profileInfo, 'verifier_profile');
+
+    const [data] = await this.db
+      .select({
+        id: reports.id,
         location: reports.location,
         description: reports.description,
         latitude: reports.latitude,
@@ -34,18 +53,43 @@ export class ReportsService {
         severity: reports.severity,
         status: reports.status,
         image: reports.image,
+        confirms: this.db.$count(
+          reportConfirmations,
+          and(
+            eq(reportConfirmations.action, 'confirm'),
+            eq(reportConfirmations.reportId, reports.id),
+          ),
+        ),
+        denies: this.db.$count(
+          reportConfirmations,
+          and(
+            eq(reportConfirmations.action, 'deny'),
+            eq(reportConfirmations.reportId, reports.id),
+          ),
+        ),
         reportedAt: reports.createdAt,
+        isAdmin: reports.isAdmin,
         reporter: {
           id: users.id,
           email: users.email,
           name: sql<string>`CONCAT(${profileInfo.firstName}, ' ', ${profileInfo.lastName})`,
           profilePicture: profileInfo.profilePicture,
         },
+        verifier: {
+          id: verifierUser.id,
+          email: verifierUser.email,
+          name: sql<string>`CONCAT(${verifierProfile.firstName}, ' ', ${verifierProfile.lastName})`,
+          profilePicture: verifierProfile.profilePicture,
+        },
       })
       .from(reports)
       .leftJoin(users, eq(reports.userId, users.id))
       .leftJoin(profileInfo, eq(users.id, profileInfo.userId))
-      .orderBy(desc(reports.createdAt));
+      .leftJoin(verifierUser, eq(reports.verifierId, verifierUser.id))
+      .leftJoin(verifierProfile, eq(reports.verifierId, verifierProfile.userId))
+      .where(eq(reports.id, reportId));
+
+    return data;
   }
 
   async findAll(reportQueryDto: ReportQueryInput) {
@@ -250,16 +294,18 @@ export class ReportsService {
       imagePublicId,
       location: locationName,
       status: 'verified', // Admin-created reports are auto-verified
+      isAdmin: true,
+      verifierId: userId, // Set the admin as the verifier
     });
 
     return { message: 'Report created and verified successfully' };
   }
 
-  async verifyReportStatus(id: string) {
+  async verifyReportStatus(reportId: number, userId: number) {
     const report = await this.db
       .select()
       .from(reports)
-      .where(eq(reports.id, id))
+      .where(eq(reports.id, reportId))
       .limit(1);
 
     if (!report.length) {
@@ -268,13 +314,13 @@ export class ReportsService {
 
     await this.db
       .update(reports)
-      .set({ status: 'verified', updatedAt: new Date() })
-      .where(eq(reports.id, id));
+      .set({ verifierId: userId, status: 'verified', updatedAt: new Date() })
+      .where(eq(reports.id, reportId));
 
     return { message: 'Report verified successfully' };
   }
 
-  async deleteReport(id: string) {
+  async deleteReport(id: number) {
     const [report] = await this.db
       .select()
       .from(reports)
@@ -293,5 +339,69 @@ export class ReportsService {
     await this.db.delete(reports).where(eq(reports.id, id));
 
     return { message: 'Report deleted successfully' };
+  }
+
+  async voteReport(
+    reportId: number,
+    userId: number,
+    action: 'confirm' | 'deny',
+  ) {
+    const [report] = await this.db
+      .select()
+      .from(reports)
+      .where(eq(reports.id, reportId))
+      .limit(1);
+
+    if (!report) {
+      throw new NotFoundException('Report not found');
+    }
+
+    const existing = await this.db.query.reportConfirmations.findFirst({
+      where: and(
+        eq(reportConfirmations.reportId, reportId),
+        eq(reportConfirmations.userId, userId),
+      ),
+    });
+
+    if (existing) {
+      if (existing.action === action) {
+        // toggle off
+        await this.db
+          .delete(reportConfirmations)
+          .where(eq(reportConfirmations.id, existing.id));
+
+        return { message: 'Vote removed successfully' };
+      }
+
+      // flip vote
+      await this.db
+        .update(reportConfirmations)
+        .set({
+          action,
+        })
+        .where(eq(reportConfirmations.id, existing.id));
+
+      return { message: 'Vote updated successfully' };
+    }
+
+    // insert new
+    await this.db.insert(reportConfirmations).values({
+      action,
+      userId,
+      reportId,
+    });
+
+    return { message: 'Vote added successfully' };
+  }
+
+  async getMyVote(reportId: number, userId: number) {
+    const vote = await this.db.query.reportConfirmations.findFirst({
+      where: and(
+        eq(reportConfirmations.reportId, reportId),
+        eq(reportConfirmations.userId, userId),
+      ),
+    });
+
+    return { action: vote?.action ?? null };
   }
 }

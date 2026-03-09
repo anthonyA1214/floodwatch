@@ -2,9 +2,16 @@ packages:
   - apps/*
   - packages/*
 
+ignoredBuiltDependencies:
+  - '@scarf/scarf'
+
 onlyBuiltDependencies:
   - '@nestjs/core'
+  - '@swc/core'
   - bcrypt
   - esbuild
   - sharp
   - unrs-resolver
+
+patchedDependencies:
+  lint-staged: patches/lint-staged.patch

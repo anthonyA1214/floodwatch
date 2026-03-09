@@ -1,0 +1,12 @@
+diff --git a/lib/getSpawnedTask.js b/lib/getSpawnedTask.js
+index 3676c522d2f450affbacec2fb002df473986241e..9de55315caee4206c973a27dce494961e65dfd50 100644
+--- a/lib/getSpawnedTask.js
++++ b/lib/getSpawnedTask.js
+@@ -90,7 +90,6 @@ export const getSpawnedTask = ({
+       // Only use topLevelDir as CWD if we are using the git binary
+       // e.g `npm` should run tasks in the actual CWD
+       cwd: /^git(\.exe)?/i.test(cmd) ? topLevelDir : cwd,
+-      detached: true,
+       env: color ? { FORCE_COLOR: 'true' } : { NO_COLOR: 'true' },
+       stdio: ['ignore'],
+     },

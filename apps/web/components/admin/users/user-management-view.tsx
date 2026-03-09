@@ -38,27 +38,30 @@ export default function UserManagementView() {
   if (isLoading && isFirstLoad) return <UserManagementPageSkeleton />;
 
   return (
-    <div className="flex-1 flex flex-col bg-white p-8 rounded-2xl gap-8 min-h-0">
+    <div className='flex-1 flex flex-col bg-white p-8 rounded-2xl gap-8 min-h-0'>
       {/* Header */}
-      <h1 className="font-poppins text-3xl font-bold">User Management</h1>
+      <h1 className='font-poppins text-3xl font-bold'>User Management</h1>
 
       {/* Search + Add Admin - always visible */}
-      <div className="flex justify-between gap-4">
-        <div className="flex-1">
+      <div className='flex justify-between gap-4'>
+        <div className='flex-1'>
           <SearchBar
-            placeholder="Search by name..."
-            onSearch={setQ}
+            placeholder='Search by name...'
+            onSearch={(value) => {
+              setQ(value);
+              setPage(1);
+            }}
             defaultValue={q}
           />
         </div>
-        <div className="flex w-fit">
+        <div className='flex w-fit'>
           <AddNewAdminModal />
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col min-h-0 gap-4">
+      <div className='flex-1 flex flex-col min-h-0 gap-4'>
         {isFirstLoad ? (
-          <div className="grid grid-cols-3 gap-8">
+          <div className='grid grid-cols-3 gap-8'>
             {Array.from({ length: 3 }).map((_, i) => (
               <StatCardSkeleton key={i} />
             ))}
@@ -69,7 +72,10 @@ export default function UserManagementView() {
             activeCount={stats?.activeCount ?? 0}
             blockedCount={stats?.blockedCount ?? 0}
             activeStatus={status}
-            onStatusChange={setStatus}
+            onStatusChange={(newStatus) => {
+              setStatus(newStatus);
+              setPage(1);
+            }}
           />
         )}
 
@@ -84,13 +90,13 @@ export default function UserManagementView() {
         )}
 
         {isFirstLoad ? (
-          <div className="flex items-center justify-between">
-            <Skeleton className="h-4 w-40" />
+          <div className='flex items-center justify-between'>
+            <Skeleton className='h-4 w-40' />
             <PaginationSkeleton />
           </div>
         ) : (
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">
+          <div className='flex items-center justify-between'>
+            <span className='text-sm text-gray-600'>
               Showing {users?.length ?? 0} of {stats?.totalCount ?? 0} users
             </span>
 

@@ -41,44 +41,44 @@ export default function ChangePasswordForm({
   const resetSessionId = sessionStorage.getItem('resetSessionId');
 
   return (
-    <form action={formAction} className="space-y-6 text-sm">
+    <form action={formAction} className='space-y-6 text-sm'>
       {/* include resetSessionId as hidden input */}
-      <input type="hidden" name="resetSessionId" value={resetSessionId || ''} />
-      <div className="space-y-2">
-        <Label htmlFor="new_password">New Password</Label>
+      <input type='hidden' name='resetSessionId' value={resetSessionId || ''} />
+      <div className='space-y-2'>
+        <Label htmlFor='new_password'>New Password</Label>
         <Input
-          id="new_password"
-          name="new_password"
-          type="password"
-          placeholder="Enter your new password"
-          className="rounded-full"
+          id='new_password'
+          name='new_password'
+          type='password'
+          placeholder='Enter your new password'
+          className='rounded-full'
         />
         {state.errors?.new_password && (
-          <p className="text-red-500">{state.errors.new_password}</p>
+          <p className='text-red-500'>{state.errors.new_password}</p>
         )}
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="confirm_new_password">Confirm Password</Label>
+      <div className='space-y-2'>
+        <Label htmlFor='confirm_new_password'>Confirm Password</Label>
         <Input
-          id="confirm_new_password"
-          name="confirm_new_password"
-          type="password"
-          placeholder="Enter your confirm password"
-          className="rounded-full"
+          id='confirm_new_password'
+          name='confirm_new_password'
+          type='password'
+          placeholder='Enter your confirm password'
+          className='rounded-full'
         />
         {state.errors?.confirm_new_password && (
-          <p className="text-red-500">{state.errors.confirm_new_password}</p>
+          <p className='text-red-500'>{state.errors.confirm_new_password}</p>
         )}
         {state?.errors && '_form' in state.errors && state.errors._form && (
-          <p className="text-red-500 text-sm">{state.errors._form}</p>
+          <p className='text-red-500 text-sm'>{state.errors._form}</p>
         )}
       </div>
 
       <Button
         disabled={isPending}
-        type="submit"
-        className="w-full rounded-full"
+        type='submit'
+        className='w-full rounded-full'
       >
         {isPending ? (
           <>
