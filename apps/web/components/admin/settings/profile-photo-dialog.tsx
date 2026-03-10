@@ -144,32 +144,32 @@ export function ProfilePhotoDialog() {
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>
-        <button className="absolute bottom-1.5 right-1.5 bg-[#0066CC] text-white rounded-full p-2 hover:bg-[#0052A3] transition-colors">
+        <button className='absolute bottom-1.5 right-1.5 bg-[#0066CC] text-white rounded-full p-2 hover:bg-[#0052A3] transition-colors'>
           <IconCamera />
         </button>
       </DialogTrigger>
       <DialogContent>
-        <form onSubmit={handleSubmit} className="space-y-8">
+        <form onSubmit={handleSubmit} className='space-y-8'>
           <DialogHeader>
-            <DialogTitle className="font-poppins text-xl font-semibold">
+            <DialogTitle className='font-poppins text-xl font-semibold'>
               Change{' '}
-              <span className="text-[#0066CC] font-bold">Profile Picture!</span>
+              <span className='text-[#0066CC] font-bold'>Profile Picture!</span>
             </DialogTitle>
           </DialogHeader>
 
-          <div className="flex flex-col items-center justify-center gap-6">
-            <div className="flex flex-col items-center gap-8 w-full">
+          <div className='flex flex-col items-center justify-center gap-6'>
+            <div className='flex flex-col items-center gap-8 w-full'>
               {/* Show preview if image is selected, otherwise show current photo */}
-              <UIAvatar className="size-32">
+              <UIAvatar className='size-32'>
                 <AvatarImage
                   src={image?.preview || user?.profilePicture}
-                  className="object-cover"
+                  className='object-cover'
                 />
                 <AvatarFallback>
                   <Avatar
                     name={`${user?.name} ${user?.id}`}
-                    variant="beam"
-                    className="size-32"
+                    variant='beam'
+                    className='size-32'
                   />
                 </AvatarFallback>
               </UIAvatar>
@@ -177,32 +177,32 @@ export function ProfilePhotoDialog() {
               {/* Hidden file input */}
               <input
                 ref={fileInputRef}
-                type="file"
-                accept="image/*"
+                type='file'
+                accept='image/*'
                 onChange={handleFileChange}
-                className="hidden"
+                className='hidden'
               />
 
-              <div className="grid grid-cols-1 gap-4 w-full">
-                <div className="grid grid-cols-2 gap-4 w-full">
+              <div className='grid grid-cols-1 gap-4 w-full'>
+                <div className='grid grid-cols-2 gap-4 w-full'>
                   <Button
-                    type="button"
+                    type='button'
                     onClick={handleUploadClick}
-                    variant="outline"
-                    className="flex gap-2 items-center w-full border-[#0066CC] text-[#0066CC] 
-                hover:bg-[#0066CC]/10 hover:text-[#0066CC] text-base py-5"
+                    variant='outline'
+                    className='flex gap-2 items-center w-full border-[#0066CC] text-[#0066CC] 
+                hover:bg-[#0066CC]/10 hover:text-[#0066CC] text-base py-5'
                   >
-                    <IconUpload className="w-[1em]! h-[1em]!" />
+                    <IconUpload className='w-[1em]! h-[1em]!' />
                     Upload
                   </Button>
                   <Button
-                    type="button"
+                    type='button'
                     onClick={handleRemove}
                     disabled={
                       !user?.profilePicture || isUploading || isRemoving
                     }
-                    variant="ghost"
-                    className="flex gap-2 items-center w-full text-base py-5 hover:bg-[#FB2C36]/10 hover:text-[#FB2C36] disabled:opacity-50"
+                    variant='ghost'
+                    className='flex gap-2 items-center w-full text-base py-5 hover:bg-[#FB2C36]/10 hover:text-[#FB2C36] disabled:opacity-50'
                   >
                     {isRemoving ? (
                       <>
@@ -211,7 +211,7 @@ export function ProfilePhotoDialog() {
                       </>
                     ) : (
                       <>
-                        <IconTrash className="w-[1em]! h-[1em]!" />
+                        <IconTrash className='w-[1em]! h-[1em]!' />
                         <span>Remove</span>
                       </>
                     )}
@@ -220,18 +220,18 @@ export function ProfilePhotoDialog() {
 
                 {image && (
                   <Button
-                    type="submit"
+                    type='submit'
                     disabled={!image || isUploading || isRemoving}
-                    className="flex gap-2 items-center w-full text-base py-5 disabled:opacity-50"
+                    className='flex gap-2 items-center w-full text-base py-5 disabled:opacity-50'
                   >
                     {isUploading ? (
                       <>
                         <span>Applying...</span>
-                        <Spinner className="size-4" />
+                        <Spinner className='size-4' />
                       </>
                     ) : (
                       <>
-                        <IconCheck className="w-[1em]! h-[1em]!" />
+                        <IconCheck className='w-[1em]! h-[1em]!' />
                         <span>Apply Changes</span>
                       </>
                     )}
@@ -240,13 +240,13 @@ export function ProfilePhotoDialog() {
               </div>
 
               {/* Error display */}
-              {error && <p className="text-red-500 text-sm">{error}</p>}
+              {error && <p className='text-red-500 text-sm'>{error}</p>}
             </div>
 
             <Separator />
 
             <DialogClose asChild>
-              <Button variant="outline" className="w-full text-base py-5">
+              <Button variant='outline' className='w-full text-base py-5'>
                 Cancel
               </Button>
             </DialogClose>

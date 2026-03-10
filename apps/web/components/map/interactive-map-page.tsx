@@ -20,7 +20,9 @@ import ProfileOverlay from '@/components/map/profile-overlay';
 import ReportedLocationOverlay from './reported-location-overlay';
 import AffectedLocationsOverlay from './affected-locations-overlay';
 import SafetyLocationsOverlay from './safety-locations-overlay';
-
+import WeatherAccordion from './weather-accordion';
+import WeatherDrawer from './weather-drawer';
+import WeatherOverlay from './weather-overlay';
 export type SelectedLocation = {
   longitude: number;
   latitude: number;
@@ -48,24 +50,28 @@ export default function InteractiveMapPage() {
         <div className='absolute top-0 left-0 right-0 flex items-start gap-4 pointer-events-none h-full'>
           {/* Search bar + affected panel share the left flex slot */}
           <div className='pointer-events-none flex-1 min-w-0 flex items-start h-full'>
-            {activeOverlay?.type === 'report' && (
-              <ReportedLocationOverlay
-                reportId={activeOverlay.reportId}
-                onClose={close}
-              />
-            )}
+            <div className='md:relative md:max-w-md w-full h-full'>
+              <div className='md:absolute flex-1 w-full sm:flex-none pt-4 ps-4 md:px-4 z-20'>
+                <SearchBar onSelectLocation={setSelectedLocation} />
+              </div>
 
-            {activeOverlay?.type === 'affected' && (
-              <AffectedLocationsOverlay onClose={() => close()} />
-            )}
+              {activeOverlay?.type === 'report' && (
+                <ReportedLocationOverlay
+                  reportId={activeOverlay.reportId}
+                  onClose={close}
+                />
+              )}
 
-            {activeOverlay?.type === 'safety' && (
-              <SafetyLocationsOverlay onClose={() => close()} />
-            )}
+              {activeOverlay?.type === 'affected' && (
+                <AffectedLocationsOverlay onClose={() => close()} />
+              )}
 
-            <div className='flex-1 w-lg sm:flex-none max-w-sm ps-4 pt-4'>
-              <SearchBar onSelectLocation={setSelectedLocation} />
+              {activeOverlay?.type === 'safety' && (
+                <SafetyLocationsOverlay onClose={() => close()} />
+              )}
             </div>
+
+            <WeatherOverlay />
           </div>
 
           {/* Map controls — fixed to right */}
@@ -131,10 +137,6 @@ export default function InteractiveMapPage() {
             </div>
           )}
         </div>
-
-        <Suspense fallback={null}>
-          <GoogleLinkToastHandler />
-        </Suspense>
       </div>
     </MapProvider>
   );

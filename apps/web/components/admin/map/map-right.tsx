@@ -4,21 +4,21 @@ import SafetyLocationsTab from '@/components/admin/map/safety-locations-tab';
 
 export default function MapRight() {
   return (
-    <div className="flex-1 min-h-0 rounded-2xl overflow-hidden">
+    <div className='flex-1 min-h-0 rounded-2xl overflow-hidden'>
       <Tabs
-        defaultValue="affected"
-        className="flex-1 flex flex-col h-full min-h-0"
+        defaultValue='affected'
+        className='flex-1 flex flex-col h-full min-h-0'
       >
-        <TabsList className="w-full bg-[#EFF6FF] py-7 px-1.5 space-x-1.5">
+        <TabsList className='w-full bg-[#EFF6FF] py-7 px-1.5 space-x-1.5'>
           <TabsTrigger
-            value="affected"
-            className="font-poppins data-[state=active]:bg-[#0066CC] data-[state=active]:text-white hover:bg-[#DBEAFE] py-5"
+            value='affected'
+            className='font-poppins data-[state=active]:bg-[#0066CC] data-[state=active]:text-white hover:bg-[#DBEAFE] py-5'
           >
             AFFECTED LOCATIONS
           </TabsTrigger>
           <TabsTrigger
-            value="safe"
-            className="font-poppins data-[state=active]:bg-[#0066CC] data-[state=active]:text-white hover:bg-[#DBEAFE] py-5"
+            value='safe'
+            className='font-poppins data-[state=active]:bg-[#0066CC] data-[state=active]:text-white hover:bg-[#DBEAFE] py-5'
           >
             SAFETY LOCATIONS
           </TabsTrigger>
@@ -26,16 +26,16 @@ export default function MapRight() {
 
         {/* Affected Location */}
         <TabsContent
-          value="affected"
-          className="flex-1 flex flex-col space-y-2 min-h-0"
+          value='affected'
+          className='flex-1 flex flex-col space-y-2 min-h-0'
         >
           <AffectedLocationsTab />
         </TabsContent>
 
         {/* Safe Zone */}
         <TabsContent
-          value="safe"
-          className="flex-1 flex flex-col space-y-2 min-h-0"
+          value='safe'
+          className='flex-1 flex flex-col space-y-2 min-h-0'
         >
           <SafetyLocationsTab />
         </TabsContent>

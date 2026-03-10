@@ -130,20 +130,20 @@ export default function SafetyGuidesSection() {
   const current = tabs.find((t) => t.key === activeTab)!;
 
   return (
-    <section className="bg-white py-20" id="safety-guides">
-      <div className="max-w-7xl mx-auto px-4 flex flex-col gap-10">
-        <div className="space-y-3 max-w-3xl mx-auto">
-          <h1 className=" text-4xl md:text-5xl font-bold text-center">
-            Safety <span className="text-[#2F327D]">Guides</span>
+    <section className='bg-white py-20' id='safety-guides'>
+      <div className='max-w-7xl mx-auto px-4 flex flex-col gap-10'>
+        <div className='space-y-3 max-w-3xl mx-auto'>
+          <h1 className=' text-4xl md:text-5xl font-bold text-center'>
+            Safety <span className='text-[#2F327D]'>Guides</span>
           </h1>
-          <p className="text-lg text-gray-500 text-center leading-relaxed">
+          <p className='text-lg text-gray-500 text-center leading-relaxed'>
             Educational resources are essential in helping people prepare for
             and respond to floods effectively. They provide important knowledge
             that can save lives.
           </p>
         </div>
 
-        <div className="grid grid-cols-2 sm:flex sm:flex-wrap justify-center gap-3 max-w-xs sm:max-w-none mx-auto">
+        <div className='grid grid-cols-2 sm:flex sm:flex-wrap justify-center gap-3 max-w-xs sm:max-w-none mx-auto'>
           {tabs.map((tab, i) => (
             <button
               key={tab.key}
@@ -157,27 +157,27 @@ export default function SafetyGuidesSection() {
                   : 'border-gray-200 text-gray-500 bg-white hover:border-[#0066CC]/40 hover:text-[#0066CC]',
               )}
             >
-              <tab.icon className="w-[1.5em]! h-[1.5em]!" />
+              <tab.icon className='w-[1.5em]! h-[1.5em]!' />
               <span>{tab.label.toUpperCase()}</span>
             </button>
           ))}
         </div>
 
         {/* Content Layout */}
-        <div className="flex flex-col gap-8">
+        <div className='flex flex-col gap-8'>
           {/* Hero Image */}
-          <div className="relative w-full h-64 md:h-96 rounded-2xl overflow-hidden shadow-xl">
+          <div className='relative w-full h-64 md:h-96 rounded-2xl overflow-hidden shadow-xl'>
             <Image
               src={current.src}
               alt={current.alt}
               fill
-              className="object-cover"
-              sizes="100vw"
+              className='object-cover'
+              sizes='100vw'
             />
             {/* Overlay Tag */}
-            <div className="absolute bottom-3 left-3 md:bottom-6 md:left-6">
-              <div className="bg-white/90 backdrop-blur-sm px-3 py-1.5 md:px-6 md:py-2 rounded-full shadow-lg border border-white/50">
-                <span className="font-poppins font-bold text-[#0066CC] text-sm md:text-lg">
+            <div className='absolute bottom-3 left-3 md:bottom-6 md:left-6'>
+              <div className='bg-white/90 backdrop-blur-sm px-3 py-1.5 md:px-6 md:py-2 rounded-full shadow-lg border border-white/50'>
+                <span className='font-poppins font-bold text-[#0066CC] text-sm md:text-lg'>
                   {current.heading.toUpperCase()}
                 </span>
               </div>
@@ -185,7 +185,7 @@ export default function SafetyGuidesSection() {
           </div>
 
           {/* Grid of Info Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[320px]">
+          <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[320px]'>
             {current.cards.map((card, i) => (
               <SafetyGuideInfoCard
                 key={i}

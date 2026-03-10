@@ -148,12 +148,12 @@ export default function VerifyOtpForm() {
   }
 
   return (
-    <form ref={formRef} onSubmit={handleVerify} className="space-y-6">
-      <div className="flex flex-col items-center gap-y-4">
+    <form ref={formRef} onSubmit={handleVerify} className='space-y-6'>
+      <div className='flex flex-col items-center gap-y-4'>
         <InputOTP
           maxLength={6}
-          id="otp"
-          name="otp"
+          id='otp'
+          name='otp'
           value={otp}
           onChange={setOtp}
           onComplete={() => {
@@ -163,26 +163,26 @@ export default function VerifyOtpForm() {
           }}
           disabled={isVerifying || isResending}
         >
-          <InputOTPGroup className="grid grid-cols-6 gap-2">
+          <InputOTPGroup className='grid grid-cols-6 gap-2'>
             {Array.from({ length: 6 }).map((_, i) => (
               <InputOTPSlot
                 key={i}
                 index={i}
-                className="w-12 h-12 text-xl rounded-md border"
+                className='w-12 h-12 text-xl rounded-md border'
               />
             ))}
           </InputOTPGroup>
         </InputOTP>
 
         {state?.errors && 'otp' in state.errors && state.errors.otp && (
-          <p className="text-red-500 text-sm">{state.errors.otp}</p>
+          <p className='text-red-500 text-sm'>{state.errors.otp}</p>
         )}
       </div>
 
-      <div className="flex flex-col gap-y-4">
+      <div className='flex flex-col gap-y-4'>
         <Button
           disabled={isVerifying || isResending}
-          className="w-full rounded-full"
+          className='w-full rounded-full'
         >
           {isVerifying ? (
             <>
@@ -194,11 +194,11 @@ export default function VerifyOtpForm() {
         </Button>
 
         <Button
-          type="button"
+          type='button'
           onClick={handleResend}
           disabled={isVerifying || isResending || cooldown > 0}
-          variant="secondary"
-          className="w-full rounded-full"
+          variant='secondary'
+          className='w-full rounded-full'
         >
           {isResending ? (
             <>

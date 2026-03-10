@@ -8,8 +8,8 @@ function Spinner({
 }: React.ComponentProps<typeof IconLoader3>) {
   return (
     <IconLoader3
-      role="status"
-      aria-label="Loading"
+      role='status'
+      aria-label='Loading'
       className={cn('size-4 animate-spin', className)}
       {...props}
     />

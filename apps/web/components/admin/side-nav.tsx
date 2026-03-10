@@ -26,51 +26,51 @@ export default function SideNav() {
   const { user, isLoading } = useUser();
 
   return (
-    <div className="p-4 h-screen">
-      <Sidebar collapsible="none" className="flex rounded-2xl bg-white">
-        <SidebarHeader className="w-full py-6 flex items-center">
-          <Link href="/" className="flex items-center gap-x-2">
+    <div className='p-4 h-screen'>
+      <Sidebar collapsible='none' className='flex rounded-2xl bg-white'>
+        <SidebarHeader className='w-full py-6 flex items-center'>
+          <Link href='/' className='flex items-center gap-x-2'>
             <Image
-              src="/logo.svg"
-              alt="FloodWatch Logo"
+              src='/logo.svg'
+              alt='FloodWatch Logo'
               width={32}
               height={32}
             />
-            <h1 className="text-[#0066CC] font-bold text-xl">FloodWatch</h1>
+            <h1 className='text-[#0066CC] font-bold text-xl'>FloodWatch</h1>
           </Link>
         </SidebarHeader>
 
-        <SidebarContent className="w-full flex-1 min-h-0">
+        <SidebarContent className='w-full flex-1 min-h-0'>
           {/* profile */}
           <SidebarGroup>
-            <SidebarGroupContent className="flex flex-col items-center justify-center py-4">
-              <div className="py-2">
+            <SidebarGroupContent className='flex flex-col items-center justify-center py-4'>
+              <div className='py-2'>
                 {isLoading ? (
-                  <Skeleton className="size-24 rounded-full" />
+                  <Skeleton className='size-24 rounded-full' />
                 ) : (
-                  <UIAvatar className="size-24 border">
+                  <UIAvatar className='size-24 border'>
                     <AvatarImage src={user?.profilePicture} />
                     <AvatarFallback>
                       <Avatar
                         name={`${user?.name} ${user?.id}`}
-                        variant="beam"
-                        className="size-24"
+                        variant='beam'
+                        className='size-24'
                       />
                     </AvatarFallback>
                   </UIAvatar>
                 )}
               </div>
 
-              <div className="flex flex-col text-center">
+              <div className='flex flex-col text-center'>
                 {isLoading ? (
                   <>
-                    <Skeleton className="h-7 w-32" />
-                    <Skeleton className="h-5 w-24 mx-auto" />
+                    <Skeleton className='h-7 w-32' />
+                    <Skeleton className='h-5 w-24 mx-auto' />
                   </>
                 ) : (
                   <>
-                    <span className="text-lg font-bold">{user?.name}</span>
-                    <span className="text-muted-foreground">
+                    <span className='text-lg font-bold'>{user?.name}</span>
+                    <span className='text-muted-foreground'>
                       {user?.role.toUpperCase()}
                     </span>
                   </>
@@ -79,15 +79,15 @@ export default function SideNav() {
             </SidebarGroupContent>
           </SidebarGroup>
           {/* Nav items - scrollable */}
-          <ScrollArea className="flex-1 min-h-0 h-0">
+          <ScrollArea className='flex-1 min-h-0 h-0'>
             <SidebarGroup>
-              <SidebarGroupContent className="space-y-2">
+              <SidebarGroupContent className='space-y-2'>
                 <NavItems />
               </SidebarGroupContent>
             </SidebarGroup>
           </ScrollArea>
         </SidebarContent>
-        <SidebarFooter className="border-t py-4 w-full">
+        <SidebarFooter className='border-t py-4 w-full'>
           <SidebarGroup>
             <SidebarGroupContent>
               <LogoutButton />

@@ -112,7 +112,7 @@ export class CommentsService {
 
       const uploaded = await this.cloudinaryService.uploadImage(
         normalizedFile,
-        'reports',
+        'comments',
       );
 
       imageUrl = uploaded.secure_url as string;
@@ -187,7 +187,7 @@ export class CommentsService {
 
       const uploaded = await this.cloudinaryService.uploadImage(
         normalizedFile,
-        'reports',
+        'comments',
       );
 
       imageUrl = uploaded.secure_url as string;

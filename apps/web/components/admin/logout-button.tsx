@@ -27,11 +27,11 @@ export default function LogoutButton() {
     <SidebarMenuItem>
       <SidebarMenuButton
         asChild
-        className="text-base cursor-pointer"
+        className='text-base cursor-pointer'
         disabled={isPending}
         onClick={handleLogout}
       >
-        <div className="flex items-center gap-4 py-6 pl-4 border-l-4 border-transparent text-base font-poppins">
+        <div className='flex items-center gap-4 py-6 pl-4 border-l-4 border-transparent text-base font-poppins'>
           {isPending ? (
             <>
               <Spinner />
@@ -39,7 +39,7 @@ export default function LogoutButton() {
             </>
           ) : (
             <>
-              <IconLogout className="w-[1.5em]! h-[1.5em]!" aria-hidden />
+              <IconLogout className='w-[1.5em]! h-[1.5em]!' aria-hidden />
               <span>SIGN OUT</span>
             </>
           )}

@@ -22,14 +22,14 @@ export default function SendOtpButton({ onSent }: { onSent: () => void }) {
 
   return (
     <Button
-      className="flex items-center gap-2"
+      className='flex items-center gap-2'
       onClick={handleClick}
       disabled={isLoading}
     >
       {isLoading ? (
         <>
           Sending...
-          <Spinner className="w-5 h-5 ml-2" />
+          <Spinner className='w-5 h-5 ml-2' />
         </>
       ) : (
         'Send OTP to Email'

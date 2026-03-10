@@ -18,25 +18,25 @@ export default function UserStatCards({
   onStatusChange,
 }: UserStatCardsProps) {
   return (
-    <div className="grid grid-cols-3 gap-8">
+    <div className='grid grid-cols-3 gap-8'>
       <UserStatCard
-        label="Total Users"
+        label='Total Users'
         count={totalCount}
-        status="total"
+        status='total'
         isActive={activeStatus === 'total'}
         onClick={() => onStatusChange('total')}
       />
       <UserStatCard
-        label="Active Users"
+        label='Active Users'
         count={activeCount}
-        status="active"
+        status='active'
         isActive={activeStatus === 'active'}
         onClick={() => onStatusChange('active')}
       />
       <UserStatCard
-        label="Blocked Users"
+        label='Blocked Users'
         count={blockedCount}
-        status="blocked"
+        status='blocked'
         isActive={activeStatus === 'blocked'}
         onClick={() => onStatusChange('blocked')}
       />
