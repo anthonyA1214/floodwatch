@@ -88,9 +88,9 @@ export default function ReportedLocationDrawer({
     <Drawer.Root
       modal={false}
       dismissible={true}
-      handleOnly={true}
       snapPoints={snapPoints}
       activeSnapPoint={snap}
+      handleOnly={true}
       setActiveSnapPoint={(newSnap) => {
         if (newSnap === snapPoints[0]) {
           handleOpenChange(false);
@@ -111,7 +111,7 @@ export default function ReportedLocationDrawer({
         data-testid='content'
         className='z-1 absolute flex flex-col bg-white border border-gray-200 border-b-none rounded-t-[10px] bottom-0 left-0 right-0 h-full max-h-full -mx-px'
       >
-        <Drawer.Handle className='w-16! my-3! rounded-full!' />
+        <Drawer.Handle className='w-16! my-3! rounded-full! shrink-0!' />
 
         {isLoading || isMyVoteLoading || !reportDetail ? (
           <ReportedLocationDrawerSkeleton />
@@ -119,13 +119,10 @@ export default function ReportedLocationDrawer({
           <div
             ref={scrollRef}
             id='report-drawer-scroll'
-            className={clsx(
-              'flex flex-col max-w-lg mx-auto w-full pt-5 gap-2',
-              {
-                'overflow-y-auto': snap === 1,
-                'overflow-hidden': snap !== 1,
-              },
-            )}
+            className={clsx('flex flex-col max-w-lg mx-auto w-full gap-2', {
+              'overflow-y-auto': snap === 1,
+              'overflow-hidden': snap !== 1,
+            })}
           >
             {/* report details */}
             <div
@@ -142,7 +139,7 @@ export default function ReportedLocationDrawer({
               <Separator />
 
               {/* badge and distance to now */}
-              <div className='flex flex-row justify-between gap-4'>
+              <div className='flex flex-row justify-between gap-3'>
                 {/* reported at */}
                 <div className='flex items-center text-xs lg:text-sm gap-1.5 lg:gap-2 tabular-nums opacity-50'>
                   <IconClock className='w-[1.5em]! h-[1.5em]!' />
@@ -344,7 +341,7 @@ export default function ReportedLocationDrawer({
             </div>
 
             {/*  */}
-            <div className='flex gap-4 text-xs items-center px-2 lg:px-0'>
+            <div className='flex gap-3 text-xs items-center px-2 lg:px-0'>
               <div className='h-px flex-1 bg-gray-200' />
               <span className='font-poppins font-bold opacity-50'>
                 COMMUNITY UPDATES
@@ -353,7 +350,7 @@ export default function ReportedLocationDrawer({
             </div>
 
             {/* comments */}
-            <div className='flex flex-col gap-4 p-3 lg:p-4'>
+            <div className='flex flex-col gap-3 p-3 lg:p-4'>
               <PostComposer reportId={reportId} />
 
               <CommentsList

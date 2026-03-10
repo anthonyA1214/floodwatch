@@ -292,7 +292,9 @@ export const WMO_WEATHER_ICON_MAP: Record<number, WeatherInfo> = {
   },
 };
 
-export function getWeatherInfo(wmoCode: number, isDay: boolean) {
+export function getWeatherInfo(wmoCode: number | null, isDay: boolean) {
+  if (wmoCode === null)
+    return { icon: 'not-available', description: 'Unknown' };
   const weatherInfo = WMO_WEATHER_ICON_MAP[wmoCode];
   if (!weatherInfo) return { icon: 'not-available', description: 'Unknown' };
   return isDay ? weatherInfo.day : weatherInfo.night;

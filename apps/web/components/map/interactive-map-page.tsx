@@ -22,6 +22,7 @@ import AffectedLocationsOverlay from './affected-locations-overlay';
 import SafetyLocationsOverlay from './safety-locations-overlay';
 import WeatherAccordion from './weather-accordion';
 import WeatherDrawer from './weather-drawer';
+import WeatherOverlay from './weather-overlay';
 export type SelectedLocation = {
   longitude: number;
   latitude: number;
@@ -69,6 +70,8 @@ export default function InteractiveMapPage() {
                 <SafetyLocationsOverlay onClose={() => close()} />
               )}
             </div>
+
+            <WeatherOverlay />
           </div>
 
           {/* Map controls — fixed to right */}
@@ -134,19 +137,6 @@ export default function InteractiveMapPage() {
             </div>
           )}
         </div>
-
-        <div className='absolute bottom-4 left-4 max-w-xs w-full hidden md:block'>
-          <WeatherAccordion />
-        </div>
-
-        <div className='md:hidden block'>
-          {/* For mobile, show weather in a bottom drawer */}
-          <WeatherDrawer />
-        </div>
-
-        {/* <Suspense fallback={null}>
-          <GoogleLinkToastHandler />
-        </Suspense> */}
       </div>
     </MapProvider>
   );

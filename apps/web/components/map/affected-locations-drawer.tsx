@@ -68,7 +68,7 @@ export default function AffectedLocationsDrawer({
           <div className='flex flex-col gap-4 flex-1 min-h-0'>
             {/* Header */}
 
-            <div className='flex items-center gap-2 font-semibold text-lg px-4'>
+            <div className='flex items-center gap-2 font-semibold text-lg px-3'>
               <IconAlertTriangle className='w-[1.5em]! h-[1.5em]! text-[#FB2C36]' />
               <span>Affected Locations</span>
             </div>
@@ -76,7 +76,7 @@ export default function AffectedLocationsDrawer({
             <Separator />
 
             {/* Filter using Select */}
-            <div className='px-4'>
+            <div className='px-3'>
               <Select defaultValue='all-levels'>
                 <SelectTrigger className='w-full text-sm text-gray-600 py-3 justify-between'>
                   <SelectValue placeholder='All Levels' />
@@ -93,7 +93,7 @@ export default function AffectedLocationsDrawer({
             </div>
 
             {/* Content */}
-            <div className='flex flex-col gap-4 overflow-y-auto flex-1 min-h-0 px-4 pb-4'>
+            <div className='flex flex-col gap-4 overflow-y-auto flex-1 min-h-0 px-3 pb-3'>
               <AffectedLocationsCard
                 severity='critical'
                 location='Barangay 176'

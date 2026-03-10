@@ -7,69 +7,34 @@ import {
   AccordionTrigger,
 } from '@/components/ui/accordion';
 import { useWeather } from '@/hooks/use-weather';
-import { getUserLocation } from '@/lib/utils/get-user-location';
 import { getWeatherInfo } from '@/lib/utils/get-weather-icon';
 import { IconDroplet, IconWind } from '@tabler/icons-react';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
 import { format, isToday } from 'date-fns';
 import { Separator } from '../ui/separator';
-import { toast } from 'sonner';
 import { Skeleton } from '../ui/skeleton';
+import { useWeatherData } from '@/hooks/use-weather-data';
 
-export default function WeatherAccordion() {
-  const [location, setLocation] = useState<{
-    latitude: number;
-    longitude: number;
-  } | null>(null);
-
-  useEffect(() => {
-    const fetchLocation = async () => {
-      try {
-        const pos = await getUserLocation();
-        setLocation(pos);
-      } catch {
-        toast.error(
-          'Unable to retrieve your location. Please allow location access and refresh the page to see weather information.',
-        );
-      }
-    };
-
-    fetchLocation();
-  }, []);
-
+export default function WeatherAccordion({
+  latitude,
+  longitude,
+}: {
+  latitude: number | null;
+  longitude: number | null;
+}) {
   const { weather, isLoading } = useWeather(
-    location?.latitude ?? null,
-    location?.longitude ?? null,
+    latitude ?? null,
+    longitude ?? null,
   );
 
-  // current units
-  const temperatureUnit = weather?.current_units?.temperature_2m;
-  const humidityUnit = weather?.current_units?.relative_humidity_2m;
-  const windSpeedUnit = weather?.current_units?.wind_speed_10m;
+  const { current, units, daily } = useWeatherData(weather);
+  const { icon, description } = getWeatherInfo(
+    current?.wmoCode ?? null,
+    current?.isDay,
+  );
 
-  // current weather code and day/night info from the API
-  const wmoCode = weather?.current?.weather_code;
-  const isDay = weather?.current?.is_day === 1;
-  const temperature = weather?.current?.temperature_2m;
-  const relativeHumidity = weather?.current?.relative_humidity_2m;
-  const windSpeed = weather?.current?.wind_speed_10m;
-
-  // daily weather data for the 7-day forecast
-  const dailyTimes = weather?.daily?.time ?? [];
-  const dailyWmoCodes = weather?.daily?.weather_code;
-  const dailyMaxTemps = weather?.daily?.temperature_2m_max ?? [];
-  const dailyMinTemps = weather?.daily?.temperature_2m_min ?? [];
-  const dailyPrecipitation =
-    weather?.daily?.precipitation_probability_max ?? [];
-
-  const maxTempUnit = weather?.daily_units?.temperature_2m_max;
-  const minTempUnit = weather?.daily_units?.temperature_2m_min;
-  const precipUnit = weather?.daily_units?.precipitation_probability_max;
-
-  const { icon, description } = getWeatherInfo(wmoCode, isDay);
-
-  if (!location || isLoading)
+  if (!latitude && !longitude) return null;
+  if (isLoading || !weather) {
     return (
       <div className='bg-white/80 pointer-events-auto rounded-2xl shadow-lg border px-4 py-3'>
         <div className='flex items-center justify-between w-full'>
@@ -87,8 +52,7 @@ export default function WeatherAccordion() {
         </div>
       </div>
     );
-
-  if (!weather) return null;
+  }
 
   return (
     <div className='bg-white/80 pointer-events-auto overflow-hidden rounded-2xl shadow-lg border'>
@@ -106,8 +70,8 @@ export default function WeatherAccordion() {
                 />
                 <div className='flex flex-col'>
                   <span className='font-poppins font-semibold text-sm'>
-                    {temperature}
-                    {temperatureUnit}
+                    {current?.temperature}
+                    {units?.temperature}
                   </span>
                   <span className='text-xs opacity-50'>{description}</span>
                 </div>
@@ -117,16 +81,16 @@ export default function WeatherAccordion() {
                 <div className='flex items-center gap-1 text-blue-400'>
                   <IconDroplet className='w-[1.5em]! h-[1.5em]!' />
                   <span>
-                    {relativeHumidity}
-                    {humidityUnit}
+                    {current?.relativeHumidity}
+                    {units?.humidity}
                   </span>
                 </div>
 
                 <div className='flex items-center gap-1 text-slate-400'>
                   <IconWind className='w-[1.5em]! h-[1.5em]!' />
                   <span>
-                    {windSpeed}
-                    {windSpeedUnit}
+                    {current?.windSpeed}
+                    {units?.windSpeed}
                   </span>
                 </div>
               </div>
@@ -139,12 +103,12 @@ export default function WeatherAccordion() {
 
             <Separator />
 
-            {dailyTimes.map((time: string, i: number) => {
+            {daily?.times.map((time: string, i: number) => {
               const date = new Date(time);
               const dayName = isToday(date) ? 'Today' : format(date, 'EEE');
               const dateLabel = format(date, 'MMM d');
               const { icon: dailyIcon, description: dailyDescription } =
-                getWeatherInfo(dailyWmoCodes?.[i], true);
+                getWeatherInfo(daily?.wmoCodes?.[i] ?? null, true);
 
               return (
                 <div
@@ -174,23 +138,23 @@ export default function WeatherAccordion() {
                     <div className='flex items-center gap-1 text-xs text-blue-400'>
                       <IconDroplet className='w-[1.5em]! h-[1.5em]!' />
                       <span>
-                        {dailyPrecipitation[i]}
-                        {precipUnit}
+                        {daily?.precipitationProbabilities[i]}
+                        {units?.precipitation}
                       </span>
                     </div>
                   </div>
 
-                  <div className='flex-1 flex items-center gap-2 justify-start'>
+                  <div className='flex-1 flex items-center gap-2 justify-start text-sm'>
                     <span className='font-poppins font-medium text-orange-400'>
-                      {dailyMaxTemps[i]}
-                      {maxTempUnit}
+                      {daily?.maxTemps[i]}
+                      {units?.temperature}
                     </span>
 
                     <span className='opacity-50'>/</span>
 
                     <span className='opacity-50'>
-                      {dailyMinTemps[i]}
-                      {minTempUnit}
+                      {daily?.minTemps[i]}
+                      {units?.temperature}
                     </span>
                   </div>
                 </div>
