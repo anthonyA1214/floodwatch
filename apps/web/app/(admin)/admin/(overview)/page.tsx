@@ -3,7 +3,6 @@
 import ActiveFloodAlertsCard from '@/components/admin/dashboard/active-flood-alerts-card';
 import SafetyLocationsCard from '@/components/admin/dashboard/safety-locations-card';
 import StatCard from '@/components/admin/dashboard/stat-card';
-import WeatherCard from '@/components/map/weather-card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useUser } from '@/hooks/use-user';
@@ -31,7 +30,6 @@ export default function DashboardPage() {
           </h1>
           <p>Here&apos;s what is happening with FloodWatch today</p>
         </div>
-        <WeatherCard />
       </div>
 
       <ScrollArea className='flex-1 h-0'>

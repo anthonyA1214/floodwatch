@@ -19,7 +19,6 @@ export const commentReportReasonEnum = pgEnum('comment_report_reason', [
 
 export const commentReportStatusEnum = pgEnum('comment_report_status', [
   'pending',
-  'reviewed',
   'resolved',
   'dismissed',
 ]);

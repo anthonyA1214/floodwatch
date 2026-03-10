@@ -18,7 +18,7 @@ export default function AffectedLocationsOverlay({
   }
 
   return (
-    <div className='flex flex-col h-full w-full max-w-lg'>
+    <div className='flex flex-col h-full w-full'>
       <AffectedLocationsPanel onClose={onClose} />
     </div>
   );
