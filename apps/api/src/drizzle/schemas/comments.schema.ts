@@ -1,4 +1,11 @@
-import { pgTable, serial, integer, text, timestamp } from 'drizzle-orm/pg-core';
+import {
+  pgTable,
+  serial,
+  integer,
+  text,
+  timestamp,
+  boolean,
+} from 'drizzle-orm/pg-core';
 import { users } from './users.schema';
 import { reports } from './reports.schema';
 
@@ -13,8 +20,7 @@ export const comments = pgTable('comments', {
   content: text('content'),
   image: text('image'),
   imagePublicId: text('image_public_id'),
-  upvotes: integer('upvotes').notNull().default(0),
-  downvotes: integer('downvotes').notNull().default(0),
+  isAdmin: boolean('is_admin').notNull().default(false),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });

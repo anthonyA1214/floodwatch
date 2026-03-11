@@ -44,6 +44,6 @@ export class CommentsController {
   @HttpCode(HttpStatus.NO_CONTENT)
   @UseGuards(JwtAuthGuard, UserStatusGuard)
   async deleteComment(@Param('id') id: number, @Request() req: AuthRequest) {
-    return await this.commentsService.deleteComment(id, req.user.id);
+    return await this.commentsService.deleteComment(id, req.user);
   }
 }

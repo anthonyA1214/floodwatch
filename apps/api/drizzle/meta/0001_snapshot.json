@@ -1,6 +1,6 @@
 {
-  "id": "15503642-21a5-4264-88d3-9d15f71f3c23",
-  "prevId": "f1018cf5-9037-4e6c-9342-fcd5cef1bc4b",
+  "id": "b0205593-83bc-4d10-90bc-96d360ddd82c",
+  "prevId": "28795191-a8c6-4647-8358-6df4fce72d4c",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -85,8 +85,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.comment_votes": {
-      "name": "comment_votes",
+    "public.comment_reports": {
+      "name": "comment_reports",
       "schema": "",
       "columns": {
         "id": {
@@ -107,12 +107,11 @@
           "primaryKey": false,
           "notNull": false
         },
-        "vote_type": {
-          "name": "vote_type",
-          "type": "vote_type",
-          "typeSchema": "public",
+        "reason": {
+          "name": "reason",
+          "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -124,9 +123,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "comment_votes_user_id_users_id_fk": {
-          "name": "comment_votes_user_id_users_id_fk",
-          "tableFrom": "comment_votes",
+        "comment_reports_user_id_users_id_fk": {
+          "name": "comment_reports_user_id_users_id_fk",
+          "tableFrom": "comment_reports",
           "tableTo": "users",
           "columnsFrom": [
             "user_id"
@@ -137,9 +136,9 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "comment_votes_comment_id_comments_id_fk": {
-          "name": "comment_votes_comment_id_comments_id_fk",
-          "tableFrom": "comment_votes",
+        "comment_reports_comment_id_comments_id_fk": {
+          "name": "comment_reports_comment_id_comments_id_fk",
+          "tableFrom": "comment_reports",
           "tableTo": "comments",
           "columnsFrom": [
             "comment_id"
@@ -153,8 +152,8 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "comment_votes_user_id_comment_id_unique": {
-          "name": "comment_votes_user_id_comment_id_unique",
+        "comment_reports_user_id_comment_id_unique": {
+          "name": "comment_reports_user_id_comment_id_unique",
           "nullsNotDistinct": false,
           "columns": [
             "user_id",
@@ -206,19 +205,19 @@
           "primaryKey": false,
           "notNull": false
         },
-        "upvotes": {
-          "name": "upvotes",
+        "reports_count": {
+          "name": "reports_count",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "default": 0
         },
-        "downvotes": {
-          "name": "downvotes",
-          "type": "integer",
+        "is_admin": {
+          "name": "is_admin",
+          "type": "boolean",
           "primaryKey": false,
           "notNull": true,
-          "default": 0
+          "default": false
         },
         "created_at": {
           "name": "created_at",
@@ -541,8 +540,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.report_votes": {
-      "name": "report_votes",
+    "public.report_confirmations": {
+      "name": "report_confirmations",
       "schema": "",
       "columns": {
         "id": {
@@ -563,8 +562,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "vote_type": {
-          "name": "vote_type",
+        "action": {
+          "name": "action",
           "type": "vote_type",
           "typeSchema": "public",
           "primaryKey": false,
@@ -580,9 +579,9 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "report_votes_user_id_users_id_fk": {
-          "name": "report_votes_user_id_users_id_fk",
-          "tableFrom": "report_votes",
+        "report_confirmations_user_id_users_id_fk": {
+          "name": "report_confirmations_user_id_users_id_fk",
+          "tableFrom": "report_confirmations",
           "tableTo": "users",
           "columnsFrom": [
             "user_id"
@@ -593,9 +592,9 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "report_votes_report_id_reports_id_fk": {
-          "name": "report_votes_report_id_reports_id_fk",
-          "tableFrom": "report_votes",
+        "report_confirmations_report_id_reports_id_fk": {
+          "name": "report_confirmations_report_id_reports_id_fk",
+          "tableFrom": "report_confirmations",
           "tableTo": "reports",
           "columnsFrom": [
             "report_id"
@@ -609,8 +608,8 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "report_votes_user_id_report_id_unique": {
-          "name": "report_votes_user_id_report_id_unique",
+        "report_confirmations_user_id_report_id_unique": {
+          "name": "report_confirmations_user_id_report_id_unique",
           "nullsNotDistinct": false,
           "columns": [
             "user_id",
@@ -702,19 +701,26 @@
           "notNull": true,
           "default": "'unverified'"
         },
-        "upvotes": {
-          "name": "upvotes",
+        "confirms": {
+          "name": "confirms",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "default": 0
         },
-        "downvotes": {
-          "name": "downvotes",
+        "denies": {
+          "name": "denies",
           "type": "integer",
           "primaryKey": false,
           "notNull": true,
           "default": 0
+        },
+        "is_admin": {
+          "name": "is_admin",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
         },
         "created_at": {
           "name": "created_at",
@@ -942,8 +948,8 @@
       "name": "vote_type",
       "schema": "public",
       "values": [
-        "up",
-        "down"
+        "confirm",
+        "deny"
       ]
     },
     "public.report_status": {

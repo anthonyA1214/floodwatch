@@ -7,7 +7,10 @@ export const createCommentSchema = z.object({
 
 export const updateCommentSchema = z.object({
   content: z.string().trim().optional(),
-  removeImage: z.boolean().optional(),
+  removeImage: z
+    .literal('true')
+    .transform(() => true)
+    .optional(),
 });
 
 export const commentQuerySchema = z.object({
@@ -16,15 +19,14 @@ export const commentQuerySchema = z.object({
 });
 
 const CommentSchema = z.object({
-  id: z.string(),
+  id: z.number(),
   content: z.string(),
   image: z.string().nullable(),
-  upvotes: z.number().int(),
-  downvotes: z.number().int(),
+  reportCount: z.number(),
   createdAt: z.date(),
   author: z
     .object({
-      id: z.string(),
+      id: z.number(),
       name: z.string(),
       profilePicture: z.string().nullable(),
     })

@@ -37,7 +37,10 @@ export const reportDetailSchema = z.object({
   severity: z.enum(['low', 'moderate', 'high', 'critical']),
   status: z.enum(['verified', 'unverified']),
   image: z.string().nullable(),
+  confirms: z.number(),
+  denies: z.number(),
   reportedAt: z.date(),
+  isAdmin: z.boolean(),
   reporter: z
     .object({
       id: z.number(),

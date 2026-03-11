@@ -68,21 +68,21 @@ export default function ForgotPasswordForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+    <form onSubmit={handleSubmit} className='space-y-6'>
+      <div className='space-y-2'>
+        <Label htmlFor='email'>Email</Label>
         <Input
-          type="email"
-          name="email"
-          placeholder="Enter your email"
-          className="rounded-full shadow-sm"
+          type='email'
+          name='email'
+          placeholder='Enter your email'
+          className='rounded-full shadow-sm'
         />
         {state?.errors && 'email' in state.errors && state.errors.email && (
-          <p className="text-red-500 text-sm">{state.errors.email}</p>
+          <p className='text-red-500 text-sm'>{state.errors.email}</p>
         )}
       </div>
 
-      <Button disabled={isPending} className="w-full rounded-full">
+      <Button disabled={isPending} className='w-full rounded-full'>
         {isPending ? (
           <>
             Sending... <Spinner />

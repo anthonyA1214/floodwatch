@@ -5,15 +5,29 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1772375526201,
-      "tag": "0000_parched_ben_parker",
+      "when": 1772846304297,
+      "tag": "0000_wakeful_starjammers",
       "breakpoints": true
     },
     {
       "idx": 1,
       "version": "7",
-      "when": 1772535926712,
-      "tag": "0001_nappy_madelyne_pryor",
+      "when": 1772934670541,
+      "tag": "0001_slippery_black_knight",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1772971432705,
+      "tag": "0002_dry_silver_samurai",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1773043523912,
+      "tag": "0003_chunky_toro",
       "breakpoints": true
     }
   ]

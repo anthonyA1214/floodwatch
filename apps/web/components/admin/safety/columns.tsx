@@ -19,7 +19,7 @@ export const columns: ColumnDef<SafetyLocationsDto>[] = [
     cell: ({ row }) => {
       const safetyLocation = row.original;
 
-      return <span className="font-medium">{safetyLocation.location}</span>;
+      return <span className='font-medium'>{safetyLocation.location}</span>;
     },
   },
   {
@@ -28,24 +28,24 @@ export const columns: ColumnDef<SafetyLocationsDto>[] = [
     cell: ({ row }) => {
       const safetyLocation = row.original;
 
-      return <span className="text-gray-600">{safetyLocation.address}</span>;
+      return <span className='text-gray-600'>{safetyLocation.address}</span>;
     },
   },
   {
     accessorKey: 'type',
-    header: () => <span className="flex justify-center">TYPE</span>,
+    header: () => <span className='flex justify-center'>TYPE</span>,
     cell: ({ row }) => {
       const safetyLocation = row.original;
 
       const color = SAFETY_TYPE_COLOR_MAP[safetyLocation.type];
 
       return (
-        <div className="flex justify-center w-full">
+        <div className='flex justify-center w-full'>
           <div
-            className="inline-flex items-center rounded-full px-4 py-1.5"
+            className='inline-flex items-center rounded-full px-4 py-1.5'
             style={{ backgroundColor: `${color}25`, color }}
           >
-            <span className="text-sm font-medium capitalize">
+            <span className='text-sm font-medium capitalize'>
               {safetyLocation.type.toUpperCase()}
             </span>
           </div>
@@ -55,7 +55,7 @@ export const columns: ColumnDef<SafetyLocationsDto>[] = [
   },
   {
     accessorKey: 'actions',
-    header: () => <span className="flex justify-center">ACTIONS</span>,
+    header: () => <span className='flex justify-center'>ACTIONS</span>,
     cell: ({ row }) => {
       const safetyLocation = row.original;
       return <ActionCell safetyLocation={safetyLocation} />;
@@ -71,13 +71,13 @@ function ActionCell({
   const { openDialog } = useSafetyLocationsDialog();
 
   return (
-    <div className="flex justify-center gap-2">
+    <div className='flex justify-center gap-2'>
       <Tooltip>
         <TooltipTrigger
-          className="text-[#0066CC] bg-[#0066CC]/10 rounded-lg p-1.5 hover:bg-[#0066CC]/20 transition"
+          className='text-[#0066CC] bg-[#0066CC]/10 rounded-lg p-1.5 hover:bg-[#0066CC]/20 transition'
           onClick={() => openDialog('view', safetyLocation)}
         >
-          <IconEye className="w-[1.5em]! h-[1.5em]!" />
+          <IconEye className='w-[1.5em]! h-[1.5em]!' />
         </TooltipTrigger>
         <TooltipContent>
           <p>View safety location</p>
@@ -91,7 +91,7 @@ function ActionCell({
           )}
           onClick={() => openDialog('delete', safetyLocation)}
         >
-          <IconTrash className="w-[1.5em]! h-[1.5em]!" />
+          <IconTrash className='w-[1.5em]! h-[1.5em]!' />
         </TooltipTrigger>
         <TooltipContent>
           <p>Delete safety location</p>

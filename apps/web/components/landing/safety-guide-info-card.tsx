@@ -19,23 +19,23 @@ export default function SafetyGuideInfoCard({
         className,
       )}
     >
-      <div className="flex items-center gap-3">
+      <div className='flex items-center gap-3'>
         {/* Navy Icon Container */}
-        <div className="p-4 rounded-xl bg-[#0066CC] flex items-center justify-center text-white shrink-0 shadow-md shadow-[#0066CC]/20">
-          <Icon className="w-[1.5em]! h-[1.5em]!" />
+        <div className='p-4 rounded-xl bg-[#0066CC] flex items-center justify-center text-white shrink-0 shadow-md shadow-[#0066CC]/20'>
+          <Icon className='w-[1.5em]! h-[1.5em]!' />
         </div>
-        <span className="font-poppins font-bold text-[#0066CC] text-lg">
+        <span className='font-poppins font-bold text-[#0066CC] text-lg'>
           {title.toUpperCase()}
         </span>
       </div>
 
-      <ul className="space-y-3">
+      <ul className='space-y-3'>
         {bullets.map((bullet, i) => (
           <li
             key={i}
-            className="flex items-start gap-2 text-base text-gray-600"
+            className='flex items-start gap-2 text-base text-gray-600'
           >
-            <IconCheck className="w-[1.5em]! h-[1.5em]! shrink-0 text-[#0066CC]" />
+            <IconCheck className='w-[1.5em]! h-[1.5em]! shrink-0 text-[#0066CC]' />
             <span>{bullet}</span>
           </li>
         ))}

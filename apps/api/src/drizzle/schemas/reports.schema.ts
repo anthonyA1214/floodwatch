@@ -5,6 +5,7 @@ import {
   timestamp,
   text,
   serial,
+  boolean,
 } from 'drizzle-orm/pg-core';
 import { users } from './users.schema';
 import { doublePrecision } from 'drizzle-orm/pg-core';
@@ -27,7 +28,7 @@ export const reports = pgTable('reports', {
     onDelete: 'cascade',
   }),
   verifierId: integer('verifier_id').references(() => users.id, {
-    onDelete: 'cascade',
+    onDelete: 'set null',
   }),
   latitude: doublePrecision('latitude').notNull(),
   longitude: doublePrecision('longitude').notNull(),
@@ -38,8 +39,7 @@ export const reports = pgTable('reports', {
   imagePublicId: text('image_public_id'),
   severity: severityEnum().notNull(),
   status: reportsStatusEnum().notNull().default('unverified'),
-  upvotes: integer('upvotes').notNull().default(0),
-  downvotes: integer('downvotes').notNull().default(0),
+  isAdmin: boolean('is_admin').notNull().default(false),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });

@@ -4,6 +4,13 @@ import { getApiUrl } from './utils/get-api-url';
 
 let refreshing: Promise<void> | null = null;
 
+const getCsrfToken = () => {
+  return document.cookie
+    .split('; ')
+    .find((row) => row.startsWith('csrf_token='))
+    ?.split('=')[1];
+};
+
 async function refreshToken() {
   if (refreshing) {
     return refreshing; // return the promise directly instead of awaiting and returning void
@@ -32,6 +39,10 @@ export async function apiFetchClient(path: string, init: RequestInit = {}) {
     return fetch(`${getApiUrl()}${path}`, {
       ...init,
       credentials: 'include', // important for browser cookies
+      headers: {
+        'x-csrf-token': getCsrfToken() || '', // include CSRF token in headers
+        ...init.headers,
+      },
     });
   }
 

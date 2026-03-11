@@ -64,29 +64,29 @@ export default function UserStatCard({
     >
       {isActive && (
         <div
-          className="absolute inset-0 rounded-2xl pointer-events-none"
+          className='absolute inset-0 rounded-2xl pointer-events-none'
           style={{ backgroundColor: `${color}10` }}
         />
       )}
-      <h3 className="font-poppins font-semibold text-xl">{label}</h3>
-      <div className="flex flex-col gap-2 flex-1">
-        <div className="flex justify-between flex-1">
-          <h2 className="font-bold text-4xl mt-auto">{count}</h2>
+      <h3 className='font-poppins font-semibold text-xl'>{label}</h3>
+      <div className='flex flex-col gap-2 flex-1'>
+        <div className='flex justify-between flex-1'>
+          <h2 className='font-bold text-4xl mt-auto'>{count}</h2>
           <div
-            className="rounded-full p-4 text-2xl mt-auto"
+            className='rounded-full p-4 text-2xl mt-auto'
             style={
               isActive
                 ? { backgroundColor: `${color}25`, color: color }
                 : { backgroundColor: '#E0E0E0' }
             }
           >
-            <Icon className="w-[1.5em]! h-[1.5em]!" />
+            <Icon className='w-[1.5em]! h-[1.5em]!' />
           </div>
         </div>
 
         {isActive && (
-          <div className="flex gap-2 items-center text-sm" style={{ color }}>
-            <IconCircleCheck className="w-[1.5em]! h-[1.5em]!" />
+          <div className='flex gap-2 items-center text-sm' style={{ color }}>
+            <IconCircleCheck className='w-[1.5em]! h-[1.5em]!' />
             <p>{statusText}</p>
           </div>
         )}

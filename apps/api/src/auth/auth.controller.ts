@@ -21,6 +21,7 @@ import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
 import { type RefreshTokenRequest } from './types/refresh-token-request.type';
 import { type LogoutRequest } from './types/logout-request.type';
 import { ApiBody } from '@nestjs/swagger';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -29,6 +30,7 @@ export class AuthController {
     private configService: ConfigService,
   ) {}
 
+  @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
@@ -47,6 +49,7 @@ export class AuthController {
     return { user: req.user, access_token, refresh_token, deviceId };
   }
 
+  @Public()
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   @UseGuards(JwtRefreshAuthGuard)
@@ -75,6 +78,7 @@ export class AuthController {
     return { success: true };
   }
 
+  @Public()
   @Post('signup')
   @HttpCode(HttpStatus.CREATED)
   async signup(

@@ -172,28 +172,28 @@ export default function CreateFloodAlertDialog() {
   return (
     <Dialog open={open} onOpenChange={() => handleOpenChange(!open)}>
       <DialogTrigger asChild>
-        <Button className="font-poppins py-6">CREATE FLOOD ALERT</Button>
+        <Button className='font-poppins py-6'>CREATE FLOOD ALERT</Button>
       </DialogTrigger>
-      <DialogContent className="flex flex-col min-w-[750px] p-0 overflow-hidden gap-0 border-0 [&>button]:text-white [&>button]:hover:text-white [&>button]:opacity-70 [&>button]:hover:opacity-100">
+      <DialogContent className='flex flex-col min-w-[750px] p-0 overflow-hidden gap-0 border-0 [&>button]:text-white [&>button]:hover:text-white [&>button]:opacity-70 [&>button]:hover:opacity-100'>
         {/* ── Blue Header ── */}
-        <DialogHeader className="flex flex-row items-center gap-4 bg-[#0066CC] rounded-b-2xl px-5 py-4 shrink-0">
+        <DialogHeader className='flex flex-row items-center gap-4 bg-[#0066CC] rounded-b-2xl px-5 py-4 shrink-0'>
           {/* Text */}
-          <DialogTitle className="font-poppins text-base font-semibold text-white">
+          <DialogTitle className='font-poppins text-base font-semibold text-white'>
             CREATE FLOOD ALERT
           </DialogTitle>
         </DialogHeader>
 
         {/* ── Content Area ── */}
-        <div className="no-scrollbar flex flex-col ps-4 py-4 overflow-y-auto">
-          <div className="flex-1 flex">
+        <div className='no-scrollbar flex flex-col ps-4 py-4 overflow-y-auto'>
+          <div className='flex-1 flex'>
             {/* left column */}
-            <div className="flex-2 flex flex-col gap-4 h-fit">
-              <div className="flex items-center justify-between">
-                <span className="font-poppins text-sm font-medium text-gray-600">
+            <div className='flex-2 flex flex-col gap-4 h-fit'>
+              <div className='flex items-center justify-between'>
+                <span className='font-poppins text-sm font-medium text-gray-600'>
                   LOCATION
                 </span>
                 <button
-                  className="font-poppins text-xs flex gap-2 border px-3 py-1.5 rounded-lg items-center text-gray-600 hover:bg-gray-100"
+                  className='font-poppins text-xs flex gap-2 border px-3 py-1.5 rounded-lg items-center text-gray-600 hover:bg-gray-100'
                   onClick={handleUseCurrentLocation}
                 >
                   {loadingLocation ? (
@@ -203,39 +203,39 @@ export default function CreateFloodAlertDialog() {
                     </>
                   ) : (
                     <>
-                      <IconCurrentLocation className="w-[1.5em]! h-[1.5em]!" />
+                      <IconCurrentLocation className='w-[1.5em]! h-[1.5em]!' />
                       <span>USE MY CURRENT LOCATION</span>
                     </>
                   )}
                 </button>
               </div>
-              <div className="relative flex-1 flex aspect-square rounded-2xl overflow-hidden border h-fit">
+              <div className='relative flex-1 flex aspect-square rounded-2xl overflow-hidden border h-fit'>
                 <InteractiveMap
                   ref={interactiveMapRef}
                   severity={severityValue}
                   range={radius}
-                  mode="flood-alert"
+                  mode='flood-alert'
                   onLocationSelect={setLocation}
                 />
-                <div className="absolute flex flex-col top-4 left-4 z-1 w-fit gap-2 h-fit">
-                  <div className="flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 text-xs">
+                <div className='absolute flex flex-col top-4 left-4 z-1 w-fit gap-2 h-fit'>
+                  <div className='flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 text-xs'>
                     <button
                       onClick={() => interactiveMapRef.current?.zoomIn()}
-                      className="aspect-square hover:bg-gray-200 rounded-md p-1"
-                      title="Zoom In"
+                      className='aspect-square hover:bg-gray-200 rounded-md p-1'
+                      title='Zoom In'
                     >
                       <IconPlus
-                        className="w-[1.5em]! h-[1.5em]!"
+                        className='w-[1.5em]! h-[1.5em]!'
                         strokeWidth={1.5}
                       />
                     </button>
                     <button
                       onClick={() => interactiveMapRef.current?.zoomOut()}
-                      className="aspect-square hover:bg-gray-200 rounded-md p-1"
-                      title="Zoom Out"
+                      className='aspect-square hover:bg-gray-200 rounded-md p-1'
+                      title='Zoom Out'
                     >
                       <IconMinus
-                        className="w-[1.5em]! h-[1.5em]!"
+                        className='w-[1.5em]! h-[1.5em]!'
                         strokeWidth={1.5}
                       />
                     </button>
@@ -247,43 +247,43 @@ export default function CreateFloodAlertDialog() {
 
             {/* right column */}
             <div
-              className="no-scrollbar flex-[1.5] flex flex-col overflow-y-auto"
+              className='no-scrollbar flex-[1.5] flex flex-col overflow-y-auto'
               style={{ aspectRatio: '1 / 1' }}
             >
-              <div className="flex flex-col gap-4 px-4">
+              <div className='flex flex-col gap-4 px-4'>
                 {/* location name */}
-                <Field className="flex items-center">
+                <Field className='flex items-center'>
                   <FieldLabel
-                    htmlFor="location-name"
-                    className="font-poppins text-sm font-medium"
+                    htmlFor='location-name'
+                    className='font-poppins text-sm font-medium'
                   >
                     LOCATION NAME
                   </FieldLabel>
                   <Input
-                    id="location-name"
-                    name="location-name"
-                    type="text"
-                    placeholder="e.g., Riverside Park"
+                    id='location-name'
+                    name='location-name'
+                    type='text'
+                    placeholder='e.g., Riverside Park'
                     defaultValue={locationNameValue}
                     onChange={(e) => setLocationNameValue(e.target.value)}
                   />
                   {state.errors?.locationName && (
-                    <span className="text-sm text-red-600">
+                    <span className='text-sm text-red-600'>
                       {state.errors.locationName[0]}
                     </span>
                   )}
                 </Field>
 
                 {/* Severity Level */}
-                <Field className="flex items-center">
+                <Field className='flex items-center'>
                   <FieldLabel
-                    htmlFor="severity"
-                    className="font-poppins text-sm font-medium"
+                    htmlFor='severity'
+                    className='font-poppins text-sm font-medium'
                   >
                     SEVERITY LEVEL
                   </FieldLabel>
                   <Select
-                    name="severity"
+                    name='severity'
                     defaultValue={severityValue}
                     onValueChange={(value) =>
                       setSeverityValue(
@@ -291,104 +291,104 @@ export default function CreateFloodAlertDialog() {
                       )
                     }
                   >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Severity Level" />
+                    <SelectTrigger className='w-full'>
+                      <SelectValue placeholder='Severity Level' />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Severity Level</SelectLabel>
-                        <SelectItem value="low">Low</SelectItem>
-                        <SelectItem value="moderate">Moderate</SelectItem>
-                        <SelectItem value="high">High</SelectItem>
-                        <SelectItem value="critical">Critical</SelectItem>
+                        <SelectItem value='low'>Low</SelectItem>
+                        <SelectItem value='moderate'>Moderate</SelectItem>
+                        <SelectItem value='high'>High</SelectItem>
+                        <SelectItem value='critical'>Critical</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
                   {state.errors?.severity && (
-                    <span className="text-sm text-red-600">
+                    <span className='text-sm text-red-600'>
                       {state.errors.severity[0]}
                     </span>
                   )}
                 </Field>
 
                 {/* range */}
-                <Field className="flex items-center">
+                <Field className='flex items-center'>
                   <FieldLabel
-                    htmlFor="range"
-                    className="font-poppins text-sm font-medium"
+                    htmlFor='range'
+                    className='font-poppins text-sm font-medium'
                   >
                     AFFECTED RADIUS
-                    <span className="font-inter text-xs text-gray-600">
+                    <span className='font-inter text-xs text-gray-600'>
                       (meters)
                     </span>
                   </FieldLabel>
                   <Input
-                    id="range"
-                    name="range"
-                    type="number"
-                    placeholder="e.g., 100"
+                    id='range'
+                    name='range'
+                    type='number'
+                    placeholder='e.g., 100'
                     min={1}
                     minLength={1}
                     defaultValue={radius}
                     onChange={(e) => setRadius(Number(e.target.value))}
                   />
                   {state.errors?.range && (
-                    <span className="text-sm text-red-600">
+                    <span className='text-sm text-red-600'>
                       {state.errors.range[0]}
                     </span>
                   )}
                 </Field>
 
                 {/* Description */}
-                <Field className="flex items-center">
+                <Field className='flex items-center'>
                   <FieldLabel
-                    htmlFor="description"
-                    className="font-poppins text-sm font-medium"
+                    htmlFor='description'
+                    className='font-poppins text-sm font-medium'
                   >
                     ADDITIONAL DETAILS
-                    <span className="font-inter text-gray-600 text-xs">
+                    <span className='font-inter text-gray-600 text-xs'>
                       (Optional)
                     </span>
                   </FieldLabel>
                   <Textarea
-                    id="description"
-                    placeholder="Enter the description"
-                    className="no-scrollbar min-h-[120px] max-h-[120px]"
+                    id='description'
+                    placeholder='Enter the description'
+                    className='no-scrollbar min-h-[120px] max-h-[120px]'
                     style={{ wordBreak: 'break-word' }}
                     defaultValue={descriptionValue}
                     onChange={(e) => setDescriptionValue(e.target.value)}
                   />
                   {state.errors?.description && (
-                    <span className="text-sm text-red-600">
+                    <span className='text-sm text-red-600'>
                       {state.errors.description[0]}
                     </span>
                   )}
                 </Field>
 
                 {/* Upload image */}
-                <Field className="flex items-center">
-                  <FieldLabel className="font-poppins text-sm font-medium">
+                <Field className='flex items-center'>
+                  <FieldLabel className='font-poppins text-sm font-medium'>
                     UPLOAD IMAGE
-                    <span className="font-inter text-gray-600 text-xs">
+                    <span className='font-inter text-gray-600 text-xs'>
                       (Optional)
                     </span>
                   </FieldLabel>
                   <Input
-                    id="image"
-                    type="file"
-                    accept="image/*"
-                    name="image"
+                    id='image'
+                    type='file'
+                    accept='image/*'
+                    name='image'
                     onChange={handleImageChange}
                   />
                   {state.errors?.image && (
-                    <span className="text-sm text-red-600">
+                    <span className='text-sm text-red-600'>
                       {state.errors.image[0]}
                     </span>
                   )}
                 </Field>
 
                 <Button
-                  className="font-poppins py-6 mt-auto"
+                  className='font-poppins py-6 mt-auto'
                   onClick={handleSubmit}
                   disabled={isPending}
                 >

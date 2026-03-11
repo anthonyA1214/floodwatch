@@ -11,9 +11,16 @@ import {
   UpdateCommentDto,
 } from '@repo/schemas';
 import { and, desc, eq, lt, sql } from 'drizzle-orm';
+import { User } from 'src/auth/types/auth-request.type';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { DRIZZLE } from 'src/drizzle/drizzle-connection';
-import { comments, profileInfo, reports, users } from 'src/drizzle/schemas';
+import {
+  commentReports,
+  comments,
+  profileInfo,
+  reports,
+  users,
+} from 'src/drizzle/schemas';
 import { type DrizzleDB } from 'src/drizzle/types/drizzle';
 import { ImagesService } from 'src/images/images.service';
 
@@ -33,8 +40,7 @@ export class CommentsService {
         id: comments.id,
         content: comments.content,
         image: comments.image,
-        upvotes: comments.upvotes,
-        downvotes: comments.downvotes,
+        reportsCount: sql<number>`(SELECT COUNT(*) FROM ${commentReports} WHERE ${commentReports.commentId} = ${comments.id})`,
         createdAt: comments.createdAt,
         author: {
           id: users.id,
@@ -106,7 +112,7 @@ export class CommentsService {
 
       const uploaded = await this.cloudinaryService.uploadImage(
         normalizedFile,
-        'reports',
+        'comments',
       );
 
       imageUrl = uploaded.secure_url as string;
@@ -181,7 +187,7 @@ export class CommentsService {
 
       const uploaded = await this.cloudinaryService.uploadImage(
         normalizedFile,
-        'reports',
+        'comments',
       );
 
       imageUrl = uploaded.secure_url as string;
@@ -202,7 +208,7 @@ export class CommentsService {
     return updatedComment;
   }
 
-  async deleteComment(commentId: number, userId: number) {
+  async deleteComment(commentId: number, user: User) {
     const [comment] = await this.db
       .select()
       .from(comments)
@@ -211,18 +217,18 @@ export class CommentsService {
 
     if (!comment) throw new NotFoundException('Comment not found');
 
-    if (comment.userId !== userId) {
+    if (comment.userId === user.id || user.role === 'admin') {
+      if (comment.imagePublicId) {
+        await this.cloudinaryService.deleteImage(comment.imagePublicId);
+      }
+
+      await this.db.delete(comments).where(eq(comments.id, commentId));
+
+      return { message: 'Comment deleted successfully' };
+    } else {
       throw new ForbiddenException(
         'You are not allowed to delete this comment',
       );
     }
-
-    if (comment.imagePublicId) {
-      await this.cloudinaryService.deleteImage(comment.imagePublicId);
-    }
-
-    await this.db.delete(comments).where(eq(comments.id, commentId));
-
-    return { message: 'Comment deleted successfully' };
   }
 }

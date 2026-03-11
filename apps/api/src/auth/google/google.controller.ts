@@ -26,11 +26,12 @@ export class GoogleController {
     private configService: ConfigService,
   ) {}
 
-  @Get('')
   @Public()
+  @Get('')
   @UseGuards(GoogleAuthGuard)
   googleLogin() {}
 
+  @Public()
   @Get('callback')
   @Public()
   @UseGuards(GoogleAuthGuard)

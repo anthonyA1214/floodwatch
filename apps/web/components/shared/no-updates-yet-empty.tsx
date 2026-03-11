@@ -9,10 +9,10 @@ import { IconMessage } from '@tabler/icons-react';
 
 export default function NoUpdatesYetEmpty() {
   return (
-    <div className="flex aspect-video items-center justify-center border rounded-2xl">
+    <div className='flex aspect-video items-center justify-center border rounded-2xl'>
       <Empty>
         <EmptyHeader>
-          <EmptyMedia variant="icon">
+          <EmptyMedia variant='icon'>
             <IconMessage />
           </EmptyMedia>
           <EmptyTitle>No updates yet</EmptyTitle>

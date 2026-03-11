@@ -20,14 +20,14 @@ export default function SafetyLocationsCard({
 
   return (
     <div
-      className="grid border-l-4 rounded-lg p-4 gap-4"
+      className='grid border-l-4 rounded-lg p-4 gap-4'
       style={{ borderLeftColor: color, backgroundColor: `${color}10` }}
     >
-      <div className="flex justify-between items-center gap-8">
+      <div className='flex justify-between items-center gap-8'>
         {/* Location */}
-        <div className="font-poppins flex items-center gap-2 text-base font-semibold">
+        <div className='font-poppins flex items-center gap-2 text-base font-semibold'>
           <IconMapPin
-            className="w-[1.5em]! h-[1.5em]!"
+            className='w-[1.5em]! h-[1.5em]!'
             style={{ color: color }}
           />
           {name}
@@ -35,10 +35,10 @@ export default function SafetyLocationsCard({
 
         {/* Badge */}
         <div
-          className="flex items-center rounded-full px-4 py-1.5"
+          className='flex items-center rounded-full px-4 py-1.5'
           style={{ color: color, backgroundColor: `${color}25` }}
         >
-          <span className="text-sm font-medium">{type.toUpperCase()}</span>
+          <span className='text-sm font-medium'>{type.toUpperCase()}</span>
         </div>
       </div>
 
@@ -46,8 +46,8 @@ export default function SafetyLocationsCard({
       <p>{address}</p>
 
       {/* availability */}
-      <div className="flex items-center text-sm gap-2 text-gray-600">
-        <IconClock className="w-[1.5em]! h-[1.5em]!" />
+      <div className='flex items-center text-sm gap-2 text-gray-600'>
+        <IconClock className='w-[1.5em]! h-[1.5em]!' />
         {availability}
       </div>
     </div>

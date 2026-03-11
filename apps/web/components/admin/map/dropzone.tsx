@@ -32,25 +32,25 @@ function Dropzone() {
     <div {...getRootProps()}>
       <input {...getInputProps()} />
       {file ? (
-        <div className="relative w-full h-[20vh] rounded-lg overflow-hidden hover:cursor-pointer">
+        <div className='relative w-full h-[20vh] rounded-lg overflow-hidden hover:cursor-pointer'>
           <Image
             src={file.preview}
-            alt="Uploaded file preview"
-            layout="fill"
-            objectFit="cover"
+            alt='Uploaded file preview'
+            layout='fill'
+            objectFit='cover'
           />
         </div>
       ) : isDragActive ? (
         <div
-          className="flex items-center border-2 border-dashed h-[20vh] border-[#0066CC] 
-        rounded-xl p-6 text-center"
+          className='flex items-center border-2 border-dashed h-[20vh] border-[#0066CC] 
+        rounded-xl p-6 text-center'
         >
-          <p className="text-blue-500">Drop the file here ...</p>
+          <p className='text-blue-500'>Drop the file here ...</p>
         </div>
       ) : (
         <div
-          className="flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-lg 
-          cursor-pointer gap-2 h-[20vh] hover:border-[#0066CC] text-gray-600"
+          className='flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-lg 
+          cursor-pointer gap-2 h-[20vh] hover:border-[#0066CC] text-gray-600'
         >
           <IconUpload />
           Upload or drag and drop file here

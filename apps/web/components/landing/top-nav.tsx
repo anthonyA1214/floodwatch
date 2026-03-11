@@ -15,39 +15,39 @@ export default function TopNav() {
   return (
     <>
       <header
-        className="flex w-full bg-[#0066CC]/95 fixed h-16 top-0 z-10 transition-shadow duration-200"
-        id="top-nav"
+        className='flex w-full bg-[#0066CC]/95 fixed h-16 top-0 z-10 transition-shadow duration-200'
+        id='top-nav'
       >
-        <nav className="flex justify-between py-4 max-w-7xl w-full mx-auto px-4">
-          <div className="flex items-center gap-4 lg:gap-10">
-            <Link href="/" className="flex items-center gap-x-2">
+        <nav className='flex justify-between py-4 max-w-7xl w-full mx-auto px-4'>
+          <div className='flex items-center gap-4 lg:gap-10'>
+            <Link href='/' className='flex items-center gap-x-2'>
               <Image
-                src="/logo-white.svg"
-                alt="FloodWatch Logo"
+                src='/logo-white.svg'
+                alt='FloodWatch Logo'
                 width={32}
                 height={32}
               />
-              <h1 className="text-white font-bold md:text-xl">FloodWatch</h1>
+              <h1 className='text-white font-bold md:text-xl'>FloodWatch</h1>
             </Link>
           </div>
 
-          <div className="flex items-center gap-10">
-            <div className="hidden lg:flex items-center gap-8">
+          <div className='flex items-center gap-10'>
+            <div className='hidden lg:flex items-center gap-8'>
               {navItems.map((item) => (
                 <Link
                   key={item.label}
                   href={item.url}
-                  className="font-poppins text-lg text-white hover:text-[#F5F5F5] active:text-[#EAEAEA]"
+                  className='font-poppins text-lg text-white hover:text-[#F5F5F5] active:text-[#EAEAEA]'
                 >
                   {item.label}
                 </Link>
               ))}
             </div>
 
-            <AuthButtons className="hidden lg:flex" />
+            <AuthButtons className='hidden lg:flex' />
 
             {/* Mobile Menu */}
-            <div className="lg:hidden flex items-center">
+            <div className='lg:hidden flex items-center'>
               <CollapsibleMenu />
             </div>
           </div>

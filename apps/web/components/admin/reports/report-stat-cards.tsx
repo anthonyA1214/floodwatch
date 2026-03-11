@@ -18,25 +18,25 @@ export default function ReportStatCards({
   onStatusChange,
 }: ReportStatCardsProps) {
   return (
-    <div className="grid grid-cols-3 gap-8">
+    <div className='grid grid-cols-3 gap-8'>
       <ReportStatCard
-        label="Total Reports"
+        label='Total Reports'
         count={totalCount}
-        status="total"
+        status='total'
         isActive={activeStatus === 'total'}
         onClick={() => onStatusChange('total')}
       />
       <ReportStatCard
-        label="Verified Reports"
+        label='Verified Reports'
         count={verifiedCount}
-        status="verified"
+        status='verified'
         isActive={activeStatus === 'verified'}
         onClick={() => onStatusChange('verified')}
       />
       <ReportStatCard
-        label="Unverified Reports"
+        label='Unverified Reports'
         count={unverifiedCount}
-        status="unverified"
+        status='unverified'
         isActive={activeStatus === 'unverified'}
         onClick={() => onStatusChange('unverified')}
       />

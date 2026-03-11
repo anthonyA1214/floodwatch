@@ -3,6 +3,8 @@ import { DRIZZLE } from './drizzle-connection';
 import { ConfigService } from '@nestjs/config';
 import { Pool } from 'pg';
 import { drizzle, NodePgDatabase } from 'drizzle-orm/node-postgres';
+// import { neon } from '@neondatabase/serverless';
+// import { drizzle, NeonHttpDatabase } from 'drizzle-orm/neon-http';
 import * as schema from './schemas';
 
 @Module({
@@ -16,6 +18,8 @@ import * as schema from './schemas';
           ssl: true,
         });
         const db: NodePgDatabase<typeof schema> = drizzle(pool, { schema });
+        // const sql = neon(configService.getOrThrow('DATABASE_URL'));
+        // const db: NeonHttpDatabase<typeof schema> = drizzle(sql, { schema });
         return db;
       },
     },

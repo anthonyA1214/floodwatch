@@ -9,12 +9,11 @@ import {
   IconClock,
   IconExclamationCircle,
   IconHelpCircle,
+  IconPoint,
   IconSend,
   IconShield,
   IconShieldCheck,
-  IconThumbUp,
   IconUser,
-  IconX,
 } from '@tabler/icons-react';
 import { clsx } from 'clsx';
 import { format, formatDistanceToNow } from 'date-fns';
@@ -35,6 +34,9 @@ import { Button } from '../ui/button';
 import { ReportedLocationDrawerSkeleton } from './skeletons/reported-location-drawer-skeleton';
 import CommentsList from '../shared/comments-list';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import ReportPaginationOverlay from './report-pagination-overlay';
+import { useMyVote } from '@/hooks/use-my-vote';
+import VoteButtons from './vote-buttons';
 
 const snapPoints = ['0px', '355px', 1];
 
@@ -54,6 +56,7 @@ export default function ReportedLocationDrawer({
   };
 
   const { reportDetail, isLoading } = useReportDetail(reportId);
+  const { isLoading: isMyVoteLoading } = useMyVote(reportId);
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -71,13 +74,23 @@ export default function ReportedLocationDrawer({
     ? format(reportDetail?.reportedAt, 'MMMM dd, yyyy')
     : '';
 
+  const confirms = reportDetail?.confirms;
+  const denies = reportDetail?.denies;
+
+  const credibility =
+    confirms !== undefined && denies !== undefined
+      ? confirms + denies === 0
+        ? 0
+        : Math.round((confirms / (confirms + denies)) * 100)
+      : 0;
+
   return (
     <Drawer.Root
       modal={false}
       dismissible={true}
-      handleOnly={true}
       snapPoints={snapPoints}
       activeSnapPoint={snap}
+      handleOnly={true}
       setActiveSnapPoint={(newSnap) => {
         if (newSnap === snapPoints[0]) {
           handleOpenChange(false);
@@ -88,177 +101,196 @@ export default function ReportedLocationDrawer({
       open={open}
       onOpenChange={handleOpenChange}
     >
-      <Drawer.Overlay className="absolute inset-0 bg-black/40 pointer-events-none" />
+      <Drawer.Overlay className='absolute inset-0 bg-black/40 pointer-events-none' />
 
       <VisuallyHidden>
         <Drawer.Title>Reported Location</Drawer.Title>
       </VisuallyHidden>
 
       <Drawer.Content
-        data-testid="content"
-        className="z-1 absolute flex flex-col bg-white border border-gray-200 border-b-none rounded-t-[10px] bottom-0 left-0 right-0 h-full max-h-full -mx-px"
+        data-testid='content'
+        className='z-1 absolute flex flex-col bg-white border border-gray-200 border-b-none rounded-t-[10px] bottom-0 left-0 right-0 h-full max-h-full -mx-px'
       >
-        <Drawer.Handle className="w-16! my-3! rounded-full!" />
+        <Drawer.Handle className='w-16! my-3! rounded-full! shrink-0!' />
 
-        {isLoading || !reportDetail ? (
+        {isLoading || isMyVoteLoading || !reportDetail ? (
           <ReportedLocationDrawerSkeleton />
         ) : (
           <div
             ref={scrollRef}
-            id="report-drawer-scroll"
-            className={clsx(
-              'flex flex-col max-w-lg mx-auto w-full pt-5 gap-2',
-              {
-                'overflow-y-auto': snap === 1,
-                'overflow-hidden': snap !== 1,
-              },
-            )}
+            id='report-drawer-scroll'
+            className={clsx('flex flex-col max-w-lg mx-auto w-full gap-2', {
+              'overflow-y-auto': snap === 1,
+              'overflow-hidden': snap !== 1,
+            })}
           >
             {/* report details */}
             <div
-              className="flex flex-col p-2 sm:p-3 gap-2 lg:gap-3 border-l-4 shrink-0"
+              className='flex flex-col p-2 sm:p-3 gap-2 lg:gap-3 border-l-4 shrink-0'
               style={{
                 borderLeftColor: SEVERITY_COLOR_MAP[reportDetail?.severity],
               }}
             >
               {/* row 1 */}
-              <Drawer.Title className="font-poppins text-base lg:text-lg font-semibold">
+              <Drawer.Title className='font-poppins text-base lg:text-lg font-semibold'>
                 {reportDetail?.location}
               </Drawer.Title>
 
               <Separator />
 
               {/* badge and distance to now */}
-              <div className="flex flex-row justify-between gap-4">
+              <div className='flex flex-row justify-between gap-3'>
+                {/* reported at */}
+                <div className='flex items-center text-xs lg:text-sm gap-1.5 lg:gap-2 tabular-nums opacity-50'>
+                  <IconClock className='w-[1.5em]! h-[1.5em]!' />
+                  {formatDistanceToNow(reportDetail?.reportedAt, {
+                    addSuffix: true,
+                  })}
+                </div>
+
                 {/* report status */}
                 <div
-                  className="flex items-center rounded-full px-3 py-1 w-fit h-fit"
+                  className='flex items-center rounded-full px-3 py-1 w-fit h-fit'
                   style={{
                     color: REPORT_STATUS_COLOR_MAP[reportDetail?.status],
                     backgroundColor: `${REPORT_STATUS_COLOR_MAP[reportDetail?.status]}25`,
                   }}
                 >
-                  <div className="flex items-center gap-1.5 lg:gap-2 text-xs lg:text-sm">
+                  <div className='flex items-center gap-1.5 lg:gap-2 text-xs lg:text-sm'>
                     {reportDetail?.status === 'verified' ? (
-                      <IconCircleCheck className="w-[1.5em]! h-[1.5em]!" />
+                      <IconCircleCheck className='w-[1.5em]! h-[1.5em]!' />
                     ) : (
-                      <IconHelpCircle className="w-[1.5em]! h-[1.5em]!" />
+                      <IconHelpCircle className='w-[1.5em]! h-[1.5em]!' />
                     )}
-                    <span className="font-poppins font-medium">
+                    <span className='font-poppins font-medium'>
                       {reportDetail?.status.toUpperCase()} REPORT
                     </span>
                   </div>
                 </div>
-
-                {/* reported at */}
-                <div className="flex items-center text-xs lg:text-sm gap-1.5 lg:gap-2 tabular-nums opacity-50">
-                  <IconClock className="w-[1.5em]! h-[1.5em]!" />
-                  {formatDistanceToNow(reportDetail?.reportedAt, {
-                    addSuffix: true,
-                  })}
-                </div>
               </div>
 
               {/* details */}
-              <div className="flex flex-col border rounded-lg text-xs lg:text-sm">
-                {/* reported by */}
-                <div className="flex justify-between items-center p-3 lg:p-4">
-                  <div className="flex items-center gap-1.5 lg:gap-2 opacity-50">
-                    <IconUser className="w-[1.5em]! h-[1.5em]!" />
-                    <span className="font-poppins font-medium">
-                      REPORTED BY
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <UIAvatar className="size-5">
-                      <AvatarImage
-                        src={
-                          reportDetail?.reporter?.profilePicture || undefined
-                        }
-                      />
-                      <AvatarFallback>
-                        <Avatar
-                          name={`${reportDetail?.reporter?.name} ${reportDetail?.reporter?.id}`}
-                          variant="beam"
-                        />
-                      </AvatarFallback>
-                    </UIAvatar>
-                    <span>{reportDetail?.reporter?.name}</span>
-                  </div>
-                </div>
-
-                <Separator />
-
-                {/* verified by */}
-                <div className="flex justify-between items-center p-3 lg:p-4">
-                  <div className="flex items-center gap-1.5 lg:gap-2 opacity-50">
-                    <IconShield className="w-[1.5em]! h-[1.5em]!" />
-                    <span className="font-poppins font-medium">
-                      VERIFIED BY
-                    </span>
-                  </div>
-
-                  {reportDetail?.status === 'verified' ? (
-                    <div className="flex items-center gap-2">
-                      <UIAvatar className="size-5">
-                        <AvatarImage
-                          src={
-                            reportDetail?.verifier?.profilePicture || undefined
-                          }
-                        />
-                        <AvatarFallback>
-                          <Avatar
-                            name={`${reportDetail?.verifier?.name} ${reportDetail?.verifier?.id}`}
-                            variant="beam"
-                          />
-                        </AvatarFallback>
-                      </UIAvatar>
-                      <span>{reportDetail?.verifier?.name}</span>
+              <div className='flex flex-col border rounded-lg text-xs lg:text-sm'>
+                {reportDetail?.isAdmin && (
+                  <>
+                    {/* reported by */}
+                    <div className='flex items-center gap-1.5 lg:gap-2 p-3 lg:p-4 bg-[#9B32E4]/10 text-[#9B32E4]'>
+                      <IconShield className='w-[1.5em]! h-[1.5em]!' />
+                      <span className='font-poppins font-medium'>
+                        OFFICIAL REPORT
+                      </span>
+                      <IconPoint className='w-[1em]! h-[1em]!' />
+                      <span className='font-poppins'>POSTED BY ADMIN</span>
                     </div>
-                  ) : (
-                    <span className="font-poppins opacity-50 italic font-medium">
-                      PENDING
-                    </span>
-                  )}
-                </div>
 
-                <Separator />
+                    <Separator className='bg-[#9B32E4]/30' />
+                  </>
+                )}
+
+                {!reportDetail?.isAdmin && (
+                  <>
+                    {/* reported by */}
+                    <div className='flex justify-between items-center p-3 lg:p-4'>
+                      <div className='flex items-center gap-1.5 lg:gap-2 opacity-50'>
+                        <IconUser className='w-[1.5em]! h-[1.5em]!' />
+                        <span className='font-poppins font-medium'>
+                          REPORTED BY
+                        </span>
+                      </div>
+
+                      <div className='flex items-center gap-2'>
+                        <UIAvatar className='size-5'>
+                          <AvatarImage
+                            src={
+                              reportDetail?.reporter?.profilePicture ||
+                              undefined
+                            }
+                          />
+                          <AvatarFallback>
+                            <Avatar
+                              name={`${reportDetail?.reporter?.name} ${reportDetail?.reporter?.id}`}
+                              variant='beam'
+                            />
+                          </AvatarFallback>
+                        </UIAvatar>
+                        <span>{reportDetail?.reporter?.name}</span>
+                      </div>
+                    </div>
+
+                    <Separator />
+
+                    {/* verified by */}
+                    <div className='flex justify-between items-center p-3 lg:p-4'>
+                      <div className='flex items-center gap-1.5 lg:gap-2 opacity-50'>
+                        <IconShield className='w-[1.5em]! h-[1.5em]!' />
+                        <span className='font-poppins font-medium'>
+                          VERIFIED BY
+                        </span>
+                      </div>
+
+                      {reportDetail?.status === 'verified' ? (
+                        <div className='flex items-center gap-2'>
+                          <UIAvatar className='size-5'>
+                            <AvatarImage
+                              src={
+                                reportDetail?.verifier?.profilePicture ||
+                                undefined
+                              }
+                            />
+                            <AvatarFallback>
+                              <Avatar
+                                name={`${reportDetail?.verifier?.name} ${reportDetail?.verifier?.id}`}
+                                variant='beam'
+                              />
+                            </AvatarFallback>
+                          </UIAvatar>
+                          <span>{reportDetail?.verifier?.name}</span>
+                        </div>
+                      ) : (
+                        <span className='font-poppins opacity-50 italic font-medium'>
+                          PENDING
+                        </span>
+                      )}
+                    </div>
+
+                    <Separator />
+                  </>
+                )}
 
                 {/* date & time */}
-                <div className="flex justify-between items-start p-3 lg:p-4">
-                  <div className="flex items-center gap-1.5 lg:gap-2 opacity-50 shrink-0">
-                    <IconClock className="w-[1.5em]! h-[1.5em]!" />
-                    <span className="font-poppins font-medium">
+                <div className='flex justify-between items-start p-3 lg:p-4'>
+                  <div className='flex items-center gap-1.5 lg:gap-2 opacity-50 shrink-0'>
+                    <IconClock className='w-[1.5em]! h-[1.5em]!' />
+                    <span className='font-poppins font-medium'>
                       DATE & TIME
                     </span>
                   </div>
 
-                  <div className="flex flex-col items-end gap-0.5 text-xs lg:text-sm text-right">
+                  <div className='flex flex-col items-end gap-0.5 text-xs lg:text-sm text-right'>
                     <span>{formattedDate}</span>
-                    <span className="opacity-50">{formattedTime}</span>
+                    <span className='opacity-50'>{formattedTime}</span>
                   </div>
                 </div>
 
                 <Separator />
 
                 {/* severity */}
-                <div className="flex justify-between items-center p-3 lg:p-4">
-                  <div className="flex items-center gap-1.5 lg:gap-2 opacity-50">
-                    <IconExclamationCircle className="w-[1.5em]! h-[1.5em]!" />
-                    <span className="font-poppins font-medium">
+                <div className='flex justify-between items-center p-3 lg:p-4'>
+                  <div className='flex items-center gap-1.5 lg:gap-2 opacity-50'>
+                    <IconExclamationCircle className='w-[1.5em]! h-[1.5em]!' />
+                    <span className='font-poppins font-medium'>
                       SEVERITY LEVEL
                     </span>
                   </div>
 
                   <div
-                    className="flex items-center rounded-full px-3 py-1"
+                    className='flex items-center rounded-full px-3 py-1'
                     style={{
                       color: SEVERITY_COLOR_MAP[reportDetail?.severity],
                       backgroundColor: `${SEVERITY_COLOR_MAP[reportDetail?.severity]}25`,
                     }}
                   >
-                    <span className="font-poppins text-xs font-medium">
+                    <span className='font-poppins text-xs font-medium'>
                       {reportDetail?.severity?.toUpperCase()}
                     </span>
                   </div>
@@ -268,90 +300,68 @@ export default function ReportedLocationDrawer({
               </div>
 
               {/* image */}
-              <div className="aspect-video w-full relative bg-muted shrink-0 ">
+              <div className='aspect-video w-full relative bg-muted shrink-0 '>
                 {reportDetail?.image ? (
                   <Image
                     src={reportDetail.image}
-                    alt="Affected location"
+                    alt='Affected location'
                     fill
-                    className="object-cover"
+                    className='object-cover'
                   />
                 ) : (
-                  <div className="absolute inset-0">
+                  <div className='absolute inset-0'>
                     <NoPhotoEmpty />
                   </div>
                 )}
               </div>
 
               {/* credibility and confirm and deny */}
-              <div className="flex flex-col border rounded-lg text-xs lg:text-sm">
-                {/* credibility */}
-                <div className="flex justify-between items-center p-3 lg:p-4">
-                  <div className="flex items-center gap-1.5 lg:gap-2 opacity-50">
-                    <IconShieldCheck className="w-[1.5em]! h-[1.5em]!" />
-                    <span className="font-poppins font-medium">
-                      CREDIBILITY
+              {!reportDetail?.isAdmin && (
+                <div className='flex flex-col border rounded-lg text-xs lg:text-sm'>
+                  {/* credibility */}
+                  <div className='flex justify-between items-center p-3 lg:p-4'>
+                    <div className='flex items-center gap-1.5 lg:gap-2 opacity-50'>
+                      <IconShieldCheck className='w-[1.5em]! h-[1.5em]!' />
+                      <span className='font-poppins font-medium'>
+                        CREDIBILITY
+                      </span>
+                    </div>
+
+                    <span className='font-poppins font-bold'>
+                      {credibility}%
                     </span>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <span className="font-poppins font-bold">0%</span>
-                  </div>
+                  <VoteButtons reportId={reportId} />
                 </div>
+              )}
 
-                <div className="flex justify-between">
-                  {/* confirm */}
-                  <button
-                    className="w-full text-[#15803D] bg-[#f0fdf4] hover:bg-[#d1fae5] group
-                transition-colors duration-200"
-                  >
-                    <div
-                      className="flex items-center justify-center gap-1.5 lg:gap-2 p-3 lg:p-4 
-                  group-hover:-translate-y-0.5 transition-transform duration-200"
-                    >
-                      <IconThumbUp className="w-[1.5em]! h-[1.5em]!" />
-                      <span className="font-poppins font-medium">CONFIRM</span>
-                    </div>
-                  </button>
-
-                  {/* deny */}
-                  <button
-                    className="w-full text-[#dc2626] bg-[#fef2f2] hover:bg-[#fee2e2] group
-                transition-colors duration-200"
-                  >
-                    <div
-                      className="flex items-center justify-center gap-1.5 lg:gap-2 p-3 lg:p-4 
-                  group-hover:-translate-y-0.5 transition-transform duration-200"
-                    >
-                      <IconX className="w-[1.5em]! h-[1.5em]!" />
-                      <span className="font-poppins font-medium">DENY</span>
-                    </div>
-                  </button>
-                </div>
-              </div>
-
-              <Button className="rounded-lg h-12">
-                <IconSend className="w-[1.5em]! h-[1.5em]!" />
-                <span className="font-poppins font-medium">GET DIRECTIONS</span>
+              <Button className='rounded-lg h-12'>
+                <IconSend className='w-[1.5em]! h-[1.5em]!' />
+                <span className='font-poppins font-medium'>GET DIRECTIONS</span>
               </Button>
+
+              <Separator />
+
+              <ReportPaginationOverlay />
             </div>
 
             {/*  */}
-            <div className="flex gap-4 text-xs items-center px-2 lg:px-0">
-              <div className="h-px flex-1 bg-gray-200" />
-              <span className="font-poppins font-bold opacity-50">
+            <div className='flex gap-3 text-xs items-center px-2 lg:px-0'>
+              <div className='h-px flex-1 bg-gray-200' />
+              <span className='font-poppins font-bold opacity-50'>
                 COMMUNITY UPDATES
               </span>
-              <div className="h-px flex-1 bg-gray-200" />
+              <div className='h-px flex-1 bg-gray-200' />
             </div>
 
             {/* comments */}
-            <div className="flex flex-col gap-4 p-3 lg:p-4">
-              <PostComposer />
+            <div className='flex flex-col gap-3 p-3 lg:p-4'>
+              <PostComposer reportId={reportId} />
 
               <CommentsList
                 reportId={reportId}
-                scrollContainerId="report-drawer-scroll"
+                scrollContainerId='report-drawer-scroll'
               />
             </div>
           </div>

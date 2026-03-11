@@ -3,91 +3,132 @@ import {
   AvatarFallback,
   AvatarImage,
 } from '@/components/ui/avatar';
-import { IconClock, IconFlag, IconTrash } from '@tabler/icons-react';
+import {
+  IconClock,
+  IconDots,
+  IconEdit,
+  IconFlag,
+  IconTrash,
+} from '@tabler/icons-react';
 import Avatar from 'boring-avatars';
 import { format } from 'date-fns';
 import Image from 'next/image';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { useUser } from '@/hooks/use-user';
 
-interface PostCardProps {
+interface CommentCardProps {
   author: {
+    id: number | undefined;
     name: string;
     profilePicture?: string;
   };
   content: string;
-  imageUrl?: string;
+  image?: string;
   timestamp: Date;
   reportCount: number;
   isAdmin?: boolean;
   isOwner?: boolean;
+  onEditClick?: () => void;
+  onDeleteClick?: () => void;
+  onReportClick?: () => void;
 }
 
 export default function CommentCard({
   author,
   content,
-  imageUrl,
+  image,
   timestamp,
   reportCount,
   isAdmin = false,
   isOwner = false,
-}: PostCardProps) {
+  onEditClick,
+  onDeleteClick,
+  onReportClick,
+}: CommentCardProps) {
   const formattedTime = timestamp ? format(timestamp, 'hh:mm a') : '';
   const formattedDate = timestamp ? format(timestamp, 'MMMM dd, yyyy') : '';
 
+  const { user } = useUser();
+
   return (
-    <div className="flex flex-col rounded-2xl p-3 sm:p-4 border gap-3 sm:gap-4">
+    <div className='flex flex-col rounded-2xl p-3 sm:p-4 border gap-3 sm:gap-4'>
       {/* 1st */}
-      <div className="flex gap-2 items-center">
-        <UIAvatar className="size-8 sm:size-10 rounded-full shrink-0">
+      <div className='flex gap-2 items-center'>
+        <UIAvatar className='size-8 sm:size-10 rounded-full shrink-0'>
           <AvatarImage src={author.profilePicture} />
           <AvatarFallback>
             <Avatar
-              name={author.name}
-              variant="beam"
-              className="size-8 sm:size-10"
+              name={`${author.name} ${author.id}`}
+              variant='beam'
+              className='size-8 sm:size-10'
             />
           </AvatarFallback>
         </UIAvatar>
 
-        <div className="flex flex-col w-full">
-          <div className="flex justify-between w-full items-center">
-            <span className="font-semibold text-sm sm:text-base truncate">
+        <div className='flex flex-col w-full'>
+          <div className='flex justify-between w-full items-center'>
+            <span className='font-semibold text-sm sm:text-base truncate'>
               {author.name}
             </span>
 
-            <div className="flex items-center gap-2 sm:gap-4 text-xs text-gray-600">
-              <div className="flex items-center gap-1">
-                <button className="rounded-full hover:bg-gray-100 p-1.5 sm:p-2 transition">
-                  <IconFlag className="w-[1.5em]! h-[1.5em]!" />
-                </button>
-                <span>{reportCount}</span>
-              </div>
+            {user && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className='rounded-full hover:bg-gray-100 data-[state=open]:bg-gray-100 p-1.5 sm:p-2 transition text-xs'>
+                    <IconDots className='w-[1.5em]! h-[1.5em]!' />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  {isOwner && (
+                    <DropdownMenuItem onClick={onEditClick}>
+                      <IconEdit className='w-[1.5em]! h-[1.5em]!' />
+                      <span className='font-poppins'>Edit Comment</span>
+                    </DropdownMenuItem>
+                  )}
+                  {!isOwner && (
+                    <DropdownMenuItem onClick={onReportClick}>
+                      <IconFlag className='w-[1.5em]! h-[1.5em]!' />
+                      <span className='font-poppins'>Report Comment</span>
+                    </DropdownMenuItem>
+                  )}
 
-              {(isAdmin || isOwner) && (
-                <button className="rounded-full hover:bg-gray-100 p-1.5 sm:p-2 transition">
-                  <IconTrash className="w-[1.5em]! h-[1.5em]!" />
-                </button>
-              )}
-            </div>
+                  {(isAdmin || isOwner) && (
+                    <DropdownMenuGroup>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        variant='destructive'
+                        onClick={onDeleteClick}
+                      >
+                        <IconTrash className='w-[1.5em]! h-[1.5em]!' />
+                        <span className='font-poppins'>Delete Comment</span>
+                      </DropdownMenuItem>
+                    </DropdownMenuGroup>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
           </div>
-          <div className="flex items-center gap-1 text-xs text-gray-600">
-            <IconClock className="w-[1.5em]! h-[1.5em]!" />
+          <div className='flex items-center gap-1 text-xs text-gray-600'>
+            <IconClock className='w-[1.5em]! h-[1.5em]!' />
             <span>
               {formattedDate}, {formattedTime}
             </span>
           </div>
         </div>
       </div>
-      <div className="min-w-0">
-        <p className="text-sm">{content}</p>
+      <div className='min-w-0'>
+        <p className='text-sm'>{content}</p>
       </div>
-      {imageUrl && (
-        <div className="aspect-video w-full relative bg-muted shrink-0 rounded-lg overflow-hidden">
-          <Image
-            src={imageUrl}
-            alt="Post Image"
-            fill
-            className="object-cover"
-          />
+      {image && (
+        <div className='aspect-video w-full relative bg-muted shrink-0 rounded-lg overflow-hidden'>
+          <Image src={image} alt='Post Image' fill className='object-cover' />
         </div>
       )}
     </div>

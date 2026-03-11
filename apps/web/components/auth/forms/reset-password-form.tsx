@@ -91,45 +91,45 @@ export default function ResetPasswordForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="space-y-2">
-        <Label htmlFor="new_password">New Password</Label>
+    <form onSubmit={handleSubmit} className='space-y-6'>
+      <div className='space-y-2'>
+        <Label htmlFor='new_password'>New Password</Label>
         <Input
-          id="new_password"
-          name="new_password"
-          type="password"
-          placeholder="Enter your new password"
-          className="rounded-full px-4 shadow-sm"
+          id='new_password'
+          name='new_password'
+          type='password'
+          placeholder='Enter your new password'
+          className='rounded-full px-4 shadow-sm'
         />
         {state?.errors &&
           'new_password' in state.errors &&
           state.errors.new_password && (
-            <p className="text-red-500 text-sm">{state.errors.new_password}</p>
+            <p className='text-red-500 text-sm'>{state.errors.new_password}</p>
           )}
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="confirm_new_password">Confirm Password</Label>
+      <div className='space-y-2'>
+        <Label htmlFor='confirm_new_password'>Confirm Password</Label>
         <Input
-          id="confirm_new_password"
-          name="confirm_new_password"
-          type="password"
-          placeholder="Re-enter your new password"
-          className="rounded-full px-4 shadow-sm"
+          id='confirm_new_password'
+          name='confirm_new_password'
+          type='password'
+          placeholder='Re-enter your new password'
+          className='rounded-full px-4 shadow-sm'
         />
         {state?.errors &&
           'confirm_new_password' in state.errors &&
           state.errors.confirm_new_password && (
-            <p className="text-red-500 text-sm">
+            <p className='text-red-500 text-sm'>
               {state.errors.confirm_new_password}
             </p>
           )}
         {state?.errors && '_form' in state.errors && state.errors._form && (
-          <p className="text-red-500 text-sm">{state.errors._form}</p>
+          <p className='text-red-500 text-sm'>{state.errors._form}</p>
         )}
       </div>
 
-      <Button disabled={isPending} className="w-full rounded-full">
+      <Button disabled={isPending} className='w-full rounded-full'>
         {isPending ? (
           <>
             Resetting... <Spinner />
