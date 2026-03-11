@@ -7,6 +7,7 @@ import { Logger, LoggerErrorInterceptor } from 'nestjs-pino';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { cleanupOpenApiDoc } from 'nestjs-zod';
 import basicAuth from 'express-basic-auth';
+import { doubleCsrfProtection } from './csrf';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { bufferLogs: true });
@@ -22,6 +23,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new LoggerErrorInterceptor());
   app.use(helmet());
   app.use(cookieParser());
+  app.use(doubleCsrfProtection);
 
   if (process.env.NODE_ENV === 'production') {
     app.use(

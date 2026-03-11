@@ -19,6 +19,7 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { JwtAuthGuard } from './auth/guards/jwt-auth/jwt-auth.guard';
 import { RolesGuard } from './common/guards/roles/roles.guard';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -90,5 +91,6 @@ import { RolesGuard } from './common/guards/roles/roles.guard';
       useClass: HttpExceptionFilter,
     },
   ],
+  controllers: [AppController],
 })
 export class AppModule {}
