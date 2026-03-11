@@ -3,6 +3,7 @@ import { inter, poppins } from '@/config/fonts';
 import './globals.css';
 import SWRProvider from '@/providers/swr-provider';
 import { Toaster } from '@/components/ui/sonner';
+import CsrfProvider from '@/providers/csrf-provider';
 
 export const metadata: Metadata = {
   title: 'FloodWatch',
@@ -20,7 +21,9 @@ export default async function RootLayout({
         className={`${inter.className} ${poppins.variable} bg-[#EAEAEA] antialiased min-h-screen`}
         suppressHydrationWarning
       >
-        <SWRProvider fallback={{}}>{children}</SWRProvider>
+        <SWRProvider fallback={{}}>
+          <CsrfProvider>{children}</CsrfProvider>
+        </SWRProvider>
         <Toaster richColors theme='light' position='top-center' />
       </body>
     </html>

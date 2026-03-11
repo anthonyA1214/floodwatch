@@ -37,6 +37,7 @@ async function refreshToken(cookieHeader: string): Promise<string | null> {
 async function apiFetchServerRaw(path: string, init: RequestInit = {}) {
   const cookieStore = await cookies();
   const cookieHeader = cookieStore.toString();
+  const csrfToken = cookieStore.get('csrf_token')?.value ?? '';
 
   async function request(overrideCookieHeader?: string) {
     return fetch(`${getApiUrl()}${path}`, {
@@ -44,6 +45,7 @@ async function apiFetchServerRaw(path: string, init: RequestInit = {}) {
       headers: {
         ...(init.headers || {}),
         Cookie: overrideCookieHeader || cookieHeader,
+        'x-csrf-token': csrfToken,
       },
       cache: 'no-store',
     });
