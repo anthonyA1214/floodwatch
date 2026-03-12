@@ -1,7 +1,7 @@
 'use client';
 
 import { ColumnDef } from '@tanstack/react-table';
-import { SafetyLocationsDto } from '@repo/schemas';
+import { SafetyDetailInput } from '@repo/schemas';
 import { IconEye, IconTrash } from '@tabler/icons-react';
 import {
   Tooltip,
@@ -12,7 +12,7 @@ import { cn } from '@/lib/utils';
 import { SAFETY_TYPE_COLOR_MAP } from '@/lib/utils/get-color-map';
 import { useSafetyLocationsDialog } from '@/contexts/safety-locations-dialog-context';
 
-export const columns: ColumnDef<SafetyLocationsDto>[] = [
+export const columns: ColumnDef<SafetyDetailInput>[] = [
   {
     accessorKey: 'location',
     header: 'LOCATION',
@@ -63,11 +63,7 @@ export const columns: ColumnDef<SafetyLocationsDto>[] = [
   },
 ];
 
-function ActionCell({
-  safetyLocation,
-}: {
-  safetyLocation: SafetyLocationsDto;
-}) {
+function ActionCell({ safetyLocation }: { safetyLocation: SafetyDetailInput }) {
   const { openDialog } = useSafetyLocationsDialog();
 
   return (
