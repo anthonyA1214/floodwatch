@@ -21,6 +21,9 @@ async function refreshToken() {
       const res = await fetch(`${getApiUrl()}/auth/refresh`, {
         method: 'POST',
         credentials: 'include',
+        headers: {
+          'x-csrf-token': getCsrfToken() || '', // include CSRF token in headers
+        },
       });
 
       if (!res.ok) {

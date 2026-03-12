@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { ReportMapPinInput } from '@repo/schemas';
+import { ReportMapPinsInput } from '@repo/schemas';
 
 export function useReportPopup(
-  reportMapPins: ReportMapPinInput[] | undefined,
+  reportMapPins: ReportMapPinsInput[] | undefined,
   flyTo: (report: { longitude: number; latitude: number }) => void,
 ) {
-  const [popupReport, setPopupReport] = useState<ReportMapPinInput | null>(
+  const [popupReport, setPopupReport] = useState<ReportMapPinsInput | null>(
     null,
   );
 
@@ -18,7 +18,7 @@ export function useReportPopup(
   const currentReportIndex = currentIndex + 1;
   const total = reportMapPins?.length ?? 0;
 
-  const openPopup = (report: ReportMapPinInput) => {
+  const openPopup = (report: ReportMapPinsInput) => {
     setPopupReport(report);
     flyTo(report);
   };

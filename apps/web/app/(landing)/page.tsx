@@ -4,7 +4,7 @@ import LatestNewsReportSection from '@/components/landing/sections/latest-news-r
 import SafetyGuidesSection from '@/components/landing/sections/safety-guides-section';
 import SafetyFeaturesSection from '@/components/landing/sections/features-section';
 
-export default function Page() {
+export default function LandingPage() {
   return (
     <>
       <HeroSection />

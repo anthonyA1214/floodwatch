@@ -5,8 +5,9 @@ import React, { createContext, useContext, useState } from 'react';
 
 type MapActiveOverlay =
   | { type: 'report'; reportId: number }
-  | { type: 'affected' }
-  | { type: 'safety' }
+  | { type: 'safety'; safetyId: number }
+  | { type: 'affected-list' }
+  | { type: 'safety-list' }
   | { type: 'notification' }
   | { type: 'profile' }
   | null;
@@ -20,7 +21,8 @@ interface MapOverlayContextType {
   hasPrev: boolean;
   currentReportIndex: number;
   totalReports: number;
-  openLocations: (type: 'affected' | 'safety') => void;
+  openSafety: (safetyId: number) => void;
+  openLocations: (type: 'affected-list' | 'safety-list') => void;
   toggle: (type: 'profile' | 'notification') => void;
   close: () => void;
 }
@@ -38,7 +40,11 @@ export function MapOverlayProvider({
     setActiveOverlay({ type: 'report', reportId });
   };
 
-  const openLocations = (type: 'affected' | 'safety') => {
+  const openSafety = (safetyId: number) => {
+    setActiveOverlay({ type: 'safety', safetyId });
+  };
+
+  const openLocations = (type: 'affected-list' | 'safety-list') => {
     setActiveOverlay((current) => (current?.type === type ? null : { type }));
   };
 
@@ -68,6 +74,7 @@ export function MapOverlayProvider({
       value={{
         activeOverlay,
         openReport,
+        openSafety,
         openLocations,
         toggle,
         close,

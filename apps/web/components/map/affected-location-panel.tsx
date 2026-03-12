@@ -6,6 +6,7 @@ import {
   IconClock,
   IconExclamationCircle,
   IconHelpCircle,
+  IconInfoCircle,
   IconPoint,
   IconSend,
   IconShield,
@@ -28,20 +29,20 @@ import {
 } from '@/components/ui/avatar';
 import Avatar from 'boring-avatars';
 import { Button } from '../ui/button';
-import { ReportedLocationPanelSkeleton } from './skeletons/reported-location-panel-skeleton';
+import { AffectedLocationPanelSkeleton } from './skeletons/affected-location-panel-skeleton';
 import NoPhotoEmpty from '../shared/no-photo-empty';
 import CommentsList from '../shared/comments-list';
 import VoteButtons from './vote-buttons';
 import ReportPaginationOverlay from './report-pagination-overlay';
 import { useMyVote } from '@/hooks/use-my-vote';
+import { useMapOverlay } from '@/contexts/map-overlay-context';
 
-export default function ReportedLocationPanel({
+export default function AffectedLocationPanel({
   reportId,
-  onClose,
 }: {
   reportId: number;
-  onClose?: () => void;
 }) {
+  const { close } = useMapOverlay();
   const { isLoading: isMyVoteLoading } = useMyVote(reportId);
   const { reportDetail, isLoading } = useReportDetail(reportId);
 
@@ -76,13 +77,13 @@ export default function ReportedLocationPanel({
       <button
         className='absolute bg-white top-1/2 translate-x-full right-0 h-16 -translate-y-1/2 
         rounded-r-2xl ps-1 py-1 pr-1.5 text-xs z-30 shadow-[4px_0px_6px_-1px_rgba(0,0,0,0.1)]'
-        onClick={onClose}
+        onClick={close}
       >
         <IconChevronLeft className='w-[1.5em]! h-[1.5em]!' />
       </button>
 
       {isLoading || isMyVoteLoading || !reportDetail ? (
-        <ReportedLocationPanelSkeleton />
+        <AffectedLocationPanelSkeleton />
       ) : (
         <div
           ref={scrollRef}
@@ -274,6 +275,18 @@ export default function ReportedLocationPanel({
 
               {/*  */}
             </div>
+
+            {/* description */}
+            {reportDetail?.description && (
+              <div className='flex flex-col border rounded-lg text-xs lg:text-sm p-3 lg:p-4 gap-0.5'>
+                <div className='flex items-center gap-1.5 lg:gap-2 opacity-50'>
+                  <IconInfoCircle className='w-[1.5em]! h-[1.5em]!' />
+                  <span className='font-poppins font-medium'>DESCRIPTION</span>
+                </div>
+
+                <p>{reportDetail?.description}</p>
+              </div>
+            )}
 
             {/* credibility and confirm and deny */}
             {!reportDetail?.isAdmin && (

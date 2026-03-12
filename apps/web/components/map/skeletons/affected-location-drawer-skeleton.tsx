@@ -1,7 +1,7 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 
-export function ReportedLocationDrawerSkeleton() {
+export function AffectedLocationDrawerSkeleton() {
   return (
     <div className='flex-1 min-h-0 overflow-y-auto'>
       <div className='flex flex-col max-w-lg mx-auto w-full pt-5 gap-2'>

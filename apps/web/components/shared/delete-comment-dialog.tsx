@@ -79,7 +79,7 @@ export default function DeleteCommentDialog({
             <button
               type='button'
               onClick={onClose}
-              className='flex-1 flex items-center gap-2 justify-center bg-secondary hover:bg-secondary/80 text-secondary-foreground text-sm py-2.5 px-4 rounded-xl font-medium transition-colors disabled:opacity-50'
+              className='flex-1 flex items-center gap-2 justify-center bg-secondary hover:bg-secondary/80 text-secondary-foreground text-sm py-2.5 px-4 rounded-lg font-medium transition-colors disabled:opacity-50'
             >
               <span>CANCEL</span>
             </button>
@@ -88,7 +88,7 @@ export default function DeleteCommentDialog({
               type='button'
               onClick={handleSubmit}
               disabled={isPending}
-              className='flex-1 flex items-center gap-2 justify-center bg-destructive hover:bg-destructive/90 text-white text-sm py-2.5 px-4 rounded-xl font-medium transition-colors disabled:opacity-50'
+              className='flex-1 flex items-center gap-2 justify-center bg-destructive hover:bg-destructive/90 text-white text-sm py-2.5 px-4 rounded-lg font-medium transition-colors disabled:opacity-50'
             >
               {isPending ? (
                 <>

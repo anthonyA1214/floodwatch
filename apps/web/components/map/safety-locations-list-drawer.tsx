@@ -14,20 +14,18 @@ import { Separator } from '../ui/separator';
 import { IconShieldCheck } from '@tabler/icons-react';
 import SafetyLocationsCard from './safety-locations-card';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import { useMapOverlay } from '@/contexts/map-overlay-context';
 
 const snapPoints = ['0px', '355px', 1];
 
-export default function SafetyLocationsDrawer({
-  onClose,
-}: {
-  onClose?: () => void;
-}) {
+export default function SafetyLocationsListDrawer() {
   const [snap, setSnap] = useState<number | string | null>(snapPoints[1]);
   const [open, setOpen] = useState(true);
+  const { close } = useMapOverlay();
 
   const handleOpenChange = (isOpen: boolean) => {
     setOpen(isOpen);
-    if (!isOpen) onClose?.();
+    if (!isOpen) close();
   };
 
   return (

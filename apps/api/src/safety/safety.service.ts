@@ -3,12 +3,11 @@ import {
   CreateSafetyLocationInput,
   SafetyLocationQueryDto,
 } from '@repo/schemas';
-import { and, count, desc, eq, like, or, sql } from 'drizzle-orm';
+import { and, count, eq, like, or, sql } from 'drizzle-orm';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { DRIZZLE } from 'src/drizzle/drizzle-connection';
 import { safety } from 'src/drizzle/schemas';
 import { type DrizzleDB } from 'src/drizzle/types/drizzle';
-import { GeocoderService } from 'src/geocoder/geocoder.service';
 import { ImagesService } from 'src/images/images.service';
 
 @Injectable()
@@ -17,24 +16,37 @@ export class SafetyService {
     @Inject(DRIZZLE) private db: DrizzleDB,
     private imagesService: ImagesService,
     private cloudinaryService: CloudinaryService,
-    private geocoderService: GeocoderService,
   ) {}
 
   async findAllPublic() {
     return await this.db
       .select({
         id: safety.id,
-        location: safety.location,
-        address: safety.address,
-        description: safety.description,
         latitude: safety.latitude,
         longitude: safety.longitude,
         type: safety.type,
+      })
+      .from(safety);
+  }
+
+  async findOnePublic(safetyId: number) {
+    const [result] = await this.db
+      .select({
+        id: safety.id,
+        latitude: safety.latitude,
+        longitude: safety.longitude,
+        location: safety.location,
+        address: safety.address,
+        description: safety.description,
         image: safety.image,
+        type: safety.type,
         createdAt: safety.createdAt,
       })
       .from(safety)
-      .orderBy(desc(safety.createdAt));
+      .where(eq(safety.id, safetyId))
+      .limit(1);
+
+    return result;
   }
 
   async findAll(safetyLocationQuery: SafetyLocationQueryDto) {

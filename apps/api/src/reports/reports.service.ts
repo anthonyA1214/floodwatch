@@ -34,8 +34,7 @@ export class ReportsService {
         severity: reports.severity,
         status: reports.status,
       })
-      .from(reports)
-      .orderBy(desc(reports.createdAt));
+      .from(reports);
   }
 
   async findOnePublic(reportId: number) {

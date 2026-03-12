@@ -9,6 +9,7 @@ import {
   IconClock,
   IconExclamationCircle,
   IconHelpCircle,
+  IconInfoCircle,
   IconPoint,
   IconSend,
   IconShield,
@@ -31,28 +32,28 @@ import { Separator } from '@/components/ui/separator';
 import { useReportDetail } from '@/hooks/use-report-detail';
 import NoPhotoEmpty from '../shared/no-photo-empty';
 import { Button } from '../ui/button';
-import { ReportedLocationDrawerSkeleton } from './skeletons/reported-location-drawer-skeleton';
+import { AffectedLocationDrawerSkeleton } from './skeletons/affected-location-drawer-skeleton';
 import CommentsList from '../shared/comments-list';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import ReportPaginationOverlay from './report-pagination-overlay';
 import { useMyVote } from '@/hooks/use-my-vote';
 import VoteButtons from './vote-buttons';
+import { useMapOverlay } from '@/contexts/map-overlay-context';
 
 const snapPoints = ['0px', '355px', 1];
 
-export default function ReportedLocationDrawer({
+export default function AffectedLocationDrawer({
   reportId,
-  onClose,
 }: {
   reportId: number;
-  onClose?: () => void;
 }) {
+  const { close } = useMapOverlay();
   const [snap, setSnap] = useState<number | string | null>(snapPoints[1]);
   const [open, setOpen] = useState(true);
 
   const handleOpenChange = (isOpen: boolean) => {
     setOpen(isOpen);
-    if (!isOpen) onClose?.();
+    if (!isOpen) close?.();
   };
 
   const { reportDetail, isLoading } = useReportDetail(reportId);
@@ -114,7 +115,7 @@ export default function ReportedLocationDrawer({
         <Drawer.Handle className='w-16! my-3! rounded-full! shrink-0!' />
 
         {isLoading || isMyVoteLoading || !reportDetail ? (
-          <ReportedLocationDrawerSkeleton />
+          <AffectedLocationDrawerSkeleton />
         ) : (
           <div
             ref={scrollRef}
@@ -314,6 +315,20 @@ export default function ReportedLocationDrawer({
                   </div>
                 )}
               </div>
+
+              {/* description */}
+              {reportDetail?.description && (
+                <div className='flex flex-col border rounded-lg text-xs lg:text-sm p-3 lg:p-4 gap-0.5'>
+                  <div className='flex items-center gap-1.5 lg:gap-2 opacity-50'>
+                    <IconInfoCircle className='w-[1.5em]! h-[1.5em]!' />
+                    <span className='font-poppins font-medium'>
+                      DESCRIPTION
+                    </span>
+                  </div>
+
+                  <p>{reportDetail?.description}</p>
+                </div>
+              )}
 
               {/* credibility and confirm and deny */}
               {!reportDetail?.isAdmin && (
