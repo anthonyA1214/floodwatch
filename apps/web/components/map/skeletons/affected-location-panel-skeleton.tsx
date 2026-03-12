@@ -1,7 +1,7 @@
 import { Skeleton } from '@/components/ui/skeleton';
 import { Separator } from '@/components/ui/separator';
 
-export function ReportedLocationPanelSkeleton() {
+export function AffectedLocationPanelSkeleton() {
   return (
     <div className='flex-1 min-h-0 overflow-y-auto'>
       {/* image */}

@@ -157,10 +157,8 @@ export default function CreateSafetyLocationDialog() {
       setState({ status: 'success', errors: null });
       toast.success('Safety location created successfully!');
       resetForm();
-      mutate(SWR_KEYS.safetyLocations);
-      mutate(
-        (key) => Array.isArray(key) && key[0] === SWR_KEYS.safetyLocationsAdmin,
-      );
+      mutate(SWR_KEYS.safetyMapPins);
+      mutate((key) => Array.isArray(key) && key[0] === SWR_KEYS.safetyAdmin);
       setOpen(false);
     } catch (err) {
       console.error('Failed to create safety location:', err);

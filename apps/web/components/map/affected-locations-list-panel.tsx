@@ -10,18 +10,17 @@ import {
   SelectValue,
 } from '../ui/select';
 import { Separator } from '../ui/separator';
+import { useMapOverlay } from '@/contexts/map-overlay-context';
 
-export default function AffectedLocationsPanel({
-  onClose,
-}: {
-  onClose?: () => void;
-}) {
+export default function AffectedLocationsListPanel() {
+  const { close } = useMapOverlay();
+
   return (
-    <div className='relative w-full h-full bg-white z-50 min-h-0 flex flex-col pointer-events-auto'>
+    <div className='relative w-full h-full bg-white z-50 min-h-0 flex flex-col pointer-events-auto pt-16'>
       <button
         className='absolute bg-white top-1/2 translate-x-full right-0 h-16 -translate-y-1/2 
         rounded-r-2xl ps-1 py-1 pr-1.5 text-xs z-30 shadow-[4px_0px_6px_-1px_rgba(0,0,0,0.1)]'
-        onClick={onClose}
+        onClick={close}
       >
         <IconChevronLeft className='w-[1.5em]! h-[1.5em]!' />
       </button>

@@ -69,7 +69,10 @@ export default function FloodReportPopup({
     return <FloodReportPopupSkeleton />;
 
   return (
-    <div className='flex flex-col justify-center rounded-lg overflow-hidden w-[300px] max-h-[70vh] overflow-y-auto bg-white'>
+    <div
+      className='flex flex-col justify-center rounded-lg overflow-hidden w-[300px] max-h-[70vh] overflow-y-auto bg-white'
+      onClick={(e) => e.stopPropagation()}
+    >
       {/* header */}
       <div className='flex items-center justify-between bg-[#0066CC] p-3 text-white rounded-b-2xl'>
         <span className='font-poppins font-medium text-sm'>FLOOD REPORT</span>

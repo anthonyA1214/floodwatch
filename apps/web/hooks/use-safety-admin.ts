@@ -7,7 +7,7 @@ import { getSafetyLocationsAdmin } from '@/lib/fetchers/get-safety-admin';
 
 export function useSafetyLocationsAdmin(params: SafetyLocationQueryInput) {
   const { data, error, isLoading, isValidating, mutate } = useSWR(
-    [SWR_KEYS.safetyLocationsAdmin, params],
+    [SWR_KEYS.safetyAdmin, params],
     () => getSafetyLocationsAdmin(params),
     { keepPreviousData: true },
   );

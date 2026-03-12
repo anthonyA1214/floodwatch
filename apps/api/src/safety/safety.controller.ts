@@ -5,6 +5,8 @@ import {
   Get,
   HttpCode,
   HttpStatus,
+  Param,
+  ParseIntPipe,
   Post,
   Query,
   Request,
@@ -41,6 +43,13 @@ export class SafetyController {
   @HttpCode(HttpStatus.OK)
   async findAll(@Query() safetyLocationQuery: SafetyLocationQueryDto) {
     return await this.safetyService.findAll(safetyLocationQuery);
+  }
+
+  @Public()
+  @Get(':id')
+  @HttpCode(HttpStatus.OK)
+  async findOnePublic(@Param('id', ParseIntPipe) id: number) {
+    return await this.safetyService.findOnePublic(id);
   }
 
   @Roles('admin')

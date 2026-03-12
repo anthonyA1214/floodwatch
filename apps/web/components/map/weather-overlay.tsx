@@ -20,9 +20,7 @@ export default function WeatherOverlay() {
         const pos = await getUserLocation();
         setLocation(pos);
       } catch {
-        toast.error(
-          'Unable to retrieve your location. Please allow location access and refresh the page to see weather information.',
-        );
+        toast.error('Unable to retrieve your location.');
       }
     };
 

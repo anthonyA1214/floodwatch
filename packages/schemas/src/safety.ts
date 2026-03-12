@@ -10,7 +10,14 @@ export const createSafetyLocationSchema = z.object({
   type: z.enum(['shelter', 'hospital']),
 });
 
-export const safetyLocationsSchema = z.object({
+export const safetyMapPinsSchema = z.object({
+  id: z.number(),
+  latitude: z.number(),
+  longitude: z.number(),
+  type: z.enum(['shelter', 'hospital']),
+});
+
+export const safetyDetailSchema = z.object({
   id: z.string(),
   latitude: z.number(),
   longitude: z.number(),
@@ -19,7 +26,7 @@ export const safetyLocationsSchema = z.object({
   address: z.string(),
   description: z.string().nullable(),
   image: z.string().nullable(),
-  createdAt: z.string(),
+  createdAt: z.date(),
 });
 
 export const safetyLocationQuerySchema = z.object({
@@ -32,7 +39,8 @@ export const safetyLocationQuerySchema = z.object({
 export class CreateSafetyLocationDto extends createZodDto(
   createSafetyLocationSchema,
 ) {}
-export class SafetyLocationsDto extends createZodDto(safetyLocationsSchema) {}
+export class safetyMapPinsDto extends createZodDto(safetyMapPinsSchema) {}
+export class safetyDetailDto extends createZodDto(safetyDetailSchema) {}
 export class SafetyLocationQueryDto extends createZodDto(
   safetyLocationQuerySchema,
 ) {}
@@ -40,7 +48,8 @@ export class SafetyLocationQueryDto extends createZodDto(
 export type CreateSafetyLocationInput = z.infer<
   typeof createSafetyLocationSchema
 >;
-export type SafetyLocationsInput = z.infer<typeof safetyLocationsSchema>;
+export type SafetyMapPinsInput = z.infer<typeof safetyMapPinsSchema>;
+export type SafetyDetailInput = z.infer<typeof safetyDetailSchema>;
 export type SafetyLocationQueryInput = z.infer<
   typeof safetyLocationQuerySchema
 >;

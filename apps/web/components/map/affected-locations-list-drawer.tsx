@@ -14,20 +14,18 @@ import {
 import { Separator } from '../ui/separator';
 import { IconAlertTriangle } from '@tabler/icons-react';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import { useMapOverlay } from '@/contexts/map-overlay-context';
 
 const snapPoints = ['0px', '355px', 1];
 
-export default function AffectedLocationsDrawer({
-  onClose,
-}: {
-  onClose?: () => void;
-}) {
+export default function AffectedLocationsListDrawer() {
+  const { close } = useMapOverlay();
   const [snap, setSnap] = useState<number | string | null>(snapPoints[1]);
   const [open, setOpen] = useState(true);
 
   const handleOpenChange = (isOpen: boolean) => {
     setOpen(isOpen);
-    if (!isOpen) onClose?.();
+    if (!isOpen) close?.();
   };
 
   return (

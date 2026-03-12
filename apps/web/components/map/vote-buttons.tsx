@@ -9,12 +9,12 @@ import { IconThumbUp, IconThumbUpFilled, IconX } from '@tabler/icons-react';
 import { useState } from 'react';
 
 export default function VoteButtons({ reportId }: { reportId: number }) {
-  const { myVote, mutateMyVote } = useMyVote(reportId);
+  const { user } = useUser();
+  const { myVote, mutateMyVote } = useMyVote(reportId, !!user);
   const { mutateReportDetail } = useReportDetail(reportId);
   const [pendingAction, setPendingAction] = useState<'confirm' | 'deny' | null>(
     null,
   );
-  const { user } = useUser();
 
   const handleVote = async (action: 'confirm' | 'deny') => {
     if (pendingAction) return; // Prevent multiple rapid votes

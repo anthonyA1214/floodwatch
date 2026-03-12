@@ -1,8 +1,8 @@
 import { apiFetchClient } from '@/lib/api-fetch-client';
 import { SWR_KEYS } from '@/lib/constants/swr-keys';
 
-export async function getSafetyLocations() {
-  const res = await apiFetchClient(SWR_KEYS.safetyLocations, {
+export async function getSafetyMapPins() {
+  const res = await apiFetchClient(SWR_KEYS.safetyMapPins, {
     method: 'GET',
   });
 
