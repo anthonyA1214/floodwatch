@@ -11,7 +11,7 @@ export default function LocationMonitorCard() {
   const [activeTab, setActiveTab] = useState<'affected' | 'safety'>('affected');
 
   return (
-    <div className='rounded-2xl border border-slate-200 bg-white p-6 shadow-sm'>
+    <div className='h-full rounded-2xl border border-slate-200 bg-white p-6 shadow-sm'>
       {/* header */}
       <div className='mb-6 flex items-center justify-between'>
         <div className='flex items-center gap-2'>

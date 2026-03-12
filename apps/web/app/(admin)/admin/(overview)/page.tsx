@@ -70,23 +70,24 @@ export default function DashboardPage() {
           <WeatherInformationCard />
 
           {/* Row 1: Box 1 and Box 2 */}
-          <div className='grid grid-cols-2 gap-8'>
-            <div>
+          {/* Row 1: Box 1 and Box 2 */}
+          <div className='grid grid-cols-2 gap-8 items-stretch'>
+            <div className='h-full'>
               <LocationMonitorCard />
             </div>
 
-            <div>
+            <div className='h-full'>
               <NeedsAttentionCard />
             </div>
           </div>
 
           {/* Row 2: Box 3 and Box 4 */}
-          <div className='grid grid-cols-2 gap-8'>
-            <div>
+          <div className='grid grid-cols-2 gap-8 items-stretch'>
+            <div className='h-full'>
               <MonthlyReportsChart />
             </div>
 
-            <div>
+            <div className='h-full'>
               <AlertDistributionPieChart />
             </div>
           </div>

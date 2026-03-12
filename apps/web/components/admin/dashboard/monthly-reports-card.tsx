@@ -38,7 +38,7 @@ const chartConfig = {
 
 export function MonthlyReportsChart() {
   return (
-    <Card>
+    <Card className='h-full'>
       <CardHeader>
         <CardTitle>Monthly Reports</CardTitle>
         <CardDescription>
