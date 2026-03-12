@@ -1,6 +1,9 @@
 'use client';
 
+import { AlertDistributionPieChart } from '@/components/admin/dashboard/alert-distribution-card';
 import LocationMonitorCard from '@/components/admin/dashboard/location-monitor-card';
+import { MonthlyReportsChart } from '@/components/admin/dashboard/monthly-reports-card';
+import NeedsAttentionCard from '@/components/admin/dashboard/needs-attention-card';
 import StatCard from '@/components/admin/dashboard/stat-card';
 import WeatherInformationCard from '@/components/admin/dashboard/weather-information-card';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -69,22 +72,22 @@ export default function DashboardPage() {
           {/* Row 1: Box 1 and Box 2 */}
           <div className='grid grid-cols-2 gap-8'>
             <div>
-              {/* Box 1 content goes here */} <LocationMonitorCard />
+              <LocationMonitorCard />
             </div>
 
             <div>
-              {/* Box 2 content goes here */} <h1> Hello World </h1>
+              <NeedsAttentionCard />
             </div>
           </div>
 
           {/* Row 2: Box 3 and Box 4 */}
           <div className='grid grid-cols-2 gap-8'>
             <div>
-              {/* Box 3 content goes here */} <h1> Hello World </h1>
+              <MonthlyReportsChart />
             </div>
 
             <div>
-              {/* Box 4 content goes here */} <h1> Hello World </h1>
+              <AlertDistributionPieChart />
             </div>
           </div>
         </div>

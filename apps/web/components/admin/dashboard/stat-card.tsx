@@ -14,7 +14,7 @@ export default function StatCard({
   return (
     <div className='flex items-center rounded-2xl border shadow-md p-6 gap-6'>
       <div
-        className={`rounded-xl p-4 text-2xl`}
+        className={`rounded-full p-4 text-2xl`}
         style={{ color: color, backgroundColor: `${color}25` }}
       >
         <Icon className='w-[1.5em]! h-[1.5em]!' />

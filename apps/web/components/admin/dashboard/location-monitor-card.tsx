@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import { IconArrowRight, IconCircleDot } from '@tabler/icons-react';
 import { Button } from '@/components/ui/button';
+import ActiveFloodAlertsCard from './active-flood-alerts-card';
+import SafetyLocationsCard from './safety-locations-card';
 
 export default function LocationMonitorCard() {
   // toggle state for switching between affected and safety locations
@@ -62,9 +64,23 @@ export default function LocationMonitorCard() {
       {/* content area */}
       <div className='pt-4'>
         {activeTab === 'affected' ? (
-          <div>{/* affected location cards will go here */}</div>
+          <div>
+            <ActiveFloodAlertsCard
+              severity='critical'
+              location='Barangay 176'
+              message='Water level exceeded critical threshold. Immediate evacuation required for Zone A and B.'
+              reportedAt='2026-01-28T10:30:00Z'
+            />
+          </div>
         ) : (
-          <div>{/* safety location cards will go here */}</div>
+          <div>
+            <SafetyLocationsCard
+              type='hospital'
+              name='dito'
+              address='Doon'
+              availability='pwede'
+            />
+          </div>
         )}
       </div>
     </div>

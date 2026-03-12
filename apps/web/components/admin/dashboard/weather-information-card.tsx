@@ -22,15 +22,6 @@ export default function WeatherInformationCard() {
   return (
     /* main weather card container */
     <div className='rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-4'>
-      {/* added: forecast header and location */}
-      {/* dunno what to do still with the fucking header */}
-      {/* <div className='flex items-center justify-between'>
-        <div>
-          <h3 className='font-semibold text-sm text-slate-700'>Forecast</h3>
-          <p className='text-xs text-slate-500'>Caloocan City</p>
-        </div>
-      </div> */}
-
       {/* weekly forecast grid */}
       <div className='grid grid-cols-7 gap-3'>
         {WEATHER_FORECAST.map((weather) => {
