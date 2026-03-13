@@ -49,4 +49,4 @@ async function bootstrap() {
   await app.listen(port);
   console.log('Listening on port:', port);
 }
-bootstrap();
+bootstrap().catch(console.error);

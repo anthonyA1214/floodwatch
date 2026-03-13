@@ -1,12 +1,12 @@
 'use client';
 
-import { ReportMapPinsInput, SafetyMapPinsInput } from '@repo/schemas';
+import { ReportMapPinInput, SafetyMapPinInput } from '@repo/schemas';
 import { useState } from 'react';
 import { useReportMapPins } from './use-report-map-pins';
 
 type ActivePopup =
-  | { type: 'report'; report: ReportMapPinsInput }
-  | { type: 'safety'; safety: SafetyMapPinsInput }
+  | { type: 'report'; report: ReportMapPinInput }
+  | { type: 'safety'; safety: SafetyMapPinInput }
   | null;
 
 export function useMapPopup(
@@ -15,12 +15,12 @@ export function useMapPopup(
   const { reportMapPins } = useReportMapPins();
   const [activePopup, setActivePopup] = useState<ActivePopup>(null);
 
-  const openReportPopup = (report: ReportMapPinsInput) => {
+  const openReportPopup = (report: ReportMapPinInput) => {
     setActivePopup({ type: 'report', report });
     flyTo(report);
   };
 
-  const openSafetyPopup = (safety: SafetyMapPinsInput) => {
+  const openSafetyPopup = (safety: SafetyMapPinInput) => {
     setActivePopup({ type: 'safety', safety });
     flyTo(safety);
   };

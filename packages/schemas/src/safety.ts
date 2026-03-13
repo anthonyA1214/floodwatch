@@ -10,7 +10,7 @@ export const createSafetyLocationSchema = z.object({
   type: z.enum(['shelter', 'hospital']),
 });
 
-export const safetyMapPinsSchema = z.object({
+export const safetyMapPinSchema = z.object({
   id: z.number(),
   latitude: z.number(),
   longitude: z.number(),
@@ -39,7 +39,7 @@ export const safetyLocationQuerySchema = z.object({
 export class CreateSafetyLocationDto extends createZodDto(
   createSafetyLocationSchema,
 ) {}
-export class safetyMapPinsDto extends createZodDto(safetyMapPinsSchema) {}
+export class safetyMapPinDto extends createZodDto(safetyMapPinSchema) {}
 export class safetyDetailDto extends createZodDto(safetyDetailSchema) {}
 export class SafetyLocationQueryDto extends createZodDto(
   safetyLocationQuerySchema,
@@ -48,7 +48,7 @@ export class SafetyLocationQueryDto extends createZodDto(
 export type CreateSafetyLocationInput = z.infer<
   typeof createSafetyLocationSchema
 >;
-export type SafetyMapPinsInput = z.infer<typeof safetyMapPinsSchema>;
+export type SafetyMapPinInput = z.infer<typeof safetyMapPinSchema>;
 export type SafetyDetailInput = z.infer<typeof safetyDetailSchema>;
 export type SafetyLocationQueryInput = z.infer<
   typeof safetyLocationQuerySchema

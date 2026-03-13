@@ -18,7 +18,7 @@ export const createFloodAlertSchema = z.object({
   severity: z.enum(['low', 'moderate', 'high', 'critical']),
 });
 
-export const reportMapPinsSchema = z.object({
+export const reportMapPinSchema = z.object({
   id: z.number(),
   latitude: z.number(),
   longitude: z.number(),
@@ -68,12 +68,12 @@ export const reportQuerySchema = z.object({
 
 export class ReportFloodAlertDto extends createZodDto(reportFloodAlertSchema) {}
 export class CreateFloodAlertDto extends createZodDto(createFloodAlertSchema) {}
-export class ReportMapPinsDto extends createZodDto(reportMapPinsSchema) {}
+export class ReportMapPinDto extends createZodDto(reportMapPinSchema) {}
 export class ReportDetailDto extends createZodDto(reportDetailSchema) {}
 export class ReportQueryDto extends createZodDto(reportQuerySchema) {}
 
 export type ReportFloodAlertInput = z.infer<typeof reportFloodAlertSchema>;
 export type CreateFloodAlertInput = z.infer<typeof createFloodAlertSchema>;
-export type ReportMapPinsInput = z.infer<typeof reportMapPinsSchema>;
+export type ReportMapPinInput = z.infer<typeof reportMapPinSchema>;
 export type ReportDetailInput = z.infer<typeof reportDetailSchema>;
 export type ReportQueryInput = z.infer<typeof reportQuerySchema>;
