@@ -1,20 +1,13 @@
 'use client';
 
 import SearchBar from '@/components/map/search-bar';
-import MapLegend from '@/components/map/map-legend';
 import InteractiveMap, {
   InteractiveMapHandle,
 } from '@/components/map/interactive-map';
 import { Suspense, useRef, useState } from 'react';
 import { useMapOverlay } from '@/contexts/map-overlay-context';
 import { GoogleLinkToastHandler } from '@/components/shared/google-link-toast-handler';
-import {
-  IconAdjustmentsHorizontal,
-  IconCurrentLocation,
-  IconMinus,
-  IconPlus,
-  IconStack2,
-} from '@tabler/icons-react';
+import { IconCurrentLocation, IconMinus, IconPlus } from '@tabler/icons-react';
 import NotificationOverlay from '@/components/map/notification-overlay';
 import ProfileOverlay from '@/components/map/profile-overlay';
 import AffectedLocationOverlay from './affected-location-overlay';
@@ -22,6 +15,8 @@ import AffectedLocationsListOverlay from './affected-locations-list-overlay';
 import SafetyLocationsListOverlay from './safety-locations-list-overlay';
 import WeatherOverlay from './weather-overlay';
 import SafetyLocationOverlay from './safety-location-overlay';
+import MapLegendPopover from './map-legend-popover';
+import MapFilterPopover from './map-filter-popover';
 export type SelectedLocation = {
   longitude: number;
   latitude: number;
@@ -32,7 +27,6 @@ export type SelectedLocation = {
 export default function InteractiveMapPage() {
   const [selectedLocation, setSelectedLocation] =
     useState<SelectedLocation | null>(null);
-  const [showLegend, setShowLegend] = useState(false);
   const { activeOverlay } = useMapOverlay();
   const interactiveMapRef = useRef<InteractiveMapHandle>(null);
 
@@ -107,31 +101,10 @@ export default function InteractiveMapPage() {
           </div>
 
           {/* toggle legend */}
-          <div className='relative flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 pointer-events-auto'>
-            <button
-              onClick={() => setShowLegend(!showLegend)}
-              className='aspect-square hover:bg-gray-200 rounded-md p-1'
-              title='Toggle Legend'
-            >
-              <IconStack2 className='w-[1.5em]! h-[1.5em]!' strokeWidth={1.5} />
-            </button>
-            <div className='absolute top-full right-0 mt-2'>
-              <MapLegend show={showLegend} />
-            </div>
-          </div>
+          <MapLegendPopover />
 
           {/*  */}
-          <div className='flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 pointer-events-auto'>
-            <button
-              className='aspect-square hover:bg-gray-200 rounded-md p-1'
-              title='Filter'
-            >
-              <IconAdjustmentsHorizontal
-                className='w-[1.5em]! h-[1.5em]!'
-                strokeWidth={1.5}
-              />
-            </button>
-          </div>
+          <MapFilterPopover />
         </div>
 
         {(activeOverlay?.type === 'notification' ||

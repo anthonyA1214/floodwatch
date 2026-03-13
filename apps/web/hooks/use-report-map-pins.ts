@@ -3,11 +3,11 @@
 import useSWR from 'swr';
 import { SWR_KEYS } from '@/lib/constants/swr-keys';
 import { getReportMapPins } from '@/lib/fetchers/get-report-map-pins';
-import { ReportMapPinsInput } from '@repo/schemas';
+import { ReportMapPinInput } from '@repo/schemas';
 
 export function useReportMapPins() {
   const { data, error, isLoading, isValidating, mutate } = useSWR<
-    ReportMapPinsInput[]
+    ReportMapPinInput[]
   >(SWR_KEYS.reportMapPins, getReportMapPins);
 
   return {

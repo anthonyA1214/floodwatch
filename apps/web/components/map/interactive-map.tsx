@@ -31,6 +31,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { useMapOverlay } from '@/contexts/map-overlay-context';
 import { useMapPopup } from '@/hooks/use-map-popup';
 import SafetyLocationPopup from './safety-location-popup';
+import { useMapFilter } from '@/contexts/map-filter-context';
 
 type SelectedLocation = {
   longitude: number;
@@ -61,6 +62,16 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
     const { activeOverlay, openReport, openSafety } = useMapOverlay();
     const isMobile = useIsMobile();
 
+    const { filters } = useMapFilter();
+
+    const filteredReportMapPins = reportMapPins?.filter((r) =>
+      filters.severities.has(r.severity),
+    );
+
+    const filteredSafetyMapPins = safetyMapPins?.filter((r) =>
+      filters.safetyTypes.has(r.type),
+    );
+
     const flyTo = (report: { longitude: number; latitude: number }) => {
       mapRef.current?.flyTo({
         center: [report.longitude, report.latitude],
@@ -85,6 +96,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
       total,
     } = useMapPopup(flyTo);
 
+    // for next and prev panel, fly to the next or prev report
     useEffect(() => {
       if (activeOverlay?.type !== 'report') return;
 
@@ -101,6 +113,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
       });
     }, [activeOverlay, reportMapPins]);
 
+    // map controls exposed to parent component
     useImperativeHandle(ref, () => ({
       zoomIn: () => mapRef.current?.zoomIn(),
       zoomOut: () => mapRef.current?.zoomOut(),
@@ -182,7 +195,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
         )}
 
         {/* Flood report pins */}
-        {reportMapPins?.map((report) => (
+        {filteredReportMapPins?.map((report) => (
           <Fragment key={report.id}>
             <Marker
               key={report.id}
@@ -207,7 +220,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
         ))}
 
         {/* safety locations pin */}
-        {safetyMapPins?.map((safety) => (
+        {filteredSafetyMapPins?.map((safety) => (
           <Marker
             key={safety.id}
             longitude={safety.longitude}

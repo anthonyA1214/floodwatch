@@ -6,7 +6,8 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from '@/components/ui/input-group';
-import { IconSearch } from '@tabler/icons-react';
+import { IconSearch, IconX } from '@tabler/icons-react';
+import { useMapOverlay } from '@/contexts/map-overlay-context';
 
 type NominatimResult = {
   place_id: number;
@@ -173,6 +174,8 @@ export default function SearchBar({
     return () => document.removeEventListener('mousedown', onMouseDown);
   }, []);
 
+  const { activeOverlay, close } = useMapOverlay();
+
   return (
     <div
       ref={wrapperRef}
@@ -230,6 +233,17 @@ export default function SearchBar({
             <IconSearch />
           </button>
         </InputGroupAddon>
+
+        {activeOverlay && (
+          <InputGroupAddon align='inline-end'>
+            <button
+              className='mr-2 opacity-70 hover:opacity-100 transition'
+              onClick={close}
+            >
+              <IconX className='w-[1.5em]! h-[1.5em]!' />
+            </button>
+          </InputGroupAddon>
+        )}
       </InputGroup>
 
       {open && suggestions.length > 0 && (
