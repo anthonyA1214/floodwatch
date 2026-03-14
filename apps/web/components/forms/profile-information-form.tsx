@@ -1,6 +1,6 @@
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { useUser } from '@/hooks/use-user';
+import { useMe } from '@/hooks/use-me';
 import { updateProfile } from '@/lib/actions/update-profile-action';
 import { ActionState } from '@/lib/types/action-state';
 import { useActionState, useEffect } from 'react';
@@ -16,7 +16,7 @@ export default function ProfileInformationForm({
   setIsEditing: (editing: boolean) => void;
   setIsSubmitting: (submitting: boolean) => void;
 }) {
-  const { user, isLoading, isValidating, mutateUser } = useUser();
+  const { me, isLoading, isValidating, mutateMe } = useMe();
 
   const initialState: ActionState = {
     errors: null,
@@ -32,12 +32,12 @@ export default function ProfileInformationForm({
     setIsSubmitting(isUpdating);
     async function handleSuccess() {
       if (state.status === 'success') {
-        await mutateUser();
+        await mutateMe();
         setIsEditing(false);
       }
     }
     handleSuccess();
-  }, [state, setIsEditing, isUpdating, setIsSubmitting, mutateUser]);
+  }, [state, setIsEditing, isUpdating, setIsSubmitting, mutateMe]);
 
   if (isLoading || isValidating) {
     return (
@@ -64,7 +64,7 @@ export default function ProfileInformationForm({
           id='first_name'
           name='first_name'
           type='text'
-          defaultValue={user?.firstName}
+          defaultValue={me?.firstName}
           placeholder='Enter your first name'
           className='rounded-full px-4 shadow-sm'
           disabled={!isEditing}
@@ -83,7 +83,7 @@ export default function ProfileInformationForm({
           id='last_name'
           name='last_name'
           type='text'
-          defaultValue={user?.lastName}
+          defaultValue={me?.lastName}
           placeholder='Enter your last name'
           className='rounded-full px-4 shadow-sm'
           disabled={!isEditing}
@@ -101,7 +101,7 @@ export default function ProfileInformationForm({
           id='email'
           name='email'
           type='email'
-          defaultValue={user?.email}
+          defaultValue={me?.email}
           placeholder='Enter your email'
           className='rounded-full px-4 shadow-sm'
           disabled
@@ -117,7 +117,7 @@ export default function ProfileInformationForm({
           id='home_address'
           name='home_address'
           type='text'
-          defaultValue={user?.homeAddress}
+          defaultValue={me?.homeAddress}
           placeholder='Enter your home address'
           className='rounded-full px-4 shadow-sm'
           disabled={!isEditing}

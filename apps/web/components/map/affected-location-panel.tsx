@@ -75,7 +75,7 @@ export default function AffectedLocationPanel({
   return (
     <div className='relative w-full h-full bg-white z-50 min-h-0 flex flex-col pointer-events-auto'>
       <button
-        className='absolute bg-white top-1/2 translate-x-full right-0 h-16 -translate-y-1/2 
+        className='absolute bg-white top-1/2 translate-x-full right-0 h-16 -translate-y-1/2
         rounded-r-2xl ps-1 py-1 pr-1.5 text-xs z-30 shadow-[4px_0px_6px_-1px_rgba(0,0,0,0.1)]'
         onClick={close}
       >

@@ -11,11 +11,11 @@ import z from 'zod';
 import { mapLoginAuthError } from '@/lib/services/auth/login-auth-error';
 import { Spinner } from '@/components/ui/spinner';
 import { useRouter } from 'next/navigation';
-import { useUser } from '@/hooks/use-user';
+import { useMe } from '@/hooks/use-me';
 import { apiFetchClient } from '@/lib/api-fetch-client';
 
 export default function LoginForm() {
-  const { mutateUser } = useUser();
+  const { mutateMe } = useMe();
   const [isPending, setIsPending] = useState(false);
   const [state, setState] = useState<ActionState>({
     status: null,
@@ -64,7 +64,7 @@ export default function LoginForm() {
       });
 
       form.reset();
-      await mutateUser();
+      await mutateMe();
 
       if (user?.role === 'admin') router.replace('/admin');
       else router.replace('/map');

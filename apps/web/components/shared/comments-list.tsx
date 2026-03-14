@@ -6,7 +6,7 @@ import CommentCard from './comment-card';
 import NoUpdatesYetEmpty from './no-updates-yet-empty';
 import { useInView } from 'react-intersection-observer';
 import { useEffect, useState } from 'react';
-import { useUser } from '@/hooks/use-user';
+import { useMe } from '@/hooks/use-me';
 import CommentEditForm from '../map/forms/comment-edit-form';
 import { apiFetchClient } from '@/lib/api-fetch-client';
 import ReportCommentDialog from './report-comment-dialog';
@@ -20,7 +20,7 @@ export default function CommentsList({
   reportId: number;
   scrollContainerId?: string;
 }) {
-  const { user } = useUser();
+  const { me } = useMe();
   const [editingId, setEditingId] = useState<number | null>(null);
   const [reportingId, setReportingId] = useState<number | null>(null);
   const [deletingComment, setDeletingComment] = useState<CommentInput | null>(
@@ -54,7 +54,7 @@ export default function CommentsList({
   if (isLoading) return <CommentCardsSkeleton />;
   if (!isLoading && comments.length === 0) return <NoUpdatesYetEmpty />;
 
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = me?.role === 'admin';
 
   const handleSave = async (
     commentId: number,
@@ -112,7 +112,7 @@ export default function CommentsList({
             reportCount={0}
             image={comment.image ?? undefined}
             isAdmin={isAdmin}
-            isOwner={comment.author?.id === user?.id}
+            isOwner={comment.author?.id === me?.id}
             onEditClick={() => setEditingId(comment.id)}
             onReportClick={() => setReportingId(comment.id)}
             onDeleteClick={() => setDeletingComment(comment)}

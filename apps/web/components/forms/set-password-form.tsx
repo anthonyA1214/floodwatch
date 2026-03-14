@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
-import { useUser } from '@/hooks/use-user';
+import { useMe } from '@/hooks/use-me';
 import { setPassword } from '@/lib/actions/password-actions';
 import { ActionState } from '@/lib/types/action-state';
 import { useActionState, useEffect } from 'react';
@@ -12,7 +12,7 @@ export default function SetPasswordForm({
 }: {
   onSuccess: () => void;
 }) {
-  const { mutateUser } = useUser();
+  const { mutateMe } = useMe();
 
   const initialState: ActionState = {
     status: null,
@@ -28,13 +28,13 @@ export default function SetPasswordForm({
     async function handleSuccess() {
       if (state.status === 'success') {
         // Close the panel after successful password change
-        await mutateUser();
+        await mutateMe();
         onSuccess();
       }
     }
 
     handleSuccess();
-  }, [state, onSuccess, mutateUser]);
+  }, [state, onSuccess, mutateMe]);
 
   return (
     <form action={formAction} className='space-y-6 text-sm'>

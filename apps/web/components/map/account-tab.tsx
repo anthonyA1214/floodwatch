@@ -5,7 +5,7 @@ import { Separator } from '@/components/ui/separator';
 import { Button } from '../ui/button';
 import LogoutButton from '@/components/map/logout-button';
 import { useState } from 'react';
-import { useUser } from '@/hooks/use-user';
+import { useMe } from '@/hooks/use-me';
 import { format } from 'date-fns';
 import { Spinner } from '@/components/ui/spinner';
 import { ProfilePhotoDialog } from './profile-photo-dialog';
@@ -13,11 +13,9 @@ import { ProfilePhotoDialog } from './profile-photo-dialog';
 export default function AccountTab() {
   const [isEditing, setIsEditing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { user } = useUser();
+  const { me } = useMe();
 
-  const formatted = user
-    ? format(new Date(user.createdAt), 'MMMM d, yyyy')
-    : '';
+  const formatted = me ? format(new Date(me.createdAt), 'MMMM d, yyyy') : '';
 
   const handleButtonClick = () => {
     if (!isEditing) {
@@ -82,8 +80,8 @@ export default function AccountTab() {
             <ProfilePhotoDialog />
 
             <div className='flex flex-col'>
-              <span className='font-medium text-sm'>{user?.name}</span>
-              <span className='text-xs text-gray-600'>{user?.email}</span>
+              <span className='font-medium text-sm'>{me?.name}</span>
+              <span className='text-xs text-gray-600'>{me?.email}</span>
             </div>
           </div>
 

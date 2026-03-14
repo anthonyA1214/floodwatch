@@ -19,11 +19,11 @@ import Avatar from 'boring-avatars';
 import { NavItems } from './nav-items';
 import LogoutButton from './logout-button';
 import { ScrollArea } from '../ui/scroll-area';
-import { useUser } from '@/hooks/use-user';
+import { useMe } from '@/hooks/use-me';
 import { Skeleton } from '../ui/skeleton';
 
 export default function SideNav() {
-  const { user, isLoading } = useUser();
+  const { me, isLoading } = useMe();
 
   return (
     <div className='p-4 h-screen'>
@@ -49,10 +49,10 @@ export default function SideNav() {
                   <Skeleton className='size-24 rounded-full' />
                 ) : (
                   <UIAvatar className='size-24 border'>
-                    <AvatarImage src={user?.profilePicture} />
+                    <AvatarImage src={me?.profilePicture} />
                     <AvatarFallback>
                       <Avatar
-                        name={`${user?.name} ${user?.id}`}
+                        name={`${me?.name} ${me?.id}`}
                         variant='beam'
                         className='size-24'
                       />
@@ -69,9 +69,9 @@ export default function SideNav() {
                   </>
                 ) : (
                   <>
-                    <span className='text-lg font-bold'>{user?.name}</span>
+                    <span className='text-lg font-bold'>{me?.name}</span>
                     <span className='text-muted-foreground'>
-                      {user?.role.toUpperCase()}
+                      {me?.role.toUpperCase()}
                     </span>
                   </>
                 )}
