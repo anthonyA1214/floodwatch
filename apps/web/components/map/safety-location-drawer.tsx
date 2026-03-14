@@ -75,7 +75,7 @@ export default function SafetyLocationDrawer({
       <Drawer.Overlay className='absolute inset-0 bg-black/40 pointer-events-none' />
 
       <VisuallyHidden>
-        <Drawer.Title>Reported Location</Drawer.Title>
+        <Drawer.Title>Safety Location</Drawer.Title>
       </VisuallyHidden>
 
       <Drawer.Content

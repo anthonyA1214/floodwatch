@@ -1,3 +1,5 @@
+'use client';
+
 import {
   IconMapPin,
   IconRoad,
@@ -21,8 +23,6 @@ export default function SafetyLocationPopup({
   onSelectSafety?: () => void;
 }) {
   const { safetyDetail, isLoading } = useSafetyDetail(safetyId);
-
-  console.log('safetyDetail', safetyDetail);
 
   if (isLoading || !safetyDetail) return <SafetyLocationPopupSkeleton />;
 

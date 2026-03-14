@@ -29,9 +29,9 @@ import { SafetyMarker } from '../shared/markers/safety-marker';
 import FloodReportPopup from './flood-report-popup';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useMapOverlay } from '@/contexts/map-overlay-context';
-import { useMapPopup } from '@/hooks/use-map-popup';
 import SafetyLocationPopup from './safety-location-popup';
 import { useMapFilter } from '@/contexts/map-filter-context';
+import { useMapPopup } from '@/contexts/map-popup-context';
 
 type SelectedLocation = {
   longitude: number;
@@ -63,25 +63,12 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
     const isMobile = useIsMobile();
 
     const { filters } = useMapFilter();
-
     const filteredReportMapPins = reportMapPins?.filter((r) =>
       filters.severities.has(r.severity),
     );
-
     const filteredSafetyMapPins = safetyMapPins?.filter((r) =>
       filters.safetyTypes.has(r.type),
     );
-
-    const flyTo = (report: { longitude: number; latitude: number }) => {
-      mapRef.current?.flyTo({
-        center: [report.longitude, report.latitude],
-        zoom: Math.max(mapRef.current.getZoom(), 16),
-        essential: true,
-        padding: isMobile
-          ? { top: 0, bottom: 350, left: 0, right: 0 }
-          : { top: 250, bottom: 0, left: 0, right: 0 },
-      });
-    };
 
     const {
       activePopup,
@@ -94,7 +81,22 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
       hasPrev,
       currentReportIndex,
       total,
-    } = useMapPopup(flyTo);
+      flyToRef,
+    } = useMapPopup();
+
+    useEffect(() => {
+      flyToRef.current = (loc) => {
+        mapRef.current?.flyTo({
+          center: [loc.longitude, loc.latitude],
+          zoom: Math.max(mapRef.current.getZoom(), 16),
+          essential: true,
+          padding: isMobile
+            ? { top: 0, bottom: 350, left: 0, right: 0 }
+            : { top: 250, bottom: 0, left: 0, right: 0 },
+        });
+      };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isMobile]);
 
     // for next and prev panel, fly to the next or prev report
     useEffect(() => {

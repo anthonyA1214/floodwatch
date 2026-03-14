@@ -10,6 +10,10 @@ import { Separator } from '../ui/separator';
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Checkbox } from '../ui/checkbox';
 import { useMapFilter } from '@/contexts/map-filter-context';
+import {
+  SAFETY_TYPE_COLOR_MAP,
+  SEVERITY_COLOR_MAP,
+} from '@/lib/utils/get-color-map';
 
 export default function MapFilterPopover() {
   const { filters, toggleSeverity, toggleSafetyType, resetFilters } =
@@ -67,7 +71,12 @@ export default function MapFilterPopover() {
                       htmlFor={severity}
                       className='font-poppins font-normal'
                     >
-                      <span className={`w-3 h-3 rounded-full bg-${severity}`} />
+                      <span
+                        className='w-3 h-3 rounded-full'
+                        style={{
+                          backgroundColor: SEVERITY_COLOR_MAP[severity],
+                        }}
+                      />
                       {severity.toUpperCase()}
                     </FieldLabel>
                     <Checkbox
@@ -104,7 +113,10 @@ export default function MapFilterPopover() {
                     htmlFor={type}
                     className='font-poppins font-normal'
                   >
-                    <span className={`w-3 h-3 rounded-sm bg-${type}`} />
+                    <span
+                      className='w-3 h-3 rounded-sm'
+                      style={{ backgroundColor: SAFETY_TYPE_COLOR_MAP[type] }}
+                    />
                     {type.toUpperCase()}
                   </FieldLabel>
                   <Checkbox

@@ -1,3 +1,5 @@
+'use client';
+
 import { useIsMobile } from '@/hooks/use-mobile';
 import SafetyLocationsListDrawer from './safety-locations-list-drawer';
 import SafetyLocationsListPanel from './safety-locations-list-panel';
