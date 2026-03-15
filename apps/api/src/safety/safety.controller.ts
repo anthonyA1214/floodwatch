@@ -34,22 +34,29 @@ export class SafetyController {
   @Public()
   @Get('')
   @HttpCode(HttpStatus.OK)
-  async findAllPublic() {
-    return await this.safetyService.findAllPublic();
+  async getAllSafetyMapPins() {
+    return await this.safetyService.getAllSafetyMapPins();
   }
 
   @Roles('admin')
   @Get('admin')
   @HttpCode(HttpStatus.OK)
-  async findAll(@Query() safetyLocationQuery: SafetyLocationQueryDto) {
-    return await this.safetyService.findAll(safetyLocationQuery);
+  async getAllSafety(@Query() safetyLocationQuery: SafetyLocationQueryDto) {
+    return await this.safetyService.getAllSafety(safetyLocationQuery);
+  }
+
+  @Public()
+  @Get('list')
+  @HttpCode(HttpStatus.OK)
+  async getSafetyList() {
+    return await this.safetyService.getSafetyList();
   }
 
   @Public()
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async findOnePublic(@Param('id', ParseIntPipe) id: number) {
-    return await this.safetyService.findOnePublic(id);
+  async getSafetyDetail(@Param('id', ParseIntPipe) id: number) {
+    return await this.safetyService.getSafetyDetail(id);
   }
 
   @Roles('admin')

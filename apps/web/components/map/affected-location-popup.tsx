@@ -5,7 +5,6 @@ import {
   IconExclamationCircle,
   IconHelpCircle,
   IconMapPin,
-  IconPoint,
   IconSend,
   IconShield,
   IconShieldCheck,
@@ -18,13 +17,13 @@ import {
   SEVERITY_COLOR_MAP,
 } from '@/lib/utils/get-color-map';
 import { format, formatDistanceToNow } from 'date-fns';
-import FloodReportPopupSkeleton from './skeletons/flood-report-popup-skeleton';
+import AffectedLocationPopupSkeleton from './skeletons/affected-location-popup-skeleton';
 import VoteButtons from './vote-buttons';
 import ReportPaginationPopup from './report-pagination-popup';
 import { useMyVote } from '@/hooks/use-my-vote';
 import { cn } from '@/lib/utils';
 
-export default function FloodReportPopup({
+export default function AffectedLocationPopup({
   onClose,
   reportId,
   onSelectReport,
@@ -66,7 +65,7 @@ export default function FloodReportPopup({
       : 0;
 
   if (isLoading || isMyVoteLoading || !reportDetail)
-    return <FloodReportPopupSkeleton />;
+    return <AffectedLocationPopupSkeleton />;
 
   return (
     <div
@@ -74,12 +73,30 @@ export default function FloodReportPopup({
       onClick={(e) => e.stopPropagation()}
     >
       {/* header */}
-      <div className='flex items-center justify-between bg-[#0066CC] p-3 text-white rounded-b-2xl'>
-        <span className='font-poppins font-medium text-sm'>FLOOD REPORT</span>
-        <button onClick={onClose} className='text-[10px]'>
-          <IconX className='opacity-70 hover:opacity-100 w-[1.5em]! h-[1.5em]! duration-200' />
-        </button>
+      <div className={cn(reportDetail?.isAdmin ? 'bg-[#9B32E4]/10' : '')}>
+        <div className='flex items-center justify-between bg-[#0066CC] p-3 text-white rounded-b-2xl'>
+          <span className='font-poppins font-medium text-sm'>FLOOD REPORT</span>
+          <button onClick={onClose} className='text-[10px]'>
+            <IconX className='opacity-70 hover:opacity-100 w-[1.5em]! h-[1.5em]! duration-200' />
+          </button>
+        </div>
       </div>
+
+      {reportDetail?.isAdmin && (
+        <>
+          <div className='flex w-full gap-1.5 p-3 bg-[#9B32E4]/10 text-[#9B32E4] text-xs items-center'>
+            <IconShield className='w-[1.5em]! h-[1.5em]!' />
+            <span className='font-poppins font-medium'>
+              OFFICIAL INFORMATION
+            </span>
+          </div>
+
+          <Separator
+            className={cn(reportDetail?.isAdmin ? 'bg-[#9B32E4]/30' : '')}
+          />
+        </>
+      )}
+
       <div className='flex flex-col'>
         {/* badge and distance to now */}
         <div className='flex flex-row justify-between gap-4 p-3'>
@@ -112,18 +129,7 @@ export default function FloodReportPopup({
           </div>
         </div>
 
-        {reportDetail?.isAdmin && (
-          <div className='flex w-full gap-1.5 p-3 bg-[#9B32E4]/10 text-[#9B32E4] text-xs items-center'>
-            <IconShield className='w-[1.5em]! h-[1.5em]!' />
-            <span className='font-poppins font-medium'>OFFICIAL REPORT</span>
-            <IconPoint className='w-[1em]! h-[1em]!' />
-            <span className='font-poppins'>POSTED BY ADMIN</span>
-          </div>
-        )}
-
-        <Separator
-          className={cn(reportDetail?.isAdmin ? 'bg-[#9B32E4]/30' : '')}
-        />
+        <Separator />
 
         {/* report details */}
         <div className='flex flex-col gap-2 p-3'>

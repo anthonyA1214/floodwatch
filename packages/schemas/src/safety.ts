@@ -6,6 +6,8 @@ export const createSafetyLocationSchema = z.object({
   longitude: z.coerce.number(),
   locationName: z.string(),
   address: z.string(),
+  availability: z.string().optional(),
+  contactNumber: z.string().optional(),
   description: z.string().optional(),
   type: z.enum(['shelter', 'hospital']),
 });
@@ -18,15 +20,25 @@ export const safetyMapPinSchema = z.object({
 });
 
 export const safetyDetailSchema = z.object({
-  id: z.string(),
+  id: z.number(),
   latitude: z.number(),
   longitude: z.number(),
   type: z.enum(['shelter', 'hospital']),
   location: z.string(),
   address: z.string(),
   description: z.string().nullable(),
+  availability: z.string().nullable(),
+  contactNumber: z.string().nullable(),
   image: z.string().nullable(),
   createdAt: z.date(),
+});
+
+export const safetyListItem = z.object({
+  id: z.number(),
+  location: z.string(),
+  address: z.string(),
+  type: z.enum(['shelter', 'hospital']),
+  availability: z.string(),
 });
 
 export const safetyLocationQuerySchema = z.object({

@@ -26,12 +26,12 @@ import { useReportMapPins } from '@/hooks/use-report-map-pins';
 import { useBoundary } from '@/hooks/use-boundary';
 import { useSafetyMapPins } from '@/hooks/use-safety-map-pins';
 import { SafetyMarker } from '../shared/markers/safety-marker';
-import FloodReportPopup from './flood-report-popup';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useMapOverlay } from '@/contexts/map-overlay-context';
 import SafetyLocationPopup from './safety-location-popup';
 import { useMapFilter } from '@/contexts/map-filter-context';
 import { useMapPopup } from '@/contexts/map-popup-context';
+import AffectedLocationPopup from './affected-location-popup';
 
 type SelectedLocation = {
   longitude: number;
@@ -271,7 +271,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
             onClose={closePopup}
             closeOnClick={false}
           >
-            <FloodReportPopup
+            <AffectedLocationPopup
               onClose={closePopup}
               reportId={activePopup.report.id}
               onSelectReport={() => {

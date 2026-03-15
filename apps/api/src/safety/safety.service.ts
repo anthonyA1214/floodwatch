@@ -18,7 +18,7 @@ export class SafetyService {
     private cloudinaryService: CloudinaryService,
   ) {}
 
-  async findAllPublic() {
+  async getAllSafetyMapPins() {
     return await this.db
       .select({
         id: safety.id,
@@ -29,7 +29,7 @@ export class SafetyService {
       .from(safety);
   }
 
-  async findOnePublic(safetyId: number) {
+  async getSafetyDetail(safetyId: number) {
     const [result] = await this.db
       .select({
         id: safety.id,
@@ -40,6 +40,8 @@ export class SafetyService {
         description: safety.description,
         image: safety.image,
         type: safety.type,
+        availability: safety.availability,
+        contactNumber: safety.contactNumber,
         createdAt: safety.createdAt,
       })
       .from(safety)
@@ -49,7 +51,11 @@ export class SafetyService {
     return result;
   }
 
-  async findAll(safetyLocationQuery: SafetyLocationQueryDto) {
+  async getSafetyList() {
+    await Promise.resolve();
+  }
+
+  async getAllSafety(safetyLocationQuery: SafetyLocationQueryDto) {
     const { page, limit, type, q } = safetyLocationQuery;
 
     const pageNumber = Number(page) || 1;
@@ -125,8 +131,16 @@ export class SafetyService {
     safetyLocationDto: CreateSafetyLocationInput,
     image: Express.Multer.File,
   ) {
-    const { latitude, longitude, type, description, address, locationName } =
-      safetyLocationDto;
+    const {
+      latitude,
+      longitude,
+      type,
+      description,
+      address,
+      locationName,
+      availability,
+      contactNumber,
+    } = safetyLocationDto;
 
     let imageUrl: string | null = null;
     let imagePublicId: string | null = null;
@@ -164,6 +178,8 @@ export class SafetyService {
       imagePublicId,
       location: locationName,
       address,
+      availability,
+      contactNumber,
     });
   }
 }

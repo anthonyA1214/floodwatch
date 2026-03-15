@@ -1,11 +1,11 @@
-'use client';
-
 import {
   IconMapPin,
+  IconPhone,
   IconRoad,
   IconSearch,
   IconSend,
   IconShield,
+  IconTag,
   IconX,
 } from '@tabler/icons-react';
 import { Separator } from '../ui/separator';
@@ -32,21 +32,31 @@ export default function SafetyLocationPopup({
       onClick={(e) => e.stopPropagation()}
     >
       {/* header */}
-      <div className='flex items-center justify-between bg-[#0066CC] p-3 text-white rounded-b-2xl'>
-        <span className='font-poppins font-medium text-sm'>
-          SAFETY LOCATION
-        </span>
-        <button onClick={onClose} className='text-[10px]'>
-          <IconX className='opacity-70 hover:opacity-100 w-[1.5em]! h-[1.5em]! duration-200' />
-        </button>
+      <div className='bg-[#9B32E4]/10'>
+        <div className='flex items-center justify-between bg-[#0066CC] p-3 text-white rounded-b-2xl'>
+          <span className='font-poppins font-medium text-sm'>
+            SAFETY LOCATION
+          </span>
+          <button onClick={onClose} className='text-[10px]'>
+            <IconX className='opacity-70 hover:opacity-100 w-[1.5em]! h-[1.5em]! duration-200' />
+          </button>
+        </div>
       </div>
+
+      <div className='flex w-full gap-1.5 p-3 bg-[#9B32E4]/10 text-[#9B32E4] text-xs items-center'>
+        <IconShield className='w-[1.5em]! h-[1.5em]!' />
+        <span className='font-poppins font-medium'>OFFICIAL INFORMATION</span>
+      </div>
+
+      <Separator className='bg-[#9B32E4]/30' />
+
       <div className='flex flex-col'>
         {/* report details */}
         <div className='flex flex-col gap-2 p-3'>
           {/* severity level */}
           <div className='flex justify-between gap-2'>
             <div className='flex items-center gap-1.5 opacity-50'>
-              <IconShield className='w-[1.5em]! h-[1.5em]!' />
+              <IconTag className='w-[1.5em]! h-[1.5em]!' />
               <span className='font-poppins font-medium'>SAFETY TYPE</span>
             </div>
 
@@ -90,6 +100,26 @@ export default function SafetyLocationPopup({
               {safetyDetail?.address}
             </span>
           </div>
+
+          {safetyDetail?.availability && (
+            <>
+              <Separator />
+
+              {/* contact number */}
+              <div className='flex justify-between gap-2'>
+                <div className='flex items-center gap-1.5 opacity-50 h-fit shrink-0'>
+                  <IconPhone className='w-[1.5em]! h-[1.5em]!' />
+                  <span className='font-poppins font-medium'>
+                    CONTACT NUMBER
+                  </span>
+                </div>
+
+                <span className='text-right line-clamp-2'>
+                  {safetyDetail?.contactNumber}
+                </span>
+              </div>
+            </>
+          )}
         </div>
 
         <Separator />

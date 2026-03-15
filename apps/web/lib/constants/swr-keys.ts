@@ -7,6 +7,7 @@ export const SWR_KEYS = {
   reportsAdmin: '/admin/reports',
   safetyMapPins: '/safety',
   safetyDetail: (safetyId: number) => `/safety/${safetyId}`,
+  safetyList: '/safety/list',
   safetyAdmin: '/safety/admin',
   news: '/news',
   reportComments: (reportId: number) => `/reports/${reportId}/comments`,

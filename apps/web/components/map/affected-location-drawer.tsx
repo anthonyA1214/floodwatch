@@ -10,7 +10,6 @@ import {
   IconExclamationCircle,
   IconHelpCircle,
   IconInfoCircle,
-  IconPoint,
   IconSend,
   IconShield,
   IconShieldCheck,
@@ -132,8 +131,17 @@ export default function AffectedLocationDrawer({
                 borderLeftColor: SEVERITY_COLOR_MAP[reportDetail?.severity],
               }}
             >
+              {reportDetail?.isAdmin && (
+                <div className='flex items-center gap-1.5 lg:gap-2 p-3 lg:p-4 bg-[#9B32E4]/10 text-[#9B32E4] rounded-lg text-sm lg:text-base'>
+                  <IconShield className='w-[1.5em]! h-[1.5em]!' />
+                  <span className='font-poppins font-medium'>
+                    OFFICIAL INFORMATION
+                  </span>
+                </div>
+              )}
+
               {/* row 1 */}
-              <Drawer.Title className='font-poppins text-base lg:text-lg font-semibold'>
+              <Drawer.Title className='font-poppins text-sm lg:text-base font-semibold'>
                 {reportDetail?.location}
               </Drawer.Title>
 
@@ -172,22 +180,6 @@ export default function AffectedLocationDrawer({
 
               {/* details */}
               <div className='flex flex-col border rounded-lg text-xs lg:text-sm'>
-                {reportDetail?.isAdmin && (
-                  <>
-                    {/* reported by */}
-                    <div className='flex items-center gap-1.5 lg:gap-2 p-3 lg:p-4 bg-[#9B32E4]/10 text-[#9B32E4]'>
-                      <IconShield className='w-[1.5em]! h-[1.5em]!' />
-                      <span className='font-poppins font-medium'>
-                        OFFICIAL REPORT
-                      </span>
-                      <IconPoint className='w-[1em]! h-[1em]!' />
-                      <span className='font-poppins'>POSTED BY ADMIN</span>
-                    </div>
-
-                    <Separator className='bg-[#9B32E4]/30' />
-                  </>
-                )}
-
                 {!reportDetail?.isAdmin && (
                   <>
                     {/* reported by */}

@@ -16,6 +16,7 @@ import AffectedLocationsCardSkeleton from './skeletons/affected-locations-card-s
 import { useMapPopup } from '@/contexts/map-popup-context';
 import { useReportMapPins } from '@/hooks/use-report-map-pins';
 import { useState } from 'react';
+import { useMapFilter } from '@/contexts/map-filter-context';
 
 export default function AffectedLocationsListPanel() {
   const { reportList, isLoading } = useReportList();
@@ -27,10 +28,14 @@ export default function AffectedLocationsListPanel() {
     'all-levels' | 'critical' | 'high' | 'moderate' | 'low'
   >('all-levels');
 
-  const filteredReportList =
-    severity === 'all-levels'
-      ? reportList
-      : reportList?.filter((report) => report.severity === severity);
+  const { filters } = useMapFilter();
+  const filteredReportList = reportList?.filter((report) => {
+    const pin = reportMapPins?.find((p) => p.id === report.id);
+    if (!pin) return false;
+    if (!filters.severities.has(pin.severity)) return false;
+    if (severity !== 'all-levels' && pin.severity !== severity) return false;
+    return true;
+  });
 
   const handleCardClick = (reportId: number) => {
     const pin = reportMapPins?.find((p) => p.id === reportId);
@@ -102,9 +107,9 @@ export default function AffectedLocationsListPanel() {
                     activePopup?.report?.id === report.id
                   }
                   severity={report.severity}
-                  location={report.location}
-                  description={report.description}
-                  reportedAt={report.reportedAt}
+                  location={report?.location}
+                  description={report?.description}
+                  reportedAt={report?.reportedAt}
                   onClick={() => handleCardClick(report.id)}
                 />
               ))}
