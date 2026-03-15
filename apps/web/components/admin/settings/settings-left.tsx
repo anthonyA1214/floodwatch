@@ -8,28 +8,28 @@ import {
 import Avatar from 'boring-avatars';
 import { Separator } from '@/components/ui/separator';
 import { format } from 'date-fns';
-import { useUser } from '@/hooks/use-user';
+import { useMe } from '@/hooks/use-me';
 import SettingsLeftSkeleton from './skeleton/settings-left-skeleton';
 import { ProfilePhotoDialog } from './profile-photo-dialog';
 
 export default function SettingsLeft() {
-  const { user, isLoading } = useUser();
+  const { me, isLoading } = useMe();
 
   if (isLoading) return <SettingsLeftSkeleton />;
 
   let formatted;
-  if (user) {
-    formatted = format(new Date(user?.createdAt), 'MMMM d, yyyy');
+  if (me) {
+    formatted = format(new Date(me?.createdAt), 'MMMM d, yyyy');
   }
 
   return (
     <div className='flex flex-col items-center border-r p-4 gap-8'>
       <div className='relative'>
         <UIAvatar className='size-40 border'>
-          <AvatarImage src={user?.profilePicture} />
+          <AvatarImage src={me?.profilePicture} />
           <AvatarFallback>
             <Avatar
-              name={`${user?.name} ${user?.id}`}
+              name={`${me?.name} ${me?.id}`}
               variant='beam'
               className='size-40'
             />
@@ -41,8 +41,8 @@ export default function SettingsLeft() {
       </div>
 
       <div className='flex flex-col text-center'>
-        <span className='font-semibold text-2xl'>{user?.name}</span>
-        <span className='text-gray-600'>{user?.email}</span>
+        <span className='font-semibold text-2xl'>{me?.name}</span>
+        <span className='text-gray-600'>{me?.email}</span>
       </div>
 
       <Separator />

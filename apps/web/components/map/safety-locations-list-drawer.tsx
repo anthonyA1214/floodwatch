@@ -15,13 +15,43 @@ import { IconShieldCheck } from '@tabler/icons-react';
 import SafetyLocationsCard from './safety-locations-card';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { useMapOverlay } from '@/contexts/map-overlay-context';
+import { useSafetyList } from '@/hooks/use-safety-list';
+import { useMapPopup } from '@/contexts/map-popup-context';
+import { useSafetyMapPins } from '@/hooks/use-safety-map-pins';
+import { useMapFilter } from '@/contexts/map-filter-context';
+import SafetyLocationsCardSkeleton from './skeletons/safety-locations-card-skeleton';
+import LocationsListEmpty from './empty/locations-list-empty';
 
 const snapPoints = ['0px', '355px', 1];
 
 export default function SafetyLocationsListDrawer() {
+  const { safetyList, isLoading } = useSafetyList();
+  const { close } = useMapOverlay();
+  const { activePopup, openSafetyPopup } = useMapPopup();
+  const { safetyMapPins } = useSafetyMapPins();
+
+  const [type, setType] = useState<'all-types' | 'shelter' | 'hospital'>(
+    'all-types',
+  );
+
+  const { filters } = useMapFilter();
+  const filteredSafetyList = safetyList?.filter((safety) => {
+    const pin = safetyMapPins?.find((p) => p.id === safety.id);
+    if (!pin) return false;
+    if (!filters.safetyTypes.has(pin.type)) return false;
+    if (type !== 'all-types' && pin.type !== type) return false;
+    return true;
+  });
+
+  const handleCardClick = (safetyId: number) => {
+    const pin = safetyMapPins?.find((p) => p.id === safetyId);
+    if (pin) {
+      openSafetyPopup(pin);
+    }
+  };
+
   const [snap, setSnap] = useState<number | string | null>(snapPoints[1]);
   const [open, setOpen] = useState(true);
-  const { close } = useMapOverlay();
 
   const handleOpenChange = (isOpen: boolean) => {
     setOpen(isOpen);
@@ -75,57 +105,48 @@ export default function SafetyLocationsListDrawer() {
 
             {/* Filter using Select */}
             <div className='px-3'>
-              <Select defaultValue='all-types'>
+              <Select
+                defaultValue={type}
+                onValueChange={(value) =>
+                  setType(value as 'all-types' | 'shelter' | 'hospital')
+                }
+              >
                 <SelectTrigger className='w-full text-sm text-gray-600 py-3 justify-between'>
                   <SelectValue placeholder='All Types' />
                 </SelectTrigger>
 
                 <SelectContent>
                   <SelectItem value='all-types'>All Types</SelectItem>
-                  <SelectItem value='shelter'>Shelters</SelectItem>
-                  <SelectItem value='hospital'>Hospitals</SelectItem>
+                  <SelectItem value='shelter'>Shelter</SelectItem>
+                  <SelectItem value='hospital'>Hospital</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             {/* Content */}
             <div className='flex flex-col gap-4 overflow-y-auto flex-1 min-h-0 px-3 pb-3'>
-              <SafetyLocationsCard
-                type='shelter'
-                name='Community Safe Haven'
-                address='123 Safety St, Safeville'
-                availability='Open 24/7'
-              />
-              <SafetyLocationsCard
-                type='shelter'
-                name='Downtown Shelter'
-                address='456 Help Ave, Caretown'
-                availability='Mon-Fri 9am-5pm'
-              />
-              <SafetyLocationsCard
-                type='shelter'
-                name='Neighborhood Refuge'
-                address='789 Support Rd, Kindcity'
-                availability='Open 24/7'
-              />
-              <SafetyLocationsCard
-                type='hospital'
-                name='City Aid Center'
-                address='101 Relief Blvd, Hopeville'
-                availability='Mon-Sun 8am-8pm'
-              />
-              <SafetyLocationsCard
-                type='shelter'
-                name='Urban Safe Spot'
-                address='202 Protection Ln, Securetown'
-                availability='Open 24/7'
-              />
-              <SafetyLocationsCard
-                type='hospital'
-                name='Harbor Shelter'
-                address='303 Sanctuary St, Havenport'
-                availability='Mon-Fri 10am-6pm'
-              />
+              {isLoading ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <SafetyLocationsCardSkeleton key={i} />
+                ))
+              ) : !filteredSafetyList || filteredSafetyList?.length === 0 ? (
+                <LocationsListEmpty />
+              ) : (
+                filteredSafetyList?.map((safety) => (
+                  <SafetyLocationsCard
+                    key={safety.id}
+                    isActive={
+                      activePopup?.type === 'safety' &&
+                      activePopup?.safety?.id === safety.id
+                    }
+                    type={safety.type}
+                    location={safety.location}
+                    address={safety.address}
+                    availability={safety.availability}
+                    onClick={() => handleCardClick(safety.id)}
+                  />
+                ))
+              )}
             </div>
           </div>
         </div>

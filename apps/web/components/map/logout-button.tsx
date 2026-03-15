@@ -1,7 +1,7 @@
 'use client';
 
 import { useMapOverlay } from '@/contexts/map-overlay-context';
-import { useUser } from '@/hooks/use-user';
+import { useMe } from '@/hooks/use-me';
 import { logout } from '@/lib/services/auth/logout';
 import { IconLogout } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
@@ -11,7 +11,7 @@ export default function LogoutButton() {
   const [isPending, setIsPending] = useState(false);
   const router = useRouter();
   const { close } = useMapOverlay();
-  const { mutateUser } = useUser();
+  const { mutateMe } = useMe();
 
   async function handleLogout(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
@@ -20,7 +20,7 @@ export default function LogoutButton() {
     try {
       await logout();
       close();
-      mutateUser(null);
+      mutateMe(null);
       router.refresh();
     } catch (err) {
       console.error('Logout failed', err);

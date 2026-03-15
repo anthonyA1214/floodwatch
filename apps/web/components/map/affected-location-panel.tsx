@@ -7,7 +7,6 @@ import {
   IconExclamationCircle,
   IconHelpCircle,
   IconInfoCircle,
-  IconPoint,
   IconSend,
   IconShield,
   IconShieldCheck,
@@ -75,7 +74,7 @@ export default function AffectedLocationPanel({
   return (
     <div className='relative w-full h-full bg-white z-50 min-h-0 flex flex-col pointer-events-auto'>
       <button
-        className='absolute bg-white top-1/2 translate-x-full right-0 h-16 -translate-y-1/2 
+        className='absolute bg-white top-1/2 translate-x-full right-0 h-16 -translate-y-1/2
         rounded-r-2xl ps-1 py-1 pr-1.5 text-xs z-30 shadow-[4px_0px_6px_-1px_rgba(0,0,0,0.1)]'
         onClick={close}
       >
@@ -112,8 +111,17 @@ export default function AffectedLocationPanel({
               borderLeftColor: SEVERITY_COLOR_MAP[reportDetail?.severity],
             }}
           >
+            {reportDetail?.isAdmin && (
+              <div className='flex items-center gap-1.5 lg:gap-2 p-3 lg:p-4 bg-[#9B32E4]/10 text-[#9B32E4] rounded-lg text-base'>
+                <IconShield className='w-[1.5em]! h-[1.5em]!' />
+                <span className='font-poppins font-medium'>
+                  OFFICIAL INFORMATION
+                </span>
+              </div>
+            )}
+
             {/* location name */}
-            <h3 className='font-poppins text-base lg:text-lg font-semibold'>
+            <h3 className='font-poppins text-base font-semibold'>
               {reportDetail?.location}
             </h3>
 
@@ -152,22 +160,6 @@ export default function AffectedLocationPanel({
 
             {/* details */}
             <div className='flex flex-col border rounded-lg text-xs lg:text-sm'>
-              {reportDetail?.isAdmin && (
-                <>
-                  {/* reported by */}
-                  <div className='flex items-center gap-1.5 lg:gap-2 p-3 lg:p-4 bg-[#9B32E4]/10 text-[#9B32E4]'>
-                    <IconShield className='w-[1.5em]! h-[1.5em]!' />
-                    <span className='font-poppins font-medium'>
-                      OFFICIAL REPORT
-                    </span>
-                    <IconPoint className='w-[1em]! h-[1em]!' />
-                    <span className='font-poppins'>POSTED BY ADMIN</span>
-                  </div>
-
-                  <Separator className='bg-[#9B32E4]/30' />
-                </>
-              )}
-
               {!reportDetail?.isAdmin && (
                 <>
                   {/* reported by */}

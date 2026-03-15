@@ -13,7 +13,7 @@ import { getWeatherInfo } from '@/lib/utils/get-weather-icon';
 import { format, isToday } from 'date-fns';
 import WeatherDrawerSkeleton from './skeletons/weather-drawer-skeleton';
 
-const snapPoints = ['150px', '355px', 1];
+const snapPoints = ['160px', '355px', 1];
 
 export default function WeatherDrawer({
   latitude,
@@ -72,7 +72,7 @@ export default function WeatherDrawer({
           >
             <div className='flex flex-col gap-4 flex-1 min-h-0'>
               {/* Header */}
-              <div className='flex items-center justify-between w-full px-3 border-b'>
+              <div className='flex items-center justify-between w-full px-3'>
                 <div className='flex items-center gap-2'>
                   <Image
                     src={`/icons/weather/${icon}.svg`}
@@ -107,6 +107,8 @@ export default function WeatherDrawer({
                   </div>
                 </div>
               </div>
+
+              <Separator />
 
               {/* Content */}
               <div className='flex flex-col gap-2 overflow-y-auto flex-1 min-h-0 px-3 pb-3'>

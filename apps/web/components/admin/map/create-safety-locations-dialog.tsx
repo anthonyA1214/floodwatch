@@ -47,6 +47,12 @@ export default function CreateSafetyLocationDialog() {
   const [addressValue, setAddressValue] = useState<string | undefined>(
     undefined,
   );
+  const [availabilityValue, setAvailabilityValue] = useState<
+    string | undefined
+  >(undefined);
+  const [contactNumberValue, setContactNumberValue] = useState<
+    string | undefined
+  >(undefined);
   const [typeValue, setTypeValue] = useState<'shelter' | 'hospital'>('shelter');
   const [radius, setRadius] = useState<number | undefined>(undefined);
   const [descriptionValue, setDescriptionValue] = useState<string>('');
@@ -69,6 +75,8 @@ export default function CreateSafetyLocationDialog() {
     setLocationNameValue(undefined);
     setAddressValue(undefined);
     setTypeValue('shelter');
+    setAvailabilityValue(undefined);
+    setContactNumberValue(undefined);
     setRadius(undefined);
     setDescriptionValue('');
     setImage(null);
@@ -123,6 +131,8 @@ export default function CreateSafetyLocationDialog() {
       longitude: location!.longitude,
       locationName: locationNameValue,
       address: addressValue,
+      availability: availabilityValue,
+      contactNumber: contactNumberValue,
       type: typeValue,
       range: radius,
       description: descriptionValue,
@@ -136,8 +146,16 @@ export default function CreateSafetyLocationDialog() {
       return;
     }
 
-    const { latitude, longitude, description, type, locationName, address } =
-      parsedData.data;
+    const {
+      latitude,
+      longitude,
+      description,
+      type,
+      locationName,
+      address,
+      availability,
+      contactNumber,
+    } = parsedData.data;
 
     const formData = new FormData();
     formData.append('latitude', latitude.toString());
@@ -145,6 +163,8 @@ export default function CreateSafetyLocationDialog() {
     formData.append('locationName', locationName);
     formData.append('address', address);
     formData.append('type', type);
+    if (availability) formData.append('availability', availability);
+    if (contactNumber) formData.append('contactNumber', contactNumber);
     if (description) formData.append('description', description);
     if (image) formData.append('image', image);
 
@@ -194,11 +214,11 @@ export default function CreateSafetyLocationDialog() {
             {/* left column */}
             <div className='flex-2 flex flex-col gap-4 h-fit'>
               <div className='flex items-center justify-between'>
-                <span className='font-poppins text-sm font-medium text-gray-600'>
+                <span className='font-poppins text-sm font-medium opacity-50'>
                   LOCATION
                 </span>
                 <button
-                  className='font-poppins text-xs flex gap-2 border px-3 py-1.5 rounded-lg items-center text-gray-600 hover:bg-gray-100'
+                  className='font-poppins text-xs flex gap-2 border px-3 py-1.5 rounded-lg items-center opacity-50 hover:bg-gray-100'
                   onClick={handleUseCurrentLocation}
                 >
                   {loadingLocation ? (
@@ -334,6 +354,60 @@ export default function CreateSafetyLocationDialog() {
                   )}
                 </Field>
 
+                {/*availability*/}
+                <Field className='flex items-center'>
+                  <FieldLabel
+                    htmlFor='availability'
+                    className='font-poppins text-sm font-medium'
+                  >
+                    AVAILABILITY
+                    <span className='font-inter opacity-50 text-xs'>
+                      (Optional)
+                    </span>
+                  </FieldLabel>
+                  <Input
+                    id='availability'
+                    name='availability'
+                    type='text'
+                    placeholder='e.g., 24/7, 9am-5pm'
+                    defaultValue={availabilityValue}
+                    maxLength={100}
+                    onChange={(e) => setAvailabilityValue(e.target.value)}
+                  />
+                  {state.errors?.availability && (
+                    <span className='text-sm text-red-600'>
+                      {state.errors.availability[0]}
+                    </span>
+                  )}
+                </Field>
+
+                {/*contact number*/}
+                <Field className='flex items-center'>
+                  <FieldLabel
+                    htmlFor='contactNumber'
+                    className='font-poppins text-sm font-medium'
+                  >
+                    CONTACT NUMBER
+                    <span className='font-inter opacity-50 text-xs'>
+                      (Optional)
+                    </span>
+                  </FieldLabel>
+                  <Input
+                    id='contactNumber'
+                    name='contactNumber'
+                    type='text'
+                    placeholder='e.g., +1 234 567 8900'
+                    defaultValue={contactNumberValue}
+                    maxLength={20}
+                    onChange={(e) => setContactNumberValue(e.target.value)}
+                  />
+                  {state.errors?.contactNumber && (
+                    <span className='text-sm text-red-600'>
+                      {state.errors.contactNumber[0]}
+                    </span>
+                  )}
+                </Field>
+
                 {/* Description */}
                 <Field className='flex items-center'>
                   <FieldLabel
@@ -341,7 +415,7 @@ export default function CreateSafetyLocationDialog() {
                     className='font-poppins text-sm font-medium'
                   >
                     ADDITIONAL DETAILS
-                    <span className='font-inter text-gray-600 text-xs'>
+                    <span className='font-inter opacity-50 text-xs'>
                       (Optional)
                     </span>
                   </FieldLabel>
@@ -364,7 +438,7 @@ export default function CreateSafetyLocationDialog() {
                 <Field className='flex items-center'>
                   <FieldLabel className='font-poppins text-sm font-medium'>
                     UPLOAD IMAGE
-                    <span className='font-inter text-gray-600 text-xs'>
+                    <span className='font-inter opacity-50 text-xs'>
                       (Optional)
                     </span>
                   </FieldLabel>

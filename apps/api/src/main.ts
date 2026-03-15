@@ -23,7 +23,7 @@ async function bootstrap() {
   app.useGlobalInterceptors(new LoggerErrorInterceptor());
   app.use(helmet());
   app.use(cookieParser());
-  app.use(doubleCsrfProtection);
+  // app.use(doubleCsrfProtection);
 
   if (process.env.NODE_ENV === 'production') {
     app.use(

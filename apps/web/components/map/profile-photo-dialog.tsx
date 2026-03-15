@@ -18,7 +18,7 @@ import {
 } from '@/components/ui/avatar';
 import Avatar from 'boring-avatars';
 import { Separator } from '@/components/ui/separator';
-import { useUser } from '@/hooks/use-user';
+import { useMe } from '@/hooks/use-me';
 import { useState, useRef } from 'react';
 import {
   removeProfilePhoto,
@@ -31,7 +31,7 @@ interface FileWithPreview extends File {
 }
 
 export function ProfilePhotoDialog() {
-  const { user, mutateUser } = useUser();
+  const { me, mutateMe } = useMe();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [image, setImage] = useState<FileWithPreview | null>(null);
   const [open, setOpen] = useState(false);
@@ -63,7 +63,7 @@ export function ProfilePhotoDialog() {
   };
 
   const handleRemove = async () => {
-    if (!user?.profilePicture) return;
+    if (!me?.profilePicture) return;
 
     setIsRemoving(true);
     setError(null);
@@ -71,7 +71,7 @@ export function ProfilePhotoDialog() {
     try {
       const result = await removeProfilePhoto();
       if (result.status === 'success') {
-        await mutateUser();
+        await mutateMe();
         setOpen(false);
       } else {
         setError(result.errors?.file?.[0] || 'Failed to remove profile photo.');
@@ -99,7 +99,7 @@ export function ProfilePhotoDialog() {
       const result = await updateProfilePhoto(formData);
 
       if (result.status === 'success') {
-        await mutateUser();
+        await mutateMe();
         setOpen(false);
 
         URL.revokeObjectURL(image.preview);
@@ -146,10 +146,10 @@ export function ProfilePhotoDialog() {
           aria-label='Open change profile photo modal'
         >
           <UIAvatar className='size-8 border transition group-hover:opacity-90 group-hover:ring-2 group-hover:ring-[#0066CC]/40'>
-            <AvatarImage src={user?.profilePicture ?? ''} />
+            <AvatarImage src={me?.profilePicture ?? ''} />
             <AvatarFallback>
               <Avatar
-                name={`${user?.name ?? 'User'} ${user?.id ?? ''}`}
+                name={`${me?.name ?? 'User'} ${me?.id ?? ''}`}
                 variant='beam'
                 className='size-8'
               />
@@ -171,12 +171,12 @@ export function ProfilePhotoDialog() {
               {/* Show preview if image is selected, otherwise show current photo */}
               <UIAvatar className='size-32'>
                 <AvatarImage
-                  src={image?.preview || user?.profilePicture}
+                  src={image?.preview || me?.profilePicture}
                   className='object-cover'
                 />
                 <AvatarFallback>
                   <Avatar
-                    name={`${user?.name} ${user?.id}`}
+                    name={`${me?.name} ${me?.id}`}
                     variant='beam'
                     className='size-32'
                   />
@@ -198,7 +198,7 @@ export function ProfilePhotoDialog() {
                     type='button'
                     onClick={handleUploadClick}
                     variant='outline'
-                    className='flex gap-2 items-center w-full border-[#0066CC] text-[#0066CC] 
+                    className='flex gap-2 items-center w-full border-[#0066CC] text-[#0066CC]
                 hover:bg-[#0066CC]/10 hover:text-[#0066CC] text-base py-5'
                   >
                     <IconUpload className='w-[1em]! h-[1em]!' />
@@ -207,9 +207,7 @@ export function ProfilePhotoDialog() {
                   <Button
                     type='button'
                     onClick={handleRemove}
-                    disabled={
-                      !user?.profilePicture || isUploading || isRemoving
-                    }
+                    disabled={!me?.profilePicture || isUploading || isRemoving}
                     variant='ghost'
                     className='flex gap-2 items-center w-full text-base py-5 hover:bg-[#FB2C36]/10 hover:text-[#FB2C36] disabled:opacity-50'
                   >

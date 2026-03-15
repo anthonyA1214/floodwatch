@@ -1,4 +1,11 @@
-import { pgEnum, pgTable, timestamp, text, serial } from 'drizzle-orm/pg-core';
+import {
+  pgEnum,
+  pgTable,
+  timestamp,
+  text,
+  serial,
+  varchar,
+} from 'drizzle-orm/pg-core';
 import { doublePrecision } from 'drizzle-orm/pg-core';
 
 export const safetyTypeEnum = pgEnum('safety_type', ['shelter', 'hospital']);
@@ -13,6 +20,8 @@ export const safety = pgTable('safety', {
   image: text('image'),
   imagePublicId: text('image_public_id'),
   type: safetyTypeEnum().notNull(),
+  availability: varchar('availability', { length: 100 }),
+  contactNumber: varchar('contact_number', { length: 20 }),
   createdAt: timestamp('created_at').defaultNow(),
   updatedAt: timestamp('updated_at').defaultNow(),
 });

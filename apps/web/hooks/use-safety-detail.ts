@@ -17,6 +17,6 @@ export function useSafetyDetail(safetyId: number) {
     isLoading,
     isValidating,
     isError: error,
-    mutateReportDetail: mutate,
+    mutateSafetyDetail: mutate,
   };
 }

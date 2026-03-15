@@ -3,7 +3,9 @@
 import { SAFETY_TYPE_COLOR_MAP } from '@/lib/utils/get-color-map';
 import {
   IconCalendarPlus,
+  IconCircleCheck,
   IconInfoCircle,
+  IconPhone,
   IconRoad,
   IconSend,
   IconShield,
@@ -16,10 +18,10 @@ import { Drawer } from 'vaul';
 import { Separator } from '@/components/ui/separator';
 import NoPhotoEmpty from '../shared/no-photo-empty';
 import { Button } from '../ui/button';
-import { AffectedLocationDrawerSkeleton } from './skeletons/affected-location-drawer-skeleton';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { useMapOverlay } from '@/contexts/map-overlay-context';
 import { useSafetyDetail } from '@/hooks/use-safety-detail';
+import { SafetyLocationDrawerSkeleton } from './skeletons/safety-location-drawer-skeleton';
 
 const snapPoints = ['0px', '355px', 1];
 
@@ -75,7 +77,7 @@ export default function SafetyLocationDrawer({
       <Drawer.Overlay className='absolute inset-0 bg-black/40 pointer-events-none' />
 
       <VisuallyHidden>
-        <Drawer.Title>Reported Location</Drawer.Title>
+        <Drawer.Title>Safety Location</Drawer.Title>
       </VisuallyHidden>
 
       <Drawer.Content
@@ -85,7 +87,7 @@ export default function SafetyLocationDrawer({
         <Drawer.Handle className='w-16! my-3! rounded-full! shrink-0!' />
 
         {isLoading || !safetyDetail ? (
-          <AffectedLocationDrawerSkeleton />
+          <SafetyLocationDrawerSkeleton />
         ) : (
           <div
             ref={scrollRef}
@@ -102,41 +104,19 @@ export default function SafetyLocationDrawer({
                 borderLeftColor: SAFETY_TYPE_COLOR_MAP[safetyDetail?.type],
               }}
             >
+              <div className='flex items-center gap-1.5 lg:gap-2 p-3 lg:p-4 bg-[#9B32E4]/10 text-[#9B32E4] rounded-lg text-sm lg:text-base'>
+                <IconShield className='w-[1.5em]! h-[1.5em]!' />
+                <span className='font-poppins font-medium'>
+                  OFFICIAL INFORMATION
+                </span>
+              </div>
+
               {/* row 1 */}
-              <Drawer.Title className='font-poppins text-base lg:text-lg font-semibold'>
+              <Drawer.Title className='font-poppins text-sm lg:text-base font-semibold'>
                 {safetyDetail?.location}
               </Drawer.Title>
 
               <Separator />
-
-              {/* badge and distance to now */}
-              {/* <div className='flex flex-row justify-between gap-3'>
-                <div className='flex items-center text-xs lg:text-sm gap-1.5 lg:gap-2 tabular-nums opacity-50'>
-                  <IconClock className='w-[1.5em]! h-[1.5em]!' />
-                  {formatDistanceToNow(reportDetail?.reportedAt, {
-                    addSuffix: true,
-                  })}
-                </div>
-
-                <div
-                  className='flex items-center rounded-full px-3 py-1 w-fit h-fit'
-                  style={{
-                    color: REPORT_STATUS_COLOR_MAP[reportDetail?.status],
-                    backgroundColor: `${REPORT_STATUS_COLOR_MAP[reportDetail?.status]}25`,
-                  }}
-                >
-                  <div className='flex items-center gap-1.5 lg:gap-2 text-xs lg:text-sm'>
-                    {reportDetail?.status === 'verified' ? (
-                      <IconCircleCheck className='w-[1.5em]! h-[1.5em]!' />
-                    ) : (
-                      <IconHelpCircle className='w-[1.5em]! h-[1.5em]!' />
-                    )}
-                    <span className='font-poppins font-medium'>
-                      {reportDetail?.status.toUpperCase()} REPORT
-                    </span>
-                  </div>
-                </div>
-              </div> */}
 
               {/* details */}
               <div className='flex flex-col border rounded-lg text-xs lg:text-sm'>
@@ -188,7 +168,41 @@ export default function SafetyLocationDrawer({
                   </div>
                 </div>
 
-                {/*  */}
+                {safetyDetail?.availability && (
+                  <>
+                    <Separator />
+
+                    <div className='flex justify-between items-center p-3 lg:p-4'>
+                      <div className='flex items-center gap-1.5 lg:gap-2 opacity-50'>
+                        <IconCircleCheck className='w-[1.5em]! h-[1.5em]!' />
+                        <span className='font-poppins font-medium'>
+                          AVAILABILITY
+                        </span>
+                      </div>
+
+                      <span>{safetyDetail?.availability}</span>
+                    </div>
+                  </>
+                )}
+
+                {safetyDetail?.contactNumber && (
+                  <>
+                    <Separator />
+
+                    <div className='flex justify-between items-center p-3 lg:p-4'>
+                      <div className='flex items-center gap-1.5 lg:gap-2 opacity-50'>
+                        <IconPhone className='w-[1.5em]! h-[1.5em]!' />
+                        <span className='font-poppins font-medium'>
+                          CONTACT NUMBER
+                        </span>
+                      </div>
+
+                      <span>{safetyDetail?.contactNumber}</span>
+                    </div>
+                  </>
+                )}
+
+                {/**/}
               </div>
 
               {/* image */}

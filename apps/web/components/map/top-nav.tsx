@@ -14,7 +14,7 @@ import {
   IconShieldPin,
 } from '@tabler/icons-react';
 import AuthButtons from '@/components/shared/auth-buttons';
-import { useUser } from '@/hooks/use-user';
+import { useMe } from '@/hooks/use-me';
 import { Skeleton } from '@/components/ui/skeleton';
 import ReportFloodAlertDialog from './report-flood-alert-dialog';
 import { useMapOverlay } from '@/contexts/map-overlay-context';
@@ -22,7 +22,7 @@ import { cn } from '@/lib/utils';
 
 export default function TopNav() {
   const { toggle, openLocations, activeOverlay } = useMapOverlay();
-  const { user, isLoading } = useUser();
+  const { me, isLoading } = useMe();
 
   return (
     <header className='w-full bg-[#0066CC] relative z-50'>
@@ -119,7 +119,7 @@ export default function TopNav() {
               <Skeleton className='w-6 h-6 rounded-md bg-white/20' />
               <Skeleton className='size-8 rounded-full bg-white/20' />
             </div>
-          ) : user ? (
+          ) : me ? (
             <>
               <ReportFloodAlertDialog />
 
@@ -132,10 +132,10 @@ export default function TopNav() {
 
               <button onClick={() => toggle('profile')}>
                 <UIAvatar className='size-8 border'>
-                  <AvatarImage src={user?.profilePicture} />
+                  <AvatarImage src={me?.profilePicture} />
                   <AvatarFallback>
                     <Avatar
-                      name={`${user?.name} ${user?.id}`}
+                      name={`${me?.name} ${me?.id}`}
                       variant='beam'
                       className='size-8'
                     />

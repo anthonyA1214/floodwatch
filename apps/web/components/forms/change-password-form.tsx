@@ -7,14 +7,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useActionState, useEffect } from 'react';
 import { changePassword } from '@/lib/actions/password-actions';
-import { useUser } from '@/hooks/use-user';
+import { useMe } from '@/hooks/use-me';
 
 export default function ChangePasswordForm({
   onSuccess,
 }: {
   onSuccess: () => void;
 }) {
-  const { mutateUser } = useUser();
+  const { mutateMe } = useMe();
 
   const initialState: ActionState = {
     status: null,
@@ -30,13 +30,13 @@ export default function ChangePasswordForm({
     async function handleSuccess() {
       if (state.status === 'success') {
         // Notify parent component after successful password change
-        await mutateUser();
+        await mutateMe();
         onSuccess();
       }
     }
 
     handleSuccess();
-  }, [state.status, onSuccess, mutateUser]);
+  }, [state.status, onSuccess, mutateMe]);
 
   const resetSessionId = sessionStorage.getItem('resetSessionId');
 

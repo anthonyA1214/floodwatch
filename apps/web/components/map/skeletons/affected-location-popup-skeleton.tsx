@@ -1,19 +1,22 @@
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 
-export default function FloodReportPopupSkeleton() {
+export default function AffectedLocationPopupSkeleton() {
   return (
-    <div className='flex flex-col justify-center rounded-2xl overflow-hidden w-[300px] max-h-[70vh] overflow-y-auto'>
-      {/* header */}
-      <div className='flex items-center justify-between bg-[#0066CC] p-3 text-white'>
+    <div className='flex flex-col justify-center rounded-lg overflow-hidden w-[300px] max-h-[70vh] overflow-y-auto bg-white'>
+      {/* header — no wrapper div since isAdmin is unknown */}
+      <div className='flex items-center justify-between bg-[#0066CC] p-3 text-white rounded-b-2xl'>
         <Skeleton className='h-4 w-24 bg-white/30' />
         <Skeleton className='size-4 rounded-full bg-white/30' />
       </div>
 
-      <div className='flex flex-col bg-white'>
+      <div className='flex flex-col'>
         {/* time + status badge */}
         <div className='flex flex-row justify-between gap-4 p-3'>
-          <Skeleton className='h-4 w-28' />
+          <div className='flex items-center gap-1.5'>
+            <Skeleton className='h-4 w-4 rounded-sm shrink-0' />
+            <Skeleton className='h-4 w-24' />
+          </div>
           <Skeleton className='h-6 w-24 rounded-full' />
         </div>
 
@@ -23,7 +26,10 @@ export default function FloodReportPopupSkeleton() {
         <div className='flex flex-col gap-2 p-3'>
           {/* severity level */}
           <div className='flex justify-between gap-2 items-center'>
-            <Skeleton className='h-4 w-28' />
+            <div className='flex items-center gap-1.5'>
+              <Skeleton className='h-4 w-4 rounded-sm' />
+              <Skeleton className='h-4 w-24' />
+            </div>
             <Skeleton className='h-6 w-16 rounded-full' />
           </div>
 
@@ -31,7 +37,10 @@ export default function FloodReportPopupSkeleton() {
 
           {/* date & time */}
           <div className='flex justify-between items-start gap-2'>
-            <Skeleton className='h-4 w-24 shrink-0' />
+            <div className='flex items-center gap-1.5 shrink-0'>
+              <Skeleton className='h-4 w-4 rounded-sm' />
+              <Skeleton className='h-4 w-20' />
+            </div>
             <div className='flex flex-col items-end gap-1'>
               <Skeleton className='h-3.5 w-28' />
               <Skeleton className='h-3 w-16' />
@@ -42,7 +51,10 @@ export default function FloodReportPopupSkeleton() {
 
           {/* location */}
           <div className='flex justify-between gap-2 items-start'>
-            <Skeleton className='h-4 w-20 shrink-0' />
+            <div className='flex items-center gap-1.5 shrink-0'>
+              <Skeleton className='h-4 w-4 rounded-sm' />
+              <Skeleton className='h-4 w-16' />
+            </div>
             <div className='flex flex-col items-end gap-1'>
               <Skeleton className='h-3.5 w-36' />
               <Skeleton className='h-3.5 w-24' />
@@ -52,13 +64,15 @@ export default function FloodReportPopupSkeleton() {
 
         <Separator />
 
-        {/* credibility + vote buttons */}
+        {/* credibility + vote buttons (non-admin default) */}
         <div className='flex flex-col text-xs'>
           <div className='flex justify-between items-center p-3'>
-            <Skeleton className='h-4 w-24' />
+            <div className='flex items-center gap-1.5'>
+              <Skeleton className='h-4 w-4 rounded-sm' />
+              <Skeleton className='h-4 w-20' />
+            </div>
             <Skeleton className='h-4 w-8' />
           </div>
-
           <div className='flex'>
             <Skeleton className='h-12 flex-1 rounded-none' />
             <div className='w-px bg-border' />

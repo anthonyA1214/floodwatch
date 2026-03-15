@@ -6,7 +6,7 @@ import { IconLink, IconLock } from '@tabler/icons-react';
 import { useState } from 'react';
 import IconBox from '../shared/icon-box';
 import Image from 'next/image';
-import { useUser } from '@/hooks/use-user';
+import { useMe } from '@/hooks/use-me';
 import SetPasswordForm from '@/components/forms/set-password-form';
 import { getApiUrl } from '@/lib/utils/get-api-url';
 
@@ -14,7 +14,7 @@ export default function SecurityTab() {
   const [passwordAction, setPasswordAction] = useState<'change' | 'set' | null>(
     null,
   );
-  const { user } = useUser();
+  const { me } = useMe();
 
   const handleLink = () => {
     window.location.href = `${getApiUrl()}/auth/google/link`;
@@ -63,17 +63,17 @@ export default function SecurityTab() {
 
           <Button
             className='flex items-center gap-2'
-            disabled={user?.hasGoogleAuth}
+            disabled={me?.hasGoogleAuth}
             onClick={handleLink}
           >
             <IconLink className='w-[1.5em]! h-[1.5em]!' />
-            {user?.hasGoogleAuth ? 'Connected' : 'Connect'}
+            {me?.hasGoogleAuth ? 'Connected' : 'Connect'}
           </Button>
         </div>
       </div>
 
       {/* Password Section */}
-      {user?.hasPassword ? (
+      {me?.hasPassword ? (
         <div className='flex flex-col gap-3'>
           <h3 className='font-poppins font-semibold'>Password</h3>
           <div className='flex flex-col bg-gray-100 border rounded-xl p-4 gap-4'>

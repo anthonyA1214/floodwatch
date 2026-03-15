@@ -28,12 +28,12 @@ import { AppController } from './app.controller';
       {
         name: 'global',
         ttl: 60000,
-        limit: 10,
+        limit: 30,
       },
       {
         name: 'getComments',
         ttl: 60000,
-        limit: 30,
+        limit: 60,
       },
     ]),
     LoggerModule.forRoot({

@@ -3,7 +3,9 @@ import Image from 'next/image';
 import {
   IconCalendarPlus,
   IconChevronLeft,
+  IconCircleCheck,
   IconInfoCircle,
+  IconPhone,
   IconRoad,
   IconSend,
   IconShield,
@@ -11,11 +13,11 @@ import {
 import { SAFETY_TYPE_COLOR_MAP } from '@/lib/utils/get-color-map';
 import { Separator } from '../ui/separator';
 import { Button } from '../ui/button';
-import { AffectedLocationPanelSkeleton } from './skeletons/affected-location-panel-skeleton';
 import NoPhotoEmpty from '../shared/no-photo-empty';
 import { useMapOverlay } from '@/contexts/map-overlay-context';
 import { useSafetyDetail } from '@/hooks/use-safety-detail';
 import { format } from 'date-fns';
+import { SafetyLocationPanelSkeleton } from './skeletons/safety-location-panel-skeleton';
 
 export default function SafetyLocationPanel({
   safetyId,
@@ -44,7 +46,7 @@ export default function SafetyLocationPanel({
   return (
     <div className='relative w-full h-full bg-white z-50 min-h-0 flex flex-col pointer-events-auto'>
       <button
-        className='absolute bg-white top-1/2 translate-x-full right-0 h-16 -translate-y-1/2 
+        className='absolute bg-white top-1/2 translate-x-full right-0 h-16 -translate-y-1/2
         rounded-r-2xl ps-1 py-1 pr-1.5 text-xs z-30 shadow-[4px_0px_6px_-1px_rgba(0,0,0,0.1)]'
         onClick={close}
       >
@@ -52,7 +54,7 @@ export default function SafetyLocationPanel({
       </button>
 
       {isLoading || !safetyDetail ? (
-        <AffectedLocationPanelSkeleton />
+        <SafetyLocationPanelSkeleton />
       ) : (
         <div
           ref={scrollRef}
@@ -81,8 +83,15 @@ export default function SafetyLocationPanel({
               borderLeftColor: SAFETY_TYPE_COLOR_MAP[safetyDetail?.type],
             }}
           >
+            <div className='flex items-center gap-1.5 lg:gap-2 p-3 lg:p-4 bg-[#9B32E4]/10 text-[#9B32E4] rounded-lg text-base'>
+              <IconShield className='w-[1.5em]! h-[1.5em]!' />
+              <span className='font-poppins font-medium'>
+                OFFICIAL INFORMATION
+              </span>
+            </div>
+
             {/* location name */}
-            <h3 className='font-poppins text-base lg:text-lg font-semibold'>
+            <h3 className='font-poppins text-base font-semibold'>
               {safetyDetail?.location}
             </h3>
 
@@ -136,7 +145,41 @@ export default function SafetyLocationPanel({
                 </div>
               </div>
 
-              {/*  */}
+              {safetyDetail?.availability && (
+                <>
+                  <Separator />
+
+                  <div className='flex justify-between items-center p-3 lg:p-4'>
+                    <div className='flex items-center gap-1.5 lg:gap-2 opacity-50'>
+                      <IconCircleCheck className='w-[1.5em]! h-[1.5em]!' />
+                      <span className='font-poppins font-medium'>
+                        AVAILABILITY
+                      </span>
+                    </div>
+
+                    <span>{safetyDetail?.availability}</span>
+                  </div>
+                </>
+              )}
+
+              {safetyDetail?.contactNumber && (
+                <>
+                  <Separator />
+
+                  <div className='flex justify-between items-center p-3 lg:p-4'>
+                    <div className='flex items-center gap-1.5 lg:gap-2 opacity-50'>
+                      <IconPhone className='w-[1.5em]! h-[1.5em]!' />
+                      <span className='font-poppins font-medium'>
+                        CONTACT NUMBER
+                      </span>
+                    </div>
+
+                    <span>{safetyDetail?.contactNumber}</span>
+                  </div>
+                </>
+              )}
+
+              {/**/}
             </div>
 
             {/* description */}

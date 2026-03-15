@@ -5,7 +5,7 @@ import { Empty, EmptyContent, EmptyMedia } from '@/components/ui/empty';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
-import { useUser } from '@/hooks/use-user';
+import { useMe } from '@/hooks/use-me';
 import { updateProfile } from '@/lib/actions/update-profile-action';
 import { ActionState } from '@/lib/types/action-state';
 import { IconPencil } from '@tabler/icons-react';
@@ -13,7 +13,7 @@ import { useActionState, useEffect, useState } from 'react';
 
 export default function AccountTab() {
   const [isEditing, setIsEditing] = useState(false);
-  const { user, mutateUser, isLoading, isValidating } = useUser();
+  const { me, mutateMe, isLoading, isValidating } = useMe();
 
   const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (!isEditing) {
@@ -35,13 +35,13 @@ export default function AccountTab() {
   useEffect(() => {
     async function handleSuccess() {
       if (state.status === 'success') {
-        await mutateUser();
+        await mutateMe();
         setIsEditing(false);
       }
     }
 
     handleSuccess();
-  }, [state, mutateUser]);
+  }, [state, mutateMe]);
 
   return (
     <>
@@ -65,7 +65,7 @@ export default function AccountTab() {
                     id='first_name'
                     name='first_name'
                     placeholder='First name'
-                    defaultValue={user?.firstName}
+                    defaultValue={me?.firstName}
                     className='rounded-full px-4 shadow-sm'
                     disabled={!isEditing}
                   />
@@ -83,7 +83,7 @@ export default function AccountTab() {
                     id='last_name'
                     name='last_name'
                     placeholder='Last name'
-                    defaultValue={user?.lastName}
+                    defaultValue={me?.lastName}
                     className='rounded-full px-4 shadow-sm'
                     disabled={!isEditing}
                   />
@@ -105,7 +105,7 @@ export default function AccountTab() {
                 name='email'
                 type='email'
                 placeholder='Enter your email'
-                defaultValue={user?.email}
+                defaultValue={me?.email}
                 className='rounded-full px-4 shadow-sm'
                 disabled
               />
@@ -122,7 +122,7 @@ export default function AccountTab() {
                 id='home_address'
                 name='home_address'
                 placeholder='Enter your home address'
-                defaultValue={user?.homeAddress}
+                defaultValue={me?.homeAddress}
                 className='rounded-full px-4 shadow-sm'
                 disabled={!isEditing}
               />
