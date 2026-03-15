@@ -51,8 +51,9 @@ export const safetyLocationQuerySchema = z.object({
 export class CreateSafetyLocationDto extends createZodDto(
   createSafetyLocationSchema,
 ) {}
-export class safetyMapPinDto extends createZodDto(safetyMapPinSchema) {}
-export class safetyDetailDto extends createZodDto(safetyDetailSchema) {}
+export class SafetyMapPinDto extends createZodDto(safetyMapPinSchema) {}
+export class SafetyDetailDto extends createZodDto(safetyDetailSchema) {}
+export class SafetyListItemDto extends createZodDto(safetyListItem) {}
 export class SafetyLocationQueryDto extends createZodDto(
   safetyLocationQuerySchema,
 ) {}
@@ -62,6 +63,7 @@ export type CreateSafetyLocationInput = z.infer<
 >;
 export type SafetyMapPinInput = z.infer<typeof safetyMapPinSchema>;
 export type SafetyDetailInput = z.infer<typeof safetyDetailSchema>;
+export type SafetyListItemInput = z.infer<typeof safetyListItem>;
 export type SafetyLocationQueryInput = z.infer<
   typeof safetyLocationQuerySchema
 >;

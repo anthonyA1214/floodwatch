@@ -15,11 +15,41 @@ import { Separator } from '../ui/separator';
 import { IconAlertTriangle } from '@tabler/icons-react';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { useMapOverlay } from '@/contexts/map-overlay-context';
+import { useReportList } from '@/hooks/use-report-list';
+import { useMapPopup } from '@/contexts/map-popup-context';
+import { useReportMapPins } from '@/hooks/use-report-map-pins';
+import { useMapFilter } from '@/contexts/map-filter-context';
+import AffectedLocationsCardSkeleton from './skeletons/affected-locations-card-skeleton';
+import LocationsListEmpty from './empty/locations-list-empty';
 
 const snapPoints = ['0px', '355px', 1];
 
 export default function AffectedLocationsListDrawer() {
+  const { reportList, isLoading } = useReportList();
   const { close } = useMapOverlay();
+  const { activePopup, openReportPopup } = useMapPopup();
+  const { reportMapPins } = useReportMapPins();
+
+  const [severity, setSeverity] = useState<
+    'all-levels' | 'critical' | 'high' | 'moderate' | 'low'
+  >('all-levels');
+
+  const { filters } = useMapFilter();
+  const filteredReportList = reportList?.filter((report) => {
+    const pin = reportMapPins?.find((p) => p.id === report.id);
+    if (!pin) return false;
+    if (!filters.severities.has(pin.severity)) return false;
+    if (severity !== 'all-levels' && pin.severity !== severity) return false;
+    return true;
+  });
+
+  const handleCardClick = (reportId: number) => {
+    const pin = reportMapPins?.find((p) => p.id === reportId);
+    if (pin) {
+      openReportPopup(pin);
+    }
+  };
+
   const [snap, setSnap] = useState<number | string | null>(snapPoints[1]);
   const [open, setOpen] = useState(true);
 
@@ -75,7 +105,19 @@ export default function AffectedLocationsListDrawer() {
 
             {/* Filter using Select */}
             <div className='px-3'>
-              <Select defaultValue='all-levels'>
+              <Select
+                defaultValue={severity}
+                onValueChange={(value) =>
+                  setSeverity(
+                    value as
+                      | 'all-levels'
+                      | 'critical'
+                      | 'high'
+                      | 'moderate'
+                      | 'low',
+                  )
+                }
+              >
                 <SelectTrigger className='w-full text-sm text-gray-600 py-3 justify-between'>
                   <SelectValue placeholder='All Levels' />
                 </SelectTrigger>
@@ -92,48 +134,28 @@ export default function AffectedLocationsListDrawer() {
 
             {/* Content */}
             <div className='flex flex-col gap-4 overflow-y-auto flex-1 min-h-0 px-3 pb-3'>
-              <AffectedLocationsCard
-                severity='critical'
-                location='Barangay 176'
-                message='Lorem ipsum dolor sit, amet consectetur adipisicing elit. Suscipit ut quaerat a ipsa maxime omnis facilis impedit! Vero aut modi possimus sapiente illo dolores corporis ipsum, perspiciatis placeat enim iure?'
-                reportedAt='2026-01-28T10:30:00Z'
-              />
-              <AffectedLocationsCard
-                severity='high'
-                location='Barangay 42'
-                message='Floodwaters reaching waist level, residents advised to evacuate immediately.'
-                reportedAt='2026-01-27T08:15:00Z'
-              />
-              <AffectedLocationsCard
-                severity='moderate'
-                location='Barangay 89'
-                message='Rising floodwaters, residents urged to stay alert and monitor updates.'
-                reportedAt='2026-01-26T14:45:00Z'
-              />
-              <AffectedLocationsCard
-                severity='low'
-                location='Barangay 23'
-                message='Minor flooding reported, residents advised to exercise caution.'
-                reportedAt='2026-01-25T09:00:00Z'
-              />
-              <AffectedLocationsCard
-                severity='low'
-                location='Barangay 23'
-                message='Minor flooding reported, residents advised to exercise caution.'
-                reportedAt='2026-01-25T09:00:00Z'
-              />
-              <AffectedLocationsCard
-                severity='low'
-                location='Barangay 23'
-                message='Minor flooding reported, residents advised to exercise caution.'
-                reportedAt='2026-01-25T09:00:00Z'
-              />
-              <AffectedLocationsCard
-                severity='low'
-                location='Barangay 23'
-                message='Minor flooding reported, residents advised to exercise caution.'
-                reportedAt='2026-01-25T09:00:00Z'
-              />
+              {isLoading ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <AffectedLocationsCardSkeleton key={i} />
+                ))
+              ) : !filteredReportList || filteredReportList.length === 0 ? (
+                <LocationsListEmpty />
+              ) : (
+                filteredReportList?.map((report) => (
+                  <AffectedLocationsCard
+                    key={report.id}
+                    isActive={
+                      activePopup?.type === 'report' &&
+                      activePopup?.report?.id === report.id
+                    }
+                    severity={report.severity}
+                    location={report?.location}
+                    description={report?.description}
+                    reportedAt={report?.reportedAt}
+                    onClick={() => handleCardClick(report.id)}
+                  />
+                ))
+              )}
             </div>
           </div>
         </div>

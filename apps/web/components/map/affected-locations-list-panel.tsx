@@ -17,6 +17,7 @@ import { useMapPopup } from '@/contexts/map-popup-context';
 import { useReportMapPins } from '@/hooks/use-report-map-pins';
 import { useState } from 'react';
 import { useMapFilter } from '@/contexts/map-filter-context';
+import LocationsListEmpty from './empty/locations-list-empty';
 
 export default function AffectedLocationsListPanel() {
   const { reportList, isLoading } = useReportList();
@@ -95,24 +96,28 @@ export default function AffectedLocationsListPanel() {
 
         {/* Content */}
         <div className='flex flex-col gap-4 overflow-y-auto flex-1 min-h-0 px-4'>
-          {isLoading || !reportList
-            ? Array.from({ length: 5 }).map((_, i) => (
-                <AffectedLocationsCardSkeleton key={i} />
-              ))
-            : filteredReportList?.map((report) => (
-                <AffectedLocationsCard
-                  key={report.id}
-                  isActive={
-                    activePopup?.type === 'report' &&
-                    activePopup?.report?.id === report.id
-                  }
-                  severity={report.severity}
-                  location={report?.location}
-                  description={report?.description}
-                  reportedAt={report?.reportedAt}
-                  onClick={() => handleCardClick(report.id)}
-                />
-              ))}
+          {isLoading ? (
+            Array.from({ length: 5 }).map((_, i) => (
+              <AffectedLocationsCardSkeleton key={i} />
+            ))
+          ) : !filteredReportList || filteredReportList.length === 0 ? (
+            <LocationsListEmpty />
+          ) : (
+            filteredReportList?.map((report) => (
+              <AffectedLocationsCard
+                key={report.id}
+                isActive={
+                  activePopup?.type === 'report' &&
+                  activePopup?.report?.id === report.id
+                }
+                severity={report.severity}
+                location={report?.location}
+                description={report?.description}
+                reportedAt={report?.reportedAt}
+                onClick={() => handleCardClick(report.id)}
+              />
+            ))
+          )}
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@ import {
   CreateSafetyLocationInput,
   SafetyLocationQueryDto,
 } from '@repo/schemas';
+import { desc } from 'drizzle-orm';
 import { and, count, eq, like, or, sql } from 'drizzle-orm';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { DRIZZLE } from 'src/drizzle/drizzle-connection';
@@ -52,7 +53,16 @@ export class SafetyService {
   }
 
   async getSafetyList() {
-    await Promise.resolve();
+    return await this.db
+      .select({
+        id: safety.id,
+        location: safety.location,
+        address: safety.address,
+        type: safety.type,
+        availability: safety.availability,
+      })
+      .from(safety)
+      .orderBy(desc(safety.createdAt));
   }
 
   async getAllSafety(safetyLocationQuery: SafetyLocationQueryDto) {
