@@ -13,13 +13,13 @@ export default function FilterReportsToggle({
 }: FilterReportsToggleProps) {
   return (
     <button
-      type="button"
+      type='button'
       onClick={onClick}
-      title="Toggle verification filter"
+      title='Toggle verification filter'
       aria-pressed={isOpen}
-      className="flex h-[36px] w-[36px] items-center justify-center rounded-md border border-slate-300 bg-white/80 shadow-lg transition hover:bg-gray-200"
+      className='flex h-[36px] w-[36px] items-center justify-center rounded-md border border-slate-300 bg-white/80 shadow-lg transition hover:bg-gray-200'
     >
-      <IconMenu2 className="h-[24px] w-[24px]" strokeWidth={1.8} />
+      <IconMenu2 className='h-[24px] w-[24px]' strokeWidth={1.8} />
     </button>
   );
 }
