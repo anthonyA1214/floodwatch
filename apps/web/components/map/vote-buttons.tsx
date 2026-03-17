@@ -2,19 +2,19 @@
 
 import { useMyVote } from '@/hooks/use-my-vote';
 import { useReportDetail } from '@/hooks/use-report-detail';
-import { useUser } from '@/hooks/use-user';
+import { useMe } from '@/hooks/use-me';
 import { apiFetchClient } from '@/lib/api-fetch-client';
 import { cn } from '@/lib/utils';
 import { IconThumbUp, IconThumbUpFilled, IconX } from '@tabler/icons-react';
 import { useState } from 'react';
 
 export default function VoteButtons({ reportId }: { reportId: number }) {
-  const { myVote, mutateMyVote } = useMyVote(reportId);
+  const { me } = useMe();
+  const { myVote, mutateMyVote } = useMyVote(reportId, !!me);
   const { mutateReportDetail } = useReportDetail(reportId);
   const [pendingAction, setPendingAction] = useState<'confirm' | 'deny' | null>(
     null,
   );
-  const { user } = useUser();
 
   const handleVote = async (action: 'confirm' | 'deny') => {
     if (pendingAction) return; // Prevent multiple rapid votes
@@ -48,10 +48,10 @@ export default function VoteButtons({ reportId }: { reportId: number }) {
       {/* confirm */}
       <button
         onClick={() => handleVote('confirm')}
-        disabled={!!pendingAction || !user}
+        disabled={!!pendingAction || !me}
         className={cn(
           'w-full group transition-colors duration-200 disabled:cursor-not-allowed',
-          !user
+          !me
             ? 'opacity-50 cursor-not-allowed'
             : isConfirmed || pendingAction === 'confirm'
               ? 'text-[#15803D] bg-[#bbf7d0] ring-2 ring-inset ring-[#15803D]/30 font-semibold'
@@ -63,7 +63,7 @@ export default function VoteButtons({ reportId }: { reportId: number }) {
             'flex items-center justify-center gap-1.5 lg:gap-2 p-3 lg:p-4 transition-transform duration-200',
             isConfirmed
               ? 'scale-105'
-              : user
+              : me
                 ? 'group-hover:-translate-y-0.5'
                 : '',
           )}
@@ -82,10 +82,10 @@ export default function VoteButtons({ reportId }: { reportId: number }) {
       {/* deny */}
       <button
         onClick={() => handleVote('deny')}
-        disabled={!!pendingAction || !user}
+        disabled={!!pendingAction || !me}
         className={cn(
           'w-full group transition-colors duration-200 disabled:cursor-not-allowed',
-          !user
+          !me
             ? 'opacity-50 cursor-not-allowed'
             : isDenied || pendingAction === 'deny'
               ? 'text-[#dc2626] bg-[#fecaca] ring-2 ring-inset ring-[#dc2626]/30 font-semibold'
@@ -95,7 +95,7 @@ export default function VoteButtons({ reportId }: { reportId: number }) {
         <div
           className={cn(
             'flex items-center justify-center gap-1.5 lg:gap-2 p-3 lg:p-4 transition-transform duration-200',
-            isDenied ? 'scale-105' : user ? 'group-hover:-translate-y-0.5' : '',
+            isDenied ? 'scale-105' : me ? 'group-hover:-translate-y-0.5' : '',
           )}
         >
           <IconX

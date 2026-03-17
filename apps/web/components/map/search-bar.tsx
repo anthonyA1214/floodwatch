@@ -6,7 +6,8 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from '@/components/ui/input-group';
-import { IconSearch } from '@tabler/icons-react';
+import { IconSearch, IconX } from '@tabler/icons-react';
+import { useMapOverlay } from '@/contexts/map-overlay-context';
 
 type NominatimResult = {
   place_id: number;
@@ -173,14 +174,16 @@ export default function SearchBar({
     return () => document.removeEventListener('mousedown', onMouseDown);
   }, []);
 
+  const { activeOverlay, close } = useMapOverlay();
+
   return (
     <div
       ref={wrapperRef}
-      className="flex flex-col z-50 w-full h-fit pointer-events-auto"
+      className='flex flex-col z-50 w-full h-fit pointer-events-auto'
     >
-      <InputGroup className="h-12 rounded-xl bg-white shadow-md">
+      <InputGroup className='h-12 rounded-xl bg-white shadow-md'>
         <InputGroupInput
-          placeholder="Search location..."
+          placeholder='Search location...'
           value={query}
           onChange={(event) => {
             setQuery(event.target.value);
@@ -221,26 +224,37 @@ export default function SearchBar({
 
         <InputGroupAddon>
           <button
-            type="button"
+            type='button'
             onClick={runSearch}
-            className="p-2"
-            aria-label="Search"
+            className='p-2'
+            aria-label='Search'
             disabled={loading}
           >
             <IconSearch />
           </button>
         </InputGroupAddon>
+
+        {activeOverlay && (
+          <InputGroupAddon align='inline-end'>
+            <button
+              className='mr-2 opacity-70 hover:opacity-100 transition'
+              onClick={close}
+            >
+              <IconX className='w-[1.5em]! h-[1.5em]!' />
+            </button>
+          </InputGroupAddon>
+        )}
       </InputGroup>
 
       {open && suggestions.length > 0 && (
-        <div className="mt-2 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg">
-          <ul className="max-h-72 overflow-auto py-1">
+        <div className='mt-2 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-lg'>
+          <ul className='max-h-72 overflow-auto py-1'>
             {suggestions.map((item, idx) => {
               const active = idx === activeIndex;
               return (
                 <li key={item.place_id}>
                   <button
-                    type="button"
+                    type='button'
                     className={[
                       'w-full px-4 py-2 text-left text-sm',
                       active ? 'bg-slate-100' : 'hover:bg-slate-50',
@@ -252,7 +266,7 @@ export default function SearchBar({
                       setOpen(false);
                     }}
                   >
-                    <div className="line-clamp-2">{item.display_name}</div>
+                    <div className='line-clamp-2'>{item.display_name}</div>
                   </button>
                 </li>
               );

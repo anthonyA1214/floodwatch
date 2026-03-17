@@ -2,6 +2,15 @@
 @import 'tw-animate-css';
 
 @theme {
+  --color-critical: var(--critical);
+  --color-high: var(--high);
+  --color-moderate: var(--moderate);
+  --color-low: var(--low);
+  --color-shelter: var(--shelter);
+  --color-hospital: var(--hospital);
+  --color-verified: var(--verified);
+  --color-unverified: var(--unverified);
+
   --font-inter: var(--font-inter);
   --font-poppins: var(--font-poppins);
 }
@@ -62,6 +71,19 @@
 }
 
 :root {
+  /*my custom colors*/
+  /*severity level*/
+  --critical: #fb2c36;
+  --high: #ff6900;
+  --moderate: #f0b204;
+  --low: #2b7fff;
+  /*safety location type*/
+  --shelter: #7c3aed;
+  --hospital: #ec4899;
+  /*report status*/
+  --verified: #00d69b;
+  --unverified: #fb923c;
+
   --radius: 0.5rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.1408 0.0044 285.8229);

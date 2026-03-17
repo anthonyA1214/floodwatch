@@ -5,7 +5,7 @@ import { Empty, EmptyContent, EmptyMedia } from '@/components/ui/empty';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
-import { useUser } from '@/hooks/use-user';
+import { useMe } from '@/hooks/use-me';
 import { updateProfile } from '@/lib/actions/update-profile-action';
 import { ActionState } from '@/lib/types/action-state';
 import { IconPencil } from '@tabler/icons-react';
@@ -13,7 +13,7 @@ import { useActionState, useEffect, useState } from 'react';
 
 export default function AccountTab() {
   const [isEditing, setIsEditing] = useState(false);
-  const { user, mutateUser, isLoading, isValidating } = useUser();
+  const { me, mutateMe, isLoading, isValidating } = useMe();
 
   const handleButtonClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (!isEditing) {
@@ -35,62 +35,62 @@ export default function AccountTab() {
   useEffect(() => {
     async function handleSuccess() {
       if (state.status === 'success') {
-        await mutateUser();
+        await mutateMe();
         setIsEditing(false);
       }
     }
 
     handleSuccess();
-  }, [state, mutateUser]);
+  }, [state, mutateMe]);
 
   return (
     <>
-      <h3 className="font-poppins font-semibold">Profile Information</h3>
+      <h3 className='font-poppins font-semibold'>Profile Information</h3>
       {isLoading || isValidating ? (
         <Empty>
-          <EmptyContent className="mb-auto">
+          <EmptyContent className='mb-auto'>
             <EmptyMedia>
-              <Spinner className="size-16 text-[#0066CC]" />
+              <Spinner className='size-16 text-[#0066CC]' />
             </EmptyMedia>
           </EmptyContent>
         </Empty>
       ) : (
         <form action={formAction}>
-          <div className="flex flex-col gap-y-6 mx-auto w-full ">
-            <div className="space-y-2">
-              <Label htmlFor="first_name">Full name</Label>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                <div className="space-y-2">
+          <div className='flex flex-col gap-y-6 mx-auto w-full '>
+            <div className='space-y-2'>
+              <Label htmlFor='first_name'>Full name</Label>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
+                <div className='space-y-2'>
                   <Input
-                    id="first_name"
-                    name="first_name"
-                    placeholder="First name"
-                    defaultValue={user?.firstName}
-                    className="rounded-full px-4 shadow-sm"
+                    id='first_name'
+                    name='first_name'
+                    placeholder='First name'
+                    defaultValue={me?.firstName}
+                    className='rounded-full px-4 shadow-sm'
                     disabled={!isEditing}
                   />
                   {state?.errors &&
                     'firstName' in state.errors &&
                     state.errors.firstName && (
-                      <p className="text-red-500 text-sm">
+                      <p className='text-red-500 text-sm'>
                         {state.errors.firstName}
                       </p>
                     )}
                 </div>
 
-                <div className="space-y-2">
+                <div className='space-y-2'>
                   <Input
-                    id="last_name"
-                    name="last_name"
-                    placeholder="Last name"
-                    defaultValue={user?.lastName}
-                    className="rounded-full px-4 shadow-sm"
+                    id='last_name'
+                    name='last_name'
+                    placeholder='Last name'
+                    defaultValue={me?.lastName}
+                    className='rounded-full px-4 shadow-sm'
                     disabled={!isEditing}
                   />
                   {state?.errors &&
                     'lastName' in state.errors &&
                     state.errors.lastName && (
-                      <p className="text-red-500 text-sm">
+                      <p className='text-red-500 text-sm'>
                         {state.errors.lastName}
                       </p>
                     )}
@@ -98,38 +98,38 @@ export default function AccountTab() {
               </div>
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+            <div className='space-y-2'>
+              <Label htmlFor='email'>Email</Label>
               <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="Enter your email"
-                defaultValue={user?.email}
-                className="rounded-full px-4 shadow-sm"
+                id='email'
+                name='email'
+                type='email'
+                placeholder='Enter your email'
+                defaultValue={me?.email}
+                className='rounded-full px-4 shadow-sm'
                 disabled
               />
               {state?.errors &&
                 'email' in state.errors &&
                 state.errors.email && (
-                  <p className="text-red-500 text-sm">{state.errors.email}</p>
+                  <p className='text-red-500 text-sm'>{state.errors.email}</p>
                 )}
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="home_address">Home Address</Label>
+            <div className='space-y-2'>
+              <Label htmlFor='home_address'>Home Address</Label>
               <Input
-                id="home_address"
-                name="home_address"
-                placeholder="Enter your home address"
-                defaultValue={user?.homeAddress}
-                className="rounded-full px-4 shadow-sm"
+                id='home_address'
+                name='home_address'
+                placeholder='Enter your home address'
+                defaultValue={me?.homeAddress}
+                className='rounded-full px-4 shadow-sm'
                 disabled={!isEditing}
               />
               {state?.errors &&
                 'homeAddress' in state.errors &&
                 state.errors.homeAddress && (
-                  <p className="text-red-500 text-sm">
+                  <p className='text-red-500 text-sm'>
                     {state.errors.homeAddress}
                   </p>
                 )}
@@ -137,13 +137,13 @@ export default function AccountTab() {
               {state?.errors &&
                 '_form' in state.errors &&
                 state.errors._form && (
-                  <p className="text-red-500 text-sm">{state.errors._form}</p>
+                  <p className='text-red-500 text-sm'>{state.errors._form}</p>
                 )}
             </div>
 
             <Button
               type={isEditing ? 'submit' : 'button'}
-              className="py-5"
+              className='py-5'
               onClick={handleButtonClick}
               disabled={isSubmitting}
             >
@@ -151,7 +151,7 @@ export default function AccountTab() {
               {isSubmitting ? (
                 <>
                   <span>Saving...</span>
-                  <Spinner className="size-4" />
+                  <Spinner className='size-4' />
                 </>
               ) : isEditing ? (
                 'Save Changes'

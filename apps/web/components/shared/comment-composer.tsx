@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/avatar';
 import Avatar from 'boring-avatars';
 import { IconPhoto, IconSend, IconX } from '@tabler/icons-react';
-import { useUser } from '@/hooks/use-user';
+import { useMe } from '@/hooks/use-me';
 import { Skeleton } from '@/components/ui/skeleton';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
@@ -22,7 +22,7 @@ import { Spinner } from '../ui/spinner';
 
 export default function CommentComposer({ reportId }: { reportId: number }) {
   const { mutateComments } = useComments(reportId);
-  const { user, isLoading } = useUser();
+  const { me, isLoading } = useMe();
   const [image, setImage] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -34,7 +34,7 @@ export default function CommentComposer({ reportId }: { reportId: number }) {
     setContentValue('');
   };
 
-  const isLoggedIn = !isLoading && !!user;
+  const isLoggedIn = !isLoading && !!me;
 
   // form data
   const [contentValue, setContentValue] = useState<string | undefined>(
@@ -130,10 +130,10 @@ export default function CommentComposer({ reportId }: { reportId: number }) {
         ) : isLoggedIn ? (
           <>
             <UIAvatar className='size-8 sm:size-10 border shrink-0'>
-              <AvatarImage src={user?.profilePicture} />
+              <AvatarImage src={me?.profilePicture} />
               <AvatarFallback>
                 <Avatar
-                  name={`${user?.name} ${user?.id}`}
+                  name={`${me?.name} ${me?.id}`}
                   variant='beam'
                   className='size-8 sm:size-10'
                 />
@@ -141,10 +141,10 @@ export default function CommentComposer({ reportId }: { reportId: number }) {
             </UIAvatar>
             <div className='flex flex-col'>
               <span className='font-semibold text-sm sm:text-base truncate'>
-                {user?.name}
+                {me?.name}
               </span>
               <span className='text-xs text-gray-600 truncate'>
-                {user?.role.toUpperCase()}
+                {me?.role.toUpperCase()}
               </span>
             </div>
           </>
@@ -189,8 +189,8 @@ export default function CommentComposer({ reportId }: { reportId: number }) {
             />
             {/* overlay */}
             <div
-              className='absolute inset-0 bg-black/50 
-                top-0 left-0 flex flex-col gap-1 items-center 
+              className='absolute inset-0 bg-black/50
+                top-0 left-0 flex flex-col gap-1 items-center
                 justify-center text-white opacity-0 cursor-pointer
                 group-hover:opacity-100 transition-opacity rounded-lg'
               onClick={() => fileInputRef.current?.click()}

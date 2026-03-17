@@ -1,19 +1,5 @@
-'use client';
+import InteractiveMapPageWrapper from '@/components/map/interactive-map-page-wrapper';
 
-import dynamic from 'next/dynamic';
-
-const InteractiveMapPage = dynamic(
-  () => import('@/components/map/interactive-map-page'),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="flex items-center justify-center h-full">
-        Loading map...
-      </div>
-    ),
-  },
-);
-
-export default function Page() {
-  return <InteractiveMapPage />;
+export default function InteractiveMapPage() {
+  return <InteractiveMapPageWrapper />;
 }

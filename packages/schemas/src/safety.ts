@@ -6,20 +6,39 @@ export const createSafetyLocationSchema = z.object({
   longitude: z.coerce.number(),
   locationName: z.string(),
   address: z.string(),
+  availability: z.string().optional(),
+  contactNumber: z.string().optional(),
   description: z.string().optional(),
   type: z.enum(['shelter', 'hospital']),
 });
 
-export const safetyLocationsSchema = z.object({
-  id: z.string(),
+export const safetyMapPinSchema = z.object({
+  id: z.number(),
+  latitude: z.number(),
+  longitude: z.number(),
+  type: z.enum(['shelter', 'hospital']),
+});
+
+export const safetyDetailSchema = z.object({
+  id: z.number(),
   latitude: z.number(),
   longitude: z.number(),
   type: z.enum(['shelter', 'hospital']),
   location: z.string(),
   address: z.string(),
   description: z.string().nullable(),
+  availability: z.string().nullable(),
+  contactNumber: z.string().nullable(),
   image: z.string().nullable(),
-  createdAt: z.string(),
+  createdAt: z.date(),
+});
+
+export const safetyListItem = z.object({
+  id: z.number(),
+  location: z.string(),
+  address: z.string(),
+  type: z.enum(['shelter', 'hospital']),
+  availability: z.string(),
 });
 
 export const safetyLocationQuerySchema = z.object({
@@ -32,7 +51,9 @@ export const safetyLocationQuerySchema = z.object({
 export class CreateSafetyLocationDto extends createZodDto(
   createSafetyLocationSchema,
 ) {}
-export class SafetyLocationsDto extends createZodDto(safetyLocationsSchema) {}
+export class SafetyMapPinDto extends createZodDto(safetyMapPinSchema) {}
+export class SafetyDetailDto extends createZodDto(safetyDetailSchema) {}
+export class SafetyListItemDto extends createZodDto(safetyListItem) {}
 export class SafetyLocationQueryDto extends createZodDto(
   safetyLocationQuerySchema,
 ) {}
@@ -40,7 +61,9 @@ export class SafetyLocationQueryDto extends createZodDto(
 export type CreateSafetyLocationInput = z.infer<
   typeof createSafetyLocationSchema
 >;
-export type SafetyLocationsInput = z.infer<typeof safetyLocationsSchema>;
+export type SafetyMapPinInput = z.infer<typeof safetyMapPinSchema>;
+export type SafetyDetailInput = z.infer<typeof safetyDetailSchema>;
+export type SafetyListItemInput = z.infer<typeof safetyListItem>;
 export type SafetyLocationQueryInput = z.infer<
   typeof safetyLocationQuerySchema
 >;

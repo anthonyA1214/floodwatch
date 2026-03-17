@@ -3,12 +3,12 @@ import {
   CreateSafetyLocationInput,
   SafetyLocationQueryDto,
 } from '@repo/schemas';
-import { and, count, desc, eq, like, or, sql } from 'drizzle-orm';
+import { desc } from 'drizzle-orm';
+import { and, count, eq, like, or, sql } from 'drizzle-orm';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { DRIZZLE } from 'src/drizzle/drizzle-connection';
 import { safety } from 'src/drizzle/schemas';
 import { type DrizzleDB } from 'src/drizzle/types/drizzle';
-import { GeocoderService } from 'src/geocoder/geocoder.service';
 import { ImagesService } from 'src/images/images.service';
 
 @Injectable()
@@ -17,27 +17,55 @@ export class SafetyService {
     @Inject(DRIZZLE) private db: DrizzleDB,
     private imagesService: ImagesService,
     private cloudinaryService: CloudinaryService,
-    private geocoderService: GeocoderService,
   ) {}
 
-  async findAllPublic() {
+  async getAllSafetyMapPins() {
+    return await this.db
+      .select({
+        id: safety.id,
+        latitude: safety.latitude,
+        longitude: safety.longitude,
+        type: safety.type,
+      })
+      .from(safety);
+  }
+
+  async getSafetyDetail(safetyId: number) {
+    const [result] = await this.db
+      .select({
+        id: safety.id,
+        latitude: safety.latitude,
+        longitude: safety.longitude,
+        location: safety.location,
+        address: safety.address,
+        description: safety.description,
+        image: safety.image,
+        type: safety.type,
+        availability: safety.availability,
+        contactNumber: safety.contactNumber,
+        createdAt: safety.createdAt,
+      })
+      .from(safety)
+      .where(eq(safety.id, safetyId))
+      .limit(1);
+
+    return result;
+  }
+
+  async getSafetyList() {
     return await this.db
       .select({
         id: safety.id,
         location: safety.location,
         address: safety.address,
-        description: safety.description,
-        latitude: safety.latitude,
-        longitude: safety.longitude,
         type: safety.type,
-        image: safety.image,
-        createdAt: safety.createdAt,
+        availability: safety.availability,
       })
       .from(safety)
       .orderBy(desc(safety.createdAt));
   }
 
-  async findAll(safetyLocationQuery: SafetyLocationQueryDto) {
+  async getAllSafety(safetyLocationQuery: SafetyLocationQueryDto) {
     const { page, limit, type, q } = safetyLocationQuery;
 
     const pageNumber = Number(page) || 1;
@@ -113,8 +141,16 @@ export class SafetyService {
     safetyLocationDto: CreateSafetyLocationInput,
     image: Express.Multer.File,
   ) {
-    const { latitude, longitude, type, description, address, locationName } =
-      safetyLocationDto;
+    const {
+      latitude,
+      longitude,
+      type,
+      description,
+      address,
+      locationName,
+      availability,
+      contactNumber,
+    } = safetyLocationDto;
 
     let imageUrl: string | null = null;
     let imagePublicId: string | null = null;
@@ -152,6 +188,8 @@ export class SafetyService {
       imagePublicId,
       location: locationName,
       address,
+      availability,
+      contactNumber,
     });
   }
 }

@@ -21,7 +21,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { useUser } from '@/hooks/use-user';
+import { useMe } from '@/hooks/use-me';
 
 interface CommentCardProps {
   author: {
@@ -55,7 +55,7 @@ export default function CommentCard({
   const formattedTime = timestamp ? format(timestamp, 'hh:mm a') : '';
   const formattedDate = timestamp ? format(timestamp, 'MMMM dd, yyyy') : '';
 
-  const { user } = useUser();
+  const { me } = useMe();
 
   return (
     <div className='flex flex-col rounded-2xl p-3 sm:p-4 border gap-3 sm:gap-4'>
@@ -78,7 +78,7 @@ export default function CommentCard({
               {author.name}
             </span>
 
-            {user && (
+            {me && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <button className='rounded-full hover:bg-gray-100 data-[state=open]:bg-gray-100 p-1.5 sm:p-2 transition text-xs'>
@@ -92,10 +92,12 @@ export default function CommentCard({
                       <span className='font-poppins'>Edit Comment</span>
                     </DropdownMenuItem>
                   )}
-                  <DropdownMenuItem onClick={onReportClick}>
-                    <IconFlag className='w-[1.5em]! h-[1.5em]!' />
-                    <span className='font-poppins'>Report Comment</span>
-                  </DropdownMenuItem>
+                  {!isOwner && (
+                    <DropdownMenuItem onClick={onReportClick}>
+                      <IconFlag className='w-[1.5em]! h-[1.5em]!' />
+                      <span className='font-poppins'>Report Comment</span>
+                    </DropdownMenuItem>
+                  )}
 
                   {(isAdmin || isOwner) && (
                     <DropdownMenuGroup>

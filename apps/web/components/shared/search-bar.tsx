@@ -24,7 +24,7 @@ export default function SearchBar({
   }, 300);
 
   return (
-    <InputGroup className="h-12 rounded-full">
+    <InputGroup className='h-12 rounded-full'>
       <InputGroupInput
         placeholder={placeholder}
         defaultValue={defaultValue}

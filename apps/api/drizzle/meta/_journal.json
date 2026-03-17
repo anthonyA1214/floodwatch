@@ -22,6 +22,20 @@
       "when": 1772971432705,
       "tag": "0002_dry_silver_samurai",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1773043523912,
+      "tag": "0003_chunky_toro",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1773471804382,
+      "tag": "0004_striped_mercury",
+      "breakpoints": true
     }
   ]
 }

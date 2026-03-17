@@ -47,6 +47,12 @@ export default function CreateSafetyLocationDialog() {
   const [addressValue, setAddressValue] = useState<string | undefined>(
     undefined,
   );
+  const [availabilityValue, setAvailabilityValue] = useState<
+    string | undefined
+  >(undefined);
+  const [contactNumberValue, setContactNumberValue] = useState<
+    string | undefined
+  >(undefined);
   const [typeValue, setTypeValue] = useState<'shelter' | 'hospital'>('shelter');
   const [radius, setRadius] = useState<number | undefined>(undefined);
   const [descriptionValue, setDescriptionValue] = useState<string>('');
@@ -69,6 +75,8 @@ export default function CreateSafetyLocationDialog() {
     setLocationNameValue(undefined);
     setAddressValue(undefined);
     setTypeValue('shelter');
+    setAvailabilityValue(undefined);
+    setContactNumberValue(undefined);
     setRadius(undefined);
     setDescriptionValue('');
     setImage(null);
@@ -123,6 +131,8 @@ export default function CreateSafetyLocationDialog() {
       longitude: location!.longitude,
       locationName: locationNameValue,
       address: addressValue,
+      availability: availabilityValue,
+      contactNumber: contactNumberValue,
       type: typeValue,
       range: radius,
       description: descriptionValue,
@@ -136,8 +146,16 @@ export default function CreateSafetyLocationDialog() {
       return;
     }
 
-    const { latitude, longitude, description, type, locationName, address } =
-      parsedData.data;
+    const {
+      latitude,
+      longitude,
+      description,
+      type,
+      locationName,
+      address,
+      availability,
+      contactNumber,
+    } = parsedData.data;
 
     const formData = new FormData();
     formData.append('latitude', latitude.toString());
@@ -145,6 +163,8 @@ export default function CreateSafetyLocationDialog() {
     formData.append('locationName', locationName);
     formData.append('address', address);
     formData.append('type', type);
+    if (availability) formData.append('availability', availability);
+    if (contactNumber) formData.append('contactNumber', contactNumber);
     if (description) formData.append('description', description);
     if (image) formData.append('image', image);
 
@@ -157,10 +177,8 @@ export default function CreateSafetyLocationDialog() {
       setState({ status: 'success', errors: null });
       toast.success('Safety location created successfully!');
       resetForm();
-      mutate(SWR_KEYS.safetyLocations);
-      mutate(
-        (key) => Array.isArray(key) && key[0] === SWR_KEYS.safetyLocationsAdmin,
-      );
+      mutate(SWR_KEYS.safetyMapPins);
+      mutate((key) => Array.isArray(key) && key[0] === SWR_KEYS.safetyAdmin);
       setOpen(false);
     } catch (err) {
       console.error('Failed to create safety location:', err);
@@ -179,28 +197,28 @@ export default function CreateSafetyLocationDialog() {
   return (
     <Dialog open={open} onOpenChange={() => handleOpenChange(!open)}>
       <DialogTrigger asChild>
-        <Button className="font-poppins py-6">CREATE SAFETY LOCATION</Button>
+        <Button className='font-poppins py-6'>CREATE SAFETY LOCATION</Button>
       </DialogTrigger>
-      <DialogContent className="flex flex-col min-w-[750px] p-0 overflow-hidden gap-0 border-0 [&>button]:text-white [&>button]:hover:text-white [&>button]:opacity-70 [&>button]:hover:opacity-100">
+      <DialogContent className='flex flex-col min-w-[750px] p-0 overflow-hidden gap-0 border-0 [&>button]:text-white [&>button]:hover:text-white [&>button]:opacity-70 [&>button]:hover:opacity-100'>
         {/* ── Blue Header ── */}
-        <DialogHeader className="flex flex-row items-center gap-4 bg-[#0066CC] rounded-b-2xl px-5 py-4 shrink-0">
+        <DialogHeader className='flex flex-row items-center gap-4 bg-[#0066CC] rounded-b-2xl px-5 py-4 shrink-0'>
           {/* Text */}
-          <DialogTitle className="font-poppins text-base font-semibold text-white">
+          <DialogTitle className='font-poppins text-base font-semibold text-white'>
             CREATE SAFETY LOCATION
           </DialogTitle>
         </DialogHeader>
 
         {/* ── Content Area ── */}
-        <div className="no-scrollbar flex flex-col ps-4 py-4 overflow-y-auto">
-          <div className="flex-1 flex">
+        <div className='no-scrollbar flex flex-col ps-4 py-4 overflow-y-auto'>
+          <div className='flex-1 flex'>
             {/* left column */}
-            <div className="flex-2 flex flex-col gap-4 h-fit">
-              <div className="flex items-center justify-between">
-                <span className="font-poppins text-sm font-medium text-gray-600">
+            <div className='flex-2 flex flex-col gap-4 h-fit'>
+              <div className='flex items-center justify-between'>
+                <span className='font-poppins text-sm font-medium opacity-50'>
                   LOCATION
                 </span>
                 <button
-                  className="font-poppins text-xs flex gap-2 border px-3 py-1.5 rounded-lg items-center text-gray-600 hover:bg-gray-100"
+                  className='font-poppins text-xs flex gap-2 border px-3 py-1.5 rounded-lg items-center opacity-50 hover:bg-gray-100'
                   onClick={handleUseCurrentLocation}
                 >
                   {loadingLocation ? (
@@ -210,38 +228,38 @@ export default function CreateSafetyLocationDialog() {
                     </>
                   ) : (
                     <>
-                      <IconCurrentLocation className="w-[1.5em]! h-[1.5em]!" />
+                      <IconCurrentLocation className='w-[1.5em]! h-[1.5em]!' />
                       <span>USE MY CURRENT LOCATION</span>
                     </>
                   )}
                 </button>
               </div>
-              <div className="relative flex-1 flex aspect-square rounded-2xl overflow-hidden border h-fit">
+              <div className='relative flex-1 flex aspect-square rounded-2xl overflow-hidden border h-fit'>
                 <InteractiveMap
                   ref={interactiveMapRef}
                   type={typeValue}
-                  mode="safety-location"
+                  mode='safety-location'
                   onLocationSelect={setLocation}
                 />
-                <div className="absolute flex flex-col top-4 left-4 z-1 w-fit gap-2 h-fit">
-                  <div className="flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 text-xs">
+                <div className='absolute flex flex-col top-4 left-4 z-1 w-fit gap-2 h-fit'>
+                  <div className='flex flex-col bg-white/80 rounded-md shadow-lg p-0.5 text-xs'>
                     <button
                       onClick={() => interactiveMapRef.current?.zoomIn()}
-                      className="aspect-square hover:bg-gray-200 rounded-md p-1"
-                      title="Zoom In"
+                      className='aspect-square hover:bg-gray-200 rounded-md p-1'
+                      title='Zoom In'
                     >
                       <IconPlus
-                        className="w-[1.5em]! h-[1.5em]!"
+                        className='w-[1.5em]! h-[1.5em]!'
                         strokeWidth={1.5}
                       />
                     </button>
                     <button
                       onClick={() => interactiveMapRef.current?.zoomOut()}
-                      className="aspect-square hover:bg-gray-200 rounded-md p-1"
-                      title="Zoom Out"
+                      className='aspect-square hover:bg-gray-200 rounded-md p-1'
+                      title='Zoom Out'
                     >
                       <IconMinus
-                        className="w-[1.5em]! h-[1.5em]!"
+                        className='w-[1.5em]! h-[1.5em]!'
                         strokeWidth={1.5}
                       />
                     </button>
@@ -253,139 +271,193 @@ export default function CreateSafetyLocationDialog() {
 
             {/* right column */}
             <div
-              className="no-scrollbar flex-[1.5] flex flex-col overflow-y-auto"
+              className='no-scrollbar flex-[1.5] flex flex-col overflow-y-auto'
               style={{ aspectRatio: '1 / 1' }}
             >
-              <div className="flex flex-col gap-4 px-4">
+              <div className='flex flex-col gap-4 px-4'>
                 {/* location name */}
-                <Field className="flex items-center">
+                <Field className='flex items-center'>
                   <FieldLabel
-                    htmlFor="location-name"
-                    className="font-poppins text-sm font-medium"
+                    htmlFor='location-name'
+                    className='font-poppins text-sm font-medium'
                   >
                     LOCATION NAME
                   </FieldLabel>
                   <Input
-                    id="location-name"
-                    name="location-name"
-                    type="text"
-                    placeholder="e.g., Riverside Park"
+                    id='location-name'
+                    name='location-name'
+                    type='text'
+                    placeholder='e.g., Riverside Park'
                     defaultValue={locationNameValue}
                     onChange={(e) => setLocationNameValue(e.target.value)}
                   />
                   {state.errors?.locationName && (
-                    <span className="text-sm text-red-600">
+                    <span className='text-sm text-red-600'>
                       {state.errors.locationName[0]}
                     </span>
                   )}
                 </Field>
 
                 {/* address */}
-                <Field className="flex items-center">
+                <Field className='flex items-center'>
                   <FieldLabel
-                    htmlFor="address"
-                    className="font-poppins text-sm font-medium"
+                    htmlFor='address'
+                    className='font-poppins text-sm font-medium'
                   >
                     ADDRESS
                   </FieldLabel>
                   <Input
-                    id="address"
-                    name="address"
-                    type="text"
-                    placeholder="e.g., 123 Main St, Springfield"
+                    id='address'
+                    name='address'
+                    type='text'
+                    placeholder='e.g., 123 Main St, Springfield'
                     defaultValue={addressValue}
                     onChange={(e) => setAddressValue(e.target.value)}
                   />
                   {state.errors?.address && (
-                    <span className="text-sm text-red-600">
+                    <span className='text-sm text-red-600'>
                       {state.errors.address[0]}
                     </span>
                   )}
                 </Field>
 
                 {/* safety location type */}
-                <Field className="flex items-center">
+                <Field className='flex items-center'>
                   <FieldLabel
-                    htmlFor="type"
-                    className="font-poppins text-sm font-medium"
+                    htmlFor='type'
+                    className='font-poppins text-sm font-medium'
                   >
                     SAFETY LOCATION TYPE
                   </FieldLabel>
                   <Select
-                    name="type"
+                    name='type'
                     defaultValue={typeValue}
                     onValueChange={(value) =>
                       setTypeValue(value as 'shelter' | 'hospital')
                     }
                   >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Safety Location Type" />
+                    <SelectTrigger className='w-full'>
+                      <SelectValue placeholder='Safety Location Type' />
                     </SelectTrigger>
                     <SelectContent>
                       <SelectGroup>
                         <SelectLabel>Safety Location Type</SelectLabel>
-                        <SelectItem value="shelter">Shelter</SelectItem>
-                        <SelectItem value="hospital">Hospital</SelectItem>
+                        <SelectItem value='shelter'>Shelter</SelectItem>
+                        <SelectItem value='hospital'>Hospital</SelectItem>
                       </SelectGroup>
                     </SelectContent>
                   </Select>
                   {state.errors?.type && (
-                    <span className="text-sm text-red-600">
+                    <span className='text-sm text-red-600'>
                       {state.errors.type[0]}
                     </span>
                   )}
                 </Field>
 
-                {/* Description */}
-                <Field className="flex items-center">
+                {/*availability*/}
+                <Field className='flex items-center'>
                   <FieldLabel
-                    htmlFor="description"
-                    className="font-poppins text-sm font-medium"
+                    htmlFor='availability'
+                    className='font-poppins text-sm font-medium'
+                  >
+                    AVAILABILITY
+                    <span className='font-inter opacity-50 text-xs'>
+                      (Optional)
+                    </span>
+                  </FieldLabel>
+                  <Input
+                    id='availability'
+                    name='availability'
+                    type='text'
+                    placeholder='e.g., 24/7, 9am-5pm'
+                    defaultValue={availabilityValue}
+                    maxLength={100}
+                    onChange={(e) => setAvailabilityValue(e.target.value)}
+                  />
+                  {state.errors?.availability && (
+                    <span className='text-sm text-red-600'>
+                      {state.errors.availability[0]}
+                    </span>
+                  )}
+                </Field>
+
+                {/*contact number*/}
+                <Field className='flex items-center'>
+                  <FieldLabel
+                    htmlFor='contactNumber'
+                    className='font-poppins text-sm font-medium'
+                  >
+                    CONTACT NUMBER
+                    <span className='font-inter opacity-50 text-xs'>
+                      (Optional)
+                    </span>
+                  </FieldLabel>
+                  <Input
+                    id='contactNumber'
+                    name='contactNumber'
+                    type='text'
+                    placeholder='e.g., +1 234 567 8900'
+                    defaultValue={contactNumberValue}
+                    maxLength={20}
+                    onChange={(e) => setContactNumberValue(e.target.value)}
+                  />
+                  {state.errors?.contactNumber && (
+                    <span className='text-sm text-red-600'>
+                      {state.errors.contactNumber[0]}
+                    </span>
+                  )}
+                </Field>
+
+                {/* Description */}
+                <Field className='flex items-center'>
+                  <FieldLabel
+                    htmlFor='description'
+                    className='font-poppins text-sm font-medium'
                   >
                     ADDITIONAL DETAILS
-                    <span className="font-inter text-gray-600 text-xs">
+                    <span className='font-inter opacity-50 text-xs'>
                       (Optional)
                     </span>
                   </FieldLabel>
                   <Textarea
-                    id="description"
-                    placeholder="Enter the description"
-                    className="no-scrollbar min-h-[120px] max-h-[120px]"
+                    id='description'
+                    placeholder='Enter the description'
+                    className='no-scrollbar min-h-[120px] max-h-[120px]'
                     style={{ wordBreak: 'break-word' }}
                     defaultValue={descriptionValue}
                     onChange={(e) => setDescriptionValue(e.target.value)}
                   />
                   {state.errors?.description && (
-                    <span className="text-sm text-red-600">
+                    <span className='text-sm text-red-600'>
                       {state.errors.description[0]}
                     </span>
                   )}
                 </Field>
 
                 {/* Upload image */}
-                <Field className="flex items-center">
-                  <FieldLabel className="font-poppins text-sm font-medium">
+                <Field className='flex items-center'>
+                  <FieldLabel className='font-poppins text-sm font-medium'>
                     UPLOAD IMAGE
-                    <span className="font-inter text-gray-600 text-xs">
+                    <span className='font-inter opacity-50 text-xs'>
                       (Optional)
                     </span>
                   </FieldLabel>
                   <Input
-                    id="image"
-                    type="file"
-                    accept="image/*"
-                    name="image"
+                    id='image'
+                    type='file'
+                    accept='image/*'
+                    name='image'
                     onChange={handleImageChange}
                   />
                   {state.errors?.image && (
-                    <span className="text-sm text-red-600">
+                    <span className='text-sm text-red-600'>
                       {state.errors.image[0]}
                     </span>
                   )}
                 </Field>
 
                 <Button
-                  className="font-poppins py-6 mt-auto"
+                  className='font-poppins py-6 mt-auto'
                   onClick={handleSubmit}
                   disabled={isPending}
                 >

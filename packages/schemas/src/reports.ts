@@ -40,6 +40,7 @@ export const reportDetailSchema = z.object({
   confirms: z.number(),
   denies: z.number(),
   reportedAt: z.date(),
+  isAdmin: z.boolean(),
   reporter: z
     .object({
       id: z.number(),
@@ -58,6 +59,14 @@ export const reportDetailSchema = z.object({
     .nullable(),
 });
 
+export const reportListItemSchema = z.object({
+  id: z.number(),
+  location: z.string(),
+  description: z.string().nullable(),
+  severity: z.enum(['low', 'moderate', 'high', 'critical']),
+  reportedAt: z.date(),
+});
+
 export const reportQuerySchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(10),
@@ -69,10 +78,12 @@ export class ReportFloodAlertDto extends createZodDto(reportFloodAlertSchema) {}
 export class CreateFloodAlertDto extends createZodDto(createFloodAlertSchema) {}
 export class ReportMapPinDto extends createZodDto(reportMapPinSchema) {}
 export class ReportDetailDto extends createZodDto(reportDetailSchema) {}
+export class ReportListItemDto extends createZodDto(reportListItemSchema) {}
 export class ReportQueryDto extends createZodDto(reportQuerySchema) {}
 
 export type ReportFloodAlertInput = z.infer<typeof reportFloodAlertSchema>;
 export type CreateFloodAlertInput = z.infer<typeof createFloodAlertSchema>;
 export type ReportMapPinInput = z.infer<typeof reportMapPinSchema>;
 export type ReportDetailInput = z.infer<typeof reportDetailSchema>;
+export type ReportListItemInput = z.infer<typeof reportListItemSchema>;
 export type ReportQueryInput = z.infer<typeof reportQuerySchema>;

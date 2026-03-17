@@ -52,22 +52,29 @@ export class ReportsController {
   @Public()
   @Get()
   @HttpCode(HttpStatus.OK)
-  async findAllPublic() {
-    return await this.reportsService.findAllPublic();
+  async getReportMapPins() {
+    return await this.reportsService.getReportMapPins();
   }
 
   @Roles('admin')
   @Get('admin')
   @HttpCode(HttpStatus.OK)
-  async findAll(@Query() reportQuery: ReportQueryDto) {
-    return await this.reportsService.findAll(reportQuery);
+  async getAllReports(@Query() reportQuery: ReportQueryDto) {
+    return await this.reportsService.getAllReports(reportQuery);
+  }
+
+  @Public()
+  @Get('list')
+  @HttpCode(HttpStatus.OK)
+  async getReportList() {
+    return await this.reportsService.getReportList();
   }
 
   @Public()
   @Get(':id')
   @HttpCode(HttpStatus.OK)
-  async findOnePublic(@Param('id', ParseIntPipe) id: number) {
-    return await this.reportsService.findOnePublic(id);
+  async getReportDetail(@Param('id', ParseIntPipe) id: number) {
+    return await this.reportsService.getReportDetail(id);
   }
 
   @Post('create')

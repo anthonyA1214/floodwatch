@@ -21,8 +21,8 @@ export default function OAuthButton({ provider }: { provider: 'google' }) {
   return (
     <Button
       onClick={handleOAuth}
-      variant="outline"
-      className="flex items-center justify-center gap-3 rounded-full"
+      variant='outline'
+      className='flex items-center justify-center gap-3 rounded-full'
     >
       <Image
         src={config.icon}
@@ -30,7 +30,7 @@ export default function OAuthButton({ provider }: { provider: 'google' }) {
         width={20}
         height={20}
       />
-      <span className="text-sm font-medium">{config.label}</span>
+      <span className='text-sm font-medium'>{config.label}</span>
     </Button>
   );
 }

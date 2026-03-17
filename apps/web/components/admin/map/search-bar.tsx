@@ -7,8 +7,8 @@ import { IconSearch } from '@tabler/icons-react';
 
 export default function SearchBar() {
   return (
-    <InputGroup className="h-12">
-      <InputGroupInput placeholder="Search location..." />
+    <InputGroup className='h-12'>
+      <InputGroupInput placeholder='Search location...' />
       <InputGroupAddon>
         <IconSearch />
       </InputGroupAddon>

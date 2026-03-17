@@ -5,25 +5,25 @@ import SecurityTab from '@/components/admin/settings/security-tab';
 
 export default function SettingsRight() {
   return (
-    <div className="flex-1 min-h-0">
+    <div className='flex-1 min-h-0'>
       <Tabs
-        defaultValue="account"
-        className="flex-1 flex flex-col h-full min-h-0"
+        defaultValue='account'
+        className='flex-1 flex flex-col h-full min-h-0'
       >
-        <div className="w-full border-b">
-          <TabsList variant="line" className="font-poppins">
+        <div className='w-full border-b'>
+          <TabsList variant='line' className='font-poppins'>
             <TabsTrigger
-              value="account"
-              className="data-[state=active]:text-[#0066CC] 
-                data-[state=active]:after:bg-[#0066CC] text-base"
+              value='account'
+              className='data-[state=active]:text-[#0066CC] 
+                data-[state=active]:after:bg-[#0066CC] text-base'
             >
               <IconUser />
               Account
             </TabsTrigger>
             <TabsTrigger
-              value="password"
-              className="data-[state=active]:text-[#0066CC] 
-                data-[state=active]:after:bg-[#0066CC] text-base"
+              value='password'
+              className='data-[state=active]:text-[#0066CC] 
+                data-[state=active]:after:bg-[#0066CC] text-base'
             >
               <IconLock />
               Security
@@ -31,14 +31,14 @@ export default function SettingsRight() {
           </TabsList>
         </div>
         <TabsContent
-          value="account"
-          className="flex-1 flex flex-col min-h-0 p-4 gap-8"
+          value='account'
+          className='flex-1 flex flex-col min-h-0 p-4 gap-8'
         >
           <AccountTab />
         </TabsContent>
         <TabsContent
-          value="password"
-          className="flex-1 flex flex-col min-h-0 p-4"
+          value='password'
+          className='flex-1 flex flex-col min-h-0 p-4'
         >
           <SecurityTab />
         </TabsContent>

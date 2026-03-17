@@ -4,10 +4,9 @@ import { SafetyService } from './safety.service';
 import { DrizzleModule } from 'src/drizzle/drizzle.module';
 import { ImagesModule } from 'src/images/images.module';
 import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
-import { GeocoderModule } from 'src/geocoder/geocoder.module';
 
 @Module({
-  imports: [DrizzleModule, ImagesModule, CloudinaryModule, GeocoderModule],
+  imports: [DrizzleModule, ImagesModule, CloudinaryModule],
   controllers: [SafetyController],
   providers: [SafetyService],
 })

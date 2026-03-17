@@ -1,14 +1,14 @@
 'use client';
 
-import { SafetyLocationsDto } from '@repo/schemas';
+import { SafetyDetailInput } from '@repo/schemas';
 import { createContext, useContext, useState } from 'react';
 
 type DialogType = 'view' | 'delete';
 
 interface SafetyLocationsDialogContextType {
-  safetyLocations: SafetyLocationsDto | null;
+  safetyLocations: SafetyDetailInput | null;
   openDialogType: DialogType | null;
-  openDialog: (type: DialogType, safetyLocations: SafetyLocationsDto) => void;
+  openDialog: (type: DialogType, safetyLocations: SafetyDetailInput) => void;
   closeDialog: () => void;
   isOpen: (type: DialogType) => boolean;
 }
@@ -22,13 +22,10 @@ export default function SafetyLocationsDialogProvider({
   children: React.ReactNode;
 }) {
   const [safetyLocations, setSafetyLocations] =
-    useState<SafetyLocationsDto | null>(null);
+    useState<SafetyDetailInput | null>(null);
   const [openDialogType, setOpenDialogType] = useState<DialogType | null>(null);
 
-  const openDialog = (
-    type: DialogType,
-    safetyLocations: SafetyLocationsDto,
-  ) => {
+  const openDialog = (type: DialogType, safetyLocations: SafetyDetailInput) => {
     setSafetyLocations(safetyLocations);
     setOpenDialogType(type);
   };

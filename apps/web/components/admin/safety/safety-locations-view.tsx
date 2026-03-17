@@ -38,14 +38,14 @@ export default function SafetyLocationsView() {
   if (isLoading && isFirstLoad) return <SafetyLocationsPageSkeleton />;
 
   return (
-    <div className="flex-1 flex flex-col bg-white p-8 rounded-2xl gap-8 min-h-0">
+    <div className='flex-1 flex flex-col bg-white p-8 rounded-2xl gap-8 min-h-0'>
       {/* Header */}
-      <h1 className="font-poppins text-3xl font-bold">Safety Locations</h1>
+      <h1 className='font-poppins text-3xl font-bold'>Safety Locations</h1>
 
-      <div className="flex justify-between gap-4">
-        <div className="flex-1">
+      <div className='flex justify-between gap-4'>
+        <div className='flex-1'>
           <SearchBar
-            placeholder="Search safety locations..."
+            placeholder='Search safety locations...'
             defaultValue={q}
             onSearch={(value) => {
               setQ(value);
@@ -55,9 +55,9 @@ export default function SafetyLocationsView() {
         </div>
       </div>
 
-      <div className="flex-1 flex flex-col min-h-0 gap-4">
+      <div className='flex-1 flex flex-col min-h-0 gap-4'>
         {isFirstLoad ? (
-          <div className="grid grid-cols-3 gap-8">
+          <div className='grid grid-cols-3 gap-8'>
             {Array.from({ length: 3 }).map((_, i) => (
               <StatCardSkeleton key={i} />
             ))}
@@ -82,13 +82,13 @@ export default function SafetyLocationsView() {
         )}
 
         {isFirstLoad ? (
-          <div className="flex items-center justify-between">
-            <Skeleton className="h-4 w-40" />
+          <div className='flex items-center justify-between'>
+            <Skeleton className='h-4 w-40' />
             <PaginationSkeleton />
           </div>
         ) : (
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-gray-600">
+          <div className='flex items-center justify-between'>
+            <span className='text-sm text-gray-600'>
               Showing {safetyLocations?.length ?? 0} of {stats?.totalCount ?? 0}{' '}
               safety locations
             </span>

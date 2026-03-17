@@ -55,13 +55,13 @@ export default function UserStatusDialog() {
         </DialogHeader>
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant='outline'>Cancel</Button>
           </DialogClose>
           <Button
-            type="submit"
+            type='submit'
             disabled={isPending}
             onClick={handleConfirm}
-            className="flex items-center gap-2"
+            className='flex items-center gap-2'
           >
             {isPending ? (
               isBlocking ? (

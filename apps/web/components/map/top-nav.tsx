@@ -14,7 +14,7 @@ import {
   IconShieldPin,
 } from '@tabler/icons-react';
 import AuthButtons from '@/components/shared/auth-buttons';
-import { useUser } from '@/hooks/use-user';
+import { useMe } from '@/hooks/use-me';
 import { Skeleton } from '@/components/ui/skeleton';
 import ReportFloodAlertDialog from './report-flood-alert-dialog';
 import { useMapOverlay } from '@/contexts/map-overlay-context';
@@ -22,7 +22,7 @@ import { cn } from '@/lib/utils';
 
 export default function TopNav() {
   const { toggle, openLocations, activeOverlay } = useMapOverlay();
-  const { user, isLoading } = useUser();
+  const { me, isLoading } = useMe();
 
   return (
     <header className='w-full bg-[#0066CC] relative z-50'>
@@ -47,10 +47,10 @@ export default function TopNav() {
               'hover:bg-white/20 hover:border-white/20',
               'active:bg-white/30',
               'transition-colors duration-200',
-              activeOverlay?.type === 'affected' &&
+              activeOverlay?.type === 'affected-list' &&
                 'bg-white/30 border-white/30',
             )}
-            onClick={() => openLocations('affected')}
+            onClick={() => openLocations('affected-list')}
           >
             <IconMapPinExclamation className='w-[1.5em]! h-[1.5em]! shrink-0' />
             <span className='font-medium truncate'>AFFECTED LOCATIONS</span>
@@ -64,88 +64,91 @@ export default function TopNav() {
               'hover:bg-white/20 hover:border-white/20',
               'active:bg-white/30',
               'transition-colors duration-200',
-              activeOverlay?.type === 'safety' && 'bg-white/30 border-white/30',
+              activeOverlay?.type === 'safety-list' &&
+                'bg-white/30 border-white/30',
             )}
-            onClick={() => openLocations('safety')}
+            onClick={() => openLocations('safety-list')}
           >
             <IconShieldPin className='w-[1.5em]! h-[1.5em]! shrink-0' />
             <span className='font-medium truncate'>SAFETY LOCATIONS</span>
           </button>
         </div>
 
-        {/* user actions */}
-        {isLoading ? (
-          <div className='flex items-center gap-2 ml-auto'>
-            <Skeleton className='w-24 h-9 rounded-md bg-white/20' />
-            <Skeleton className='w-6 h-6 rounded-md bg-white/20' />
-            <Skeleton className='size-8 rounded-full bg-white/20' />
-          </div>
-        ) : user ? (
-          <div className='flex items-center gap-3 sm:gap-6 ml-auto'>
-            {/* desktop tabs beside report */}
-            <div className='hidden lg:flex items-center gap-4'>
-              <button
-                className={cn(
-                  'flex items-center justify-center gap-2 text-white',
-                  'bg-white/10 border border-white/10',
-                  'px-2 md:px-4 py-1.5 rounded-lg text-xs md:text-sm',
-                  'hover:bg-white/20 hover:border-white/20',
-                  'active:bg-white/30',
-                  'transition-colors duration-200 shrink-0 whitespace-nowrap',
-                  activeOverlay?.type === 'affected' &&
-                    'bg-white/30 border-white/30',
-                )}
-                onClick={() => openLocations('affected')}
-              >
-                <IconMapPinExclamation className='w-[1.5em]! h-[1.5em]!' />
-                <span className='font-medium'> AFFECTED LOCATIONS</span>
-              </button>
-
-              <button
-                className={cn(
-                  'flex items-center justify-center gap-2 text-white',
-                  'bg-white/10 border border-white/10',
-                  'px-2 md:px-4 py-1.5 rounded-lg text-xs md:text-sm',
-                  'hover:bg-white/20 hover:border-white/20',
-                  'active:bg-white/30',
-                  'transition-colors duration-200 shrink-0 whitespace-nowrap',
-                  activeOverlay?.type === 'safety' &&
-                    'bg-white/30 border-white/30',
-                )}
-                onClick={() => openLocations('safety')}
-              >
-                <IconShieldPin className='w-[1.5em]! h-[1.5em]!' />
-                <span className='font-medium'>SAFETY LOCATIONS</span>
-              </button>
-            </div>
-
-            <ReportFloodAlertDialog />
+        <div className='flex items-center gap-3 sm:gap-6 ml-auto'>
+          {/* desktop tabs beside report */}
+          <div className='hidden lg:flex items-center gap-4'>
+            <button
+              className={cn(
+                'flex items-center justify-center gap-2 text-white',
+                'bg-white/10 border border-white/10',
+                'px-2 md:px-4 py-1.5 rounded-lg text-xs md:text-sm',
+                'hover:bg-white/20 hover:border-white/20',
+                'active:bg-white/30',
+                'transition-colors duration-200 shrink-0 whitespace-nowrap',
+                activeOverlay?.type === 'affected-list' &&
+                  'bg-white/30 border-white/30',
+              )}
+              onClick={() => openLocations('affected-list')}
+            >
+              <IconMapPinExclamation className='w-[1.5em]! h-[1.5em]!' />
+              <span className='font-medium'> AFFECTED LOCATIONS</span>
+            </button>
 
             <button
-              className='text-base text-white hover:text-[#F5F5F5] active:text-[#EAEAEA] transition-colors shrink-0'
-              onClick={() => toggle('notification')}
+              className={cn(
+                'flex items-center justify-center gap-2 text-white',
+                'bg-white/10 border border-white/10',
+                'px-2 md:px-4 py-1.5 rounded-lg text-xs md:text-sm',
+                'hover:bg-white/20 hover:border-white/20',
+                'active:bg-white/30',
+                'transition-colors duration-200 shrink-0 whitespace-nowrap',
+                activeOverlay?.type === 'safety-list' &&
+                  'bg-white/30 border-white/30',
+              )}
+              onClick={() => openLocations('safety-list')}
             >
-              <IconBell className='w-[1.5em]! h-[1.5em]!' />
+              <IconShieldPin className='w-[1.5em]! h-[1.5em]!' />
+              <span className='font-medium'>SAFETY LOCATIONS</span>
             </button>
+          </div>
 
-            <button onClick={() => toggle('profile')}>
-              <UIAvatar className='size-8 border'>
-                <AvatarImage src={user?.profilePicture} />
-                <AvatarFallback>
-                  <Avatar
-                    name={`${user?.name} ${user?.id}`}
-                    variant='beam'
-                    className='size-8'
-                  />
-                </AvatarFallback>
-              </UIAvatar>
-            </button>
-          </div>
-        ) : (
-          <div className='ml-auto'>
-            <AuthButtons />
-          </div>
-        )}
+          {/* user actions */}
+          {isLoading ? (
+            <div className='flex items-center gap-2 ml-auto'>
+              <Skeleton className='w-24 h-9 rounded-md bg-white/20' />
+              <Skeleton className='w-6 h-6 rounded-md bg-white/20' />
+              <Skeleton className='size-8 rounded-full bg-white/20' />
+            </div>
+          ) : me ? (
+            <>
+              <ReportFloodAlertDialog />
+
+              <button
+                className='text-base text-white hover:text-[#F5F5F5] active:text-[#EAEAEA] transition-colors shrink-0'
+                onClick={() => toggle('notification')}
+              >
+                <IconBell className='w-[1.5em]! h-[1.5em]!' />
+              </button>
+
+              <button onClick={() => toggle('profile')}>
+                <UIAvatar className='size-8 border'>
+                  <AvatarImage src={me?.profilePicture} />
+                  <AvatarFallback>
+                    <Avatar
+                      name={`${me?.name} ${me?.id}`}
+                      variant='beam'
+                      className='size-8'
+                    />
+                  </AvatarFallback>
+                </UIAvatar>
+              </button>
+            </>
+          ) : (
+            <div className='ml-auto'>
+              <AuthButtons />
+            </div>
+          )}
+        </div>
       </nav>
     </header>
   );

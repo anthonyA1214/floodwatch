@@ -4,7 +4,7 @@ import {
   ReportFloodAlertInput,
   ReportQueryInput,
 } from '@repo/schemas';
-import { aliasedTable } from 'drizzle-orm';
+import { aliasedTable, asc } from 'drizzle-orm';
 import { and, count, desc, eq, like, or, sql } from 'drizzle-orm';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { DRIZZLE } from 'src/drizzle/drizzle-connection';
@@ -24,7 +24,7 @@ export class ReportsService {
     private geocoderService: GeocoderService,
   ) {}
 
-  async findAllPublic() {
+  async getReportMapPins() {
     return await this.db
       .select({
         id: reports.id,
@@ -35,10 +35,10 @@ export class ReportsService {
         status: reports.status,
       })
       .from(reports)
-      .orderBy(desc(reports.createdAt));
+      .orderBy(asc(reports.createdAt));
   }
 
-  async findOnePublic(reportId: number) {
+  async getReportDetail(reportId: number) {
     const verifierUser = aliasedTable(users, 'verifier_user');
     const verifierProfile = aliasedTable(profileInfo, 'verifier_profile');
 
@@ -68,6 +68,7 @@ export class ReportsService {
           ),
         ),
         reportedAt: reports.createdAt,
+        isAdmin: reports.isAdmin,
         reporter: {
           id: users.id,
           email: users.email,
@@ -91,7 +92,20 @@ export class ReportsService {
     return data;
   }
 
-  async findAll(reportQueryDto: ReportQueryInput) {
+  async getReportList() {
+    return await this.db
+      .select({
+        id: reports.id,
+        location: reports.location,
+        description: reports.description,
+        severity: reports.severity,
+        reportedAt: reports.createdAt,
+      })
+      .from(reports)
+      .orderBy(desc(reports.createdAt));
+  }
+
+  async getAllReports(reportQueryDto: ReportQueryInput) {
     const { page, limit, status, q } = reportQueryDto;
 
     const pageNumber = Number(page) || 1;
@@ -293,6 +307,8 @@ export class ReportsService {
       imagePublicId,
       location: locationName,
       status: 'verified', // Admin-created reports are auto-verified
+      isAdmin: true,
+      verifierId: userId, // Set the admin as the verifier
     });
 
     return { message: 'Report created and verified successfully' };

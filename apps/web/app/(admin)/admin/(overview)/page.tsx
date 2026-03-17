@@ -8,7 +8,7 @@ import StatCard from '@/components/admin/dashboard/stat-card';
 import WeatherInformationCard from '@/components/admin/dashboard/weather-information-card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useUser } from '@/hooks/use-user';
+import { useMe } from '@/hooks/use-me';
 import {
   IconAlertTriangle,
   IconBell,
@@ -20,18 +20,14 @@ import {
 } from '@tabler/icons-react';
 
 export default function DashboardPage() {
-  const { user, isLoading } = useUser();
+  const { me, isLoading } = useMe();
 
   return (
     <div className='flex-1 flex flex-col bg-white ps-8 py-8 rounded-2xl gap-8 min-h-0'>
       {/* Header */}
       <div className='space-y-2'>
         <h1 className='font-poppins text-3xl font-bold'>
-          {isLoading ? (
-            <Skeleton className='h-9 w-64' />
-          ) : (
-            `Hello, ${user?.name}`
-          )}
+          {isLoading ? <Skeleton className='h-9 w-64' /> : `Hello, ${me?.name}`}
         </h1>
         <p>Here&apos;s what is happening with FloodWatch today</p>
       </div>

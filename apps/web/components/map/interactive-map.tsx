@@ -17,7 +17,6 @@ import Map, {
   Popup,
 } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
-import { ReportMapPinInput } from '@repo/schemas';
 import RadiusCircle from '@/components/shared/radius-circle';
 import { FloodMarker } from '../shared/markers/flood-marker';
 import { getUserLocation } from '@/lib/utils/get-user-location';
@@ -25,12 +24,14 @@ import { UserLocationMarker } from '../shared/markers/user-location-marker';
 import { SearchLocationMarker } from '../shared/markers/search-location-marker';
 import { useReportMapPins } from '@/hooks/use-report-map-pins';
 import { useBoundary } from '@/hooks/use-boundary';
-import { useSafetyLocations } from '@/hooks/use-safety';
+import { useSafetyMapPins } from '@/hooks/use-safety-map-pins';
 import { SafetyMarker } from '../shared/markers/safety-marker';
-import FloodReportPopup from './flood-report-popup';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useMapOverlay } from '@/contexts/map-overlay-context';
-import { useReportPopup } from '@/hooks/use-report-popup';
+import SafetyLocationPopup from './safety-location-popup';
+import { useMapFilter } from '@/contexts/map-filter-context';
+import { useMapPopup } from '@/contexts/map-popup-context';
+import AffectedLocationPopup from './affected-location-popup';
 
 type SelectedLocation = {
   longitude: number;
@@ -40,7 +41,6 @@ type SelectedLocation = {
 
 type Props = {
   selectedLocation?: SelectedLocation | null;
-  onSelectReport?: (report: ReportMapPinInput) => void;
 };
 
 export type InteractiveMapHandle = {
@@ -50,7 +50,7 @@ export type InteractiveMapHandle = {
 };
 
 const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
-  ({ selectedLocation, onSelectReport }, ref) => {
+  ({ selectedLocation }, ref) => {
     const mapRef = useRef<MapRef | null>(null);
     const { caloocanGeoJSON, caloocanOutlineGeoJSON } = useBoundary();
     const [userLocation, setUserLocation] = useState<{
@@ -58,24 +58,22 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
       latitude: number;
     } | null>(null);
     const { reportMapPins } = useReportMapPins();
-    const { safetyLocations } = useSafetyLocations();
-    const { activeOverlay, openReport } = useMapOverlay();
+    const { safetyMapPins } = useSafetyMapPins();
+    const { activeOverlay, openReport, openSafety } = useMapOverlay();
     const isMobile = useIsMobile();
 
-    const flyTo = (report: { longitude: number; latitude: number }) => {
-      mapRef.current?.flyTo({
-        center: [report.longitude, report.latitude],
-        zoom: Math.max(mapRef.current.getZoom(), 16),
-        essential: true,
-        padding: isMobile
-          ? { top: 0, bottom: 350, left: 0, right: 0 }
-          : { top: 250, bottom: 0, left: 0, right: 0 },
-      });
-    };
+    const { filters } = useMapFilter();
+    const filteredReportMapPins = reportMapPins?.filter((r) =>
+      filters.severities.has(r.severity),
+    );
+    const filteredSafetyMapPins = safetyMapPins?.filter((r) =>
+      filters.safetyTypes.has(r.type),
+    );
 
     const {
-      popupReport,
-      openPopup,
+      activePopup,
+      openReportPopup,
+      openSafetyPopup,
       closePopup,
       nextReport,
       prevReport,
@@ -83,8 +81,24 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
       hasPrev,
       currentReportIndex,
       total,
-    } = useReportPopup(reportMapPins, flyTo);
+      flyToRef,
+    } = useMapPopup();
 
+    useEffect(() => {
+      flyToRef.current = (loc) => {
+        mapRef.current?.flyTo({
+          center: [loc.longitude, loc.latitude],
+          zoom: Math.max(mapRef.current.getZoom(), 16),
+          essential: true,
+          padding: isMobile
+            ? { top: 0, bottom: 350, left: 0, right: 0 }
+            : { top: 250, bottom: 0, left: 0, right: 0 },
+        });
+      };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isMobile]);
+
+    // for next and prev panel, fly to the next or prev report
     useEffect(() => {
       if (activeOverlay?.type !== 'report') return;
 
@@ -101,6 +115,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
       });
     }, [activeOverlay, reportMapPins]);
 
+    // map controls exposed to parent component
     useImperativeHandle(ref, () => ({
       zoomIn: () => mapRef.current?.zoomIn(),
       zoomOut: () => mapRef.current?.zoomOut(),
@@ -109,8 +124,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
           if (pos && mapRef.current) {
             const { longitude, latitude } = pos;
             setUserLocation({ longitude, latitude });
-
-            mapRef.current.flyTo({
+            mapRef.current!.flyTo({
               center: [longitude, latitude],
               zoom: 16,
               essential: true,
@@ -126,9 +140,9 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
       const map = mapRef.current;
       if (!loc || !map) return;
 
-      const currentZoom = typeof map.getZoom === 'function' ? map.getZoom() : 0;
+      const currentZoom = map!.getZoom() ?? 0;
 
-      map.flyTo({
+      map!.flyTo({
         center: [loc.longitude, loc.latitude],
         zoom: Math.max(currentZoom, 16),
         essential: true,
@@ -141,7 +155,6 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
         id='interactive-map'
         ref={mapRef}
         initialViewState={{
-          // Center around Metro Manila area (so your sample pins are visible)
           latitude: 14.69906,
           longitude: 120.99772,
           zoom: 11.5,
@@ -149,6 +162,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
         mapStyle='https://tiles.openfreemap.org/styles/bright'
         attributionControl={false}
         dragRotate={false}
+        onClick={() => closePopup()}
       >
         {/* boundary fill */}
         {caloocanGeoJSON && (
@@ -183,14 +197,17 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
         )}
 
         {/* Flood report pins */}
-        {reportMapPins?.map((report) => (
+        {filteredReportMapPins?.map((report) => (
           <Fragment key={report.id}>
             <Marker
               key={report.id}
               longitude={report.longitude}
               latitude={report.latitude}
               anchor='bottom'
-              onClick={() => openPopup(report)}
+              onClick={(e) => {
+                e.originalEvent.stopPropagation(); // prevent the map's onClick from firing
+                openReportPopup(report);
+              }}
             >
               <FloodMarker severity={report.severity} status={report.status} />
             </Marker>
@@ -205,14 +222,18 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
         ))}
 
         {/* safety locations pin */}
-        {safetyLocations?.map((location) => (
+        {filteredSafetyMapPins?.map((safety) => (
           <Marker
-            key={location.id}
-            longitude={location.longitude}
-            latitude={location.latitude}
+            key={safety.id}
+            longitude={safety.longitude}
+            latitude={safety.latitude}
             anchor='bottom'
+            onClick={(e) => {
+              e.originalEvent.stopPropagation();
+              openSafetyPopup(safety);
+            }}
           >
-            <SafetyMarker type={location.type} />
+            <SafetyMarker type={safety.type} />
           </Marker>
         ))}
 
@@ -228,7 +249,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
           </Marker>
         )}
 
-        {/* Search-selected location pin (red) */}
+        {/* Search-selected location pin */}
         {selectedLocation && (
           <Marker
             longitude={selectedLocation.longitude}
@@ -240,22 +261,21 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
           </Marker>
         )}
 
-        {popupReport && (
+        {activePopup?.type === 'report' && (
           <Popup
-            longitude={popupReport.longitude}
-            latitude={popupReport.latitude}
+            longitude={activePopup.report.longitude}
+            latitude={activePopup.report.latitude}
             anchor={isMobile ? 'top' : 'bottom'}
             offset={isMobile ? 10 : 50}
             maxWidth='none'
             onClose={closePopup}
             closeOnClick={false}
           >
-            <FloodReportPopup
+            <AffectedLocationPopup
               onClose={closePopup}
-              reportId={popupReport.id}
+              reportId={activePopup.report.id}
               onSelectReport={() => {
-                onSelectReport?.(popupReport);
-                openReport(popupReport.id);
+                openReport(activePopup.report.id);
                 closePopup();
               }}
               nextReport={nextReport}
@@ -264,6 +284,27 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, Props>(
               hasPrev={hasPrev}
               currentReportIndex={currentReportIndex}
               total={total}
+            />
+          </Popup>
+        )}
+
+        {activePopup?.type === 'safety' && (
+          <Popup
+            longitude={activePopup.safety.longitude}
+            latitude={activePopup.safety.latitude}
+            anchor={isMobile ? 'top' : 'bottom'}
+            offset={isMobile ? 10 : 50}
+            maxWidth='none'
+            onClose={closePopup}
+            closeOnClick={false}
+          >
+            <SafetyLocationPopup
+              onClose={closePopup}
+              safetyId={activePopup.safety.id}
+              onSelectSafety={() => {
+                openSafety(activePopup.safety.id);
+                closePopup();
+              }}
             />
           </Popup>
         )}

@@ -26,8 +26,8 @@ export function SecurityVerification({ onBack }: { onBack: () => void }) {
       {step === 'request' ? (
         <Empty>
           <EmptyHeader>
-            <EmptyMedia className="text-[#0066CC] bg-[#0066CC]/10 p-4 rounded-full">
-              <IconShield className="size-12" />
+            <EmptyMedia className='text-[#0066CC] bg-[#0066CC]/10 p-4 rounded-full'>
+              <IconShield className='size-12' />
             </EmptyMedia>
             <EmptyTitle>Security Verification Required</EmptyTitle>
             <EmptyDescription>
@@ -36,16 +36,16 @@ export function SecurityVerification({ onBack }: { onBack: () => void }) {
               address.
             </EmptyDescription>
           </EmptyHeader>
-          <EmptyContent className="flex-row justify-center gap-2">
+          <EmptyContent className='flex-row justify-center gap-2'>
             <SendOtpButton onSent={() => setIsDialogOpen(true)} />
-            <Button variant="outline" onClick={onBack}>
+            <Button variant='outline' onClick={onBack}>
               Cancel
             </Button>
           </EmptyContent>
         </Empty>
       ) : step === 'change' ? (
-        <div className="flex flex-col gap-8 h-full">
-          <h3 className="font-poppins font-semibold">Change Password</h3>
+        <div className='flex flex-col gap-8 h-full p-4'>
+          <h3 className='font-poppins font-semibold'>Change Password</h3>
           <ChangePasswordForm onSuccess={() => onBack()} />
         </div>
       ) : null}

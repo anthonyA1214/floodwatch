@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
-import { useUser } from '@/hooks/use-user';
+import { useMe } from '@/hooks/use-me';
 import { setPassword } from '@/lib/actions/password-actions';
 import { ActionState } from '@/lib/types/action-state';
 import { useActionState, useEffect } from 'react';
@@ -12,7 +12,7 @@ export default function SetPasswordForm({
 }: {
   onSuccess: () => void;
 }) {
-  const { mutateUser } = useUser();
+  const { mutateMe } = useMe();
 
   const initialState: ActionState = {
     status: null,
@@ -28,52 +28,52 @@ export default function SetPasswordForm({
     async function handleSuccess() {
       if (state.status === 'success') {
         // Close the panel after successful password change
-        await mutateUser();
+        await mutateMe();
         onSuccess();
       }
     }
 
     handleSuccess();
-  }, [state, onSuccess, mutateUser]);
+  }, [state, onSuccess, mutateMe]);
 
   return (
-    <form action={formAction} className="space-y-6 text-sm">
+    <form action={formAction} className='space-y-6 text-sm'>
       {/* include resetSessionId as hidden input */}
-      <div className="space-y-2">
-        <Label htmlFor="new_password">New Password</Label>
+      <div className='space-y-2'>
+        <Label htmlFor='new_password'>New Password</Label>
         <Input
-          id="new_password"
-          name="new_password"
-          type="password"
-          placeholder="Enter your new password"
-          className="rounded-full"
+          id='new_password'
+          name='new_password'
+          type='password'
+          placeholder='Enter your new password'
+          className='rounded-full'
         />
         {state.errors?.new_password && (
-          <p className="text-red-500">{state.errors.new_password}</p>
+          <p className='text-red-500'>{state.errors.new_password}</p>
         )}
       </div>
 
-      <div className="space-y-2">
-        <Label htmlFor="confirm_new_password">Confirm Password</Label>
+      <div className='space-y-2'>
+        <Label htmlFor='confirm_new_password'>Confirm Password</Label>
         <Input
-          id="confirm_new_password"
-          name="confirm_new_password"
-          type="password"
-          placeholder="Enter your confirm password"
-          className="rounded-full"
+          id='confirm_new_password'
+          name='confirm_new_password'
+          type='password'
+          placeholder='Enter your confirm password'
+          className='rounded-full'
         />
         {state.errors?.confirm_new_password && (
-          <p className="text-red-500">{state.errors.confirm_new_password}</p>
+          <p className='text-red-500'>{state.errors.confirm_new_password}</p>
         )}
         {state?.errors && '_form' in state.errors && state.errors._form && (
-          <p className="text-red-500 text-sm">{state.errors._form}</p>
+          <p className='text-red-500 text-sm'>{state.errors._form}</p>
         )}
       </div>
 
       <Button
         disabled={isPending}
-        type="submit"
-        className="w-full rounded-full"
+        type='submit'
+        className='w-full rounded-full'
       >
         {isPending ? (
           <>

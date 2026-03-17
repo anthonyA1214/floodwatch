@@ -3,9 +3,9 @@ import Link from 'next/link';
 export default function AuthButtons({ className }: { className?: string }) {
   return (
     <div className={`flex items-center gap-2 sm:gap-3 ${className ?? ''}`}>
-      <Link href="/auth/login" className="w-full sm:w-auto">
+      <Link href='/auth/login' className='w-full sm:w-auto'>
         <button
-          className="
+          className='
             font-poppins
             w-full sm:w-auto
             flex items-center justify-center
@@ -20,15 +20,15 @@ export default function AuthButtons({ className }: { className?: string }) {
             hover:shadow-lg
             whitespace-nowrap
             shrink-0
-          "
+          '
         >
           LOGIN
         </button>
       </Link>
 
-      <Link href="/auth/sign-up" className="w-full sm:w-auto">
+      <Link href='/auth/sign-up' className='w-full sm:w-auto'>
         <button
-          className="
+          className='
           font-poppins
           w-full sm:w-auto
           flex items-center justify-center
@@ -43,7 +43,7 @@ export default function AuthButtons({ className }: { className?: string }) {
           hover:shadow-lg sm:hover:scale-105
           whitespace-nowrap
           shrink-0
-        "
+        '
         >
           SIGN UP
         </button>
