@@ -14,8 +14,12 @@ import { useSafetyLocationsAdmin } from '@/hooks/use-safety-admin';
 import { SafetyLocationQueryInput } from '@repo/schemas';
 import { SafetyLocationsDataTableSkeleton } from './skeleton/safety-locations-data-table-skeleton';
 import SafetyLocationsPageSkeleton from './skeleton/safety-locations-page-skeleton';
+// ✅ Import the provider and dialog
+import SafetyLocationsDialogProvider from '@/contexts/safety-locations-dialog-context';
+import ViewSafetyLocationDialog from './view-safety-location-dialog';
 
-export default function SafetyLocationsView() {
+// ✅ Create an inner component that uses the context
+function SafetyLocationsContent() {
   const searchParams = useSearchParams();
   const [type, setType] = useState<'total' | 'shelter' | 'hospital'>(
     (searchParams.get('status') as 'total' | 'shelter' | 'hospital') || 'total',
@@ -105,6 +109,18 @@ export default function SafetyLocationsView() {
           </div>
         )}
       </div>
+
+      {/* ✅ Add the dialog component */}
+      <ViewSafetyLocationDialog />
     </div>
+  );
+}
+
+// ✅ Wrap the main component with the provider
+export default function SafetyLocationsView() {
+  return (
+    <SafetyLocationsDialogProvider>
+      <SafetyLocationsContent />
+    </SafetyLocationsDialogProvider>
   );
 }
