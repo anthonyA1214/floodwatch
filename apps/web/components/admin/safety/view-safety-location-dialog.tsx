@@ -62,10 +62,10 @@ export default function ViewSafetyLocationDialog() {
         <div className='flex-1 min-h-0 overflow-y-auto'>
           <div className='flex flex-col p-6 gap-6'>
             {/* ── Two Column Layout: Map + Details (Equal Height) ── */}
-            <div className='flex gap-6'>
+            <div className='flex gap-6 '>
               {/* ✅ Left Column: Map Placeholder */}
               <div className='flex-1'>
-                <div className='relative w-full aspect-square rounded-2xl overflow-hidden border border-gray-200 bg-gray-100 flex items-center justify-center'>
+                <div className='relative w-full h-full aspect-square rounded-2xl overflow-hidden border border-gray-200 bg-gray-100 flex items-center justify-center'>
                   {/* ✅ PLACEHOLDER - Replace with InteractiveMapSafetyLocation when ready */}
                   <span className='text-gray-400 font-medium'>
                     Map Component Here

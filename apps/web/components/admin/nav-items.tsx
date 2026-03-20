@@ -5,6 +5,7 @@ import {
   IconArchive,
   IconClipboard,
   IconMap,
+  IconMessageReport,
   IconReportAnalytics,
   IconSettings2,
   IconShieldPin,
@@ -51,6 +52,11 @@ export function NavItems() {
       title: 'COMMUNITY FEED',
       url: '/admin/feed',
       icon: IconUsers,
+    },
+    {
+      title: 'USER REPORTS',
+      url: '/admin/comments',
+      icon: IconMessageReport,
     },
     {
       title: 'SETTINGS',
