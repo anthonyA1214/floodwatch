@@ -21,27 +21,31 @@ import { useReportMapPins } from '@/hooks/use-report-map-pins';
 import { useMapFilter } from '@/contexts/map-filter-context';
 import AffectedLocationsCardSkeleton from './skeletons/affected-locations-card-skeleton';
 import LocationsListEmpty from './empty/locations-list-empty';
+import { useSearchParams } from 'next/navigation';
+import { ReportListItemInput, ReportListQueryInput } from '@repo/schemas';
+import PagePagination from '../shared/page-pagination';
 
 const snapPoints = ['0px', '355px', 1];
 
 export default function AffectedLocationsListDrawer() {
-  const { reportList, isLoading } = useReportList();
-  const { close } = useMapOverlay();
-  const { activePopup, openReportPopup } = useMapPopup();
-  const { reportMapPins } = useReportMapPins();
-
+  const searchParams = useSearchParams();
   const [severity, setSeverity] = useState<
     'all-levels' | 'critical' | 'high' | 'moderate' | 'low'
   >('all-levels');
+  const [page, setPage] = useState(1);
+  const { q } = useMapFilter();
 
-  const { filters } = useMapFilter();
-  const filteredReportList = reportList?.filter((report) => {
-    const pin = reportMapPins?.find((p) => p.id === report.id);
-    if (!pin) return false;
-    if (!filters.severities.has(pin.severity)) return false;
-    if (severity !== 'all-levels' && pin.severity !== severity) return false;
-    return true;
-  });
+  const params: ReportListQueryInput = {
+    page: Number(page),
+    limit: Number(searchParams.get('limit') || '10'),
+    severity: severity !== 'all-levels' ? severity : undefined,
+    q: q || undefined,
+  };
+
+  const { reportList, meta, isLoading } = useReportList(params);
+  const { close } = useMapOverlay();
+  const { activePopup, openReportPopup } = useMapPopup();
+  const { reportMapPins } = useReportMapPins();
 
   const handleCardClick = (reportId: number) => {
     const pin = reportMapPins?.find((p) => p.id === reportId);
@@ -138,10 +142,10 @@ export default function AffectedLocationsListDrawer() {
                 Array.from({ length: 5 }).map((_, i) => (
                   <AffectedLocationsCardSkeleton key={i} />
                 ))
-              ) : !filteredReportList || filteredReportList.length === 0 ? (
+              ) : !reportList || reportList.length === 0 ? (
                 <LocationsListEmpty />
               ) : (
-                filteredReportList?.map((report) => (
+                reportList?.map((report: ReportListItemInput) => (
                   <AffectedLocationsCard
                     key={report.id}
                     isActive={
@@ -159,6 +163,18 @@ export default function AffectedLocationsListDrawer() {
             </div>
           </div>
         </div>
+
+        {meta && meta.totalPages > 1 && (
+          <div className='mt-auto flex justify-center py-2 border-t border-gray-200'>
+            <PagePagination
+              currentPage={meta?.page ?? 1}
+              totalPages={meta?.totalPages ?? 1}
+              hasNextPage={meta?.hasNextPage ?? false}
+              hasPrevPage={meta?.hasPrevPage ?? false}
+              onPageChange={setPage}
+            />
+          </div>
+        )}
       </Drawer.Content>
     </Drawer.Root>
   );

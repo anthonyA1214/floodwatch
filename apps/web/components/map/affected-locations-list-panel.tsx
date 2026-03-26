@@ -59,79 +59,84 @@ export default function AffectedLocationsListPanel() {
         <IconChevronLeft className='w-[1.5em]! h-[1.5em]!' />
       </button>
 
-      <div className='flex flex-col gap-4 flex-1 min-h-0 py-4'>
-        {/* Header */}
+      <div className='flex flex-col flex-1 min-h-0'>
+        <div className='flex flex-col flex-1 min-h-0 gap-4 pt-4'>
+          {/* Header */}
+          <div className='flex items-center gap-2 font-semibold text-lg px-4'>
+            <IconAlertTriangle className='w-[1.5em]! h-[1.5em]! text-[#FB2C36]' />
+            <span>Affected Locations</span>
+          </div>
 
-        <div className='flex items-center gap-2 font-semibold text-lg px-4'>
-          <IconAlertTriangle className='w-[1.5em]! h-[1.5em]! text-[#FB2C36]' />
-          <span>Affected Locations</span>
+          <Separator />
+
+          {/* Filter using Select */}
+          <div className='px-4'>
+            <Select
+              value={severity}
+              onValueChange={(value) => {
+                setSeverity(
+                  value as
+                    | 'all-levels'
+                    | 'critical'
+                    | 'high'
+                    | 'moderate'
+                    | 'low',
+                );
+                setPage(1);
+              }}
+            >
+              <SelectTrigger className='w-full text-sm text-gray-600 py-3 justify-between'>
+                <SelectValue placeholder='All Levels' />
+              </SelectTrigger>
+
+              <SelectContent>
+                <SelectItem value='all-levels'>All Levels</SelectItem>
+                <SelectItem value='critical'>Critical</SelectItem>
+                <SelectItem value='high'>High</SelectItem>
+                <SelectItem value='moderate'>Moderate</SelectItem>
+                <SelectItem value='low'>Low</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Content */}
+          <div className='flex flex-col gap-4 overflow-y-auto flex-1 min-h-0 px-4 pb-4'>
+            {isLoading ? (
+              Array.from({ length: 5 }).map((_, i) => (
+                <AffectedLocationsCardSkeleton key={i} />
+              ))
+            ) : !reportList || reportList.length === 0 ? (
+              <LocationsListEmpty />
+            ) : (
+              reportList?.map((report: ReportListItemInput) => (
+                <AffectedLocationsCard
+                  key={report.id}
+                  isActive={
+                    activePopup?.type === 'report' &&
+                    activePopup?.report?.id === report.id
+                  }
+                  severity={report.severity}
+                  location={report?.location}
+                  description={report?.description}
+                  reportedAt={report?.reportedAt}
+                  onClick={() => handleCardClick(report.id)}
+                />
+              ))
+            )}
+          </div>
         </div>
 
-        <Separator />
-
-        {/* Filter using Select */}
-        <div className='px-4'>
-          <Select
-            value={severity}
-            onValueChange={(value) => {
-              setSeverity(
-                value as
-                  | 'all-levels'
-                  | 'critical'
-                  | 'high'
-                  | 'moderate'
-                  | 'low',
-              );
-              setPage(1);
-            }}
-          >
-            <SelectTrigger className='w-full text-sm text-gray-600 py-3 justify-between'>
-              <SelectValue placeholder='All Levels' />
-            </SelectTrigger>
-
-            <SelectContent>
-              <SelectItem value='all-levels'>All Levels</SelectItem>
-              <SelectItem value='critical'>Critical</SelectItem>
-              <SelectItem value='high'>High</SelectItem>
-              <SelectItem value='moderate'>Moderate</SelectItem>
-              <SelectItem value='low'>Low</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Content */}
-        <div className='flex flex-col gap-4 overflow-y-auto flex-1 min-h-0 px-4'>
-          {isLoading ? (
-            Array.from({ length: 5 }).map((_, i) => (
-              <AffectedLocationsCardSkeleton key={i} />
-            ))
-          ) : !reportList || reportList.length === 0 ? (
-            <LocationsListEmpty />
-          ) : (
-            reportList?.map((report: ReportListItemInput) => (
-              <AffectedLocationsCard
-                key={report.id}
-                isActive={
-                  activePopup?.type === 'report' &&
-                  activePopup?.report?.id === report.id
-                }
-                severity={report.severity}
-                location={report?.location}
-                description={report?.description}
-                reportedAt={report?.reportedAt}
-                onClick={() => handleCardClick(report.id)}
-              />
-            ))
-          )}
-        </div>
-
-        <PagePagination
-          currentPage={meta?.page ?? 1}
-          totalPages={meta?.totalPages ?? 1}
-          hasNextPage={meta?.hasNextPage ?? false}
-          hasPrevPage={meta?.hasPrevPage ?? false}
-          onPageChange={setPage}
-        />
+        {meta && meta.totalPages > 1 && (
+          <div className='mt-auto flex justify-center py-2 border-t border-gray-200'>
+            <PagePagination
+              currentPage={meta?.page ?? 1}
+              totalPages={meta?.totalPages ?? 1}
+              hasNextPage={meta?.hasNextPage ?? false}
+              hasPrevPage={meta?.hasPrevPage ?? false}
+              onPageChange={setPage}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

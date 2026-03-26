@@ -50,8 +50,6 @@ export default function SafetyLocationsListPanel() {
     }
   };
 
-  console.log(safetyList);
-
   return (
     <div className='relative w-full h-full bg-white z-50 min-h-0 flex flex-col pointer-events-auto pt-16'>
       <button
@@ -62,70 +60,75 @@ export default function SafetyLocationsListPanel() {
         <IconChevronLeft className='w-[1.5em]! h-[1.5em]!' />
       </button>
 
-      <div className='flex flex-col gap-4 flex-1 min-h-0 py-4'>
-        {/* Header */}
+      <div className='flex flex-col flex-1 min-h-0'>
+        <div className='flex flex-col flex-1 min-h-0 gap-4 pt-4'>
+          {/* Header */}
+          <div className='flex items-center gap-2 font-semibold text-lg px-4'>
+            <IconShieldCheck className='w-[1.5em]! h-[1.5em]! text-[#0066CC]' />
+            <span>Safety Locations</span>
+          </div>
 
-        <div className='flex items-center gap-2 font-semibold text-lg px-4'>
-          <IconShieldCheck className='w-[1.5em]! h-[1.5em]! text-[#0066CC]' />
-          <span>Safety Locations</span>
+          <Separator />
+
+          {/* Filter using Select */}
+          <div className='px-4'>
+            <Select
+              value={type}
+              onValueChange={(value) => {
+                setType(value as 'all-types' | 'shelter' | 'hospital');
+                setPage(1);
+              }}
+            >
+              <SelectTrigger className='w-full text-sm text-gray-600 py-3 justify-between'>
+                <SelectValue placeholder='All Types' />
+              </SelectTrigger>
+
+              <SelectContent>
+                <SelectItem value='all-types'>All Types</SelectItem>
+                <SelectItem value='shelter'>Shelter</SelectItem>
+                <SelectItem value='hospital'>Hospital</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Content */}
+          <div className='flex flex-col gap-4 overflow-y-auto flex-1 min-h-0 px-4 pb-4'>
+            {isLoading ? (
+              Array.from({ length: 5 }).map((_, i) => (
+                <SafetyLocationsCardSkeleton key={i} />
+              ))
+            ) : !safetyList || safetyList?.length === 0 ? (
+              <LocationsListEmpty />
+            ) : (
+              safetyList?.map((safety: SafetyListItemInput) => (
+                <SafetyLocationsCard
+                  key={safety.id}
+                  isActive={
+                    activePopup?.type === 'safety' &&
+                    activePopup?.safety?.id === safety.id
+                  }
+                  type={safety.type}
+                  location={safety.location}
+                  address={safety.address}
+                  availability={safety.availability}
+                  onClick={() => handleCardClick(safety.id)}
+                />
+              ))
+            )}
+          </div>
         </div>
 
-        <Separator />
-
-        {/* Filter using Select */}
-        <div className='px-4'>
-          <Select
-            value={type}
-            onValueChange={(value) => {
-              setType(value as 'all-types' | 'shelter' | 'hospital');
-              setPage(1);
-            }}
-          >
-            <SelectTrigger className='w-full text-sm text-gray-600 py-3 justify-between'>
-              <SelectValue placeholder='All Types' />
-            </SelectTrigger>
-
-            <SelectContent>
-              <SelectItem value='all-types'>All Types</SelectItem>
-              <SelectItem value='shelter'>Shelter</SelectItem>
-              <SelectItem value='hospital'>Hospital</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Content */}
-        <div className='flex flex-col gap-4 overflow-y-auto flex-1 min-h-0 px-4'>
-          {isLoading ? (
-            Array.from({ length: 5 }).map((_, i) => (
-              <SafetyLocationsCardSkeleton key={i} />
-            ))
-          ) : !safetyList || safetyList?.length === 0 ? (
-            <LocationsListEmpty />
-          ) : (
-            safetyList?.map((safety: SafetyListItemInput) => (
-              <SafetyLocationsCard
-                key={safety.id}
-                isActive={
-                  activePopup?.type === 'safety' &&
-                  activePopup?.safety?.id === safety.id
-                }
-                type={safety.type}
-                location={safety.location}
-                address={safety.address}
-                availability={safety.availability}
-                onClick={() => handleCardClick(safety.id)}
-              />
-            ))
-          )}
-        </div>
-
-        <PagePagination
-          currentPage={meta?.page ?? 1}
-          totalPages={meta?.totalPages ?? 1}
-          hasNextPage={meta?.hasNextPage ?? false}
-          hasPrevPage={meta?.hasPrevPage ?? false}
-          onPageChange={setPage}
-        />
+        {meta && meta.totalPages > 1 && (
+          <div className='mt-auto flex justify-center py-2 border-t border-gray-200'>
+            <PagePagination
+              currentPage={meta?.page ?? 1}
+              totalPages={meta?.totalPages ?? 1}
+              hasNextPage={meta?.hasNextPage ?? false}
+              hasPrevPage={meta?.hasPrevPage ?? false}
+              onPageChange={setPage}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
