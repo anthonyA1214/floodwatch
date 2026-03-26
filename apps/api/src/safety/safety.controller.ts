@@ -48,8 +48,8 @@ export class SafetyController {
   @Public()
   @Get('list')
   @HttpCode(HttpStatus.OK)
-  async getSafetyList() {
-    return await this.safetyService.getSafetyList();
+  async getSafetyList(@Query() safetyLocationQueryDto: SafetyLocationQueryDto) {
+    return await this.safetyService.getSafetyList(safetyLocationQueryDto);
   }
 
   @Public()

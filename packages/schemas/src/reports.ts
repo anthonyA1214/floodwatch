@@ -74,12 +74,20 @@ export const reportQuerySchema = z.object({
   q: z.string().optional(),
 });
 
+export const reportListQuerySchema = z.object({
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(10),
+  severity: z.enum(['low', 'moderate', 'high', 'critical']).optional(),
+  q: z.string().optional(),
+});
+
 export class ReportFloodAlertDto extends createZodDto(reportFloodAlertSchema) {}
 export class CreateFloodAlertDto extends createZodDto(createFloodAlertSchema) {}
 export class ReportMapPinDto extends createZodDto(reportMapPinSchema) {}
 export class ReportDetailDto extends createZodDto(reportDetailSchema) {}
 export class ReportListItemDto extends createZodDto(reportListItemSchema) {}
 export class ReportQueryDto extends createZodDto(reportQuerySchema) {}
+export class ReportListQueryDto extends createZodDto(reportListQuerySchema) {}
 
 export type ReportFloodAlertInput = z.infer<typeof reportFloodAlertSchema>;
 export type CreateFloodAlertInput = z.infer<typeof createFloodAlertSchema>;
@@ -87,3 +95,4 @@ export type ReportMapPinInput = z.infer<typeof reportMapPinSchema>;
 export type ReportDetailInput = z.infer<typeof reportDetailSchema>;
 export type ReportListItemInput = z.infer<typeof reportListItemSchema>;
 export type ReportQueryInput = z.infer<typeof reportQuerySchema>;
+export type ReportListQueryInput = z.infer<typeof reportListQuerySchema>;

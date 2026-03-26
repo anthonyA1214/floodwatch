@@ -18,25 +18,29 @@ import { useReportMapPins } from '@/hooks/use-report-map-pins';
 import { useState } from 'react';
 import { useMapFilter } from '@/contexts/map-filter-context';
 import LocationsListEmpty from './empty/locations-list-empty';
+import { ReportListItemInput, ReportListQueryInput } from '@repo/schemas';
+import { useSearchParams } from 'next/navigation';
+import PagePagination from '../shared/page-pagination';
 
 export default function AffectedLocationsListPanel() {
-  const { reportList, isLoading } = useReportList();
-  const { close } = useMapOverlay();
-  const { activePopup, openReportPopup } = useMapPopup();
-  const { reportMapPins } = useReportMapPins();
-
+  const searchParams = useSearchParams();
   const [severity, setSeverity] = useState<
     'all-levels' | 'critical' | 'high' | 'moderate' | 'low'
   >('all-levels');
+  const [page, setPage] = useState(1);
+  const { q } = useMapFilter();
 
-  const { filters } = useMapFilter();
-  const filteredReportList = reportList?.filter((report) => {
-    const pin = reportMapPins?.find((p) => p.id === report.id);
-    if (!pin) return false;
-    if (!filters.severities.has(pin.severity)) return false;
-    if (severity !== 'all-levels' && pin.severity !== severity) return false;
-    return true;
-  });
+  const params: ReportListQueryInput = {
+    page: Number(page),
+    limit: Number(searchParams.get('limit') || '10'),
+    severity: severity !== 'all-levels' ? severity : undefined,
+    q: q || undefined,
+  };
+
+  const { reportList, meta, isLoading } = useReportList(params);
+  const { close } = useMapOverlay();
+  const { activePopup, openReportPopup } = useMapPopup();
+  const { reportMapPins } = useReportMapPins();
 
   const handleCardClick = (reportId: number) => {
     const pin = reportMapPins?.find((p) => p.id === reportId);
@@ -55,70 +59,84 @@ export default function AffectedLocationsListPanel() {
         <IconChevronLeft className='w-[1.5em]! h-[1.5em]!' />
       </button>
 
-      <div className='flex flex-col gap-4 flex-1 min-h-0 py-4'>
-        {/* Header */}
+      <div className='flex flex-col flex-1 min-h-0'>
+        <div className='flex flex-col flex-1 min-h-0 gap-4 pt-4'>
+          {/* Header */}
+          <div className='flex items-center gap-2 font-semibold text-lg px-4'>
+            <IconAlertTriangle className='w-[1.5em]! h-[1.5em]! text-[#FB2C36]' />
+            <span>Affected Locations</span>
+          </div>
 
-        <div className='flex items-center gap-2 font-semibold text-lg px-4'>
-          <IconAlertTriangle className='w-[1.5em]! h-[1.5em]! text-[#FB2C36]' />
-          <span>Affected Locations</span>
+          <Separator />
+
+          {/* Filter using Select */}
+          <div className='px-4'>
+            <Select
+              value={severity}
+              onValueChange={(value) => {
+                setSeverity(
+                  value as
+                    | 'all-levels'
+                    | 'critical'
+                    | 'high'
+                    | 'moderate'
+                    | 'low',
+                );
+                setPage(1);
+              }}
+            >
+              <SelectTrigger className='w-full text-sm text-gray-600 py-3 justify-between'>
+                <SelectValue placeholder='All Levels' />
+              </SelectTrigger>
+
+              <SelectContent>
+                <SelectItem value='all-levels'>All Levels</SelectItem>
+                <SelectItem value='critical'>Critical</SelectItem>
+                <SelectItem value='high'>High</SelectItem>
+                <SelectItem value='moderate'>Moderate</SelectItem>
+                <SelectItem value='low'>Low</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          {/* Content */}
+          <div className='flex flex-col gap-4 overflow-y-auto flex-1 min-h-0 px-4 pb-4'>
+            {isLoading ? (
+              Array.from({ length: 5 }).map((_, i) => (
+                <AffectedLocationsCardSkeleton key={i} />
+              ))
+            ) : !reportList || reportList.length === 0 ? (
+              <LocationsListEmpty />
+            ) : (
+              reportList?.map((report: ReportListItemInput) => (
+                <AffectedLocationsCard
+                  key={report.id}
+                  isActive={
+                    activePopup?.type === 'report' &&
+                    activePopup?.report?.id === report.id
+                  }
+                  severity={report.severity}
+                  location={report?.location}
+                  description={report?.description}
+                  reportedAt={report?.reportedAt}
+                  onClick={() => handleCardClick(report.id)}
+                />
+              ))
+            )}
+          </div>
         </div>
 
-        <Separator />
-
-        {/* Filter using Select */}
-        <div className='px-4'>
-          <Select
-            defaultValue={severity}
-            onValueChange={(value) =>
-              setSeverity(
-                value as
-                  | 'all-levels'
-                  | 'critical'
-                  | 'high'
-                  | 'moderate'
-                  | 'low',
-              )
-            }
-          >
-            <SelectTrigger className='w-full text-sm text-gray-600 py-3 justify-between'>
-              <SelectValue placeholder='All Levels' />
-            </SelectTrigger>
-
-            <SelectContent>
-              <SelectItem value='all-levels'>All Levels</SelectItem>
-              <SelectItem value='critical'>Critical</SelectItem>
-              <SelectItem value='high'>High</SelectItem>
-              <SelectItem value='moderate'>Moderate</SelectItem>
-              <SelectItem value='low'>Low</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-
-        {/* Content */}
-        <div className='flex flex-col gap-4 overflow-y-auto flex-1 min-h-0 px-4'>
-          {isLoading ? (
-            Array.from({ length: 5 }).map((_, i) => (
-              <AffectedLocationsCardSkeleton key={i} />
-            ))
-          ) : !filteredReportList || filteredReportList.length === 0 ? (
-            <LocationsListEmpty />
-          ) : (
-            filteredReportList?.map((report) => (
-              <AffectedLocationsCard
-                key={report.id}
-                isActive={
-                  activePopup?.type === 'report' &&
-                  activePopup?.report?.id === report.id
-                }
-                severity={report.severity}
-                location={report?.location}
-                description={report?.description}
-                reportedAt={report?.reportedAt}
-                onClick={() => handleCardClick(report.id)}
-              />
-            ))
-          )}
-        </div>
+        {meta && meta.totalPages > 1 && (
+          <div className='mt-auto flex justify-center py-2 border-t border-gray-200'>
+            <PagePagination
+              currentPage={meta?.page ?? 1}
+              totalPages={meta?.totalPages ?? 1}
+              hasNextPage={meta?.hasNextPage ?? false}
+              hasPrevPage={meta?.hasPrevPage ?? false}
+              onPageChange={setPage}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
