@@ -1,17 +1,39 @@
-import { apiFetchClient } from '../api-fetch-client';
+'use server';
+
+import {
+  SafetyLocationQueryInput,
+  safetyLocationQuerySchema,
+} from '@repo/schemas';
+import { apiFetchServer } from '../api-fetch-server';
 import { SWR_KEYS } from '../constants/swr-keys';
 
-export async function getSafetyList() {
-  const res = await apiFetchClient(SWR_KEYS.safetyList, {
-    method: 'GET',
-  });
+export async function getSafetyList(params: SafetyLocationQueryInput) {
+  const parsed = safetyLocationQuerySchema.safeParse(params);
 
-  if (!res.ok) {
-    console.error('SAFETY LIST ERROR:', res.status);
-    return null;
+  if (!parsed.success) {
+    throw new Error('Invalid query parameters');
   }
 
-  const data = await res.json();
-  console.log('SAFETY LIST:', data);
-  return data;
+  const { page = 1, limit = 10, type, q } = parsed.data;
+
+  const querySearch = new URLSearchParams({
+    page: page.toString(),
+    limit: limit.toString(),
+    ...(type && { type }),
+    ...(q && { q }),
+  });
+
+  try {
+    const res = await apiFetchServer(
+      `${SWR_KEYS.safetyList}?${querySearch.toString()}`,
+      {
+        method: 'GET',
+      },
+    );
+
+    return res.json();
+  } catch (error) {
+    console.error('Error fetching safety locations data:', error);
+    throw new Error('Failed to fetch safety locations data');
+  }
 }

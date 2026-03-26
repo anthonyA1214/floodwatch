@@ -18,25 +18,30 @@ import { useMapPopup } from '@/contexts/map-popup-context';
 import { useState } from 'react';
 import SafetyLocationsCardSkeleton from './skeletons/safety-locations-card-skeleton';
 import LocationsListEmpty from './empty/locations-list-empty';
+import { useSearchParams } from 'next/navigation';
+import { SafetyListItemInput, SafetyLocationQueryInput } from '@repo/schemas';
+import PagePagination from '../shared/page-pagination';
 
 export default function SafetyLocationsListPanel() {
-  const { safetyList, isLoading } = useSafetyList();
+  const searchParams = useSearchParams();
+  const [page, setPage] = useState(1);
+  const [type, setType] = useState<'all-types' | 'shelter' | 'hospital'>(
+    (searchParams.get('status') as 'all-types' | 'shelter' | 'hospital') ||
+      'all-types',
+  );
+  const { q } = useMapFilter();
+
+  const params: SafetyLocationQueryInput = {
+    page: Number(page),
+    limit: Number(searchParams.get('limit') || '10'),
+    type: type === 'all-types' ? undefined : type,
+    q: q || undefined,
+  };
+
+  const { safetyList, meta, isLoading } = useSafetyList(params);
   const { close } = useMapOverlay();
   const { activePopup, openSafetyPopup } = useMapPopup();
   const { safetyMapPins } = useSafetyMapPins();
-
-  const [type, setType] = useState<'all-types' | 'shelter' | 'hospital'>(
-    'all-types',
-  );
-
-  const { filters } = useMapFilter();
-  const filteredSafetyList = safetyList?.filter((safety) => {
-    const pin = safetyMapPins?.find((p) => p.id === safety.id);
-    if (!pin) return false;
-    if (!filters.safetyTypes.has(pin.type)) return false;
-    if (type !== 'all-types' && pin.type !== type) return false;
-    return true;
-  });
 
   const handleCardClick = (safetyId: number) => {
     const pin = safetyMapPins?.find((p) => p.id === safetyId);
@@ -44,6 +49,8 @@ export default function SafetyLocationsListPanel() {
       openSafetyPopup(pin);
     }
   };
+
+  console.log(safetyList);
 
   return (
     <div className='relative w-full h-full bg-white z-50 min-h-0 flex flex-col pointer-events-auto pt-16'>
@@ -68,10 +75,11 @@ export default function SafetyLocationsListPanel() {
         {/* Filter using Select */}
         <div className='px-4'>
           <Select
-            defaultValue={type}
-            onValueChange={(value) =>
-              setType(value as 'all-types' | 'shelter' | 'hospital')
-            }
+            value={type}
+            onValueChange={(value) => {
+              setType(value as 'all-types' | 'shelter' | 'hospital');
+              setPage(1);
+            }}
           >
             <SelectTrigger className='w-full text-sm text-gray-600 py-3 justify-between'>
               <SelectValue placeholder='All Types' />
@@ -91,10 +99,10 @@ export default function SafetyLocationsListPanel() {
             Array.from({ length: 5 }).map((_, i) => (
               <SafetyLocationsCardSkeleton key={i} />
             ))
-          ) : !filteredSafetyList || filteredSafetyList?.length === 0 ? (
+          ) : !safetyList || safetyList?.length === 0 ? (
             <LocationsListEmpty />
           ) : (
-            filteredSafetyList?.map((safety) => (
+            safetyList?.map((safety: SafetyListItemInput) => (
               <SafetyLocationsCard
                 key={safety.id}
                 isActive={
@@ -110,6 +118,14 @@ export default function SafetyLocationsListPanel() {
             ))
           )}
         </div>
+
+        <PagePagination
+          currentPage={meta?.page ?? 1}
+          totalPages={meta?.totalPages ?? 1}
+          hasNextPage={meta?.hasNextPage ?? false}
+          hasPrevPage={meta?.hasPrevPage ?? false}
+          onPageChange={setPage}
+        />
       </div>
     </div>
   );

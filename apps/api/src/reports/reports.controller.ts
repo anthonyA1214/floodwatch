@@ -26,6 +26,8 @@ import {
   createFloodAlertSchema,
   ReportFloodAlertDto,
   reportFloodAlertSchema,
+  ReportListQueryDto,
+  ReportListQueryInput,
   ReportQueryDto,
   VoteDto,
 } from '@repo/schemas';
@@ -66,8 +68,8 @@ export class ReportsController {
   @Public()
   @Get('list')
   @HttpCode(HttpStatus.OK)
-  async getReportList() {
-    return await this.reportsService.getReportList();
+  async getReportList(@Query() reportListQuery: ReportListQueryDto) {
+    return await this.reportsService.getReportList(reportListQuery);
   }
 
   @Public()
