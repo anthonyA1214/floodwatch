@@ -3,7 +3,6 @@
 import { clsx } from 'clsx';
 import { useState } from 'react';
 import { Drawer } from 'vaul';
-import AffectedLocationsCard from './affected-locations-card';
 import {
   Select,
   SelectContent,
@@ -24,6 +23,7 @@ import LocationsListEmpty from './empty/locations-list-empty';
 import { useSearchParams } from 'next/navigation';
 import { ReportListItemInput, ReportListQueryInput } from '@repo/schemas';
 import PagePagination from '../shared/page-pagination';
+import AffectedLocationsCard from '../shared/affected-locations-card';
 
 const snapPoints = ['0px', '355px', 1];
 
@@ -33,12 +33,19 @@ export default function AffectedLocationsListDrawer() {
     'all-levels' | 'critical' | 'high' | 'moderate' | 'low'
   >('all-levels');
   const [page, setPage] = useState(1);
-  const { q } = useMapFilter();
+  const { q, filters } = useMapFilter();
+
+  const activeSeverities =
+    severity !== 'all-levels'
+      ? filters.severities.has(severity)
+        ? [severity]
+        : [] // dropdown pick is unchecked in popover = empty
+      : [...filters.severities];
 
   const params: ReportListQueryInput = {
     page: Number(page),
     limit: Number(searchParams.get('limit') || '10'),
-    severity: severity !== 'all-levels' ? severity : undefined,
+    severities: activeSeverities,
     q: q || undefined,
   };
 
@@ -128,10 +135,14 @@ export default function AffectedLocationsListDrawer() {
 
                 <SelectContent>
                   <SelectItem value='all-levels'>All Levels</SelectItem>
-                  <SelectItem value='critical'>Critical</SelectItem>
-                  <SelectItem value='high'>High</SelectItem>
-                  <SelectItem value='moderate'>Moderate</SelectItem>
-                  <SelectItem value='low'>Low</SelectItem>
+                  {(['critical', 'high', 'moderate', 'low'] as const).map(
+                    (s) =>
+                      filters.severities.has(s) ? (
+                        <SelectItem key={s} value={s}>
+                          {s.charAt(0).toUpperCase() + s.slice(1)}
+                        </SelectItem>
+                      ) : null,
+                  )}
                 </SelectContent>
               </Select>
             </div>

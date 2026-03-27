@@ -12,7 +12,6 @@ import {
 } from '../ui/select';
 import { Separator } from '../ui/separator';
 import { IconShieldCheck } from '@tabler/icons-react';
-import SafetyLocationsCard from './safety-locations-card';
 import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 import { useMapOverlay } from '@/contexts/map-overlay-context';
 import { useSafetyList } from '@/hooks/use-safety-list';
@@ -24,6 +23,7 @@ import LocationsListEmpty from './empty/locations-list-empty';
 import { SafetyListItemInput, SafetyLocationQueryInput } from '@repo/schemas';
 import { useSearchParams } from 'next/navigation';
 import PagePagination from '../shared/page-pagination';
+import SafetyLocationsCard from '../shared/safety-locations-card';
 
 const snapPoints = ['0px', '355px', 1];
 

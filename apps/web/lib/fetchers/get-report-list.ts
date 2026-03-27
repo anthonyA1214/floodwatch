@@ -11,14 +11,29 @@ export async function getReportList(params: ReportListQueryInput) {
     throw new Error('Invalid query parameters');
   }
 
-  const { page = 1, limit = 10, severity, q } = parsed.data;
+  const { page = 1, limit = 10, severities, q } = parsed.data;
+
+  if (severities && severities.length === 0) {
+    return {
+      data: [],
+      meta: {
+        page,
+        limit,
+        total: 0,
+        totalPages: 0,
+        hasNextPage: false,
+        hasPrevPage: false,
+      },
+    };
+  }
 
   const querySearch = new URLSearchParams({
     page: page.toString(),
     limit: limit.toString(),
-    ...(severity && { severity }),
     ...(q && { q }),
   });
+
+  severities?.forEach((severity) => querySearch.append('severities', severity));
 
   try {
     const res = await apiFetchServer(
