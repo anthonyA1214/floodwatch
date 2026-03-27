@@ -17,6 +17,8 @@ import AffectedLocationsCardSkeleton from '@/components/map/skeletons/affected-l
 import LocationsListEmpty from '@/components/map/empty/locations-list-empty';
 import AffectedLocationsCard from '@/components/shared/affected-locations-card';
 import PagePagination from '@/components/shared/page-pagination';
+import { useMapHighlight } from '@/contexts/map-highlight-context';
+import { useReportMapPins } from '@/hooks/use-report-map-pins';
 
 export default function AffectedLocationsTab() {
   const searchParams = useSearchParams();
@@ -25,15 +27,24 @@ export default function AffectedLocationsTab() {
   >('all-levels');
   const [page, setPage] = useState(1);
   const { q } = useMapFilterAdmin();
+  const { reportMapPins } = useReportMapPins();
 
   const params: ReportListQueryInput = {
     page: Number(page),
     limit: Number(searchParams.get('limit') || '10'),
-    severity: severity !== 'all-levels' ? severity : undefined,
+    severities: severity !== 'all-levels' ? [severity] : undefined,
     q: q || undefined,
   };
 
   const { reportList, meta, isLoading } = useReportList(params);
+  const { activePin, setActivePin } = useMapHighlight();
+
+  const handleCardClick = (reportId: number) => {
+    const pin = reportMapPins?.find((p) => p.id === reportId);
+    if (pin) {
+      setActivePin({ type: 'report', report: pin });
+    }
+  };
 
   return (
     <>
@@ -74,10 +85,15 @@ export default function AffectedLocationsTab() {
               reportList?.map((report: ReportListItemInput) => (
                 <AffectedLocationsCard
                   key={report.id}
+                  isActive={
+                    activePin?.type === 'report' &&
+                    activePin?.report?.id === report.id
+                  }
                   severity={report.severity}
                   location={report?.location}
                   description={report?.description}
                   reportedAt={report?.reportedAt}
+                  onClick={() => handleCardClick(report.id)}
                 />
               ))
             )}

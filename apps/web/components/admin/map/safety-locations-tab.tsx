@@ -1,11 +1,14 @@
 'use client';
 
-import Pagination from '@/components/admin/map/map-pagination';
 import CreateSafetyLocationsDialog from './create-safety-locations-dialog';
 import { useMapFilterAdmin } from '@/contexts/map-filter-admin-context';
 import { useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { SafetyListItemInput, SafetyLocationQueryInput } from '@repo/schemas';
+import {
+  SafetyListItemInput,
+  SafetyLocationListQueryInput,
+  SafetyLocationQueryInput,
+} from '@repo/schemas';
 import { useSafetyList } from '@/hooks/use-safety-list';
 import {
   Select,
@@ -18,6 +21,8 @@ import SafetyLocationsCardSkeleton from '@/components/map/skeletons/safety-locat
 import LocationsListEmpty from '@/components/map/empty/locations-list-empty';
 import SafetyLocationsCard from '@/components/shared/safety-locations-card';
 import PagePagination from '@/components/shared/page-pagination';
+import { useSafetyMapPins } from '@/hooks/use-safety-map-pins';
+import { useMapHighlight } from '@/contexts/map-highlight-context';
 
 export default function SafetyLocationsTab() {
   const searchParams = useSearchParams();
@@ -28,11 +33,21 @@ export default function SafetyLocationsTab() {
   );
   const { q } = useMapFilterAdmin();
 
-  const params: SafetyLocationQueryInput = {
+  const params: SafetyLocationListQueryInput = {
     page: Number(page),
     limit: Number(searchParams.get('limit') || '10'),
-    type: type === 'all-types' ? undefined : type,
+    types: type !== 'all-types' ? [type] : undefined,
     q: q || undefined,
+  };
+
+  const { safetyMapPins } = useSafetyMapPins();
+  const { activePin, setActivePin } = useMapHighlight();
+
+  const handleCardClick = (safetyId: number) => {
+    const pin = safetyMapPins?.find((p) => p.id === safetyId);
+    if (pin) {
+      setActivePin({ type: 'safety', safety: pin });
+    }
   };
 
   const { safetyList, meta, isLoading } = useSafetyList(params);
@@ -71,10 +86,15 @@ export default function SafetyLocationsTab() {
               safetyList?.map((safety: SafetyListItemInput) => (
                 <SafetyLocationsCard
                   key={safety.id}
+                  isActive={
+                    activePin?.type === 'safety' &&
+                    activePin.safety.id === safety.id
+                  }
                   type={safety.type}
                   location={safety.location}
                   address={safety.address}
                   availability={safety.availability}
+                  onClick={() => handleCardClick(safety.id)}
                 />
               ))
             )}

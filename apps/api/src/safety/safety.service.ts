@@ -1,9 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
   CreateSafetyLocationInput,
+  SafetyLocationListQueryInput,
   SafetyLocationQueryDto,
 } from '@repo/schemas';
-import { ilike } from 'drizzle-orm';
+import { ilike, inArray } from 'drizzle-orm';
 import { desc } from 'drizzle-orm';
 import { and, count, eq, like, or, sql } from 'drizzle-orm';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
@@ -53,8 +54,10 @@ export class SafetyService {
     return result;
   }
 
-  async getSafetyList(safetyLocationQueryDto: SafetyLocationQueryDto) {
-    const { page, limit, type, q } = safetyLocationQueryDto;
+  async getSafetyList(
+    safetyLocationListQueryDto: SafetyLocationListQueryInput,
+  ) {
+    const { page, limit, types, q } = safetyLocationListQueryDto;
     const pageNumber = Number(page) || 1;
     const limitNumber = Number(limit) || 10;
     const offset = (pageNumber - 1) * limitNumber;
@@ -62,13 +65,13 @@ export class SafetyService {
     const searchCondition = q
       ? or(ilike(safety.location, `%${q}%`), ilike(safety.address, `%${q}%`))
       : undefined;
+    const typeCondition =
+      types && types.length > 0 ? inArray(safety.type, types) : undefined;
 
     const whereClause =
-      type && searchCondition
-        ? and(eq(safety.type, type), searchCondition)
-        : type
-          ? eq(safety.type, type)
-          : searchCondition;
+      typeCondition && searchCondition
+        ? and(typeCondition, searchCondition)
+        : (typeCondition ?? searchCondition);
 
     const [data, counts] = await Promise.all([
       this.db

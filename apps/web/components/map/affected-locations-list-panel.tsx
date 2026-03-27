@@ -15,7 +15,7 @@ import { useReportList } from '@/hooks/use-report-list';
 import AffectedLocationsCardSkeleton from './skeletons/affected-locations-card-skeleton';
 import { useMapPopup } from '@/contexts/map-popup-context';
 import { useReportMapPins } from '@/hooks/use-report-map-pins';
-import { useState } from 'react';
+import { startTransition, useEffect, useState } from 'react';
 import { useMapFilter } from '@/contexts/map-filter-context';
 import LocationsListEmpty from './empty/locations-list-empty';
 import { ReportListItemInput, ReportListQueryInput } from '@repo/schemas';
@@ -28,12 +28,19 @@ export default function AffectedLocationsListPanel() {
     'all-levels' | 'critical' | 'high' | 'moderate' | 'low'
   >('all-levels');
   const [page, setPage] = useState(1);
-  const { q } = useMapFilter();
+  const { q, filters } = useMapFilter();
+
+  const activeSeverities =
+    severity !== 'all-levels'
+      ? filters.severities.has(severity)
+        ? [severity]
+        : [] // dropdown pick is unchecked in popover = empty
+      : [...filters.severities];
 
   const params: ReportListQueryInput = {
     page: Number(page),
     limit: Number(searchParams.get('limit') || '10'),
-    severity: severity !== 'all-levels' ? severity : undefined,
+    severities: activeSeverities,
     q: q || undefined,
   };
 
@@ -48,6 +55,23 @@ export default function AffectedLocationsListPanel() {
       openReportPopup(pin);
     }
   };
+
+  // reset severity dropdown if its selection gets unchecked in popover
+  useEffect(() => {
+    if (severity !== 'all-levels' && !filters.severities.has(severity)) {
+      startTransition(() => {
+        setSeverity('all-levels');
+        setPage(1);
+      });
+    }
+  }, [filters.severities, severity]);
+
+  // reset page when popover filter changes
+  useEffect(() => {
+    startTransition(() => {
+      setPage(1);
+    });
+  }, [filters.severities, q]);
 
   return (
     <div className='relative w-full h-full bg-white z-50 min-h-0 flex flex-col pointer-events-auto pt-16'>
@@ -91,10 +115,13 @@ export default function AffectedLocationsListPanel() {
 
               <SelectContent>
                 <SelectItem value='all-levels'>All Levels</SelectItem>
-                <SelectItem value='critical'>Critical</SelectItem>
-                <SelectItem value='high'>High</SelectItem>
-                <SelectItem value='moderate'>Moderate</SelectItem>
-                <SelectItem value='low'>Low</SelectItem>
+                {(['critical', 'high', 'moderate', 'low'] as const).map((s) =>
+                  filters.severities.has(s) ? (
+                    <SelectItem key={s} value={s}>
+                      {s.charAt(0).toUpperCase() + s.slice(1)}
+                    </SelectItem>
+                  ) : null,
+                )}
               </SelectContent>
             </Select>
           </div>

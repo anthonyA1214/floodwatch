@@ -15,7 +15,7 @@ import AffectedLocationsListOverlay from './affected-locations-list-overlay';
 import SafetyLocationsListOverlay from './safety-locations-list-overlay';
 import WeatherOverlay from './weather-overlay';
 import SafetyLocationOverlay from './safety-location-overlay';
-import MapLegendPopover from './map-legend-popover';
+import MapLegendPopover from '../shared/map-legend-popover';
 import MapFilterPopover from './map-filter-popover';
 
 export default function InteractiveMapPage() {
