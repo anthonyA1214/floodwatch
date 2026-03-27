@@ -3,7 +3,6 @@
 import { clsx } from 'clsx';
 import { useState } from 'react';
 import { Drawer } from 'vaul';
-import AffectedLocationsCard from './affected-locations-card';
 import {
   Select,
   SelectContent,
@@ -24,6 +23,7 @@ import LocationsListEmpty from './empty/locations-list-empty';
 import { useSearchParams } from 'next/navigation';
 import { ReportListItemInput, ReportListQueryInput } from '@repo/schemas';
 import PagePagination from '../shared/page-pagination';
+import AffectedLocationsCard from '../shared/affected-locations-card';
 
 const snapPoints = ['0px', '355px', 1];
 

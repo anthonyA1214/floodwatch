@@ -5,7 +5,7 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from '@/components/ui/input-group';
-import { IconX } from '@tabler/icons-react';
+import { IconSearch, IconX } from '@tabler/icons-react';
 import { useMapOverlay } from '@/contexts/map-overlay-context';
 import { useMapFilter } from '@/contexts/map-filter-context';
 import { useDebouncedCallback } from 'use-debounce';
@@ -36,6 +36,10 @@ export default function SearchBar() {
               : undefined
           }
         />
+
+        <InputGroupAddon>
+          <IconSearch />
+        </InputGroupAddon>
 
         {activeOverlay && (
           <InputGroupAddon align='inline-end'>

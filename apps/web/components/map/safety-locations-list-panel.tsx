@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from '../ui/select';
 import { Separator } from '../ui/separator';
-import SafetyLocationsCard from './safety-locations-card';
+import SafetyLocationsCard from '../shared/safety-locations-card';
 import { useMapOverlay } from '@/contexts/map-overlay-context';
 import { useSafetyList } from '@/hooks/use-safety-list';
 import { useMapFilter } from '@/contexts/map-filter-context';

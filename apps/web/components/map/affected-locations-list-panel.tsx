@@ -1,7 +1,7 @@
 'use client';
 
 import { IconAlertTriangle, IconChevronLeft } from '@tabler/icons-react';
-import AffectedLocationsCard from './affected-locations-card';
+import AffectedLocationsCard from '../shared/affected-locations-card';
 import {
   Select,
   SelectContent,
