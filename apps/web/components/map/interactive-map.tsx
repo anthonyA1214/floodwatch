@@ -6,6 +6,7 @@ import {
   Fragment,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -13,15 +14,17 @@ import Map, {
   Layer,
   Marker,
   Source,
+  type MapLayerMouseEvent,
   type MapRef,
   Popup,
 } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
+import type { GeoJSONSource } from 'maplibre-gl';
 import RadiusCircle from '@/components/shared/radius-circle';
 import { FloodMarker } from '../shared/markers/flood-marker';
 import { getUserLocation } from '@/lib/utils/get-user-location';
 import { UserLocationMarker } from '../shared/markers/user-location-marker';
-import { SearchLocationMarker } from '../shared/markers/search-location-marker';
+// import { SearchLocationMarker } from '../shared/markers/search-location-marker';
 import { useReportMapPins } from '@/hooks/use-report-map-pins';
 import { useBoundary } from '@/hooks/use-boundary';
 import { useSafetyMapPins } from '@/hooks/use-safety-map-pins';
@@ -39,6 +42,35 @@ export type InteractiveMapHandle = {
   geolocate: () => void;
 };
 
+const CLUSTER_ZOOM_THRESHOLD = 14;
+const CLUSTER_TO_PIN_BUFFER = 0.2;
+const PIN_SHOW_EARLY_OFFSET = 0.3;
+const CLUSTER_CLICK_EXTRA_ZOOM = 0.8;
+
+type CombinedPin =
+  | {
+      id: number;
+      longitude: number;
+      latitude: number;
+      kind: 'report';
+      severity: 'low' | 'moderate' | 'high' | 'critical';
+      status: 'verified' | 'unverified';
+      range: number;
+    }
+  | {
+      id: number;
+      longitude: number;
+      latitude: number;
+      kind: 'safety';
+    };
+
+type ClusterSource = GeoJSONSource & {
+  getClusterExpansionZoom: (clusterId: number) => Promise<number>;
+};
+
+const hasValidCoordinates = (longitude: number, latitude: number) =>
+  Number.isFinite(longitude) && Number.isFinite(latitude);
+
 const InteractiveMap = forwardRef<InteractiveMapHandle, object>(
   (props, ref) => {
     const mapRef = useRef<MapRef | null>(null);
@@ -47,6 +79,7 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, object>(
       longitude: number;
       latitude: number;
     } | null>(null);
+    const [zoom, setZoom] = useState(11.5);
     const { reportMapPins } = useReportMapPins();
     const { safetyMapPins } = useSafetyMapPins();
     const { activeOverlay, openReport, openSafety } = useMapOverlay();
@@ -59,6 +92,56 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, object>(
     const filteredSafetyMapPins = safetyMapPins?.filter((r) =>
       filters.safetyTypes.has(r.type),
     );
+
+    const combinedPins = useMemo<CombinedPin[]>(
+      () => [
+        ...(filteredReportMapPins
+          ?.filter((report) =>
+            hasValidCoordinates(report.longitude, report.latitude),
+          )
+          .map((report) => ({
+            id: report.id,
+            longitude: report.longitude,
+            latitude: report.latitude,
+            kind: 'report' as const,
+            severity: report.severity,
+            status: report.status,
+            range: report.range,
+          })) ?? []),
+        ...(filteredSafetyMapPins
+          ?.filter((safety) =>
+            hasValidCoordinates(safety.longitude, safety.latitude),
+          )
+          .map((safety) => ({
+            id: safety.id,
+            longitude: safety.longitude,
+            latitude: safety.latitude,
+            kind: 'safety' as const,
+          })) ?? []),
+      ],
+      [filteredReportMapPins, filteredSafetyMapPins],
+    );
+
+    const combinedPinsGeoJson = useMemo(
+      () => ({
+        type: 'FeatureCollection' as const,
+        features: combinedPins.map((pin) => ({
+          type: 'Feature' as const,
+          geometry: {
+            type: 'Point' as const,
+            coordinates: [pin.longitude, pin.latitude] as [number, number],
+          },
+          properties: {
+            id: pin.id,
+            kind: pin.kind,
+          },
+        })),
+      }),
+      [combinedPins],
+    );
+
+    const showClusters = zoom < CLUSTER_ZOOM_THRESHOLD + CLUSTER_TO_PIN_BUFFER;
+    const showPins = zoom >= CLUSTER_ZOOM_THRESHOLD - PIN_SHOW_EARLY_OFFSET;
 
     const {
       activePopup,
@@ -124,6 +207,54 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, object>(
         }),
     }));
 
+    const handleMapClick = (event: MapLayerMouseEvent) => {
+      const map = mapRef.current?.getMap();
+      if (!map) return;
+
+      const clickedCluster = map
+        .queryRenderedFeatures(event.point, {
+          layers: ['clusters', 'cluster-count'],
+        })
+        .find((feature) => feature.properties?.cluster);
+
+      if (!clickedCluster) {
+        closePopup();
+        return;
+      }
+
+      if (clickedCluster.geometry.type !== 'Point') return;
+
+      const clusterIdRaw = clickedCluster.properties?.cluster_id;
+      const clusterId = Number(clusterIdRaw);
+      if (!Number.isFinite(clusterId)) return;
+
+      const source = map.getSource('all-pins-source') as
+        | ClusterSource
+        | undefined;
+      if (!source || typeof source.getClusterExpansionZoom !== 'function') {
+        return;
+      }
+
+      source
+        .getClusterExpansionZoom(clusterId)
+        .then((expansionZoom) => {
+          const pointGeometry = clickedCluster.geometry as GeoJSON.Point;
+          const [longitude, latitude] = pointGeometry.coordinates;
+          const nextZoom = Math.max(
+            expansionZoom + CLUSTER_CLICK_EXTRA_ZOOM,
+            CLUSTER_ZOOM_THRESHOLD + 0.25,
+          );
+          map.easeTo({
+            center: [longitude, latitude],
+            zoom: nextZoom,
+            duration: 350,
+          });
+        })
+        .catch(() => {
+          // no-op: ignore if source is not ready yet
+        });
+    };
+
     return (
       <Map
         id='interactive-map'
@@ -136,7 +267,19 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, object>(
         mapStyle='https://tiles.openfreemap.org/styles/bright'
         attributionControl={false}
         dragRotate={false}
-        onClick={() => closePopup()}
+        interactiveLayerIds={['clusters', 'cluster-count']}
+        onZoom={(event) => setZoom(event.viewState.zoom)}
+        onClick={handleMapClick}
+        onMouseMove={(event) => {
+          const canvas = mapRef.current?.getMap().getCanvas();
+          if (!canvas) return;
+          const hoveringCluster = event.features?.some(
+            (feature) =>
+              feature.layer.id === 'clusters' ||
+              feature.layer.id === 'cluster-count',
+          );
+          canvas.style.cursor = hoveringCluster ? 'pointer' : '';
+        }}
       >
         {/* boundary fill */}
         {caloocanGeoJSON && (
@@ -170,46 +313,104 @@ const InteractiveMap = forwardRef<InteractiveMapHandle, object>(
           </Source>
         )}
 
-        {/* Flood report pins */}
-        {filteredReportMapPins?.map((report) => (
-          <Fragment key={report.id}>
-            <Marker
-              key={report.id}
-              longitude={report.longitude}
-              latitude={report.latitude}
-              anchor='bottom'
-              onClick={(e) => {
-                e.originalEvent.stopPropagation(); // prevent the map's onClick from firing
-                openReportPopup(report);
+        {/* Combined cluster source for all map pins */}
+        {combinedPins.length > 0 && showClusters && (
+          <Source
+            id='all-pins-source'
+            type='geojson'
+            data={combinedPinsGeoJson}
+            cluster={true}
+            clusterMaxZoom={CLUSTER_ZOOM_THRESHOLD}
+            clusterRadius={56}
+          >
+            <Layer
+              id='clusters'
+              type='circle'
+              filter={['has', 'point_count']}
+              paint={{
+                'circle-color': '#156CC2',
+                'circle-stroke-color': '#FFFFFF',
+                'circle-stroke-width': 5,
+                'circle-radius': [
+                  'step',
+                  ['get', 'point_count'],
+                  28,
+                  10,
+                  32,
+                  25,
+                  36,
+                ],
               }}
-            >
-              <FloodMarker severity={report.severity} status={report.status} />
-            </Marker>
-            <RadiusCircle
-              id={`${report.id}`}
-              longitude={report.longitude}
-              latitude={report.latitude}
-              range={report.range}
-              severity={report.severity}
             />
-          </Fragment>
-        ))}
+            <Layer
+              id='cluster-count'
+              type='symbol'
+              filter={['has', 'point_count']}
+              layout={{
+                'text-field': ['get', 'point_count_abbreviated'],
+                'text-font': ['Open Sans Bold', 'Arial Unicode MS Bold'],
+                'text-size': 22,
+              }}
+              paint={{
+                'text-color': '#FFFFFF',
+              }}
+            />
+          </Source>
+        )}
+
+        {/* Flood report pins */}
+        {showPins &&
+          filteredReportMapPins
+            ?.filter((report) =>
+              hasValidCoordinates(report.longitude, report.latitude),
+            )
+            .map((report) => (
+              <Fragment key={report.id}>
+                <Marker
+                  key={report.id}
+                  longitude={report.longitude}
+                  latitude={report.latitude}
+                  anchor='bottom'
+                  onClick={(e) => {
+                    e.originalEvent.stopPropagation(); // prevent the map's onClick from firing
+                    openReportPopup(report);
+                  }}
+                >
+                  <FloodMarker
+                    severity={report.severity}
+                    status={report.status}
+                  />
+                </Marker>
+                <RadiusCircle
+                  id={`${report.id}`}
+                  longitude={report.longitude}
+                  latitude={report.latitude}
+                  range={report.range}
+                  severity={report.severity}
+                />
+              </Fragment>
+            ))}
 
         {/* safety locations pin */}
-        {filteredSafetyMapPins?.map((safety) => (
-          <Marker
-            key={safety.id}
-            longitude={safety.longitude}
-            latitude={safety.latitude}
-            anchor='bottom'
-            onClick={(e) => {
-              e.originalEvent.stopPropagation();
-              openSafetyPopup(safety);
-            }}
-          >
-            <SafetyMarker type={safety.type} />
-          </Marker>
-        ))}
+        {showPins &&
+          filteredSafetyMapPins
+            ?.filter((safety) =>
+              hasValidCoordinates(safety.longitude, safety.latitude),
+            )
+            .map((safety) => (
+              <Marker
+                key={safety.id}
+                longitude={safety.longitude}
+                latitude={safety.latitude}
+                anchor='bottom'
+                onClick={(e) => {
+                  e.originalEvent.stopPropagation();
+                  openSafetyPopup(safety);
+                }}
+              >
+                <SafetyMarker type={safety.type} />
+              </Marker>
+            ))}
 
         {/* user location pin */}
         {userLocation && (
